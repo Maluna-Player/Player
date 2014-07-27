@@ -1,3 +1,15 @@
+# gedit files
+*~
+
+# Code::Blocks files
+*.cbp
+*.depend
+*.layout
+
+# Output files
+stdout.txt
+stderr.txt
+
 # Compiled Object files
 *.slo
 *.lo
