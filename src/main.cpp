@@ -17,6 +17,7 @@
 int main(void)
 {
   sf::RenderWindow window(sf::VideoMode(LARGEUR_FENETRE, HAUTEUR_FENETRE), TITRE_FENETRE);
+  window.setVerticalSyncEnabled(true);
 
   while (window.isOpen())
   {
