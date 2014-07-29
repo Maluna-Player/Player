@@ -4,20 +4,20 @@
  * @author  Manuel
  *
  * Contient l'ensemble des constantes
- * de préprocesseur du projet.
+ * de prÃ©processeur du projet.
  *************************************
 */
 
 #ifndef __CONSTANTES_HPP__
 #define __CONSTANTES_HPP__
 
-/** Fenêtre de l'application **/
+/** FenÃªtre de l'application **/
 
-// Taille de la fenêtre du player
+// Taille de la fenÃªtre du player
 #define LARGEUR_FENETRE       800
 #define HAUTEUR_FENETRE       600
 
-// Titre de la fenêtre
+// Titre de la fenÃªtre
 #define TITRE_FENETRE         "Player"
 
 #endif  // __CONSTANTES_HPP__
