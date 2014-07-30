@@ -12,11 +12,11 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
-#include "constantes.hpp"
+#include "constants.hpp"
 
 int main(void)
 {
-  sf::RenderWindow window(sf::VideoMode(LARGEUR_FENETRE, HAUTEUR_FENETRE), TITRE_FENETRE);
+  sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_TITLE);
   window.setVerticalSyncEnabled(true);
 
   while (window.isOpen())
