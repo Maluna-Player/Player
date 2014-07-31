@@ -31,3 +31,8 @@ stderr.txt
 *.exe
 *.out
 *.app
+
+# Music files
+*.mp3
+*.wav
+*.ogg

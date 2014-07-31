@@ -13,11 +13,17 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 
 #include "constants.hpp"
+#include "Player.hpp"
+#include "Fmod.hpp"
 
 int main(void)
 {
   sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_TITLE);
   window.setVerticalSyncEnabled(true);
+
+  Player p;
+  if (!p.loadSongs(SONGS_SUBDIR))
+    return -1;
 
   while (window.isOpen())
   {
@@ -32,6 +38,8 @@ int main(void)
 
     window.display();
   }
+
+  Fmod::deleteInstance();
 
   return 0;
 }

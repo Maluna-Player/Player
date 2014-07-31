@@ -11,6 +11,10 @@
 #ifndef __CONSTANTS_HPP__
 #define __CONSTANTS_HPP__
 
+/** Chemins des ressources **/
+
+#define SONGS_SUBDIR        "Musiques"
+
 /** Fenêtre de l'application **/
 
 // Taille de la fenêtre du player
@@ -18,6 +22,12 @@
 #define WINDOW_HEIGHT       600
 
 // Titre de la fenêtre
-#define WINDOW_TITLE         "Player"
+#define WINDOW_TITLE        "Player"
+
+
+/** Paramètres de FMOD **/
+
+// Nombre max de canaux
+#define MAX_CHANNELS_NB     8
 
 #endif  // __CONSTANTS_HPP__
