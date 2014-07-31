@@ -81,6 +81,13 @@ class Fmod
      * @return position courante de la musique jouée.
     */
     virtual unsigned int getSoundPosition() const;
+
+    /**
+     * @param id Identifiant du canal à tester
+     * @return true si le canal id est en train de jouer.
+    */
+    virtual bool isPlaying(SoundID_t id) const;
+
 };
 
 #endif  // __FMOD_HPP__

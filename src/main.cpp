@@ -48,8 +48,11 @@ int main(void)
     {
       clock.restart();
 
-      if (p.getCurrentSong().isFinished())
-        p.nextSong();
+      if (!p.isStopped())
+      {
+        if (p.getCurrentSong().isFinished())
+          p.nextSong();
+      }
     }
 
     window.clear(sf::Color::Black);

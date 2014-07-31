@@ -65,5 +65,5 @@ void Song::play() const
 
 bool Song::isFinished() const
 {
-  return (Fmod::getInstance()->getSoundPosition() >= m_Length);
+  return !(Fmod::getInstance()->isPlaying(0));
 }

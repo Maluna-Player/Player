@@ -14,7 +14,9 @@
 #include <cerrno>
 
 
-Player::Player() : m_CurrentSong(0), m_Playlist(true)
+Player::Player()
+  : m_CurrentSong(0), m_Playlist(true), m_Loop(false),
+    m_Stop(true)
 {
 
 }
@@ -88,9 +90,11 @@ bool Player::loadSongs(const std::string& dir)
 // ==============================
 // ==============================
 
-void Player::playAllSongs()
+void Player::playAllSongs(bool loop)
 {
   m_Playlist = true;
+  m_Loop = loop;
+  m_Stop = false;
   m_CurrentSong = 0;
 
   getCurrentSong().play();
@@ -99,7 +103,7 @@ void Player::playAllSongs()
 // ==============================
 // ==============================
 
-bool Player::nextSong()
+void Player::nextSong()
 {
   if (m_Playlist)
   {
@@ -107,10 +111,23 @@ bool Player::nextSong()
     {
       m_CurrentSong++;
       getCurrentSong().play();
-
-      return true;
+    }
+    else if (m_Loop)
+    {
+      m_CurrentSong = 0;
+      getCurrentSong().play();
+    }
+    else
+    {
+      m_Stop = true;
     }
   }
+}
 
-  return false;
+// ==============================
+// ==============================
+
+bool Player::isStopped() const
+{
+  return m_Stop;
 }

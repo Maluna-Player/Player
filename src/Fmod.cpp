@@ -137,3 +137,17 @@ unsigned int Fmod::getSoundPosition() const
 
   return pos;
 }
+
+// ==============================
+// ==============================
+
+bool Fmod::isPlaying(SoundID_t id) const
+{
+  FMOD_RESULT res;
+  FMOD_BOOL playing;
+
+  if ((res = FMOD_Channel_IsPlaying(mp_Channels.at(id), &playing)) != FMOD_OK)
+    printFMODError(res);
+
+  return static_cast<bool>(playing);
+}

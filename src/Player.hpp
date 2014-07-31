@@ -23,6 +23,9 @@ class Player
     int m_CurrentSong;
 
     bool m_Playlist;
+    bool m_Loop;
+
+    bool m_Stop;
 
   public:
 
@@ -43,14 +46,17 @@ class Player
      * Lance l'ensemble des musiques chargées
      * à partir du répertoire.
     */
-    virtual void playAllSongs();
+    virtual void playAllSongs(bool loop = false);
 
     /**
      * Lance la prochaine musique de la playlist.
-     * @return true si il reste encore des musiques
-     *              dans la playlist, false sinon.
     */
-    virtual bool nextSong();
+    virtual void nextSong();
+
+    /**
+     * @return true si le player est stoppé.
+    */
+    virtual bool isStopped() const;
 };
 
 #endif  // __PLAYER_HPP__
