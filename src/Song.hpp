@@ -29,6 +29,16 @@ class Song
 
     virtual std::string getFile() const;
     virtual unsigned int getLength() const;
+
+    /**
+     * Play file song with FMOD.
+    */
+    virtual void play() const;
+
+    /**
+     * @return true si la musique est terminée.
+    */
+    virtual bool isFinished() const;
 };
 
 #endif  // __SONG_HPP__

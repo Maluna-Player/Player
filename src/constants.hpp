@@ -11,6 +11,8 @@
 #ifndef __CONSTANTS_HPP__
 #define __CONSTANTS_HPP__
 
+#define REFRESH_TIME_MS     100
+
 /** Chemins des ressources **/
 
 #define SONGS_SUBDIR        "Musiques"

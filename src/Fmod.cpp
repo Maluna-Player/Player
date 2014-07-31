@@ -11,6 +11,7 @@
 
 #include <iostream>
 
+
 Fmod* Fmod::mp_Instance = 0;
 
 // ==============================
@@ -121,4 +122,18 @@ unsigned int Fmod::getSoundLength() const
     printFMODError(res);
 
   return length;
+}
+
+// ==============================
+// ==============================
+
+unsigned int Fmod::getSoundPosition() const
+{
+  FMOD_RESULT res;
+  unsigned int pos;
+
+  if ((res = FMOD_Channel_GetPosition(mp_Channels.at(0), &pos, FMOD_TIMEUNIT_MS)) != FMOD_OK)
+    printFMODError(res);
+
+  return pos;
 }

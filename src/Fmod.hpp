@@ -76,6 +76,11 @@ class Fmod
      * @return durée de la musique
     */
     virtual unsigned int getSoundLength() const;
+
+    /**
+     * @return position courante de la musique jouée.
+    */
+    virtual unsigned int getSoundPosition() const;
 };
 
 #endif  // __FMOD_HPP__

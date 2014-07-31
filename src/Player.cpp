@@ -13,7 +13,8 @@
 #include <cstdio>
 #include <cerrno>
 
-Player::Player() : m_CurrentSong(0)
+
+Player::Player() : m_CurrentSong(0), m_Playlist(true)
 {
 
 }
@@ -24,6 +25,14 @@ Player::Player() : m_CurrentSong(0)
 Player::~Player()
 {
   m_Songs.clear();
+}
+
+// ==============================
+// ==============================
+
+const Song& Player::getCurrentSong() const
+{
+  return m_Songs.at(m_CurrentSong);
 }
 
 // ==============================
@@ -74,4 +83,34 @@ bool Player::loadSongs(const std::string& dir)
   }
 
   return true;
+}
+
+// ==============================
+// ==============================
+
+void Player::playAllSongs()
+{
+  m_Playlist = true;
+  m_CurrentSong = 0;
+
+  getCurrentSong().play();
+}
+
+// ==============================
+// ==============================
+
+bool Player::nextSong()
+{
+  if (m_Playlist)
+  {
+    if (m_CurrentSong < m_Songs.size() - 1)
+    {
+      m_CurrentSong++;
+      getCurrentSong().play();
+
+      return true;
+    }
+  }
+
+  return false;
 }
