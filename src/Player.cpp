@@ -103,7 +103,7 @@ void Player::playAllSongs(bool loop)
 // ==============================
 // ==============================
 
-void Player::nextSong()
+bool Player::nextSong()
 {
   if (m_Playlist)
   {
@@ -111,17 +111,23 @@ void Player::nextSong()
     {
       m_CurrentSong++;
       getCurrentSong().play();
+
+      return true;
     }
     else if (m_Loop)
     {
       m_CurrentSong = 0;
       getCurrentSong().play();
+
+      return true;
     }
     else
     {
       m_Stop = true;
     }
   }
+
+  return false;
 }
 
 // ==============================

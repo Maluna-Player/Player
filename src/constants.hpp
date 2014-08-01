@@ -15,7 +15,8 @@
 
 /** Chemins des ressources **/
 
-#define SONGS_SUBDIR        "Musiques"
+#define SONGS_SUBDIR        "resources/Musiques"
+#define FONT_FILE           "resources/lsans.ttf"
 
 /** Fenêtre de l'application **/
 

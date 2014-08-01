@@ -50,8 +50,10 @@ class Player
 
     /**
      * Lance la prochaine musique de la playlist.
+     * @return true si il reste encore des musiques
+     *              dans la playlist, false sinon.
     */
-    virtual void nextSong();
+    virtual bool nextSong();
 
     /**
      * @return true si le player est stoppé.
