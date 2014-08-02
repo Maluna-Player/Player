@@ -32,9 +32,6 @@ class Interface
 
     Player m_Player;
 
-
-    virtual void printInterfaceError(const std::string& message) const;
-
   public:
 
     Interface();

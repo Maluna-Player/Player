@@ -8,14 +8,26 @@
  *************************************
 */
 
-#include <cstdlib> /* EXIT_SUCCESS */
+#include <cstdlib> /* EXIT_SUCCESS/EXIT_FAILURE */
+#include <iostream>
 
 #include "Interface.hpp"
+
+#include "BaseException.hpp"
 
 int main(void)
 {
   Interface player;
-  player.run();
+
+  try
+  {
+    player.run();
+  }
+  catch (BaseException& e)
+  {
+    std::cerr << e.what() << std::endl;
+    return EXIT_FAILURE;
+  }
 
   return EXIT_SUCCESS;
 }

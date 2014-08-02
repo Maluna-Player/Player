@@ -36,8 +36,6 @@ class Fmod
     static Fmod *mp_Instance;
 
 
-    virtual void printFMODError(FMOD_RESULT res) const;
-
     /**
      * Libère la mémoire du son chargé.
     */

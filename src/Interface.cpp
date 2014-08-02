@@ -11,9 +11,7 @@
 #include "constants.hpp"
 #include "Fmod.hpp"
 #include "Path.hpp"
-
-#include <iostream>
-#include <cstdlib>
+#include "FileLoadingException.hpp"
 
 #include <SFML/Graphics/Text.hpp>
 
@@ -39,29 +37,20 @@ Interface::~Interface()
 // ==============================
 // ==============================
 
-void Interface::printInterfaceError(const std::string& message) const
-{
-  std::cerr << message << std::endl;
-  std::exit(EXIT_FAILURE);
-}
-
-// ==============================
-// ==============================
-
 void Interface::run()
 {
   sf::Clock clock;
   const sf::Time refreshTime = sf::milliseconds(REFRESH_TIME_MS);
 
   if (!m_Font.loadFromFile(FONT_FILE))
-    printInterfaceError("Cannot open " + std::string(FONT_FILE));
+    throw FileLoadingException("Interface::run", FONT_FILE);
 
   sf::Text songTitle;
   songTitle.setFont(m_Font);
   songTitle.setColor(sf::Color::White);
 
   if (!m_Player.loadSongs(SONGS_SUBDIR))
-    printInterfaceError("Error loading files in " + std::string(SONGS_SUBDIR) + " directory");
+    throw FileLoadingException("Interface::run", SONGS_SUBDIR);
 
   m_Player.playAllSongs();
   songTitle.setString(Path::baseName(m_Player.getCurrentSong().getFile()));
