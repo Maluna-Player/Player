@@ -67,7 +67,7 @@ void Fmod::deleteInstance()
 
 void Fmod::printFMODError(FMOD_RESULT res) const
 {
-  std::cout << FMOD_ErrorString(res) << std::endl;
+  std::cerr << FMOD_ErrorString(res) << std::endl;
 }
 
 // ==============================
