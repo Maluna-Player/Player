@@ -16,7 +16,7 @@
 
 Player::Player()
   : m_CurrentSong(0), m_Playlist(true), m_Loop(false),
-    m_Stop(true)
+    m_Stop(false)
 {
 
 }
@@ -35,6 +35,48 @@ Player::~Player()
 const Song& Player::getCurrentSong() const
 {
   return m_Songs.at(m_CurrentSong);
+}
+
+// ==============================
+// ==============================
+
+bool Player::isLoop() const
+{
+  return m_Loop;
+}
+
+// ==============================
+// ==============================
+
+void Player::setLoop(bool loop)
+{
+  m_Loop = loop;
+}
+
+// ==============================
+// ==============================
+
+int Player::prev() const
+{
+  if (m_CurrentSong > FIRST_SONG)
+    return (m_CurrentSong - 1);
+  else if (m_Loop)
+    return LAST_SONG;
+  else
+    return UNDEFINED_SONG;
+}
+
+// ==============================
+// ==============================
+
+int Player::next() const
+{
+  if (m_CurrentSong < LAST_SONG)
+    return (m_CurrentSong + 1);
+  else if (m_Loop)
+    return FIRST_SONG;
+  else
+    return UNDEFINED_SONG;
 }
 
 // ==============================
@@ -90,44 +132,12 @@ bool Player::loadSongs(const std::string& dir)
 // ==============================
 // ==============================
 
-void Player::playAllSongs(bool loop)
+void Player::playSong(int song)
 {
-  m_Playlist = true;
-  m_Loop = loop;
-  m_Stop = false;
-  m_CurrentSong = 0;
+  m_CurrentSong = song;
 
-  getCurrentSong().play();
-}
-
-// ==============================
-// ==============================
-
-bool Player::nextSong()
-{
-  if (m_Playlist)
-  {
-    if (m_CurrentSong < m_Songs.size() - 1)
-    {
-      m_CurrentSong++;
-      getCurrentSong().play();
-
-      return true;
-    }
-    else if (m_Loop)
-    {
-      m_CurrentSong = 0;
-      getCurrentSong().play();
-
-      return true;
-    }
-    else
-    {
-      m_Stop = true;
-    }
-  }
-
-  return false;
+  if (!m_Stop)
+    getCurrentSong().play();
 }
 
 // ==============================

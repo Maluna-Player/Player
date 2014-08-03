@@ -13,8 +13,6 @@
 #include "Path.hpp"
 #include "FileLoadingException.hpp"
 
-#include <SFML/Graphics/Text.hpp>
-
 /** SFML Time includes **/
 #include <SFML/System/Time.hpp>
 #include <SFML/System/Clock.hpp>
@@ -37,6 +35,18 @@ Interface::~Interface()
 // ==============================
 // ==============================
 
+void Interface::changeSong(int song)
+{
+  if (song != UNDEFINED_SONG)
+  {
+    m_Player.playSong(song);
+    m_SongTitle.setString(Path::baseName(m_Player.getCurrentSong().getFile()));
+  }
+}
+
+// ==============================
+// ==============================
+
 void Interface::run()
 {
   sf::Clock clock;
@@ -45,15 +55,13 @@ void Interface::run()
   if (!m_Font.loadFromFile(FONT_FILE))
     throw FileLoadingException("Interface::run", FONT_FILE);
 
-  sf::Text songTitle;
-  songTitle.setFont(m_Font);
-  songTitle.setColor(sf::Color::White);
+  m_SongTitle.setFont(m_Font);
+  m_SongTitle.setColor(sf::Color::White);
 
   if (!m_Player.loadSongs(SONGS_SUBDIR))
     throw FileLoadingException("Interface::run", SONGS_SUBDIR);
 
-  m_Player.playAllSongs();
-  songTitle.setString(Path::baseName(m_Player.getCurrentSong().getFile()));
+  changeSong(FIRST_SONG);
 
   while (m_Window.isOpen())
   {
@@ -63,6 +71,15 @@ void Interface::run()
       {
         case sf::Event::Closed:
           m_Window.close();
+          break;
+
+        case sf::Event::KeyPressed:
+          if (m_Event.key.code == sf::Keyboard::N)
+            changeSong(m_Player.next());
+          else if (m_Event.key.code == sf::Keyboard::P)
+            changeSong(m_Player.prev());
+          else if (m_Event.key.code == sf::Keyboard::L)
+            m_Player.setLoop(!m_Player.isLoop());
           break;
 
         default:
@@ -75,14 +92,11 @@ void Interface::run()
       clock.restart();
 
       if (!m_Player.isStopped() && m_Player.getCurrentSong().isFinished())
-      {
-        if (m_Player.nextSong())
-          songTitle.setString(Path::baseName(m_Player.getCurrentSong().getFile()));
-      }
+        changeSong(m_Player.next());
     }
 
     m_Window.clear(sf::Color::Black);
-    m_Window.draw(songTitle);
+    m_Window.draw(m_SongTitle);
     m_Window.display();
   }
 }

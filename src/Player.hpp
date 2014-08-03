@@ -15,6 +15,10 @@
 #include <vector>
 #include "Song.hpp"
 
+#define FIRST_SONG        0
+#define LAST_SONG         (m_Songs.size() - 1)
+#define UNDEFINED_SONG   -1
+
 class Player
 {
   private:
@@ -34,6 +38,22 @@ class Player
 
     virtual const Song& getCurrentSong() const;
 
+    virtual bool isLoop() const;
+
+    virtual void setLoop(bool loop);
+
+    /**
+     * @return numéro de chanson précédente,
+     *         UNDEFINED_SONG si pas de précédent.
+    */
+    virtual int prev() const;
+
+    /**
+     * @return numéro de la chanson suivante,
+     *         UNDEFINED_SONG si pas de suivant.
+    */
+    virtual int next() const;
+
     /**
      * Rempli le vecteur Musiques à partir des fichiers
      * contenus dans le répertoire donné en paramètre.
@@ -43,17 +63,10 @@ class Player
     virtual bool loadSongs(const std::string& dir);
 
     /**
-     * Lance l'ensemble des musiques chargées
-     * à partir du répertoire.
+     * Lance la musique d'indice song.
+     * @param song indice de la musique
     */
-    virtual void playAllSongs(bool loop = false);
-
-    /**
-     * Lance la prochaine musique de la playlist.
-     * @return true si il reste encore des musiques
-     *              dans la playlist, false sinon.
-    */
-    virtual bool nextSong();
+    virtual void playSong(int song);
 
     /**
      * @return true si le player est stoppé.

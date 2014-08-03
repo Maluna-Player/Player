@@ -18,6 +18,7 @@
 
 /** SFML Graphics includes **/
 #include <SFML/Graphics/Font.hpp>
+#include <SFML/Graphics/Text.hpp>
 
 #include "Player.hpp"
 
@@ -29,8 +30,16 @@ class Interface
     sf::Event m_Event;
 
     sf::Font m_Font;
+    sf::Text m_SongTitle;
 
     Player m_Player;
+
+
+    /**
+     * Lance le son song du player
+     * et actualise l'interface graphique.
+    */
+    void changeSong(int song);
 
   public:
 
