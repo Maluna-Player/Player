@@ -15,12 +15,24 @@
 
 class FileLoadingException : public BaseException
 {
+  private:
+
+    std::string m_File;
+
+  protected:
+
+    virtual void buildMessage()
+    {
+      m_Error = "Cannot open '" + m_File + "'";
+      BaseException::buildMessage();
+    }
+
   public:
 
     FileLoadingException(const std::string& method, const std::string& file)
-      : BaseException(method, std::string("Cannot open '" + file + "'"))
+      : BaseException(method), m_File(file)
     {
-
+      buildMessage();
     }
 
     virtual ~FileLoadingException() throw()

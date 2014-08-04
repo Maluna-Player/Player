@@ -39,8 +39,8 @@ Spectrum::~Spectrum()
 
 const sf::VertexArray& Spectrum::getLine(unsigned int i) const
 {
-  if (i > SPECTRUM_WIDTH)
-    throw ArrayAccesException("Spectrum::getLine");
+  if (i >= SPECTRUM_WIDTH)
+    throw ArrayAccesException("Spectrum::getLine", m_Vertices.size(), i);
 
   return m_Vertices.at(i);
 }

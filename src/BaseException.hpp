@@ -20,11 +20,29 @@ class BaseException : public std::exception
 
     std::string m_Message;
 
+    std::string m_Method;
+
+  protected:
+
+    std::string m_Error;
+
+    virtual void buildMessage()
+    {
+      m_Message = "[From " + m_Method + "] " + m_Error;
+    }
+
   public:
 
-    BaseException(const std::string& method, const std::string& error)
+    BaseException(const std::string& method)
+        : m_Method(method), m_Error("")
     {
-      m_Message = "[From " + method + "] " + error;
+
+    }
+
+    BaseException(const std::string& method, const std::string& error)
+        : m_Method(method), m_Error(error)
+    {
+      buildMessage();
     }
 
     virtual ~BaseException() throw()
