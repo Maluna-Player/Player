@@ -21,6 +21,7 @@
 #include <SFML/Graphics/Text.hpp>
 
 #include "Player.hpp"
+#include "Spectrum.hpp"
 
 class Interface
 {
@@ -33,6 +34,7 @@ class Interface
     sf::Text m_SongTitle;
 
     Player m_Player;
+    Spectrum m_Spectrum;
 
 
     /**

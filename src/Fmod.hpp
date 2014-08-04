@@ -86,6 +86,15 @@ class Fmod
     */
     virtual bool isPlaying(SoundID_t id) const;
 
+    /**
+     * Récupère le spectre du son joué dans le canal.
+     * @param id Identifiant du canal à tester
+     * @param values Tableau dans lequel sont stockées
+     *               les valeurs.
+     * @return Tableau dans lequel sont stockées les valeurs.
+    */
+    virtual float* getChannelSpectrum(SoundID_t id, float *values) const;
+
 };
 
 #endif  // __FMOD_HPP__

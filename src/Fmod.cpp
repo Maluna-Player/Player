@@ -144,3 +144,16 @@ bool Fmod::isPlaying(SoundID_t id) const
 
   return static_cast<bool>(playing);
 }
+
+// ==============================
+// ==============================
+
+float* Fmod::getChannelSpectrum(SoundID_t id, float *values) const
+{
+  FMOD_RESULT res;
+
+  if ((res = FMOD_Channel_GetSpectrum(mp_Channels.at(id), values, SPECTRUM_WIDTH, 0, FMOD_DSP_FFT_WINDOW_RECT)) != FMOD_OK)
+    throw FmodException("Fmod::getChannelSpectrum", "FMOD_Channel_GetSpectrum", FMOD_ErrorString(res));
+
+  return values;
+}
