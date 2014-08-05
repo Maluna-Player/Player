@@ -10,21 +10,21 @@
 #include "Spectrum.hpp"
 #include "constants.hpp"
 #include "Fmod.hpp"
-#include "ArrayAccessException.hpp"
 
 #include <cmath>
 
-
-Spectrum::Spectrum() : m_Vertices(SPECTRUM_WIDTH, sf::VertexArray(sf::Lines, 2))
+Spectrum::Spectrum() : m_Vertices(sf::Lines, SPECTRUM_WIDTH * 2)
 {
   int i;
 
   for (i = 0; i < SPECTRUM_WIDTH; i++)
   {
-    m_Vertices[i][0].position = sf::Vector2f(SPECTRUM_X + i, SPECTRUM_Y + SPECTRUM_HEIGHT);
-    m_Vertices[i][1].position = sf::Vector2f(SPECTRUM_X + i, SPECTRUM_Y + SPECTRUM_HEIGHT);
+    sf::Vertex* line = &m_Vertices[i * 2];
 
-    m_Vertices[i][1].color = sf::Color(255, 255, 0);
+    line[0].position = sf::Vector2f(SPECTRUM_X + i, SPECTRUM_Y + SPECTRUM_HEIGHT);
+    line[1].position = sf::Vector2f(SPECTRUM_X + i, SPECTRUM_Y + SPECTRUM_HEIGHT);
+
+    line[1].color = sf::Color(255, 255, 0);
   }
 }
 
@@ -39,12 +39,16 @@ Spectrum::~Spectrum()
 // ==============================
 // ==============================
 
-const sf::VertexArray& Spectrum::getLine(unsigned int i) const
+void Spectrum::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-  if (i >= SPECTRUM_WIDTH)
-    throw ArrayAccesException("Spectrum::getLine", m_Vertices.size(), i);
+  // on applique la transformation
+  states.transform *= getTransform();
 
-  return m_Vertices.at(i);
+  // on applique la texture du tileset
+  states.texture = 0;
+
+  // et on dessine enfin le tableau de vertex
+  target.draw(m_Vertices, states);
 }
 
 // ==============================
@@ -69,13 +73,16 @@ void Spectrum::update()
 
     int yPos = SPECTRUM_HEIGHT - lineHeight;
 
+
+    sf::Vertex* line = &m_Vertices[i * 2];
+
     /* Calcul de la position de la colonne */
-    m_Vertices[i][0].position = sf::Vector2f(SPECTRUM_X + i, SPECTRUM_Y + yPos);
+    line[0].position = sf::Vector2f(SPECTRUM_X + i, SPECTRUM_Y + yPos);
 
     /* Calcul des couleurs de l'extrémité supérieure de la colonne */
     int r = fabs((yPos * 0) / SPECTRUM_HEIGHT - 255);
     int g = fabs((yPos * 255) / SPECTRUM_HEIGHT - 0);
     int b = fabs((yPos * 0) / SPECTRUM_HEIGHT - 0);
-    m_Vertices[i][0].color = sf::Color(r, g, b);
+    line[0].color = sf::Color(r, g, b);
   }
 }

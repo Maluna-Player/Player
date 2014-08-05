@@ -53,7 +53,6 @@ void Interface::changeSong(int song)
 
 void Interface::run()
 {
-  int i;
   sf::Clock clock;
   const sf::Time refreshTime = sf::milliseconds(REFRESH_TIME_MS);
 
@@ -108,12 +107,7 @@ void Interface::run()
     m_Window.clear(sf::Color::Black);
 
     if (!m_Player.isStopped())
-    {
-      for (i = 0; i < SPECTRUM_WIDTH; i++)
-      {
-        m_Window.draw(m_Spectrum.getLine(i));
-      }
-    }
+      m_Window.draw(m_Spectrum);
 
     m_Window.draw(m_SongTitle);
     m_Window.display();

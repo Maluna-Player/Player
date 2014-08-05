@@ -13,25 +13,25 @@
 #ifndef __SPECTRUM_HPP__
 #define __SPECTRUM_HPP__
 
-#include <vector>
 #include <SFML/Graphics/VertexArray.hpp>
+#include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics/Transformable.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
 
-class Spectrum
+
+class Spectrum : public sf::Drawable, public sf::Transformable
 {
   private:
 
-    std::vector<sf::VertexArray> m_Vertices;
+    sf::VertexArray m_Vertices;
+
+    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
   public:
 
     Spectrum();
     virtual ~Spectrum();
-
-    /**
-     * @param i indice du VertexArray à retourner
-     * @return VertexArray à l'indice i
-    */
-    virtual const sf::VertexArray& getLine(unsigned int i) const;
 
     /**
      * Récupère les fréquences du son joué
