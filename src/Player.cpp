@@ -8,6 +8,7 @@
 */
 
 #include "Player.hpp"
+#include "ArrayAccessException.hpp"
 
 #include <dirent.h>
 #include <cstdio>
@@ -34,7 +35,34 @@ Player::~Player()
 
 const Song& Player::getCurrentSong() const
 {
+  if (m_CurrentSong >= m_Songs.size())
+    throw ArrayAccesException("Player::getCurrentSong", m_Songs.size(), m_CurrentSong);
+
   return m_Songs.at(m_CurrentSong);
+}
+
+// ==============================
+// ==============================
+
+void Player::play()
+{
+  m_Stop = false;
+}
+
+// ==============================
+// ==============================
+
+void Player::stop()
+{
+  m_Stop = true;
+}
+
+// ==============================
+// ==============================
+
+bool Player::isStopped() const
+{
+  return m_Stop;
 }
 
 // ==============================
@@ -51,6 +79,17 @@ bool Player::isLoop() const
 void Player::setLoop(bool loop)
 {
   m_Loop = loop;
+}
+
+// ==============================
+// ==============================
+
+int Player::first() const
+{
+  if (m_Songs.size() > 0)
+    return FIRST_SONG;
+  else
+    return UNDEFINED_SONG;
 }
 
 // ==============================
@@ -140,10 +179,3 @@ void Player::playSong(int song)
     getCurrentSong().play();
 }
 
-// ==============================
-// ==============================
-
-bool Player::isStopped() const
-{
-  return m_Stop;
-}

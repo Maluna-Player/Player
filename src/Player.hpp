@@ -38,9 +38,36 @@ class Player
 
     virtual const Song& getCurrentSong() const;
 
+    /**
+     * Active la lecture.
+    */
+    virtual void play();
+
+    /**
+     * Stoppe le player.
+    */
+    virtual void stop();
+
+    /**
+     * @return true si le player est stoppé.
+    */
+    virtual bool isStopped() const;
+
+    /**
+     * @return true si la boucle est activée.
+    */
     virtual bool isLoop() const;
 
+    /**
+     * @param loop Valeur à affecter à l'attribut correspondant.
+    */
     virtual void setLoop(bool loop);
+
+    /**
+     * @return numéro de la première chanson,
+     *         UNDEFINED_SONG si pas de chanson.
+    */
+    virtual int first() const;
 
     /**
      * @return numéro de chanson précédente,
@@ -67,11 +94,6 @@ class Player
      * @param song indice de la musique
     */
     virtual void playSong(int song);
-
-    /**
-     * @return true si le player est stoppé.
-    */
-    virtual bool isStopped() const;
 };
 
 #endif  // __PLAYER_HPP__

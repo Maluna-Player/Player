@@ -42,6 +42,10 @@ void Interface::changeSong(int song)
     m_Player.playSong(song);
     m_SongTitle.setString(Path::baseName(m_Player.getCurrentSong().getFile()));
   }
+  else
+  {
+    m_Player.stop();
+  }
 }
 
 // ==============================
@@ -62,7 +66,7 @@ void Interface::run()
   if (!m_Player.loadSongs(SONGS_SUBDIR))
     throw FileLoadingException("Interface::run", SONGS_SUBDIR);
 
-  changeSong(FIRST_SONG);
+  changeSong(m_Player.first());
 
   while (m_Window.isOpen())
   {
@@ -103,10 +107,14 @@ void Interface::run()
 
     m_Window.clear(sf::Color::Black);
 
-    for (i = 0; i < SPECTRUM_WIDTH; i++)
+    if (!m_Player.isStopped())
     {
-      m_Window.draw(m_Spectrum.getLine(i));
+      for (i = 0; i < SPECTRUM_WIDTH; i++)
+      {
+        m_Window.draw(m_Spectrum.getLine(i));
+      }
     }
+
     m_Window.draw(m_SongTitle);
     m_Window.display();
   }
