@@ -21,8 +21,10 @@ Spectrum::Spectrum() : m_Vertices(SPECTRUM_WIDTH, sf::VertexArray(sf::Lines, 2))
 
   for (i = 0; i < SPECTRUM_WIDTH; i++)
   {
+    m_Vertices[i][0].position = sf::Vector2f(SPECTRUM_X + i, SPECTRUM_Y + SPECTRUM_HEIGHT);
     m_Vertices[i][1].position = sf::Vector2f(SPECTRUM_X + i, SPECTRUM_Y + SPECTRUM_HEIGHT);
-    m_Vertices[i][1].color = sf::Color::Green;
+
+    m_Vertices[i][1].color = sf::Color(255, 255, 0);
   }
 }
 
@@ -71,7 +73,7 @@ void Spectrum::update()
     m_Vertices[i][0].position = sf::Vector2f(SPECTRUM_X + i, SPECTRUM_Y + yPos);
 
     /* Calcul des couleurs de l'extrémité supérieure de la colonne */
-    int r = fabs((yPos * 255) / SPECTRUM_HEIGHT - 255);
+    int r = fabs((yPos * 0) / SPECTRUM_HEIGHT - 255);
     int g = fabs((yPos * 255) / SPECTRUM_HEIGHT - 0);
     int b = fabs((yPos * 0) / SPECTRUM_HEIGHT - 0);
     m_Vertices[i][0].color = sf::Color(r, g, b);
