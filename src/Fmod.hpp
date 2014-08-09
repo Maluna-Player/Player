@@ -77,6 +77,13 @@ class Fmod
     virtual void stopSound(SoundID_t id) const;
 
     /**
+     * Met ou retire la pause du canal id.
+     * @param id Identifiant du canal à modifier.
+     * @param paused Etat pause à positionner.
+    */
+    virtual void pauseSound(SoundID_t id, bool paused) const;
+
+    /**
      * @return durée de la musique
     */
     virtual unsigned int getSoundLength() const;

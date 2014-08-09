@@ -29,6 +29,7 @@ class Player
     bool m_Playlist;
     bool m_Loop;
 
+    bool m_Pause;
     bool m_Stop;
 
   public:
@@ -49,9 +50,24 @@ class Player
     virtual void stop();
 
     /**
+     * Met en pause le player.
+    */
+    virtual void pause();
+
+    /**
      * @return true si le player est stoppé.
     */
     virtual bool isStopped() const;
+
+    /**
+     * @return true si le player est en pause.
+    */
+    virtual bool isPaused() const;
+
+    /**
+     * @return true si ni pause, ni stop.
+    */
+    virtual bool isPlayed() const;
 
     /**
      * @return true si la boucle est activée.
@@ -93,7 +109,7 @@ class Player
      * Lance la musique d'indice song.
      * @param song indice de la musique
     */
-    virtual void playSong(int song);
+    virtual void changeSong(int song);
 };
 
 #endif  // __PLAYER_HPP__

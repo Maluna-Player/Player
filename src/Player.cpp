@@ -18,7 +18,7 @@
 
 Player::Player()
   : m_CurrentSong(0), m_Playlist(true), m_Loop(false),
-    m_Stop(false)
+    m_Pause(false), m_Stop(false)
 {
 
 }
@@ -47,8 +47,16 @@ const Song& Player::getCurrentSong() const
 
 void Player::play()
 {
-  m_Stop = false;
-  getCurrentSong().play();
+  if (m_Stop)
+  {
+    m_Stop = false;
+    getCurrentSong().play();
+  }
+  else if (m_Pause)
+  {
+    m_Pause = false;
+    Fmod::getInstance()->pauseSound(0, false);
+  }
 }
 
 // ==============================
@@ -56,8 +64,18 @@ void Player::play()
 
 void Player::stop()
 {
+  m_Pause = false;
   m_Stop = true;
   Fmod::getInstance()->stopSound(0);
+}
+
+// ==============================
+// ==============================
+
+void Player::pause()
+{
+  m_Pause = true;
+  Fmod::getInstance()->pauseSound(0, true);
 }
 
 // ==============================
@@ -66,6 +84,22 @@ void Player::stop()
 bool Player::isStopped() const
 {
   return m_Stop;
+}
+
+// ==============================
+// ==============================
+
+bool Player::isPaused() const
+{
+  return m_Pause;
+}
+
+// ==============================
+// ==============================
+
+bool Player::isPlayed() const
+{
+  return (!m_Pause && !m_Stop);
 }
 
 // ==============================
@@ -174,11 +208,14 @@ bool Player::loadSongs(const std::string& dir)
 // ==============================
 // ==============================
 
-void Player::playSong(int song)
+void Player::changeSong(int song)
 {
+  if (isPaused())
+    stop();
+
   m_CurrentSong = song;
 
-  if (!m_Stop)
+  if (!isStopped())
     getCurrentSong().play();
 }
 

@@ -65,7 +65,7 @@ void Interface::drawWindowContent()
   if (!m_Player.isStopped())
     m_Window.draw(m_Spectrum);
 
-  if (m_Player.isStopped())
+  if (!m_Player.isPlayed())
     m_Window.draw(m_Buttons[PLAY_BUTTON]);
   else
     m_Window.draw(m_Buttons[PAUSE_BUTTON]);
@@ -84,7 +84,7 @@ void Interface::changeSong(int song)
 {
   if (song != UNDEFINED_SONG)
   {
-    m_Player.playSong(song);
+    m_Player.changeSong(song);
     m_SongTitle.setString(Path::baseName(m_Player.getCurrentSong().getFile()));
   }
   else
@@ -141,8 +141,10 @@ void Interface::run()
 
             if (m_Buttons[PLAY_BUTTON].getGlobalBounds().contains(point))
             {
-              if (m_Player.isStopped())
+              if (!m_Player.isPlayed())
                 m_Player.play();
+              else
+                m_Player.pause();
             }
             else if (m_Buttons[STOP_BUTTON].getGlobalBounds().contains(point))
             {
@@ -166,7 +168,7 @@ void Interface::run()
 
     clock.restart();
 
-    if (!m_Player.isStopped())
+    if (m_Player.isPlayed())
     {
       m_Spectrum.update();
 

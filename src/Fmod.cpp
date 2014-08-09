@@ -117,6 +117,17 @@ void Fmod::stopSound(SoundID_t id) const
 // ==============================
 // ==============================
 
+void Fmod::pauseSound(SoundID_t id, bool paused) const
+{
+  FMOD_RESULT res;
+
+  if ((res = FMOD_Channel_SetPaused(mp_Channels.at(id), paused)) != FMOD_OK)
+    throw FmodException("Fmod::pauseSound", "FMOD_Channel_SetPaused", FMOD_ErrorString(res));
+}
+
+// ==============================
+// ==============================
+
 unsigned int Fmod::getSoundLength() const
 {
   FMOD_RESULT res;
