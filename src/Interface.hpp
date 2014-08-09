@@ -19,6 +19,8 @@
 /** SFML Graphics includes **/
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/CircleShape.hpp>
 
 #include "Player.hpp"
 #include "Spectrum.hpp"
@@ -36,12 +38,26 @@ class Interface
     Player m_Player;
     Spectrum m_Spectrum;
 
+    sf::Texture m_Texture;
+    std::vector<sf::CircleShape> m_Buttons;
+
+    /**
+     * Définit les propriétés des sprites/shapes
+     * (texture, positions).
+    */
+    virtual void loadImages();
+
+    /**
+     * Dessine l'ensemble des éléments de l'application
+     * (sprites, shapes, textes et vertices).
+    */
+    virtual void drawWindowContent();
 
     /**
      * Lance le son song du player
      * et actualise l'interface graphique.
     */
-    void changeSong(int song);
+    virtual void changeSong(int song);
 
   public:
 

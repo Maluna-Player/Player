@@ -14,12 +14,14 @@
 
 #define REFRESH_TIME_MS     50
 
+
 /*******************************
 /** Chemins des ressources
 /*******************************/
 
 #define SONGS_SUBDIR        "resources/Musiques"
 #define FONT_FILE           "resources/lsans.ttf"
+#define IMAGES_SUBDIR       "resources/Images"
 
 
 /*******************************
@@ -52,5 +54,26 @@
 
 #define SPECTRUM_X          200
 #define SPECTRUM_Y          0
+
+
+/*******************************
+/** Paramètres des boutons
+/*******************************/
+
+// Liste des boutons
+enum { PLAY_BUTTON, PAUSE_BUTTON, STOP_BUTTON, PREV_BUTTON, NEXT_BUTTON, NB_BUTTONS };
+
+// Taille d'un bouton
+#define BUTTON_SIZE         40
+
+// Coordonnées des boutons
+#define PLAY_X              380
+#define PLAY_Y              450
+#define STOP_X              380
+#define STOP_Y              550
+#define PREV_X              320
+#define PREV_Y              500
+#define NEXT_X              440
+#define NEXT_Y              500
 
 #endif  // __CONSTANTS_HPP__

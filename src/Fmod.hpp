@@ -66,9 +66,15 @@ class Fmod
     virtual SoundID_t openSound(const std::string& soundFile);
 
     /**
-     * Joue le son
+     * Joue le son chargé.
     */
     virtual void playSound();
+
+    /**
+     * Arrête le son joué sur le canal id.
+     * @param id Identifiant du canal à stopper
+    */
+    virtual void stopSound(SoundID_t id) const;
 
     /**
      * @return durée de la musique

@@ -9,6 +9,7 @@
 
 #include "Player.hpp"
 #include "ArrayAccessException.hpp"
+#include "Fmod.hpp"
 
 #include <dirent.h>
 #include <cstdio>
@@ -47,6 +48,7 @@ const Song& Player::getCurrentSong() const
 void Player::play()
 {
   m_Stop = false;
+  getCurrentSong().play();
 }
 
 // ==============================
@@ -55,6 +57,7 @@ void Player::play()
 void Player::stop()
 {
   m_Stop = true;
+  Fmod::getInstance()->stopSound(0);
 }
 
 // ==============================

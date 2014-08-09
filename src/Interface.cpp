@@ -14,11 +14,12 @@
 #include "FileLoadingException.hpp"
 
 /** SFML Time includes **/
+#include <SFML/System/Sleep.hpp>
 #include <SFML/System/Time.hpp>
 #include <SFML/System/Clock.hpp>
 
 
-Interface::Interface()
+Interface::Interface() : m_Buttons(NB_BUTTONS, sf::CircleShape(BUTTON_SIZE / 2))
 {
   m_Window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_TITLE);
   m_Window.setVerticalSyncEnabled(true);
@@ -35,6 +36,50 @@ Interface::~Interface()
 // ==============================
 // ==============================
 
+void Interface::loadImages()
+{
+  int i;
+
+  std::string texturePath = std::string(IMAGES_SUBDIR) + "/text1.png";
+  if (!m_Texture.loadFromFile(texturePath))
+    throw FileLoadingException("Interface::loadImages", texturePath);
+
+  for (i = 0; i < NB_BUTTONS; i++)
+  {
+    m_Buttons[i].setTextureRect(sf::IntRect(i * (BUTTON_SIZE + 1), 0, BUTTON_SIZE, BUTTON_SIZE));
+    m_Buttons[i].setTexture(&m_Texture);
+  }
+
+  m_Buttons[PLAY_BUTTON].setPosition(sf::Vector2f(PLAY_X, PLAY_Y));
+  m_Buttons[PAUSE_BUTTON].setPosition(sf::Vector2f(PLAY_X, PLAY_Y));
+  m_Buttons[STOP_BUTTON].setPosition(sf::Vector2f(STOP_X, STOP_Y));
+  m_Buttons[PREV_BUTTON].setPosition(sf::Vector2f(PREV_X, PREV_Y));
+  m_Buttons[NEXT_BUTTON].setPosition(sf::Vector2f(NEXT_X, NEXT_Y));
+}
+
+// ==============================
+// ==============================
+
+void Interface::drawWindowContent()
+{
+  if (!m_Player.isStopped())
+    m_Window.draw(m_Spectrum);
+
+  if (m_Player.isStopped())
+    m_Window.draw(m_Buttons[PLAY_BUTTON]);
+  else
+    m_Window.draw(m_Buttons[PAUSE_BUTTON]);
+
+  m_Window.draw(m_Buttons[STOP_BUTTON]);
+  m_Window.draw(m_Buttons[PREV_BUTTON]);
+  m_Window.draw(m_Buttons[NEXT_BUTTON]);
+
+  m_Window.draw(m_SongTitle);
+}
+
+// ==============================
+// ==============================
+
 void Interface::changeSong(int song)
 {
   if (song != UNDEFINED_SONG)
@@ -44,7 +89,8 @@ void Interface::changeSong(int song)
   }
   else
   {
-    m_Player.stop();
+    if (!m_Player.isStopped())
+      m_Player.stop();
   }
 }
 
@@ -61,6 +107,8 @@ void Interface::run()
 
   m_SongTitle.setFont(m_Font);
   m_SongTitle.setColor(sf::Color::White);
+
+  loadImages();
 
   if (!m_Player.loadSongs(SONGS_SUBDIR))
     throw FileLoadingException("Interface::run", SONGS_SUBDIR);
@@ -86,30 +134,50 @@ void Interface::run()
             m_Player.setLoop(!m_Player.isLoop());
           break;
 
+        case sf::Event::MouseButtonPressed:
+          if (m_Event.mouseButton.button == sf::Mouse::Left)
+          {
+            sf::Vector2f point(m_Event.mouseButton.x, m_Event.mouseButton.y);
+
+            if (m_Buttons[PLAY_BUTTON].getGlobalBounds().contains(point))
+            {
+              if (m_Player.isStopped())
+                m_Player.play();
+            }
+            else if (m_Buttons[STOP_BUTTON].getGlobalBounds().contains(point))
+            {
+              if (!m_Player.isStopped())
+                m_Player.stop();
+            }
+            else if (m_Buttons[PREV_BUTTON].getGlobalBounds().contains(point))
+              changeSong(m_Player.prev());
+            else if (m_Buttons[NEXT_BUTTON].getGlobalBounds().contains(point))
+              changeSong(m_Player.next());
+          }
+          break;
+
         default:
           break;
       }
     }
 
-    if (clock.getElapsedTime() >= refreshTime)
+    if (clock.getElapsedTime() < refreshTime)
+      sf::sleep(refreshTime - clock.getElapsedTime());
+
+    clock.restart();
+
+    if (!m_Player.isStopped())
     {
-      clock.restart();
+      m_Spectrum.update();
 
-      if (!m_Player.isStopped())
-      {
-        m_Spectrum.update();
-
-        if (m_Player.getCurrentSong().isFinished())
-          changeSong(m_Player.next());
-      }
+      if (m_Player.getCurrentSong().isFinished())
+        changeSong(m_Player.next());
     }
 
     m_Window.clear(sf::Color::Black);
 
-    if (!m_Player.isStopped())
-      m_Window.draw(m_Spectrum);
+    drawWindowContent();
 
-    m_Window.draw(m_SongTitle);
     m_Window.display();
   }
 }
