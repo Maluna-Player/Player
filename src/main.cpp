@@ -9,7 +9,7 @@
 */
 
 #include <cstdlib> /* EXIT_SUCCESS/EXIT_FAILURE */
-#include <iostream>
+#include <SFML/System/Err.hpp>
 
 #include "Interface.hpp"
 
@@ -25,7 +25,8 @@ int main(void)
   }
   catch (BaseException& e)
   {
-    std::cerr << e.what() << std::endl;
+    std::ostream& errorOutput = sf::err();
+    errorOutput << e.what() << std::endl;
     return EXIT_FAILURE;
   }
 
