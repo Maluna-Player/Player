@@ -101,9 +101,8 @@ class Player
      * Rempli le vecteur Musiques à partir des fichiers
      * contenus dans le répertoire donné en paramètre.
      * @param dir Répertoire à parcourir
-     * @return true si tout s'est bien passé
     */
-    virtual bool loadSongs(const std::string& dir);
+    virtual void loadSongs(const std::string& dir);
 
     /**
      * Lance la musique d'indice song.

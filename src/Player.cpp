@@ -9,10 +9,11 @@
 
 #include "Player.hpp"
 #include "ArrayAccessException.hpp"
+#include "LibException.hpp"
 #include "Fmod.hpp"
 
 #include <dirent.h>
-#include <cstdio>
+#include <cstring>
 #include <cerrno>
 
 
@@ -158,16 +159,13 @@ int Player::next() const
 // ==============================
 // ==============================
 
-bool Player::loadSongs(const std::string& dir)
+void Player::loadSongs(const std::string& dir)
 {
   DIR *rep = 0;
 
   /* Ouverture du répertoire */
   if ((rep = opendir(dir.c_str())) == 0)
-  {
-    std::perror("opendir");
-    return false;
-  }
+    throw LibException("Player::loadSongs", "opendir", std::strerror(errno));
 
   m_Songs.clear();
 
@@ -190,19 +188,11 @@ bool Player::loadSongs(const std::string& dir)
 
   /* Erreur lors du parcours */
   if (errno)
-  {
-    std::perror("readdir");
-    return false;
-  }
+    throw LibException("Player::loadSongs", "readdir", std::strerror(errno));
 
   /* Fermeture du répertoire */
   if (closedir(rep) == -1)
-  {
-    std::perror("closedir");
-    return false;
-  }
-
-  return true;
+    throw LibException("Player::loadSongs", "closedir", std::strerror(errno));
 }
 
 // ==============================

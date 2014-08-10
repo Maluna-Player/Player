@@ -109,9 +109,7 @@ void Interface::run()
   m_SongTitle.setColor(sf::Color::White);
 
   loadImages();
-
-  if (!m_Player.loadSongs(SONGS_SUBDIR))
-    throw FileLoadingException("Interface::run", SONGS_SUBDIR);
+  m_Player.loadSongs(SONGS_SUBDIR);
 
   changeSong(m_Player.first());
 
