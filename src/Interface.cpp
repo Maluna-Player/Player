@@ -22,7 +22,7 @@
 Interface::Interface()
   : m_Textures(NB_TEXTURES),
     m_Buttons(NB_BUTTONS, CircleButton(BUTTON_SIZE / 2)),
-    m_ProgressBarBackground(sf::Vector2f(WINDOW_WIDTH, PROGRESS_BACKGROUND_HEIGHT))
+    m_ProgressBackground(sf::Vector2f(WINDOW_WIDTH, PROGRESS_BACKGROUND_HEIGHT))
 {
   m_Window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_TITLE);
   m_Window.setVerticalSyncEnabled(true);
@@ -65,11 +65,12 @@ void Interface::loadImages()
       throw FileLoadingException("Interface::loadImages", texturePath.str());
   }
 
-  m_Textures[PROGRESSBAR_BACKGROUND_TEXTURE].setRepeated(true);
-  m_ProgressBarBackground.setTexture(&m_Textures[PROGRESSBAR_BACKGROUND_TEXTURE]);
-  m_ProgressBarBackground.setPosition(sf::Vector2f(PROGRESS_BACKGROUND_X, PROGRESS_BACKGROUND_Y));
+  m_Textures[PROGRESS_BACKGROUND_TEXTURE].setRepeated(true);
+  m_ProgressBackground.setTexture(&m_Textures[PROGRESS_BACKGROUND_TEXTURE]);
+  m_ProgressBackground.setPosition(sf::Vector2f(PROGRESS_BACKGROUND_X, PROGRESS_BACKGROUND_Y));
 
-  m_ProgressBar.setFillColor(sf::Color::Blue);
+  m_Textures[PROGRESSBAR_TEXTURE].setRepeated(true);
+  m_ProgressBar.setTexture(&m_Textures[PROGRESSBAR_TEXTURE]);
   m_ProgressBar.setPosition(sf::Vector2f(PROGRESS_BACKGROUND_X, PROGRESSBAR_Y));
 
   for (i = 0; i < NB_BUTTONS; i++)
@@ -99,7 +100,7 @@ void Interface::drawWindowContent()
   m_Window.draw(m_Buttons[PREV_BUTTON]);
   m_Window.draw(m_Buttons[NEXT_BUTTON]);
 
-  m_Window.draw(m_ProgressBarBackground);
+  m_Window.draw(m_ProgressBackground);
 
   if (!m_Player.isStopped())
   {

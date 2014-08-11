@@ -45,7 +45,7 @@ class Interface
 
     std::vector<sf::Texture> m_Textures;
     std::vector<CircleButton> m_Buttons;
-    sf::RectangleShape m_ProgressBarBackground;
+    sf::RectangleShape m_ProgressBackground;
     sf::RectangleShape m_ProgressBar;
 
 
