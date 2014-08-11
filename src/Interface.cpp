@@ -73,6 +73,8 @@ void Interface::loadImages()
   m_ProgressBar.setTexture(&m_Textures[PROGRESSBAR_TEXTURE]);
   m_ProgressBar.setPosition(sf::Vector2f(PROGRESS_BACKGROUND_X, PROGRESSBAR_Y));
 
+  m_ProgressMarker.setTexture(m_Textures[PROGRESS_MARKER]);
+
   for (i = 0; i < NB_BUTTONS; i++)
   {
     m_Buttons[i].setTextureRect(sf::IntRect(i * (BUTTON_SIZE + 1), 0, BUTTON_SIZE, BUTTON_SIZE));
@@ -106,6 +108,9 @@ void Interface::drawWindowContent()
   {
     m_Window.draw(m_Spectrum);
     m_Window.draw(m_ProgressBar);
+
+    m_ProgressMarker.setPosition(sf::Vector2f(m_ProgressBar.getSize().x - 2, PROGRESSBAR_Y - 3));
+    m_Window.draw(m_ProgressMarker);
   }
 
   m_Window.draw(m_SongTitle);
