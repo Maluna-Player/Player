@@ -19,7 +19,7 @@
 #include <SFML/System/Clock.hpp>
 
 
-Interface::Interface() : m_Buttons(NB_BUTTONS, sf::CircleShape(BUTTON_SIZE / 2))
+Interface::Interface() : m_Buttons(NB_BUTTONS, CircleButton(BUTTON_SIZE / 2))
 {
   m_Window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_TITLE);
   m_Window.setVerticalSyncEnabled(true);
@@ -135,23 +135,21 @@ void Interface::run()
         case sf::Event::MouseButtonPressed:
           if (m_Event.mouseButton.button == sf::Mouse::Left)
           {
-            sf::Vector2f point(m_Event.mouseButton.x, m_Event.mouseButton.y);
-
-            if (m_Buttons[PLAY_BUTTON].getGlobalBounds().contains(point))
+            if (m_Buttons[PLAY_BUTTON].collision(m_Event.mouseButton.x, m_Event.mouseButton.y))
             {
               if (!m_Player.isPlayed())
                 m_Player.play();
               else
                 m_Player.pause();
             }
-            else if (m_Buttons[STOP_BUTTON].getGlobalBounds().contains(point))
+            else if (m_Buttons[STOP_BUTTON].collision(m_Event.mouseButton.x, m_Event.mouseButton.y))
             {
               if (!m_Player.isStopped())
                 m_Player.stop();
             }
-            else if (m_Buttons[PREV_BUTTON].getGlobalBounds().contains(point))
+            else if (m_Buttons[PREV_BUTTON].collision(m_Event.mouseButton.x, m_Event.mouseButton.y))
               changeSong(m_Player.prev());
-            else if (m_Buttons[NEXT_BUTTON].getGlobalBounds().contains(point))
+            else if (m_Buttons[NEXT_BUTTON].collision(m_Event.mouseButton.x, m_Event.mouseButton.y))
               changeSong(m_Player.next());
           }
           break;

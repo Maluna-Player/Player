@@ -20,10 +20,10 @@
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Texture.hpp>
-#include <SFML/Graphics/CircleShape.hpp>
 
 #include "Player.hpp"
 #include "Spectrum.hpp"
+#include "CircleButton.hpp"
 
 class Interface
 {
@@ -39,7 +39,7 @@ class Interface
     Spectrum m_Spectrum;
 
     sf::Texture m_Texture;
-    std::vector<sf::CircleShape> m_Buttons;
+    std::vector<CircleButton> m_Buttons;
 
     /**
      * Définit les propriétés des sprites/shapes
