@@ -22,6 +22,7 @@
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 
 #include "Player.hpp"
 #include "Spectrum.hpp"
@@ -42,8 +43,10 @@ class Interface
     Player m_Player;
     Spectrum m_Spectrum;
 
-    sf::Texture m_Texture;
+    std::vector<sf::Texture> m_Textures;
     std::vector<CircleButton> m_Buttons;
+    sf::RectangleShape m_ProgressBarBackground;
+    sf::RectangleShape m_ProgressBar;
 
 
     /**
@@ -55,8 +58,8 @@ class Interface
     virtual void wait(int ms);
 
     /**
-     * Définit les propriétés des sprites/shapes
-     * (texture, positions).
+     * Charge les textures et créé
+     * l'ensemble des sprites/shapes.
     */
     virtual void loadImages();
 

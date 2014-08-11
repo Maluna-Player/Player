@@ -51,6 +51,11 @@ class Song
     virtual void stop() const;
 
     /**
+     * @return Position de la musique.
+    */
+    virtual unsigned int getPosition() const;
+
+    /**
      * @return true si la musique est terminée.
     */
     virtual bool isFinished() const;

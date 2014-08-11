@@ -7,6 +7,7 @@
  *************************************
 */
 
+#include <sstream>
 #include "Interface.hpp"
 #include "constants.hpp"
 #include "Fmod.hpp"
@@ -18,7 +19,10 @@
 #include <SFML/System/Time.hpp>
 
 
-Interface::Interface() : m_Buttons(NB_BUTTONS, CircleButton(BUTTON_SIZE / 2))
+Interface::Interface()
+  : m_Textures(NB_TEXTURES),
+    m_Buttons(NB_BUTTONS, CircleButton(BUTTON_SIZE / 2)),
+    m_ProgressBarBackground(sf::Vector2f(WINDOW_WIDTH, PROGRESS_BACKGROUND_HEIGHT))
 {
   m_Window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_TITLE);
   m_Window.setVerticalSyncEnabled(true);
@@ -52,14 +56,26 @@ void Interface::loadImages()
 {
   int i;
 
-  std::string texturePath = std::string(IMAGES_SUBDIR) + "/text1.png";
-  if (!m_Texture.loadFromFile(texturePath))
-    throw FileLoadingException("Interface::loadImages", texturePath);
+  for (i = 0; i < NB_TEXTURES; i++)
+  {
+    std::stringstream texturePath;
+    texturePath << IMAGES_SUBDIR << "/text" << i << ".png";
+
+    if (!m_Textures[i].loadFromFile(texturePath.str()))
+      throw FileLoadingException("Interface::loadImages", texturePath.str());
+  }
+
+  m_Textures[PROGRESSBAR_BACKGROUND_TEXTURE].setRepeated(true);
+  m_ProgressBarBackground.setTexture(&m_Textures[PROGRESSBAR_BACKGROUND_TEXTURE]);
+  m_ProgressBarBackground.setPosition(sf::Vector2f(PROGRESS_BACKGROUND_X, PROGRESS_BACKGROUND_Y));
+
+  m_ProgressBar.setFillColor(sf::Color::Blue);
+  m_ProgressBar.setPosition(sf::Vector2f(PROGRESS_BACKGROUND_X, PROGRESSBAR_Y));
 
   for (i = 0; i < NB_BUTTONS; i++)
   {
     m_Buttons[i].setTextureRect(sf::IntRect(i * (BUTTON_SIZE + 1), 0, BUTTON_SIZE, BUTTON_SIZE));
-    m_Buttons[i].setTexture(&m_Texture);
+    m_Buttons[i].setTexture(&m_Textures[BUTTONS_TEXTURE]);
   }
 
   m_Buttons[PLAY_BUTTON].setPosition(sf::Vector2f(PLAY_X, PLAY_Y));
@@ -74,9 +90,6 @@ void Interface::loadImages()
 
 void Interface::drawWindowContent()
 {
-  if (!m_Player.isStopped())
-    m_Window.draw(m_Spectrum);
-
   if (!m_Player.isPlayed())
     m_Window.draw(m_Buttons[PLAY_BUTTON]);
   else
@@ -85,6 +98,14 @@ void Interface::drawWindowContent()
   m_Window.draw(m_Buttons[STOP_BUTTON]);
   m_Window.draw(m_Buttons[PREV_BUTTON]);
   m_Window.draw(m_Buttons[NEXT_BUTTON]);
+
+  m_Window.draw(m_ProgressBarBackground);
+
+  if (!m_Player.isStopped())
+  {
+    m_Window.draw(m_Spectrum);
+    m_Window.draw(m_ProgressBar);
+  }
 
   m_Window.draw(m_SongTitle);
 }
@@ -173,6 +194,8 @@ void Interface::run()
     if (m_Player.isPlayed())
     {
       m_Spectrum.update(m_Player.getCurrentSong().getSoundID());
+      m_ProgressBar.setSize(sf::Vector2f(m_Player.getCurrentSong().getPosition() * WINDOW_WIDTH
+                                          / m_Player.getCurrentSong().getLength(), PROGRESSBAR_HEIGHT));
 
       if (m_Player.getCurrentSong().isFinished())
         changeSong(m_Player.next());

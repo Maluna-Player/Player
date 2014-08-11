@@ -86,6 +86,14 @@ void Song::stop() const
 // ==============================
 // ==============================
 
+unsigned int Song::getPosition() const
+{
+  return Fmod::getInstance()->getSoundPosition(m_SoundID);
+}
+
+// ==============================
+// ==============================
+
 bool Song::isFinished() const
 {
   return !(Fmod::getInstance()->isPlaying(m_SoundID));
