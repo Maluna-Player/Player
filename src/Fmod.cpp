@@ -10,15 +10,13 @@
 #include "Fmod.hpp"
 #include "LibException.hpp"
 
-#include <iostream>
-
 
 Fmod* Fmod::mp_Instance = 0;
 
 // ==============================
 // ==============================
 
-Fmod::Fmod(int maxChannels) : mp_System(0), mp_Channels(maxChannels), mp_Sound(0)
+Fmod::Fmod(int maxChannels) : mp_System(0), mp_Channels(maxChannels), mp_Sounds(maxChannels)
 {
   FMOD_RESULT res;
 
@@ -34,8 +32,13 @@ Fmod::Fmod(int maxChannels) : mp_System(0), mp_Channels(maxChannels), mp_Sound(0
 
 Fmod::~Fmod()
 {
-  if (mp_Sound)
-    releaseSound();
+  unsigned int i;
+
+  for (i = 0; i < mp_Sounds.size(); i++)
+  {
+    if (mp_Sounds.at(i))
+      releaseSound(i);
+  }
 
   FMOD_RESULT res;
 
@@ -66,40 +69,50 @@ void Fmod::deleteInstance()
 // ==============================
 // ==============================
 
-SoundID_t Fmod::openSound(const std::string& soundFile)
+SoundID_t Fmod::getSoundID() const
 {
-  if (mp_Sound)
-    releaseSound();
-
-  FMOD_RESULT res;
-
-  if ((res = FMOD_System_CreateStream(mp_System, soundFile.c_str(), FMOD_DEFAULT, 0, &mp_Sound)) != FMOD_OK)
-    throw LibException("Fmod::openSound", "FMOD_System_CreateStream", FMOD_ErrorString(res));
-
   return 0;
 }
 
 // ==============================
 // ==============================
 
-void Fmod::releaseSound()
+SoundID_t Fmod::openSound(const std::string& soundFile)
 {
+  SoundID_t id = getSoundID();
+
+  if (mp_Sounds.at(id))
+    releaseSound(id);
+
   FMOD_RESULT res;
 
-  if ((res = FMOD_Sound_Release(mp_Sound)) != FMOD_OK)
-    throw LibException("Fmod::releaseSound", "FMOD_Sound_Release", FMOD_ErrorString(res));
+  if ((res = FMOD_System_CreateStream(mp_System, soundFile.c_str(), FMOD_DEFAULT, 0, &mp_Sounds.at(id))) != FMOD_OK)
+    throw LibException("Fmod::openSound", "FMOD_System_CreateStream", FMOD_ErrorString(res));
 
-  mp_Sound = 0;
+  return id;
 }
 
 // ==============================
 // ==============================
 
-void Fmod::playSound()
+void Fmod::releaseSound(SoundID_t id)
 {
   FMOD_RESULT res;
 
-  if ((res = FMOD_System_PlaySound(mp_System, FMOD_CHANNEL_FREE, mp_Sound, false, &mp_Channels.at(0))) != FMOD_OK)
+  if ((res = FMOD_Sound_Release(mp_Sounds.at(id))) != FMOD_OK)
+    throw LibException("Fmod::releaseSound", "FMOD_Sound_Release", FMOD_ErrorString(res));
+
+  mp_Sounds.at(id) = 0;
+}
+
+// ==============================
+// ==============================
+
+void Fmod::playSound(SoundID_t id)
+{
+  FMOD_RESULT res;
+
+  if ((res = FMOD_System_PlaySound(mp_System, FMOD_CHANNEL_FREE, mp_Sounds.at(id), false, &mp_Channels.at(id))) != FMOD_OK)
     throw LibException("Fmod::playSound", "FMOD_System_PlaySound", FMOD_ErrorString(res));
 }
 
@@ -128,12 +141,12 @@ void Fmod::pauseSound(SoundID_t id, bool paused) const
 // ==============================
 // ==============================
 
-unsigned int Fmod::getSoundLength() const
+unsigned int Fmod::getSoundLength(SoundID_t id) const
 {
   FMOD_RESULT res;
   unsigned int length;
 
-  if ((res = FMOD_Sound_GetLength(mp_Sound, &length, FMOD_TIMEUNIT_MS)) != FMOD_OK)
+  if ((res = FMOD_Sound_GetLength(mp_Sounds.at(id), &length, FMOD_TIMEUNIT_MS)) != FMOD_OK)
     throw LibException("Fmod::getSoundLength", "FMOD_Sound_GetLength", FMOD_ErrorString(res));
 
   return length;
@@ -142,12 +155,12 @@ unsigned int Fmod::getSoundLength() const
 // ==============================
 // ==============================
 
-unsigned int Fmod::getSoundPosition() const
+unsigned int Fmod::getSoundPosition(SoundID_t id) const
 {
   FMOD_RESULT res;
   unsigned int pos;
 
-  if ((res = FMOD_Channel_GetPosition(mp_Channels.at(0), &pos, FMOD_TIMEUNIT_MS)) != FMOD_OK)
+  if ((res = FMOD_Channel_GetPosition(mp_Channels.at(id), &pos, FMOD_TIMEUNIT_MS)) != FMOD_OK)
     throw LibException("Fmod::getSoundPosition", "FMOD_Channel_GetPosition", FMOD_ErrorString(res));
 
   return pos;

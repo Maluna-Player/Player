@@ -168,7 +168,7 @@ void Interface::run()
 
     if (m_Player.isPlayed())
     {
-      m_Spectrum.update();
+      m_Spectrum.update(m_Player.getCurrentSong().getSoundID());
 
       if (m_Player.getCurrentSong().isFinished())
         changeSong(m_Player.next());

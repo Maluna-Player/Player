@@ -27,9 +27,9 @@ class Fmod
 
     FMOD_SYSTEM  *mp_System;
 
-    std::vector<FMOD_CHANNEL*>  mp_Channels;
+    std::vector<FMOD_CHANNEL*> mp_Channels;
 
-    FMOD_SOUND *mp_Sound;
+    std::vector<FMOD_SOUND*> mp_Sounds;
 
 
     /* Instance du singleton */
@@ -37,9 +37,16 @@ class Fmod
 
 
     /**
-     * Libère la mémoire du son chargé.
+     * Attribue un SoundID libre.
+     * @return id attribué
     */
-    virtual void releaseSound();
+    virtual SoundID_t getSoundID() const;
+
+    /**
+     * Libère la mémoire du son chargé.
+     * @param id Identifiant du son à libérer.
+    */
+    virtual void releaseSound(SoundID_t id);
 
   public:
 
@@ -67,8 +74,9 @@ class Fmod
 
     /**
      * Joue le son chargé.
+     * @param id Identifiant du son à jouer
     */
-    virtual void playSound();
+    virtual void playSound(SoundID_t id);
 
     /**
      * Arrête le son joué sur le canal id.
@@ -79,19 +87,21 @@ class Fmod
     /**
      * Met ou retire la pause du canal id.
      * @param id Identifiant du canal à modifier.
-     * @param paused Etat pause à positionner.
+     * @param paused Etat pause à mettre.
     */
     virtual void pauseSound(SoundID_t id, bool paused) const;
 
     /**
+     * @param id Identifiant du son à mesurer
      * @return durée de la musique
     */
-    virtual unsigned int getSoundLength() const;
+    virtual unsigned int getSoundLength(SoundID_t id) const;
 
     /**
+     * @param id Identifiant du canal à tester
      * @return position courante de la musique jouée.
     */
-    virtual unsigned int getSoundPosition() const;
+    virtual unsigned int getSoundPosition(SoundID_t id) const;
 
     /**
      * @param id Identifiant du canal à tester

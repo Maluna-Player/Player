@@ -9,7 +9,6 @@
 
 #include "Spectrum.hpp"
 #include "constants.hpp"
-#include "Fmod.hpp"
 
 #include <cmath>
 
@@ -54,13 +53,13 @@ void Spectrum::draw(sf::RenderTarget& target, sf::RenderStates states) const
 // ==============================
 // ==============================
 
-void Spectrum::update()
+void Spectrum::update(SoundID_t id)
 {
   int i;
   float spectrumValues[SPECTRUM_WIDTH] = {0.0};
 
   /* Récupération des valeurs spectrales de FMOD */
-  Fmod::getInstance()->getChannelSpectrum(0, spectrumValues);
+  Fmod::getInstance()->getChannelSpectrum(id, spectrumValues);
 
   for (i = 0; i < SPECTRUM_WIDTH; i++)
   {

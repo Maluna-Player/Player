@@ -10,7 +10,6 @@
 #include "Player.hpp"
 #include "ArrayAccessException.hpp"
 #include "LibException.hpp"
-#include "Fmod.hpp"
 
 #include <dirent.h>
 #include <cstring>
@@ -51,12 +50,12 @@ void Player::play()
   if (m_Stop)
   {
     m_Stop = false;
-    getCurrentSong().play();
+    m_Songs.at(m_CurrentSong).play();
   }
   else if (m_Pause)
   {
     m_Pause = false;
-    Fmod::getInstance()->pauseSound(0, false);
+    getCurrentSong().pause(false);
   }
 }
 
@@ -67,7 +66,7 @@ void Player::stop()
 {
   m_Pause = false;
   m_Stop = true;
-  Fmod::getInstance()->stopSound(0);
+  getCurrentSong().stop();
 }
 
 // ==============================
@@ -76,7 +75,7 @@ void Player::stop()
 void Player::pause()
 {
   m_Pause = true;
-  Fmod::getInstance()->pauseSound(0, true);
+  getCurrentSong().pause(true);
 }
 
 // ==============================
@@ -206,6 +205,6 @@ void Player::changeSong(int song)
   m_CurrentSong = song;
 
   if (!isStopped())
-    getCurrentSong().play();
+    m_Songs.at(m_CurrentSong).play();
 }
 

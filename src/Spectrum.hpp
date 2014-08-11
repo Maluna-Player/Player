@@ -13,6 +13,8 @@
 #ifndef __SPECTRUM_HPP__
 #define __SPECTRUM_HPP__
 
+#include "Fmod.hpp"
+
 #include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
@@ -36,8 +38,9 @@ class Spectrum : public sf::Drawable, public sf::Transformable
     /**
      * Récupère les fréquences du son joué
      * et met à jour les valeurs des vertices.
+     * @param id Identifiant du canal à tester
     */
-    virtual void update();
+    virtual void update(SoundID_t id);
 };
 
 #endif  // __SPECTRUM_HPP__
