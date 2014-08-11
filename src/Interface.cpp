@@ -16,7 +16,6 @@
 /** SFML Time includes **/
 #include <SFML/System/Sleep.hpp>
 #include <SFML/System/Time.hpp>
-#include <SFML/System/Clock.hpp>
 
 
 Interface::Interface() : m_Buttons(NB_BUTTONS, CircleButton(BUTTON_SIZE / 2))
@@ -31,6 +30,19 @@ Interface::Interface() : m_Buttons(NB_BUTTONS, CircleButton(BUTTON_SIZE / 2))
 Interface::~Interface()
 {
   Fmod::deleteInstance();
+}
+
+// ==============================
+// ==============================
+
+void Interface::wait(int ms)
+{
+  const sf::Time timeInterval = sf::milliseconds(ms);
+
+  if (m_Clock.getElapsedTime() < timeInterval)
+    sf::sleep(timeInterval - m_Clock.getElapsedTime());
+
+  m_Clock.restart();
 }
 
 // ==============================
@@ -99,9 +111,6 @@ void Interface::changeSong(int song)
 
 void Interface::run()
 {
-  sf::Clock clock;
-  const sf::Time refreshTime = sf::milliseconds(REFRESH_TIME_MS);
-
   if (!m_Font.loadFromFile(FONT_FILE))
     throw FileLoadingException("Interface::run", FONT_FILE);
 
@@ -159,10 +168,7 @@ void Interface::run()
       }
     }
 
-    if (clock.getElapsedTime() < refreshTime)
-      sf::sleep(refreshTime - clock.getElapsedTime());
-
-    clock.restart();
+    wait(REFRESH_TIME_MS);
 
     if (m_Player.isPlayed())
     {

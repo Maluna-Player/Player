@@ -16,6 +16,8 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
+#include <SFML/System/Clock.hpp>
+
 /** SFML Graphics includes **/
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Text.hpp>
@@ -29,6 +31,8 @@ class Interface
 {
   private:
 
+    sf::Clock m_Clock;
+
     sf::RenderWindow m_Window;
     sf::Event m_Event;
 
@@ -40,6 +44,15 @@ class Interface
 
     sf::Texture m_Texture;
     std::vector<CircleButton> m_Buttons;
+
+
+    /**
+     * Active la fonction sleep pour que le
+     * temps passé entre 2 tours de boucles
+     * corresponde à ms.
+     * @param ms Intervalle de temps
+    */
+    virtual void wait(int ms);
 
     /**
      * Définit les propriétés des sprites/shapes
