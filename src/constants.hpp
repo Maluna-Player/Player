@@ -86,7 +86,7 @@
 /*******************************/
 
 // Liste des textures générales
-enum { BUTTONS_TEXTURE, PROGRESS_BACKGROUND_TEXTURE, NB_TEXTURES };
+enum { BUTTONS_TEXTURE, NB_TEXTURES };
 
 // Liste des boutons
 enum { PLAY_BUTTON, PAUSE_BUTTON, STOP_BUTTON, PREV_BUTTON, NEXT_BUTTON, NB_BUTTONS };

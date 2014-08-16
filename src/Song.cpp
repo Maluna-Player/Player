@@ -94,6 +94,15 @@ unsigned int Song::getPosition() const
 // ==============================
 // ==============================
 
+void Song::setPosition(int x) const
+{
+  unsigned int pos = x * m_Length / WINDOW_WIDTH;
+  Fmod::getInstance()->setSoundPosition(m_SoundID, pos);
+}
+
+// ==============================
+// ==============================
+
 bool Song::isFinished() const
 {
   return !(Fmod::getInstance()->isPlaying(m_SoundID));

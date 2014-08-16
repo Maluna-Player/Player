@@ -104,6 +104,13 @@ class Fmod
     virtual unsigned int getSoundPosition(SoundID_t id) const;
 
     /**
+     * Change la position de la musique.
+     * @param id Identifiant du canal à modifier
+     * @param pos Position à appliquer
+    */
+    virtual void setSoundPosition(SoundID_t id, unsigned int pos);
+
+    /**
      * @param id Identifiant du canal à tester
      * @return true si le canal id est en train de jouer.
     */

@@ -169,6 +169,17 @@ unsigned int Fmod::getSoundPosition(SoundID_t id) const
 // ==============================
 // ==============================
 
+void Fmod::setSoundPosition(SoundID_t id, unsigned int pos)
+{
+  FMOD_RESULT res;
+
+  if ((res = FMOD_Channel_SetPosition(mp_Channels.at(id), pos, FMOD_TIMEUNIT_MS)) != FMOD_OK)
+    throw LibException("Fmod::setSoundPosition", "FMOD_Channel_SetPosition", FMOD_ErrorString(res));
+}
+
+// ==============================
+// ==============================
+
 bool Fmod::isPlaying(SoundID_t id) const
 {
   FMOD_RESULT res;

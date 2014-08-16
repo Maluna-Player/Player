@@ -22,8 +22,7 @@
 Interface::Interface()
   : m_Textures(NB_TEXTURES),
     m_Buttons(NB_BUTTONS, CircleButton(BUTTON_SIZE / 2)),
-    m_ProgressBackground(sf::Vector2f(WINDOW_WIDTH, PROGRESS_BACKGROUND_HEIGHT)),
-    mp_ProgressBar(0)
+    mp_ProgressBackground(0), mp_ProgressBar(0)
 {
   m_Window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_TITLE);
   m_Window.setVerticalSyncEnabled(true);
@@ -35,6 +34,7 @@ Interface::Interface()
 Interface::~Interface()
 {
   delete mp_ProgressBar;
+  delete mp_ProgressBackground;
 
   Fmod::deleteInstance();
 }
@@ -68,10 +68,7 @@ void Interface::loadImages()
       throw FileLoadingException("Interface::loadImages", texturePath.str());
   }
 
-  m_Textures[PROGRESS_BACKGROUND_TEXTURE].setRepeated(true);
-  m_ProgressBackground.setTexture(&m_Textures[PROGRESS_BACKGROUND_TEXTURE]);
-  m_ProgressBackground.setPosition(sf::Vector2f(PROGRESS_BACKGROUND_X, PROGRESS_BACKGROUND_Y));
-
+  mp_ProgressBackground = new ProgressBackground(sf::Vector2f(WINDOW_WIDTH, PROGRESS_BACKGROUND_HEIGHT));
   mp_ProgressBar = new ProgressBar;
 
   for (i = 0; i < NB_BUTTONS; i++)
@@ -101,7 +98,7 @@ void Interface::drawWindowContent()
   m_Window.draw(m_Buttons[PREV_BUTTON]);
   m_Window.draw(m_Buttons[NEXT_BUTTON]);
 
-  m_Window.draw(m_ProgressBackground);
+  m_Window.draw(*mp_ProgressBackground);
 
   if (!m_Player.isStopped())
   {
@@ -167,22 +164,32 @@ void Interface::run()
         case sf::Event::MouseButtonPressed:
           if (m_Event.mouseButton.button == sf::Mouse::Left)
           {
-            if (m_Buttons[PLAY_BUTTON].collision(m_Event.mouseButton.x, m_Event.mouseButton.y))
+            int x = m_Event.mouseButton.x, y = m_Event.mouseButton.y;
+
+            if (m_Buttons[PLAY_BUTTON].collision(x, y))
             {
               if (!m_Player.isPlayed())
                 m_Player.play();
               else
                 m_Player.pause();
             }
-            else if (m_Buttons[STOP_BUTTON].collision(m_Event.mouseButton.x, m_Event.mouseButton.y))
+            else if (m_Buttons[STOP_BUTTON].collision(x, y))
             {
               if (!m_Player.isStopped())
                 m_Player.stop();
             }
-            else if (m_Buttons[PREV_BUTTON].collision(m_Event.mouseButton.x, m_Event.mouseButton.y))
+            else if (m_Buttons[PREV_BUTTON].collision(x, y))
               changeSong(m_Player.prev());
-            else if (m_Buttons[NEXT_BUTTON].collision(m_Event.mouseButton.x, m_Event.mouseButton.y))
+            else if (m_Buttons[NEXT_BUTTON].collision(x, y))
               changeSong(m_Player.next());
+            else if (mp_ProgressBackground->collision(x, y))
+            {
+              if (!m_Player.isStopped())
+              {
+                m_Player.getCurrentSong().setPosition(x);
+                mp_ProgressBar->resize(x);
+              }
+            }
           }
           break;
 
@@ -196,7 +203,7 @@ void Interface::run()
     if (m_Player.isPlayed())
     {
       m_Spectrum.update(m_Player.getCurrentSong().getSoundID());
-      mp_ProgressBar->update(m_Player.getCurrentSong().getPosition(), m_Player.getCurrentSong().getLength());
+      mp_ProgressBar->resize(m_Player.getCurrentSong().getPosition() * WINDOW_WIDTH / m_Player.getCurrentSong().getLength());
 
       if (m_Player.getCurrentSong().isFinished())
         changeSong(m_Player.next());

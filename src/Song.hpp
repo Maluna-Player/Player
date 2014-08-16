@@ -56,6 +56,13 @@ class Song
     virtual unsigned int getPosition() const;
 
     /**
+     * Modifie la position de la musique.
+     * @param x Abscisse du point de la barre
+     *          de progression
+    */
+    virtual void setPosition(int x) const;
+
+    /**
      * @return true si la musique est terminée.
     */
     virtual bool isFinished() const;

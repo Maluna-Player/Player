@@ -14,11 +14,14 @@
 
 ProgressBar::ProgressBar()
 {
-  if (!m_BarTexture.loadFromFile(std::string(IMAGES_SUBDIR) + "/progressBar.png"))
-    throw FileLoadingException("ProgressBar::ProgressBar", std::string(IMAGES_SUBDIR) + "/progressBar.png");
+  std::string barTexturePath = std::string(IMAGES_SUBDIR) + "/progressBar.png";
+  std::string markerTexturePath = std::string(IMAGES_SUBDIR) + "/marker.png";
 
-  if (!m_MarkerTexture.loadFromFile(std::string(IMAGES_SUBDIR) + "/marker.png"))
-    throw FileLoadingException("ProgressBar::ProgressBar", std::string(IMAGES_SUBDIR) + "/marker.png");
+  if (!m_BarTexture.loadFromFile(barTexturePath))
+    throw FileLoadingException("ProgressBar::ProgressBar", barTexturePath);
+
+  if (!m_MarkerTexture.loadFromFile(markerTexturePath))
+    throw FileLoadingException("ProgressBar::ProgressBar", markerTexturePath);
 
   m_BarTexture.setRepeated(true);
 
@@ -55,10 +58,11 @@ void ProgressBar::draw(sf::RenderTarget& target, sf::RenderStates states) const
 // ==============================
 // ==============================
 
-void ProgressBar::update(unsigned int pos, unsigned int totalLength)
+void ProgressBar::resize(unsigned int width)
 {
-  int barWidth = pos * WINDOW_WIDTH / totalLength;
+  if (width > (PROGRESS_BACKGROUND_X + WINDOW_WIDTH))
+    width = PROGRESS_BACKGROUND_X + WINDOW_WIDTH;
 
-  m_Bar.setSize(sf::Vector2f(barWidth, PROGRESSBAR_HEIGHT));
-  m_Marker.setPosition(sf::Vector2f(barWidth - 2, PROGRESSBAR_Y - 3));
+  m_Bar.setSize(sf::Vector2f(width, PROGRESSBAR_HEIGHT));
+  m_Marker.setPosition(sf::Vector2f(width - 2, PROGRESSBAR_Y - 3));
 }

@@ -40,10 +40,9 @@ class ProgressBar : public sf::Drawable, public sf::Transformable
     /**
      * Redimensionne la barre de progression
      * et déplace le marqueur.
-     * @param pos Position actuelle de la musique
-     * @param totalLength Durée totale de la musique
+     * @param width Nouvelle largeur.
     */
-    virtual void update(unsigned int pos, unsigned int totalLength);
+    virtual void resize(unsigned int width);
 
 };
 
