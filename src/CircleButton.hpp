@@ -12,9 +12,10 @@
 #define __CIRCLEBUTTON_HPP__
 
 #include <SFML/Graphics/CircleShape.hpp>
+#include "Clickable.hpp"
 
 
-class CircleButton : public sf::CircleShape
+class CircleButton : public sf::CircleShape, public Clickable
 {
   public:
 
