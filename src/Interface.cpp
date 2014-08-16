@@ -22,7 +22,8 @@
 Interface::Interface()
   : m_Textures(NB_TEXTURES),
     m_Buttons(NB_BUTTONS, CircleButton(BUTTON_SIZE / 2)),
-    m_ProgressBackground(sf::Vector2f(WINDOW_WIDTH, PROGRESS_BACKGROUND_HEIGHT))
+    m_ProgressBackground(sf::Vector2f(WINDOW_WIDTH, PROGRESS_BACKGROUND_HEIGHT)),
+    mp_ProgressBar(0)
 {
   m_Window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_TITLE);
   m_Window.setVerticalSyncEnabled(true);
@@ -33,6 +34,8 @@ Interface::Interface()
 
 Interface::~Interface()
 {
+  delete mp_ProgressBar;
+
   Fmod::deleteInstance();
 }
 
@@ -69,11 +72,7 @@ void Interface::loadImages()
   m_ProgressBackground.setTexture(&m_Textures[PROGRESS_BACKGROUND_TEXTURE]);
   m_ProgressBackground.setPosition(sf::Vector2f(PROGRESS_BACKGROUND_X, PROGRESS_BACKGROUND_Y));
 
-  m_Textures[PROGRESSBAR_TEXTURE].setRepeated(true);
-  m_ProgressBar.setTexture(&m_Textures[PROGRESSBAR_TEXTURE]);
-  m_ProgressBar.setPosition(sf::Vector2f(PROGRESS_BACKGROUND_X, PROGRESSBAR_Y));
-
-  m_ProgressMarker.setTexture(m_Textures[PROGRESS_MARKER]);
+  mp_ProgressBar = new ProgressBar;
 
   for (i = 0; i < NB_BUTTONS; i++)
   {
@@ -107,10 +106,7 @@ void Interface::drawWindowContent()
   if (!m_Player.isStopped())
   {
     m_Window.draw(m_Spectrum);
-    m_Window.draw(m_ProgressBar);
-
-    m_ProgressMarker.setPosition(sf::Vector2f(m_ProgressBar.getSize().x - 2, PROGRESSBAR_Y - 3));
-    m_Window.draw(m_ProgressMarker);
+    m_Window.draw(*mp_ProgressBar);
   }
 
   m_Window.draw(m_SongTitle);
@@ -200,8 +196,7 @@ void Interface::run()
     if (m_Player.isPlayed())
     {
       m_Spectrum.update(m_Player.getCurrentSong().getSoundID());
-      m_ProgressBar.setSize(sf::Vector2f(m_Player.getCurrentSong().getPosition() * WINDOW_WIDTH
-                                          / m_Player.getCurrentSong().getLength(), PROGRESSBAR_HEIGHT));
+      mp_ProgressBar->update(m_Player.getCurrentSong().getPosition(), m_Player.getCurrentSong().getLength());
 
       if (m_Player.getCurrentSong().isFinished())
         changeSong(m_Player.next());
