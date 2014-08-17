@@ -129,6 +129,18 @@ void Interface::changeSong(int song)
 // ==============================
 // ==============================
 
+void Interface::setSongPosition(int x)
+{
+  if (!m_Player.isStopped())
+  {
+    m_Player.getCurrentSong().setPosition(x);
+    mp_ProgressBar->resize(x);
+  }
+}
+
+// ==============================
+// ==============================
+
 void Interface::run()
 {
   if (!m_Font.loadFromFile(FONT_FILE))
@@ -166,6 +178,9 @@ void Interface::run()
           {
             int x = m_Event.mouseButton.x, y = m_Event.mouseButton.y;
 
+            if (mp_ProgressBar->collision(x, y))
+              mp_ProgressBar->m_Press = true;
+
             if (m_Buttons[PLAY_BUTTON].collision(x, y))
             {
               if (!m_Player.isPlayed())
@@ -183,14 +198,17 @@ void Interface::run()
             else if (m_Buttons[NEXT_BUTTON].collision(x, y))
               changeSong(m_Player.next());
             else if (mp_ProgressBackground->collision(x, y))
-            {
-              if (!m_Player.isStopped())
-              {
-                m_Player.getCurrentSong().setPosition(x);
-                mp_ProgressBar->resize(x);
-              }
-            }
+              setSongPosition(x);
           }
+          break;
+
+        case sf::Event::MouseButtonReleased:
+          mp_ProgressBar->m_Press = false;
+          break;
+
+        case sf::Event::MouseMoved:
+          if (mp_ProgressBar->m_Press)
+            setSongPosition(m_Event.mouseMove.x);
           break;
 
         default:

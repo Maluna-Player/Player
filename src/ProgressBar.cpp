@@ -14,6 +14,8 @@
 
 ProgressBar::ProgressBar()
 {
+  m_Press = false;
+
   std::string barTexturePath = std::string(IMAGES_SUBDIR) + "/progressBar.png";
   std::string markerTexturePath = std::string(IMAGES_SUBDIR) + "/marker.png";
 
@@ -53,6 +55,23 @@ void ProgressBar::draw(sf::RenderTarget& target, sf::RenderStates states) const
   // on dessine la barre et le marqueur
   target.draw(m_Bar, states);
   target.draw(m_Marker, states);
+}
+
+// ==============================
+// ==============================
+
+bool ProgressBar::collision(int x, int y) const
+{
+  sf::Vector2f point(x, y);
+  return m_Marker.getGlobalBounds().contains(point);
+}
+
+// ==============================
+// ==============================
+
+void ProgressBar::move(int x, int y)
+{
+  resize(x);
 }
 
 // ==============================

@@ -19,8 +19,9 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#include "Movable.hpp"
 
-class ProgressBar : public sf::Drawable, public sf::Transformable
+class ProgressBar : public sf::Drawable, public sf::Transformable, public Movable
 {
   private:
 
@@ -36,6 +37,10 @@ class ProgressBar : public sf::Drawable, public sf::Transformable
 
     ProgressBar();
     virtual ~ProgressBar();
+
+    virtual bool collision(int x, int y) const;
+
+    virtual void move(int x, int y);
 
     /**
      * Redimensionne la barre de progression

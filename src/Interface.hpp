@@ -77,6 +77,13 @@ class Interface
     */
     virtual void changeSong(int song);
 
+    /**
+     * Modifie la position du son et
+     * met à jour la barre de progression.
+     * @param x Nouvelle position de la barre
+    */
+    virtual void setSongPosition(int x);
+
   public:
 
     Interface();

@@ -97,6 +97,10 @@ unsigned int Song::getPosition() const
 void Song::setPosition(int x) const
 {
   unsigned int pos = x * m_Length / WINDOW_WIDTH;
+
+  if (pos > m_Length)
+    pos = m_Length;
+
   Fmod::getInstance()->setSoundPosition(m_SoundID, pos);
 }
 
