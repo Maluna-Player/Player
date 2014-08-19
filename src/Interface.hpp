@@ -13,7 +13,6 @@
 #define __INTERFACE_HPP__
 
 /** SFML Window includes **/
-#include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
 #include <SFML/System/Clock.hpp>
@@ -28,6 +27,7 @@
 #include "CircleButton.hpp"
 #include "ProgressBar.hpp"
 #include "ProgressBackground.hpp"
+#include "Input.hpp"
 
 class Interface
 {
@@ -36,7 +36,7 @@ class Interface
     sf::Clock m_Clock;
 
     sf::RenderWindow m_Window;
-    sf::Event m_Event;
+    Input m_In;
 
     sf::Font m_Font;
     sf::Text m_SongTitle;

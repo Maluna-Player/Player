@@ -26,6 +26,7 @@ Interface::Interface()
 {
   m_Window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_TITLE);
   m_Window.setVerticalSyncEnabled(true);
+  m_Window.setKeyRepeatEnabled(false);
 }
 
 // ==============================
@@ -156,64 +157,49 @@ void Interface::run()
 
   while (m_Window.isOpen())
   {
-    while (m_Window.pollEvent(m_Event))
+    m_In.update(m_Window);
+
+    /* Raccourcis clavier */
+    if (m_In.keyPressed(sf::Keyboard::N))
+      changeSong(m_Player.next());
+    else if (m_In.keyPressed(sf::Keyboard::P))
+      changeSong(m_Player.prev());
+    else if (m_In.keyPressed(sf::Keyboard::L))
+      m_Player.setLoop(!m_Player.isLoop());
+
+    /* Evénements souris */
+    if (m_In.clic() && sf::Mouse::isButtonPressed(sf::Mouse::Left))
     {
-      switch (m_Event.type)
+      int x = m_In.buttonX(), y = m_In.buttonY();
+
+      if (m_Buttons[PLAY_BUTTON].collision(x, y))
       {
-        case sf::Event::Closed:
-          m_Window.close();
-          break;
-
-        case sf::Event::KeyPressed:
-          if (m_Event.key.code == sf::Keyboard::N)
-            changeSong(m_Player.next());
-          else if (m_Event.key.code == sf::Keyboard::P)
-            changeSong(m_Player.prev());
-          else if (m_Event.key.code == sf::Keyboard::L)
-            m_Player.setLoop(!m_Player.isLoop());
-          break;
-
-        case sf::Event::MouseButtonPressed:
-          if (m_Event.mouseButton.button == sf::Mouse::Left)
-          {
-            int x = m_Event.mouseButton.x, y = m_Event.mouseButton.y;
-
-            if (mp_ProgressBar->collision(x, y))
-              mp_ProgressBar->m_Press = true;
-
-            if (m_Buttons[PLAY_BUTTON].collision(x, y))
-            {
-              if (!m_Player.isPlayed())
-                m_Player.play();
-              else
-                m_Player.pause();
-            }
-            else if (m_Buttons[STOP_BUTTON].collision(x, y))
-            {
-              if (!m_Player.isStopped())
-                m_Player.stop();
-            }
-            else if (m_Buttons[PREV_BUTTON].collision(x, y))
-              changeSong(m_Player.prev());
-            else if (m_Buttons[NEXT_BUTTON].collision(x, y))
-              changeSong(m_Player.next());
-            else if (mp_ProgressBackground->collision(x, y))
-              setSongPosition(x);
-          }
-          break;
-
-        case sf::Event::MouseButtonReleased:
-          mp_ProgressBar->m_Press = false;
-          break;
-
-        case sf::Event::MouseMoved:
-          if (mp_ProgressBar->m_Press)
-            setSongPosition(m_Event.mouseMove.x);
-          break;
-
-        default:
-          break;
+        if (!m_Player.isPlayed())
+          m_Player.play();
+        else
+          m_Player.pause();
       }
+      else if (m_Buttons[STOP_BUTTON].collision(x, y))
+      {
+        if (!m_Player.isStopped())
+          m_Player.stop();
+      }
+      else if (m_Buttons[PREV_BUTTON].collision(x, y))
+        changeSong(m_Player.prev());
+      else if (m_Buttons[NEXT_BUTTON].collision(x, y))
+        changeSong(m_Player.next());
+      else if (mp_ProgressBar->collision(x, y))
+        mp_ProgressBar->m_Press = true;
+      else if (mp_ProgressBackground->collision(x, y))
+        setSongPosition(x);
+    }
+    else if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
+      mp_ProgressBar->m_Press = false;
+
+    if (m_In.motion())
+    {
+      if (mp_ProgressBar->m_Press)
+        setSongPosition(sf::Mouse::getPosition(m_Window).x);
     }
 
     wait(REFRESH_TIME_MS);

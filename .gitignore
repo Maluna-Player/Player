@@ -5,6 +5,8 @@
 *.cbp
 *.depend
 *.layout
+bin/*
+obj/*
 
 # Output files
 stdout.txt
