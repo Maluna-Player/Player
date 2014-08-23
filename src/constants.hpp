@@ -82,13 +82,22 @@
 
 
 /*******************************
-/** Liste des textures
+/** Liste des éléments
 /*******************************/
 
 // Liste des textures générales
 enum { BUTTONS_TEXTURE, NB_TEXTURES };
 
 // Liste des boutons
-enum { PLAY_BUTTON, PAUSE_BUTTON, STOP_BUTTON, PREV_BUTTON, NEXT_BUTTON, NB_BUTTONS };
+enum { PLAY_BUTTON, STOP_BUTTON, PREV_BUTTON, NEXT_BUTTON, NB_BUTTONS };
+
+// Liste des objets cliquables
+enum Clickable_t { PLAY, STOP, PREV, NEXT, PROGRESS_BACKGROUND, NB_CLICKABLES };
+
+// Liste des objets déplaçables
+enum Movable_t { PROGRESSBAR, NB_MOVABLES };
+
+// Etats du player
+enum State_t { PLAY_STATE, PAUSE_STATE, STOP_STATE };
 
 #endif  // __CONSTANTS_HPP__

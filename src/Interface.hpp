@@ -4,44 +4,33 @@
  * @author  Manuel
  *
  * Déclarations de la classe Interface
- * contenant le lancement et la gestion
- * de la fenêtre de l'application.
+ * contenant la gestion de l'interface
+ * de l'application.
  *************************************
 */
 
 #ifndef __INTERFACE_HPP__
 #define __INTERFACE_HPP__
 
-/** SFML Window includes **/
-#include <SFML/Graphics/RenderWindow.hpp>
-
-#include <SFML/System/Clock.hpp>
-
 /** SFML Graphics includes **/
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
 
-#include "Player.hpp"
 #include "Spectrum.hpp"
 #include "CircleButton.hpp"
 #include "ProgressBar.hpp"
 #include "ProgressBackground.hpp"
-#include "Input.hpp"
+
 
 class Interface
 {
   private:
 
-    sf::Clock m_Clock;
-
-    sf::RenderWindow m_Window;
-    Input m_In;
-
     sf::Font m_Font;
     sf::Text m_SongTitle;
 
-    Player m_Player;
     Spectrum m_Spectrum;
 
     std::vector<sf::Texture> m_Textures;
@@ -50,14 +39,23 @@ class Interface
     ProgressBackground *mp_ProgressBackground;
     ProgressBar *mp_ProgressBar;
 
+    std::vector<Clickable*> mp_ClickableObjects;
+    std::vector<Movable*>   mp_MovableObjects;
+
+  public:
+
+    Interface();
+    virtual ~Interface();
+
+    virtual Clickable& button(Clickable_t index) const;
+
+    virtual Movable& button(Movable_t index) const;
 
     /**
-     * Active la fonction sleep pour que le
-     * temps passé entre 2 tours de boucles
-     * corresponde à ms.
-     * @param ms Intervalle de temps
+     * Charge les polices et créé
+     * l'ensemble des textes.
     */
-    virtual void wait(int ms);
+    virtual void loadTexts();
 
     /**
      * Charge les textures et créé
@@ -68,31 +66,36 @@ class Interface
     /**
      * Dessine l'ensemble des éléments de l'application
      * (sprites, shapes, textes et vertices).
+     * @param target Surface sur laquelle afficher le contenu
+     * @param stopped Etat stop du player
     */
-    virtual void drawWindowContent();
+    virtual void drawContent(sf::RenderTarget& target, bool stopped);
 
     /**
-     * Lance le son song du player
-     * et actualise l'interface graphique.
+     * Change le titre du son courant.
+     * @param title Titre à afficher
     */
-    virtual void changeSong(int song);
+    virtual void setTitle(const std::string& title);
 
     /**
-     * Modifie la position du son et
-     * met à jour la barre de progression.
-     * @param x Nouvelle position de la barre
+     * Modifie la texture du bouton
+     * play/pause.
+     * @param play Etat du player
     */
-    virtual void setSongPosition(int x);
-
-  public:
-
-    Interface();
-    virtual ~Interface();
+    virtual void setPlayButtonTexture(bool play);
 
     /**
-     * Lance la boucle principale du programme.
+     * Modifie la taille de la barre de
+     * progression.
+     * @param x Nouvelle taille
     */
-    virtual void run();
+    virtual void setProgressBar(int x);
+
+    /**
+     * Actualise le spectre du son.
+     * @param id Identifiant du canal
+    */
+    virtual void updateSpectrum(SoundID_t id);
 };
 
 #endif  // __INTERFACE_HPP__

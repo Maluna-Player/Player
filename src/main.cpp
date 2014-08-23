@@ -11,17 +11,17 @@
 #include <cstdlib> /* EXIT_SUCCESS/EXIT_FAILURE */
 #include <SFML/System/Err.hpp>
 
-#include "Interface.hpp"
+#include "Application.hpp"
 
 #include "BaseException.hpp"
 
 int main(void)
 {
-  Interface player;
+  Application app;
 
   try
   {
-    player.run();
+    app.run();
   }
   catch (BaseException& e)
   {

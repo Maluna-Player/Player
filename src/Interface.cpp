@@ -10,23 +10,20 @@
 #include <sstream>
 #include "Interface.hpp"
 #include "constants.hpp"
-#include "Fmod.hpp"
-#include "Path.hpp"
 #include "FileLoadingException.hpp"
-
-/** SFML Time includes **/
-#include <SFML/System/Sleep.hpp>
-#include <SFML/System/Time.hpp>
+#include "ArrayAccessException.hpp"
 
 
 Interface::Interface()
   : m_Textures(NB_TEXTURES),
     m_Buttons(NB_BUTTONS, CircleButton(BUTTON_SIZE / 2)),
-    mp_ProgressBackground(0), mp_ProgressBar(0)
+    mp_ProgressBackground(0), mp_ProgressBar(0),
+    mp_ClickableObjects(NB_CLICKABLES), mp_MovableObjects(NB_MOVABLES)
 {
-  m_Window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_TITLE);
-  m_Window.setVerticalSyncEnabled(true);
-  m_Window.setKeyRepeatEnabled(false);
+  int i;
+
+  for (i = 0; i < NB_BUTTONS; i++)
+    mp_ClickableObjects[i] = &m_Buttons[i];
 }
 
 // ==============================
@@ -36,21 +33,40 @@ Interface::~Interface()
 {
   delete mp_ProgressBar;
   delete mp_ProgressBackground;
-
-  Fmod::deleteInstance();
 }
 
 // ==============================
 // ==============================
 
-void Interface::wait(int ms)
+Clickable& Interface::button(Clickable_t index) const
 {
-  const sf::Time timeInterval = sf::milliseconds(ms);
+  if (index >= mp_ClickableObjects.size())
+    throw ArrayAccesException("Interface::button", mp_ClickableObjects.size(), index);
 
-  if (m_Clock.getElapsedTime() < timeInterval)
-    sf::sleep(timeInterval - m_Clock.getElapsedTime());
+  return *mp_ClickableObjects.at(index);
+}
 
-  m_Clock.restart();
+// ==============================
+// ==============================
+
+Movable& Interface::button(Movable_t index) const
+{
+  if (index >= mp_MovableObjects.size())
+    throw ArrayAccesException("Interfacce::button", mp_MovableObjects.size(), index);
+
+  return *mp_MovableObjects.at(index);
+}
+
+// ==============================
+// ==============================
+
+void Interface::loadTexts()
+{
+  if (!m_Font.loadFromFile(FONT_FILE))
+    throw FileLoadingException("Interface::run", FONT_FILE);
+
+  m_SongTitle.setFont(m_Font);
+  m_SongTitle.setColor(sf::Color::White);
 }
 
 // ==============================
@@ -60,6 +76,7 @@ void Interface::loadImages()
 {
   int i;
 
+  /* Chargement des textures */
   for (i = 0; i < NB_TEXTURES; i++)
   {
     std::stringstream texturePath;
@@ -69,154 +86,78 @@ void Interface::loadImages()
       throw FileLoadingException("Interface::loadImages", texturePath.str());
   }
 
-  mp_ProgressBackground = new ProgressBackground(sf::Vector2f(WINDOW_WIDTH, PROGRESS_BACKGROUND_HEIGHT));
-  mp_ProgressBar = new ProgressBar;
-
+  /* Création des boutons */
   for (i = 0; i < NB_BUTTONS; i++)
   {
-    m_Buttons[i].setTextureRect(sf::IntRect(i * (BUTTON_SIZE + 1), 0, BUTTON_SIZE, BUTTON_SIZE));
+    m_Buttons[i].setTextureRect(sf::IntRect((i+1) * (BUTTON_SIZE + 1), 0, BUTTON_SIZE, BUTTON_SIZE));
     m_Buttons[i].setTexture(&m_Textures[BUTTONS_TEXTURE]);
   }
 
   m_Buttons[PLAY_BUTTON].setPosition(sf::Vector2f(PLAY_X, PLAY_Y));
-  m_Buttons[PAUSE_BUTTON].setPosition(sf::Vector2f(PLAY_X, PLAY_Y));
   m_Buttons[STOP_BUTTON].setPosition(sf::Vector2f(STOP_X, STOP_Y));
   m_Buttons[PREV_BUTTON].setPosition(sf::Vector2f(PREV_X, PREV_Y));
   m_Buttons[NEXT_BUTTON].setPosition(sf::Vector2f(NEXT_X, NEXT_Y));
+
+
+  /* Création de la barre de progression */
+  mp_ProgressBackground = new ProgressBackground(sf::Vector2f(WINDOW_WIDTH, PROGRESS_BACKGROUND_HEIGHT));
+  mp_ClickableObjects[PROGRESS_BACKGROUND] = mp_ProgressBackground;
+
+  mp_ProgressBar = new ProgressBar;
+  mp_MovableObjects[PROGRESSBAR] = mp_ProgressBar;
 }
 
 // ==============================
 // ==============================
 
-void Interface::drawWindowContent()
+void Interface::drawContent(sf::RenderTarget& target, bool stopped)
 {
-  if (!m_Player.isPlayed())
-    m_Window.draw(m_Buttons[PLAY_BUTTON]);
-  else
-    m_Window.draw(m_Buttons[PAUSE_BUTTON]);
+  int i;
 
-  m_Window.draw(m_Buttons[STOP_BUTTON]);
-  m_Window.draw(m_Buttons[PREV_BUTTON]);
-  m_Window.draw(m_Buttons[NEXT_BUTTON]);
+  /* Affichage des boutons */
+  for (i = 0; i < NB_BUTTONS; i++)
+    target.draw(m_Buttons[i]);
 
-  m_Window.draw(*mp_ProgressBackground);
+  target.draw(*mp_ProgressBackground);
 
-  if (!m_Player.isStopped())
+  if (!stopped)
   {
-    m_Window.draw(m_Spectrum);
-    m_Window.draw(*mp_ProgressBar);
+    target.draw(m_Spectrum);
+    target.draw(*mp_ProgressBar);
   }
 
-  m_Window.draw(m_SongTitle);
+  target.draw(m_SongTitle);
 }
 
 // ==============================
 // ==============================
 
-void Interface::changeSong(int song)
+void Interface::setTitle(const std::string& title)
 {
-  if (song != UNDEFINED_SONG)
-  {
-    m_Player.changeSong(song);
-    m_SongTitle.setString(Path::baseName(m_Player.getCurrentSong().getFile()));
-  }
-  else
-  {
-    if (!m_Player.isStopped())
-      m_Player.stop();
-  }
+  m_SongTitle.setString(title);
 }
 
 // ==============================
 // ==============================
 
-void Interface::setSongPosition(int x)
+void Interface::setPlayButtonTexture(bool play)
 {
-  if (!m_Player.isStopped())
-  {
-    m_Player.getCurrentSong().setPosition(x);
-    mp_ProgressBar->resize(x);
-  }
+  int textX = (play ? (BUTTON_SIZE + 1) : 0);
+  m_Buttons[PLAY_BUTTON].setTextureRect(sf::IntRect(textX, 0, BUTTON_SIZE, BUTTON_SIZE));
 }
 
 // ==============================
 // ==============================
 
-void Interface::run()
+void Interface::setProgressBar(int x)
 {
-  if (!m_Font.loadFromFile(FONT_FILE))
-    throw FileLoadingException("Interface::run", FONT_FILE);
+  mp_ProgressBar->resize(x);
+}
 
-  m_SongTitle.setFont(m_Font);
-  m_SongTitle.setColor(sf::Color::White);
+// ==============================
+// ==============================
 
-  loadImages();
-  m_Player.loadSongs(SONGS_SUBDIR);
-
-  changeSong(m_Player.first());
-
-  while (m_Window.isOpen())
-  {
-    m_In.update(m_Window);
-
-    /* Raccourcis clavier */
-    if (m_In.keyPressed(sf::Keyboard::N))
-      changeSong(m_Player.next());
-    else if (m_In.keyPressed(sf::Keyboard::P))
-      changeSong(m_Player.prev());
-    else if (m_In.keyPressed(sf::Keyboard::L))
-      m_Player.setLoop(!m_Player.isLoop());
-
-    /* Evénements souris */
-    if (m_In.clic() && sf::Mouse::isButtonPressed(sf::Mouse::Left))
-    {
-      int x = m_In.buttonX(), y = m_In.buttonY();
-
-      if (m_Buttons[PLAY_BUTTON].collision(x, y))
-      {
-        if (!m_Player.isPlayed())
-          m_Player.play();
-        else
-          m_Player.pause();
-      }
-      else if (m_Buttons[STOP_BUTTON].collision(x, y))
-      {
-        if (!m_Player.isStopped())
-          m_Player.stop();
-      }
-      else if (m_Buttons[PREV_BUTTON].collision(x, y))
-        changeSong(m_Player.prev());
-      else if (m_Buttons[NEXT_BUTTON].collision(x, y))
-        changeSong(m_Player.next());
-      else if (mp_ProgressBar->collision(x, y))
-        mp_ProgressBar->m_Press = true;
-      else if (mp_ProgressBackground->collision(x, y))
-        setSongPosition(x);
-    }
-    else if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
-      mp_ProgressBar->m_Press = false;
-
-    if (m_In.motion())
-    {
-      if (mp_ProgressBar->m_Press)
-        setSongPosition(sf::Mouse::getPosition(m_Window).x);
-    }
-
-    wait(REFRESH_TIME_MS);
-
-    if (m_Player.isPlayed())
-    {
-      m_Spectrum.update(m_Player.getCurrentSong().getSoundID());
-      mp_ProgressBar->resize(m_Player.getCurrentSong().getPosition() * WINDOW_WIDTH / m_Player.getCurrentSong().getLength());
-
-      if (m_Player.getCurrentSong().isFinished())
-        changeSong(m_Player.next());
-    }
-
-    m_Window.clear(sf::Color::Black);
-
-    drawWindowContent();
-
-    m_Window.display();
-  }
+void Interface::updateSpectrum(SoundID_t id)
+{
+  m_Spectrum.update(id);
 }
