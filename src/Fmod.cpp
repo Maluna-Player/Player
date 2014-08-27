@@ -141,10 +141,10 @@ void Fmod::pauseSound(SoundID_t id, bool paused) const
 // ==============================
 // ==============================
 
-unsigned int Fmod::getSoundLength(SoundID_t id) const
+SoundPos_t Fmod::getSoundLength(SoundID_t id) const
 {
   FMOD_RESULT res;
-  unsigned int length;
+  SoundPos_t length;
 
   if ((res = FMOD_Sound_GetLength(mp_Sounds.at(id), &length, FMOD_TIMEUNIT_MS)) != FMOD_OK)
     throw LibException("Fmod::getSoundLength", "FMOD_Sound_GetLength", FMOD_ErrorString(res));
@@ -155,10 +155,10 @@ unsigned int Fmod::getSoundLength(SoundID_t id) const
 // ==============================
 // ==============================
 
-unsigned int Fmod::getSoundPosition(SoundID_t id) const
+SoundPos_t Fmod::getSoundPosition(SoundID_t id) const
 {
   FMOD_RESULT res;
-  unsigned int pos;
+  SoundPos_t pos;
 
   if ((res = FMOD_Channel_GetPosition(mp_Channels.at(id), &pos, FMOD_TIMEUNIT_MS)) != FMOD_OK)
     throw LibException("Fmod::getSoundPosition", "FMOD_Channel_GetPosition", FMOD_ErrorString(res));
@@ -169,7 +169,7 @@ unsigned int Fmod::getSoundPosition(SoundID_t id) const
 // ==============================
 // ==============================
 
-void Fmod::setSoundPosition(SoundID_t id, unsigned int pos)
+void Fmod::setSoundPosition(SoundID_t id, SoundPos_t pos)
 {
   FMOD_RESULT res;
 

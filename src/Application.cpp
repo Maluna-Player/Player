@@ -85,7 +85,7 @@ void Application::setSongPosition(int x)
 {
   if (!m_Player.isStopped())
   {
-    unsigned int pos = x * m_Player.getCurrentSong().getLength() / WINDOW_WIDTH;
+    SoundPos_t pos = x * m_Player.getCurrentSong().getLength() / WINDOW_WIDTH;
 
     m_Player.getCurrentSong().setPosition(pos);
     m_Interface.setSoundPosition(pos, m_Player.getCurrentSong().getLength());

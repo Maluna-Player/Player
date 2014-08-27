@@ -20,6 +20,7 @@
 #include "constants.hpp"
 
 typedef unsigned int  SoundID_t;
+typedef unsigned int  SoundPos_t;
 
 class Fmod
 {
@@ -95,20 +96,20 @@ class Fmod
      * @param id Identifiant du son à mesurer
      * @return durée de la musique
     */
-    virtual unsigned int getSoundLength(SoundID_t id) const;
+    virtual SoundPos_t getSoundLength(SoundID_t id) const;
 
     /**
      * @param id Identifiant du canal à tester
      * @return position courante de la musique jouée.
     */
-    virtual unsigned int getSoundPosition(SoundID_t id) const;
+    virtual SoundPos_t getSoundPosition(SoundID_t id) const;
 
     /**
      * Change la position de la musique.
      * @param id Identifiant du canal à modifier
      * @param pos Position à appliquer
     */
-    virtual void setSoundPosition(SoundID_t id, unsigned int pos);
+    virtual void setSoundPosition(SoundID_t id, SoundPos_t pos);
 
     /**
      * @param id Identifiant du canal à tester

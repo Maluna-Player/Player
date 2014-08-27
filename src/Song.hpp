@@ -20,7 +20,7 @@ class Song
 
     std::string m_File;
     int m_Num;
-    unsigned int m_Length;
+    SoundPos_t m_Length;
 
     SoundID_t m_SoundID;
 
@@ -32,7 +32,7 @@ class Song
 
     virtual SoundID_t getSoundID() const;
     virtual std::string getFile() const;
-    virtual unsigned int getLength() const;
+    virtual SoundPos_t getLength() const;
 
     /**
      * Joue le son avec FMOD.
@@ -53,13 +53,13 @@ class Song
     /**
      * @return Position de la musique.
     */
-    virtual unsigned int getPosition() const;
+    virtual SoundPos_t getPosition() const;
 
     /**
      * Modifie la position de la musique.
      * @param pos Nouvelle position en ms
     */
-    virtual void setPosition(unsigned int pos) const;
+    virtual void setPosition(SoundPos_t pos) const;
 
     /**
      * @return true si la musique est terminée.

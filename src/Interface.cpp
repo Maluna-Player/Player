@@ -166,7 +166,7 @@ void Interface::setPlayButtonTexture(bool play)
 // ==============================
 // ==============================
 
-void Interface::setSoundPosition(unsigned int pos, unsigned int length)
+void Interface::setSoundPosition(SoundPos_t pos, SoundPos_t length)
 {
   mp_ProgressBar->resize(pos * WINDOW_WIDTH / length);
   m_SongPos.setString(timeToString(pos / 1000));

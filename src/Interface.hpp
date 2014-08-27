@@ -100,7 +100,7 @@ class Interface
      * @param pos Position de la chanson
      * @param length Durée de la chanson
     */
-    virtual void setSoundPosition(unsigned int pos, unsigned int length);
+    virtual void setSoundPosition(SoundPos_t pos, SoundPos_t length);
 
     /**
      * Actualise le spectre du son.

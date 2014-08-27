@@ -53,7 +53,7 @@ std::string Song::getFile() const
 // ==============================
 // ==============================
 
-unsigned int Song::getLength() const
+SoundPos_t Song::getLength() const
 {
   return m_Length;
 }
@@ -86,7 +86,7 @@ void Song::stop() const
 // ==============================
 // ==============================
 
-unsigned int Song::getPosition() const
+SoundPos_t Song::getPosition() const
 {
   return Fmod::getInstance()->getSoundPosition(m_SoundID);
 }
@@ -94,7 +94,7 @@ unsigned int Song::getPosition() const
 // ==============================
 // ==============================
 
-void Song::setPosition(unsigned int pos) const
+void Song::setPosition(SoundPos_t pos) const
 {
   if (pos >= m_Length)
     pos = m_Length - 1;
