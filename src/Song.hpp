@@ -57,10 +57,9 @@ class Song
 
     /**
      * Modifie la position de la musique.
-     * @param x Abscisse du point de la barre
-     *          de progression
+     * @param pos Nouvelle position en ms
     */
-    virtual void setPosition(int x) const;
+    virtual void setPosition(unsigned int pos) const;
 
     /**
      * @return true si la musique est terminée.

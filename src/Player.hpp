@@ -55,6 +55,11 @@ class Player
     virtual void pause();
 
     /**
+     * @return true si ni pause, ni stop.
+    */
+    virtual bool isPlayed() const;
+
+    /**
      * @return true si le player est stoppé.
     */
     virtual bool isStopped() const;
@@ -63,11 +68,6 @@ class Player
      * @return true si le player est en pause.
     */
     virtual bool isPaused() const;
-
-    /**
-     * @return true si ni pause, ni stop.
-    */
-    virtual bool isPlayed() const;
 
     /**
      * @return true si la boucle est activée.

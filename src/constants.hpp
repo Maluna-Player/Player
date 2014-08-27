@@ -80,6 +80,8 @@
 #define PROGRESSBAR_HEIGHT              17
 #define PROGRESSBAR_Y                   (PROGRESS_BACKGROUND_Y + 6)
 
+#define TIME_X                          0
+#define TIME_Y                          530
 
 /*******************************
 /** Liste des éléments

@@ -38,6 +38,17 @@ Interface::~Interface()
 // ==============================
 // ==============================
 
+const std::string Interface::timeToString(int seconds) const
+{
+  std::stringstream time;
+  time << seconds / 60 << ":" << seconds % 60 / 10 << seconds % 10;
+
+  return time.str();
+}
+
+// ==============================
+// ==============================
+
 Clickable& Interface::button(Clickable_t index) const
 {
   if (index >= mp_ClickableObjects.size())
@@ -67,6 +78,11 @@ void Interface::loadTexts()
 
   m_SongTitle.setFont(m_Font);
   m_SongTitle.setColor(sf::Color::White);
+
+  m_SongPos.setFont(m_Font);
+  m_SongPos.setColor(sf::Color(21, 191, 221));
+  m_SongPos.setCharacterSize(20);
+  m_SongPos.setPosition(sf::Vector2f(TIME_X, TIME_Y));
 }
 
 // ==============================
@@ -124,6 +140,7 @@ void Interface::drawContent(sf::RenderTarget& target, bool stopped)
   {
     target.draw(m_Spectrum);
     target.draw(*mp_ProgressBar);
+    target.draw(m_SongPos);
   }
 
   target.draw(m_SongTitle);
@@ -149,9 +166,10 @@ void Interface::setPlayButtonTexture(bool play)
 // ==============================
 // ==============================
 
-void Interface::setProgressBar(int x)
+void Interface::setSoundPosition(unsigned int pos, unsigned int length)
 {
-  mp_ProgressBar->resize(x);
+  mp_ProgressBar->resize(pos * WINDOW_WIDTH / length);
+  m_SongPos.setString(timeToString(pos / 1000));
 }
 
 // ==============================

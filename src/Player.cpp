@@ -81,6 +81,14 @@ void Player::pause()
 // ==============================
 // ==============================
 
+bool Player::isPlayed() const
+{
+  return (!m_Pause && !m_Stop);
+}
+
+// ==============================
+// ==============================
+
 bool Player::isStopped() const
 {
   return m_Stop;
@@ -92,14 +100,6 @@ bool Player::isStopped() const
 bool Player::isPaused() const
 {
   return m_Pause;
-}
-
-// ==============================
-// ==============================
-
-bool Player::isPlayed() const
-{
-  return (!m_Pause && !m_Stop);
 }
 
 // ==============================

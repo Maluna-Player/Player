@@ -30,6 +30,7 @@ class Interface
 
     sf::Font m_Font;
     sf::Text m_SongTitle;
+    sf::Text m_SongPos;
 
     Spectrum m_Spectrum;
 
@@ -41,6 +42,15 @@ class Interface
 
     std::vector<Clickable*> mp_ClickableObjects;
     std::vector<Movable*>   mp_MovableObjects;
+
+
+    /**
+     * Convertit le temps passé en secondes
+     * en une chaîne de caractères min:sec.
+     * @param seconds Nombre de secondes
+     * @return Chaîne formatée
+    */
+    const std::string timeToString(int seconds) const;
 
   public:
 
@@ -87,9 +97,10 @@ class Interface
     /**
      * Modifie la taille de la barre de
      * progression.
-     * @param x Nouvelle taille
+     * @param pos Position de la chanson
+     * @param length Durée de la chanson
     */
-    virtual void setProgressBar(int x);
+    virtual void setSoundPosition(unsigned int pos, unsigned int length);
 
     /**
      * Actualise le spectre du son.

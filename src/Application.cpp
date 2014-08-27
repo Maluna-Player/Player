@@ -85,8 +85,10 @@ void Application::setSongPosition(int x)
 {
   if (!m_Player.isStopped())
   {
-    m_Player.getCurrentSong().setPosition(x);
-    m_Interface.setProgressBar(x);
+    unsigned int pos = x * m_Player.getCurrentSong().getLength() / WINDOW_WIDTH;
+
+    m_Player.getCurrentSong().setPosition(pos);
+    m_Interface.setSoundPosition(pos, m_Player.getCurrentSong().getLength());
   }
 }
 
@@ -150,7 +152,7 @@ void Application::run()
     if (m_Player.isPlayed())
     {
       m_Interface.updateSpectrum(m_Player.getCurrentSong().getSoundID());
-      m_Interface.setProgressBar(m_Player.getCurrentSong().getPosition() * WINDOW_WIDTH / m_Player.getCurrentSong().getLength());
+      m_Interface.setSoundPosition(m_Player.getCurrentSong().getPosition(), m_Player.getCurrentSong().getLength());
 
       if (m_Player.getCurrentSong().isFinished())
         changeSong(m_Player.next());
