@@ -109,3 +109,19 @@ bool Song::isFinished() const
 {
   return !(Fmod::getInstance()->isPlaying(m_SoundID));
 }
+
+// ==============================
+// ==============================
+
+float Song::getVolume() const
+{
+  return Fmod::getInstance()->getVolume(m_SoundID);
+}
+
+// ==============================
+// ==============================
+
+void Song::setVolume(float volume) const
+{
+  Fmod::getInstance()->setVolume(m_SoundID, volume);
+}

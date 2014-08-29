@@ -19,6 +19,9 @@
 
 #include "constants.hpp"
 
+#define VOLUME_MIN    0.0
+#define VOLUME_MAX    1.0
+
 typedef unsigned int  SoundID_t;
 typedef unsigned int  SoundPos_t;
 
@@ -125,6 +128,20 @@ class Fmod
      * @return Tableau dans lequel sont stockées les valeurs.
     */
     virtual float* getChannelSpectrum(SoundID_t id, float *values) const;
+
+    /**
+     * Récupère le volume du canal.
+     * @param id Identifiant du canal
+     * @return Volume du canal
+    */
+    virtual float getVolume(SoundID_t id) const;
+
+    /**
+     * Modifie le volume du canal.
+     * @param id Identifiant du canal à modifier
+     * @param volume Volume à appliquer
+    */
+    virtual void setVolume(SoundID_t id, float volume) const;
 
 };
 

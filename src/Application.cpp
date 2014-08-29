@@ -95,6 +95,29 @@ void Application::setSongPosition(int x)
 // ==============================
 // ==============================
 
+void Application::setVolume(int volumeType)
+{
+  float volume = m_Player.getCurrentSong().getVolume();
+
+  if (volumeType == VOLUME_M)
+  {
+    if (volume < VOLUME_MAX)
+    {
+      m_Player.getCurrentSong().setVolume(volume + VOLUME_INTERVAL);
+    }
+  }
+  else if (volumeType == VOLUME_L)
+  {
+    if (volume > VOLUME_MIN)
+    {
+      m_Player.getCurrentSong().setVolume(volume - VOLUME_INTERVAL);
+    }
+  }
+}
+
+// ==============================
+// ==============================
+
 void Application::run()
 {
   m_Interface.loadTexts();
@@ -133,6 +156,10 @@ void Application::run()
         changeSong(m_Player.prev());
       else if (m_Interface.button(NEXT).collision(x, y))
         changeSong(m_Player.next());
+      else if (m_Interface.button(VOLUME_M).collision(x, y))
+        setVolume(VOLUME_M);
+      else if (m_Interface.button(VOLUME_L).collision(x, y))
+        setVolume(VOLUME_L);
       else if (m_Interface.button(PROGRESSBAR).collision(x, y))
         m_Interface.button(PROGRESSBAR).m_Press = true;
       else if (m_Interface.button(PROGRESS_BACKGROUND).collision(x, y))

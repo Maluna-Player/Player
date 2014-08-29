@@ -43,6 +43,9 @@
 // Nombre max de canaux
 #define MAX_CHANNELS_NB     8
 
+// Intervalle de modification du volume
+#define VOLUME_INTERVAL     0.25
+
 
 /*******************************
 /** Paramètres du spectre
@@ -73,6 +76,11 @@
 #define NEXT_X              440
 #define NEXT_Y              580
 
+#define VOLUME_M_X          550
+#define VOLUME_M_Y          580
+#define VOLUME_L_X          600
+#define VOLUME_L_Y          580
+
 // Barre de progression
 #define PROGRESS_BACKGROUND_HEIGHT      30
 #define PROGRESS_BACKGROUND_X           0
@@ -91,10 +99,10 @@
 enum { BUTTONS_TEXTURE, NB_TEXTURES };
 
 // Liste des boutons
-enum { PLAY_BUTTON, STOP_BUTTON, PREV_BUTTON, NEXT_BUTTON, NB_BUTTONS };
+enum { PLAY_BUTTON, STOP_BUTTON, PREV_BUTTON, NEXT_BUTTON, VOLUME_MORE_BUTTON, VOLUME_LESS_BUTTON, NB_BUTTONS };
 
 // Liste des objets cliquables
-enum Clickable_t { PLAY, STOP, PREV, NEXT, PROGRESS_BACKGROUND, NB_CLICKABLES };
+enum Clickable_t { PLAY, STOP, PREV, NEXT, VOLUME_M, VOLUME_L, PROGRESS_BACKGROUND, NB_CLICKABLES };
 
 // Liste des objets déplaçables
 enum Movable_t { PROGRESSBAR, NB_MOVABLES };

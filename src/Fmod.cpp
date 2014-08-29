@@ -203,3 +203,28 @@ float* Fmod::getChannelSpectrum(SoundID_t id, float *values) const
 
   return values;
 }
+
+// ==============================
+// ==============================
+
+float Fmod::getVolume(SoundID_t id) const
+{
+  FMOD_RESULT res;
+  float volume;
+
+  if ((res = FMOD_Channel_GetVolume(mp_Channels.at(id), &volume)) != FMOD_OK)
+    throw LibException("Fmod::getVolume", "FMOD_Channel_GetVolume", FMOD_ErrorString(res));
+
+  return volume;
+}
+
+// ==============================
+// ==============================
+
+void Fmod::setVolume(SoundID_t id, float volume) const
+{
+  FMOD_RESULT res;
+
+  if ((res = FMOD_Channel_SetVolume(mp_Channels.at(id), volume)) != FMOD_OK)
+    throw LibException("Fmod::setVolume", "FMOD_Channel_SetVolume", FMOD_ErrorString(res));
+}

@@ -65,6 +65,17 @@ class Song
      * @return true si la musique est terminée.
     */
     virtual bool isFinished() const;
+
+    /**
+     * @return Volume de la musique
+    */
+    virtual float getVolume() const;
+
+    /**
+     * Modifie le volume de la musique.
+     * @param volume Volume à appliquer
+    */
+    virtual void setVolume(float volume) const;
 };
 
 #endif  // __SONG_HPP__

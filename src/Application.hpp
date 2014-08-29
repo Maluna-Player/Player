@@ -63,6 +63,12 @@ class Application
     */
     virtual void setSongPosition(int x);
 
+    /**
+     * Modifie le volume du son joué.
+     * @param volumeType Modification (plus ou moins)
+    */
+    virtual void setVolume(int volumeType);
+
   public:
 
     Application();
