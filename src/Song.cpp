@@ -11,7 +11,7 @@
 
 
 Song::Song(const std::string& file, int num)
-  : m_File(file), m_Num(num), m_SoundID(0)
+  : m_File(file), m_Num(num), m_SoundID(0), m_VolumeState(NB_VOLUME_STATES - 1)
 {
   SoundID_t id = Fmod::getInstance()->openSound(m_File);
   m_Length = Fmod::getInstance()->getSoundLength(id);
@@ -21,7 +21,8 @@ Song::Song(const std::string& file, int num)
 // ==============================
 
 Song::Song(const Song& song)
-  : m_File(song.m_File), m_Num(song.m_Num), m_Length(song.m_Length), m_SoundID(0)
+  : m_File(song.m_File), m_Num(song.m_Num), m_Length(song.m_Length),
+    m_SoundID(0), m_VolumeState(song.m_VolumeState)
 {
 
 }
@@ -113,15 +114,18 @@ bool Song::isFinished() const
 // ==============================
 // ==============================
 
-float Song::getVolume() const
+int Song::getVolumeState() const
 {
-  return Fmod::getInstance()->getVolume(m_SoundID);
+  return m_VolumeState;
 }
 
 // ==============================
 // ==============================
 
-void Song::setVolume(float volume) const
+void Song::setVolume(int volumeState)
 {
+  m_VolumeState = volumeState;
+
+  float volume = static_cast<float>(volumeState) / (NB_VOLUME_STATES - 1);
   Fmod::getInstance()->setVolume(m_SoundID, volume);
 }

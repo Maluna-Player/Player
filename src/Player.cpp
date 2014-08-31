@@ -34,7 +34,7 @@ Player::~Player()
 // ==============================
 // ==============================
 
-const Song& Player::getCurrentSong() const
+Song& Player::getCurrentSong()
 {
   if (m_CurrentSong >= m_Songs.size())
     throw ArrayAccesException("Player::getCurrentSong", m_Songs.size(), m_CurrentSong);
@@ -50,7 +50,7 @@ void Player::play()
   if (m_Stop)
   {
     m_Stop = false;
-    m_Songs.at(m_CurrentSong).play();
+    getCurrentSong().play();
   }
   else if (m_Pause)
   {
@@ -205,6 +205,6 @@ void Player::changeSong(int song)
   m_CurrentSong = song;
 
   if (!isStopped())
-    m_Songs.at(m_CurrentSong).play();
+    getCurrentSong().play();
 }
 

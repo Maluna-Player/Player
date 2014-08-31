@@ -97,20 +97,22 @@ void Application::setSongPosition(int x)
 
 void Application::setVolume(int volumeType)
 {
-  float volume = m_Player.getCurrentSong().getVolume();
+  int previousVolume = m_Player.getCurrentSong().getVolumeState();
 
   if (volumeType == VOLUME_M)
   {
-    if (volume < VOLUME_MAX)
+    if (previousVolume < (NB_VOLUME_STATES - 1))
     {
-      m_Player.getCurrentSong().setVolume(volume + VOLUME_INTERVAL);
+      m_Player.getCurrentSong().setVolume(previousVolume + 1);
+      m_Interface.setVolumeTexture(previousVolume + 1);
     }
   }
   else if (volumeType == VOLUME_L)
   {
-    if (volume > VOLUME_MIN)
+    if (previousVolume > 0)
     {
-      m_Player.getCurrentSong().setVolume(volume - VOLUME_INTERVAL);
+      m_Player.getCurrentSong().setVolume(previousVolume - 1);
+      m_Interface.setVolumeTexture(previousVolume - 1);
     }
   }
 }

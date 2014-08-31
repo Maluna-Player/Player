@@ -37,7 +37,7 @@ class Player
     Player();
     virtual ~Player();
 
-    virtual const Song& getCurrentSong() const;
+    virtual Song& getCurrentSong();
 
     /**
      * Active la lecture.

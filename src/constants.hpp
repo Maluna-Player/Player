@@ -43,8 +43,8 @@
 // Nombre max de canaux
 #define MAX_CHANNELS_NB     8
 
-// Intervalle de modification du volume
-#define VOLUME_INTERVAL     0.25
+// Nombre d'états du volume
+#define NB_VOLUME_STATES    4
 
 
 /*******************************
@@ -76,10 +76,10 @@
 #define NEXT_X              440
 #define NEXT_Y              580
 
-#define VOLUME_M_X          550
-#define VOLUME_M_Y          580
-#define VOLUME_L_X          600
-#define VOLUME_L_Y          580
+#define VOLUME_M_X          220
+#define VOLUME_M_Y          550
+#define VOLUME_L_X          220
+#define VOLUME_L_Y          595
 
 // Barre de progression
 #define PROGRESS_BACKGROUND_HEIGHT      30
@@ -88,15 +88,23 @@
 #define PROGRESSBAR_HEIGHT              17
 #define PROGRESSBAR_Y                   (PROGRESS_BACKGROUND_Y + 6)
 
+// Temps de la musique
 #define TIME_X                          0
 #define TIME_Y                          530
+
+// Volume
+#define VOLUME_X                        100
+#define VOLUME_Y                        550
+#define VOLUME_SPRITE_W                 85
+#define VOLUME_SPRITE_H                 75
+
 
 /*******************************
 /** Liste des éléments
 /*******************************/
 
 // Liste des textures générales
-enum { BUTTONS_TEXTURE, NB_TEXTURES };
+enum { BUTTONS_TEXTURE, VOLUME_TEXTURE, NB_TEXTURES };
 
 // Liste des boutons
 enum { PLAY_BUTTON, STOP_BUTTON, PREV_BUTTON, NEXT_BUTTON, VOLUME_MORE_BUTTON, VOLUME_LESS_BUTTON, NB_BUTTONS };

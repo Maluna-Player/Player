@@ -123,6 +123,11 @@ void Interface::loadImages()
 
   mp_ProgressBar = new ProgressBar;
   mp_MovableObjects[PROGRESSBAR] = mp_ProgressBar;
+
+  /* Création du visualisateur du volume */
+  m_VolumeViewer.setTexture(m_Textures[VOLUME_TEXTURE]);
+  m_VolumeViewer.setTextureRect(sf::IntRect(VOLUME_SPRITE_W * (NB_VOLUME_STATES - 1), 0, VOLUME_SPRITE_W, VOLUME_SPRITE_H));
+  m_VolumeViewer.setPosition(sf::Vector2f(VOLUME_X, VOLUME_Y));
 }
 
 // ==============================
@@ -137,6 +142,7 @@ void Interface::drawContent(sf::RenderTarget& target, bool stopped)
     target.draw(m_Buttons[i]);
 
   target.draw(*mp_ProgressBackground);
+  target.draw(m_VolumeViewer);
 
   if (!stopped)
   {
@@ -163,6 +169,15 @@ void Interface::setPlayButtonTexture(bool play)
 {
   int textX = (play ? (BUTTON_SIZE + 1) : 0);
   m_Buttons[PLAY_BUTTON].setTextureRect(sf::IntRect(textX, 0, BUTTON_SIZE, BUTTON_SIZE));
+}
+
+// ==============================
+// ==============================
+
+void Interface::setVolumeTexture(int volumeState)
+{
+  int textX = volumeState * VOLUME_SPRITE_W;
+  m_VolumeViewer.setTextureRect(sf::IntRect(textX, 0, VOLUME_SPRITE_W, VOLUME_SPRITE_H));
 }
 
 // ==============================

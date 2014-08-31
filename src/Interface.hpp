@@ -43,6 +43,8 @@ class Interface
     std::vector<Clickable*> mp_ClickableObjects;
     std::vector<Movable*>   mp_MovableObjects;
 
+    sf::Sprite m_VolumeViewer;
+
 
     /**
      * Convertit le temps passé en secondes
@@ -93,6 +95,12 @@ class Interface
      * @param play Etat du player
     */
     virtual void setPlayButtonTexture(bool play);
+
+    /**
+     * Modifie la texture du volume.
+     * @param volumeState Etat du volume du player
+    */
+    virtual void setVolumeTexture(int volumeState);
 
     /**
      * Modifie la taille de la barre de
