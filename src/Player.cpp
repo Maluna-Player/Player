@@ -199,9 +199,6 @@ void Player::loadSongs(const std::string& dir)
 
 void Player::changeSong(int song)
 {
-  if (isPaused())
-    stop();
-
   m_CurrentSong = song;
 
   if (!isStopped())

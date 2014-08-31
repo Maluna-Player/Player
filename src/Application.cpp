@@ -68,6 +68,9 @@ void Application::changeSong(int song)
 {
   if (song != UNDEFINED_SONG)
   {
+    if (m_Player.isPaused())
+      setState(STOP_STATE);
+
     m_Player.changeSong(song);
     m_Interface.setTitle(Path::baseName(m_Player.getCurrentSong().getFile()));
   }
