@@ -102,7 +102,7 @@ void Application::setVolume(int volumeType)
 {
   int previousVolume = m_Player.getVolumeState();
 
-  if (volumeType == VOLUME_M)
+  if (volumeType == VOLUME_MORE_BUTTON)
   {
     if (previousVolume < (NB_VOLUME_STATES - 1))
     {
@@ -110,7 +110,7 @@ void Application::setVolume(int volumeType)
       m_Interface.setVolumeTexture(previousVolume + 1);
     }
   }
-  else if (volumeType == VOLUME_L)
+  else if (volumeType == VOLUME_LESS_BUTTON)
   {
     if (previousVolume > 0)
     {
@@ -145,26 +145,26 @@ void Application::run()
     {
       int x = m_In.buttonX(), y = m_In.buttonY();
 
-      if (m_Interface.button(PLAY).collision(x, y))
+      if (m_Interface.button(PLAY_BUTTON).collision(x, y))
       {
         if (!m_Player.isPlayed())
           setState(PLAY_STATE);
         else
           setState(PAUSE_STATE);
       }
-      else if (m_Interface.button(STOP).collision(x, y))
+      else if (m_Interface.button(STOP_BUTTON).collision(x, y))
       {
         if (!m_Player.isStopped())
           setState(STOP_STATE);
       }
-      else if (m_Interface.button(PREV).collision(x, y))
+      else if (m_Interface.button(PREV_BUTTON).collision(x, y))
         changeSong(m_Player.prev());
-      else if (m_Interface.button(NEXT).collision(x, y))
+      else if (m_Interface.button(NEXT_BUTTON).collision(x, y))
         changeSong(m_Player.next());
-      else if (m_Interface.button(VOLUME_M).collision(x, y))
-        setVolume(VOLUME_M);
-      else if (m_Interface.button(VOLUME_L).collision(x, y))
-        setVolume(VOLUME_L);
+      else if (m_Interface.button(VOLUME_MORE_BUTTON).collision(x, y))
+        setVolume(VOLUME_MORE_BUTTON);
+      else if (m_Interface.button(VOLUME_LESS_BUTTON).collision(x, y))
+        setVolume(VOLUME_LESS_BUTTON);
       else if (m_Interface.button(PROGRESSBAR).collision(x, y))
         m_Interface.button(PROGRESSBAR).m_Press = true;
       else if (m_Interface.button(PROGRESS_BACKGROUND).collision(x, y))

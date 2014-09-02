@@ -106,11 +106,13 @@
 // Liste des textures générales
 enum { BUTTONS_TEXTURE, VOLUME_TEXTURE, NB_TEXTURES };
 
-// Liste des boutons
-enum { PLAY_BUTTON, STOP_BUTTON, PREV_BUTTON, NEXT_BUTTON, VOLUME_MORE_BUTTON, VOLUME_LESS_BUTTON, NB_BUTTONS };
-
 // Liste des objets cliquables
-enum Clickable_t { PLAY, STOP, PREV, NEXT, VOLUME_M, VOLUME_L, PROGRESS_BACKGROUND, NB_CLICKABLES };
+enum Clickable_t { PLAY_BUTTON, STOP_BUTTON, PREV_BUTTON, NEXT_BUTTON,
+                   VOLUME_MORE_BUTTON, VOLUME_LESS_BUTTON, NB_BUTTONS,
+
+                   PROGRESS_BACKGROUND = NB_BUTTONS,
+                   NB_CLICKABLES
+                 };
 
 // Liste des objets déplaçables
 enum Movable_t { PROGRESSBAR, NB_MOVABLES };
