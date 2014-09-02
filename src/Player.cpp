@@ -18,7 +18,7 @@
 
 Player::Player()
   : m_CurrentSong(0), m_Playlist(true), m_Loop(false),
-    m_Pause(false), m_Stop(false)
+    m_Pause(false), m_Stop(false), m_VolumeState(NB_VOLUME_STATES - 1)
 {
 
 }
@@ -153,6 +153,25 @@ int Player::next() const
     return FIRST_SONG;
   else
     return UNDEFINED_SONG;
+}
+
+// ==============================
+// ==============================
+
+int Player::getVolumeState() const
+{
+  return m_VolumeState;
+}
+
+// ==============================
+// ==============================
+
+void Player::setVolume(int volumeState)
+{
+  m_VolumeState = volumeState;
+
+  float volume = static_cast<float>(volumeState) / (NB_VOLUME_STATES - 1);
+  Fmod::getInstance()->setVolume(volume);
 }
 
 // ==============================

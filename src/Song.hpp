@@ -23,7 +23,6 @@ class Song
     SoundPos_t m_Length;
 
     SoundID_t m_SoundID;
-    int m_VolumeState;
 
   public:
 
@@ -67,16 +66,6 @@ class Song
     */
     virtual bool isFinished() const;
 
-    /**
-     * @return Etat du volume
-    */
-    virtual int getVolumeState() const;
-
-    /**
-     * Modifie le volume de la musique.
-     * @param volumeState Etat du volume
-    */
-    virtual void setVolume(int volumeState);
 };
 
 #endif  // __SONG_HPP__

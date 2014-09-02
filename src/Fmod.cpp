@@ -228,3 +228,18 @@ void Fmod::setVolume(SoundID_t id, float volume) const
   if ((res = FMOD_Channel_SetVolume(mp_Channels.at(id), volume)) != FMOD_OK)
     throw LibException("Fmod::setVolume", "FMOD_Channel_SetVolume", FMOD_ErrorString(res));
 }
+
+// ==============================
+// ==============================
+
+void Fmod::setVolume(float volume) const
+{
+  FMOD_RESULT res;
+  FMOD_CHANNELGROUP *channelGroup;
+
+  if ((res = FMOD_System_GetMasterChannelGroup(mp_System, &channelGroup)) != FMOD_OK)
+    throw LibException("Fmod::setVolume", "FMOD_System_GetMasterChannelGroup", FMOD_ErrorString(res));
+
+  if ((res = FMOD_ChannelGroup_SetVolume(channelGroup, volume)) != FMOD_OK)
+    throw LibException("Fmod::setVolume", "FMOD_ChannelGroup_SetVolume", FMOD_ErrorString(res));
+}

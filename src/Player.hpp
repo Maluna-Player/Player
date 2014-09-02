@@ -32,6 +32,8 @@ class Player
     bool m_Pause;
     bool m_Stop;
 
+    int m_VolumeState;
+
   public:
 
     Player();
@@ -96,6 +98,17 @@ class Player
      *         UNDEFINED_SONG si pas de suivant.
     */
     virtual int next() const;
+
+    /**
+     * @return Etat du volume
+    */
+    virtual int getVolumeState() const;
+
+    /**
+     * Modifie le volume du player.
+     * @param volumeState Etat du volume
+    */
+    virtual void setVolume(int volumeState);
 
     /**
      * Rempli le vecteur Musiques à partir des fichiers

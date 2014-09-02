@@ -143,6 +143,12 @@ class Fmod
     */
     virtual void setVolume(SoundID_t id, float volume) const;
 
+    /**
+     * Modifie le volume de l'ensemble des canaux.
+     * @param volume Volume à appliquer
+    */
+    virtual void setVolume(float volume) const;
+
 };
 
 #endif  // __FMOD_HPP__
