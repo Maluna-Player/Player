@@ -35,9 +35,14 @@ class Song
     virtual SoundPos_t getLength() const;
 
     /**
-     * Joue le son avec FMOD.
+     * Ouvre le fichier avec FMOD pour stream.
     */
-    virtual void play();
+    virtual void open();
+
+    /**
+     * Joue le son ouvert avec FMOD.
+    */
+    virtual void play() const;
 
     /**
      * Met le son en pause ou le redémarre.

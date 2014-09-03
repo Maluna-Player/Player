@@ -13,7 +13,7 @@
 Song::Song(const std::string& file, int num)
   : m_File(file), m_Num(num), m_SoundID(0)
 {
-  SoundID_t id = Fmod::getInstance()->openSound(m_File);
+  SoundID_t id = Fmod::getInstance()->openFromFile(m_File);
   m_Length = Fmod::getInstance()->getSoundLength(id);
 }
 
@@ -61,9 +61,16 @@ SoundPos_t Song::getLength() const
 // ==============================
 // ==============================
 
-void Song::play()
+void Song::open()
 {
-  m_SoundID = Fmod::getInstance()->openSound(m_File);
+  m_SoundID = Fmod::getInstance()->openFromFile(m_File);
+}
+
+// ==============================
+// ==============================
+
+void Song::play() const
+{
   Fmod::getInstance()->playSound(m_SoundID);
 }
 

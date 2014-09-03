@@ -220,6 +220,10 @@ void Player::changeSong(int song)
 {
   m_CurrentSong = song;
 
+  // Ouverture du fichier
+  getCurrentSong().open();
+
+  // Si le player n'est pas stoppé, on le joue
   if (!isStopped())
     getCurrentSong().play();
 }

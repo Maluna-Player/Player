@@ -77,7 +77,7 @@ SoundID_t Fmod::getSoundID() const
 // ==============================
 // ==============================
 
-SoundID_t Fmod::openSound(const std::string& soundFile)
+SoundID_t Fmod::openFromFile(const std::string& soundFile)
 {
   SoundID_t id = getSoundID();
 
@@ -103,6 +103,7 @@ void Fmod::releaseSound(SoundID_t id)
     throw LibException("Fmod::releaseSound", "FMOD_Sound_Release", FMOD_ErrorString(res));
 
   mp_Sounds.at(id) = 0;
+  mp_Channels.at(id) = 0;
 }
 
 // ==============================

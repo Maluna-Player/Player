@@ -70,11 +70,11 @@ class Fmod
     static void deleteInstance();
 
     /**
-     * Charge le fichier son passé en paramètre.
+     * Ouvre le fichier son passé en paramètre.
      * @param soundFile Fichier à ouvrir
      * @return identifiant du canal associé
     */
-    virtual SoundID_t openSound(const std::string& soundFile);
+    virtual SoundID_t openFromFile(const std::string& soundFile);
 
     /**
      * Joue le son chargé.
