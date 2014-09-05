@@ -22,6 +22,7 @@
 #include "CircleButton.hpp"
 #include "ProgressBar.hpp"
 #include "ProgressBackground.hpp"
+#include "VolumeViewer.hpp"
 
 
 class Interface
@@ -39,11 +40,10 @@ class Interface
 
     ProgressBackground *mp_ProgressBackground;
     ProgressBar *mp_ProgressBar;
+    VolumeViewer *mp_VolumeViewer;
 
     std::vector<Clickable*> mp_ClickableObjects;
     std::vector<Movable*>   mp_MovableObjects;
-
-    sf::Sprite m_VolumeViewer;
 
 
     /**

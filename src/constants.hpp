@@ -45,6 +45,7 @@
 
 // Nombre d'états du volume
 #define NB_VOLUME_STATES    4
+#define MUTE_STATE          NB_VOLUME_STATES
 
 
 /*******************************
@@ -104,13 +105,14 @@
 /*******************************/
 
 // Liste des textures générales
-enum { BUTTONS_TEXTURE, VOLUME_TEXTURE, NB_TEXTURES };
+enum { BUTTONS_TEXTURE, NB_TEXTURES };
 
 // Liste des objets cliquables
 enum Clickable_t { PLAY_BUTTON, STOP_BUTTON, PREV_BUTTON, NEXT_BUTTON,
                    VOLUME_MORE_BUTTON, VOLUME_LESS_BUTTON, NB_BUTTONS,
 
                    PROGRESS_BACKGROUND = NB_BUTTONS,
+                   VOLUME_VIEWER,
                    NB_CLICKABLES
                  };
 

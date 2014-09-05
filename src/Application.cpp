@@ -107,7 +107,9 @@ void Application::setVolume(int volumeType)
     if (previousVolume < (NB_VOLUME_STATES - 1))
     {
       m_Player.setVolume(previousVolume + 1);
-      m_Interface.setVolumeTexture(previousVolume + 1);
+
+      if (!m_Player.isMuted())
+        m_Interface.setVolumeTexture(previousVolume + 1);
     }
   }
   else if (volumeType == VOLUME_LESS_BUTTON)
@@ -115,9 +117,24 @@ void Application::setVolume(int volumeType)
     if (previousVolume > 0)
     {
       m_Player.setVolume(previousVolume - 1);
-      m_Interface.setVolumeTexture(previousVolume - 1);
+
+      if (!m_Player.isMuted())
+        m_Interface.setVolumeTexture(previousVolume - 1);
     }
   }
+}
+
+// ==============================
+// ==============================
+
+void Application::setMute(bool mute)
+{
+  m_Player.mute(mute);
+
+  if (m_Player.isMuted())
+    m_Interface.setVolumeTexture(MUTE_STATE);
+  else
+    m_Interface.setVolumeTexture(m_Player.getVolumeState());
 }
 
 // ==============================
@@ -169,6 +186,8 @@ void Application::run()
         m_Interface.button(PROGRESSBAR).m_Press = true;
       else if (m_Interface.button(PROGRESS_BACKGROUND).collision(x, y))
         setSongPosition(x);
+      else if (m_Interface.button(VOLUME_VIEWER).collision(x, y))
+        setMute(!m_Player.isMuted());
     }
     else if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
       m_Interface.button(PROGRESSBAR).m_Press = false;

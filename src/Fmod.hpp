@@ -29,11 +29,13 @@ class Fmod
 {
   private:
 
-    FMOD_SYSTEM  *mp_System;
+    FMOD_SYSTEM *mp_System;
 
     std::vector<FMOD_CHANNEL*> mp_Channels;
 
     std::vector<FMOD_SOUND*> mp_Sounds;
+
+    FMOD_CHANNELGROUP *mp_ChannelGroup;
 
 
     /* Instance du singleton */
@@ -148,6 +150,12 @@ class Fmod
      * @param volume Volume à appliquer
     */
     virtual void setVolume(float volume) const;
+
+    /**
+     * Change l'état mute de l'ensemble des canaux.
+     * @param mute Etat à appliquer
+    */
+    virtual void setMute(bool mute) const;
 
 };
 

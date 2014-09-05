@@ -32,6 +32,7 @@ class Player
     bool m_Pause;
     bool m_Stop;
 
+    bool m_Mute;
     int m_VolumeState;
 
   public:
@@ -57,6 +58,12 @@ class Player
     virtual void pause();
 
     /**
+     * Change l'état mute du player (mute/unmute).
+     * @param mute Etat mute à appliquer
+    */
+    virtual void mute(bool mute);
+
+    /**
      * @return true si ni pause, ni stop.
     */
     virtual bool isPlayed() const;
@@ -72,12 +79,17 @@ class Player
     virtual bool isPaused() const;
 
     /**
+     * @return true si le player est mute.
+    */
+    virtual bool isMuted() const;
+
+    /**
      * @return true si la boucle est activée.
     */
     virtual bool isLoop() const;
 
     /**
-     * @param loop Valeur à affecter à l'attribut correspondant.
+     * @param loop Valeur à affecter à l'attribut Loop.
     */
     virtual void setLoop(bool loop);
 

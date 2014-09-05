@@ -17,7 +17,7 @@
 Interface::Interface()
   : m_Textures(NB_TEXTURES),
     m_Buttons(NB_BUTTONS, CircleButton(BUTTON_SIZE / 2)),
-    mp_ProgressBackground(0), mp_ProgressBar(0),
+    mp_ProgressBackground(0), mp_ProgressBar(0), mp_VolumeViewer(0),
     mp_ClickableObjects(NB_CLICKABLES), mp_MovableObjects(NB_MOVABLES)
 {
   int i;
@@ -33,6 +33,7 @@ Interface::~Interface()
 {
   delete mp_ProgressBar;
   delete mp_ProgressBackground;
+  delete mp_VolumeViewer;
 }
 
 // ==============================
@@ -125,9 +126,8 @@ void Interface::loadImages()
   mp_MovableObjects[PROGRESSBAR] = mp_ProgressBar;
 
   /* Création du visualisateur du volume */
-  m_VolumeViewer.setTexture(m_Textures[VOLUME_TEXTURE]);
-  m_VolumeViewer.setTextureRect(sf::IntRect(VOLUME_SPRITE_W * (NB_VOLUME_STATES - 1), 0, VOLUME_SPRITE_W, VOLUME_SPRITE_H));
-  m_VolumeViewer.setPosition(sf::Vector2f(VOLUME_X, VOLUME_Y));
+  mp_VolumeViewer = new VolumeViewer;
+  mp_ClickableObjects[VOLUME_VIEWER] = mp_VolumeViewer;
 }
 
 // ==============================
@@ -142,7 +142,7 @@ void Interface::drawContent(sf::RenderTarget& target, bool stopped)
     target.draw(m_Buttons[i]);
 
   target.draw(*mp_ProgressBackground);
-  target.draw(m_VolumeViewer);
+  target.draw(*mp_VolumeViewer);
 
   if (!stopped)
   {
@@ -177,7 +177,7 @@ void Interface::setPlayButtonTexture(bool play)
 void Interface::setVolumeTexture(int volumeState)
 {
   int textX = volumeState * VOLUME_SPRITE_W;
-  m_VolumeViewer.setTextureRect(sf::IntRect(textX, 0, VOLUME_SPRITE_W, VOLUME_SPRITE_H));
+  mp_VolumeViewer->setTextureRect(sf::IntRect(textX, 0, VOLUME_SPRITE_W, VOLUME_SPRITE_H));
 }
 
 // ==============================

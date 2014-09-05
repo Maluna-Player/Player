@@ -16,15 +16,22 @@ Fmod* Fmod::mp_Instance = 0;
 // ==============================
 // ==============================
 
-Fmod::Fmod(int maxChannels) : mp_System(0), mp_Channels(maxChannels), mp_Sounds(maxChannels)
+Fmod::Fmod(int maxChannels)
+  : mp_System(0), mp_Channels(maxChannels), mp_Sounds(maxChannels), mp_ChannelGroup(0)
 {
   FMOD_RESULT res;
 
+  /* Création du système */
   if ((res = FMOD_System_Create(&mp_System)) != FMOD_OK)
     throw LibException("Fmod::Fmod", "FMOD_System_Create", FMOD_ErrorString(res));
 
+  /* Initialisation */
   if ((res = FMOD_System_Init(mp_System, maxChannels, FMOD_INIT_NORMAL, 0)) != FMOD_OK)
     throw LibException("Fmod::Fmod", "FMOD_System_Init", FMOD_ErrorString(res));
+
+  /* Récupération du groupe de canaux */
+  if ((res = FMOD_System_GetMasterChannelGroup(mp_System, &mp_ChannelGroup)) != FMOD_OK)
+    throw LibException("Fmod::Fmod", "FMOD_System_GetMasterChannelGroup", FMOD_ErrorString(res));
 }
 
 // ==============================
@@ -236,11 +243,18 @@ void Fmod::setVolume(SoundID_t id, float volume) const
 void Fmod::setVolume(float volume) const
 {
   FMOD_RESULT res;
-  FMOD_CHANNELGROUP *channelGroup;
 
-  if ((res = FMOD_System_GetMasterChannelGroup(mp_System, &channelGroup)) != FMOD_OK)
-    throw LibException("Fmod::setVolume", "FMOD_System_GetMasterChannelGroup", FMOD_ErrorString(res));
-
-  if ((res = FMOD_ChannelGroup_SetVolume(channelGroup, volume)) != FMOD_OK)
+  if ((res = FMOD_ChannelGroup_SetVolume(mp_ChannelGroup, volume)) != FMOD_OK)
     throw LibException("Fmod::setVolume", "FMOD_ChannelGroup_SetVolume", FMOD_ErrorString(res));
+}
+
+// ==============================
+// ==============================
+
+void Fmod::setMute(bool mute) const
+{
+  FMOD_RESULT res;
+
+  if ((res = FMOD_ChannelGroup_SetMute(mp_ChannelGroup, static_cast<FMOD_BOOL>(mute))) != FMOD_OK)
+    throw LibException("Fmod::setMute", "FMOD_ChannelGroup_SetMute", FMOD_ErrorString(res));
 }

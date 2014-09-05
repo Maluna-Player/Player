@@ -18,7 +18,8 @@
 
 Player::Player()
   : m_CurrentSong(0), m_Playlist(true), m_Loop(false),
-    m_Pause(false), m_Stop(false), m_VolumeState(NB_VOLUME_STATES - 1)
+    m_Pause(false), m_Stop(false), m_Mute(false),
+    m_VolumeState(NB_VOLUME_STATES - 1)
 {
 
 }
@@ -81,6 +82,15 @@ void Player::pause()
 // ==============================
 // ==============================
 
+void Player::mute(bool mute)
+{
+  m_Mute = mute;
+  Fmod::getInstance()->setMute(mute);
+}
+
+// ==============================
+// ==============================
+
 bool Player::isPlayed() const
 {
   return (!m_Pause && !m_Stop);
@@ -100,6 +110,14 @@ bool Player::isStopped() const
 bool Player::isPaused() const
 {
   return m_Pause;
+}
+
+// ==============================
+// ==============================
+
+bool Player::isMuted() const
+{
+  return m_Mute;
 }
 
 // ==============================

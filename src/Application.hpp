@@ -69,6 +69,12 @@ class Application
     */
     virtual void setVolume(int volumeType);
 
+    /**
+     * Modifie l'état mute (mute/unmute).
+     * @param mute Etat mute à appliquer
+    */
+    virtual void setMute(bool mute);
+
   public:
 
     Application();
