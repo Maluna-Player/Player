@@ -10,11 +10,12 @@
 #include "VolumeViewer.hpp"
 #include "constants.hpp"
 #include "FileLoadingException.hpp"
+#include "Path.hpp"
 
 
 VolumeViewer::VolumeViewer()
 {
-  std::string volumeTexturePath = std::string(IMAGES_SUBDIR) + "/volume.png";
+  std::string volumeTexturePath = std::string(IMAGES_SUBDIR) + Path::separator() + "volume.png";
 
   if (!m_VolumeTexture.loadFromFile(volumeTexturePath))
     throw FileLoadingException("VolumeViewer::VolumeViewer", volumeTexturePath);

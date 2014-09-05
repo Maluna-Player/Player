@@ -19,9 +19,9 @@
 /** Chemins des ressources
 /*******************************/
 
-#define SONGS_SUBDIR        "resources/Musiques"
-#define FONT_FILE           "resources/lsans.ttf"
-#define IMAGES_SUBDIR       "resources/Images"
+#define SONGS_SUBDIR        std::string("resources") + Path::separator() + "Musiques"
+#define FONT_FILE           std::string("resources") + Path::separator() + "lsans.ttf"
+#define IMAGES_SUBDIR       std::string("resources") + Path::separator() + "Images"
 
 
 /*******************************

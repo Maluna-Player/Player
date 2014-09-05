@@ -25,3 +25,15 @@ std::string Path::baseName(const std::string& filePath)
 
   return file.substr(0, found);
 }
+
+// ==============================
+// ==============================
+
+char Path::separator()
+{
+  #ifdef _WIN32
+    return '\\';
+  #else
+    return '/';
+  #endif
+}

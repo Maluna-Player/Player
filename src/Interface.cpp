@@ -12,6 +12,7 @@
 #include "constants.hpp"
 #include "FileLoadingException.hpp"
 #include "ArrayAccessException.hpp"
+#include "Path.hpp"
 
 
 Interface::Interface()
@@ -97,7 +98,7 @@ void Interface::loadImages()
   for (i = 0; i < NB_TEXTURES; i++)
   {
     std::stringstream texturePath;
-    texturePath << IMAGES_SUBDIR << "/text" << i << ".png";
+    texturePath << IMAGES_SUBDIR << Path::separator() << "text" << i << ".png";
 
     if (!m_Textures[i].loadFromFile(texturePath.str()))
       throw FileLoadingException("Interface::loadImages", texturePath.str());

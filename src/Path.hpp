@@ -24,6 +24,11 @@ class Path
      * @return nom du fichier
     */
     static std::string baseName(const std::string& filePath);
+
+    /**
+     * @return Caractère séparateur des chemins.
+    */
+    static char separator();
 };
 
 #endif  // __PATH_HPP__

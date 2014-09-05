@@ -10,6 +10,7 @@
 #include "Player.hpp"
 #include "ArrayAccessException.hpp"
 #include "LibException.hpp"
+#include "Path.hpp"
 
 #include <dirent.h>
 #include <cstring>
@@ -216,7 +217,7 @@ void Player::loadSongs(const std::string& dir)
     if (std::string(file->d_name) != "." && std::string(file->d_name) != "..")
     {
       songsNb++;
-      std::string filePath = dir + "\\" + file->d_name;
+      std::string filePath = dir + Path::separator() + file->d_name;
 
       m_Songs.push_back(Song(filePath, songsNb));
     }

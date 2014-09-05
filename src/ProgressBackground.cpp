@@ -10,12 +10,13 @@
 #include "ProgressBackground.hpp"
 #include "constants.hpp"
 #include "FileLoadingException.hpp"
+#include "Path.hpp"
 
 
 ProgressBackground::ProgressBackground(const sf::Vector2f& size)
   : sf::RectangleShape(size)
 {
-  std::string backgroundTexturePath = std::string(IMAGES_SUBDIR) + "/progressBackground.png";
+  std::string backgroundTexturePath = std::string(IMAGES_SUBDIR) + Path::separator() + "progressBackground.png";
 
   if (!m_BackgroundTexture.loadFromFile(backgroundTexturePath))
     throw FileLoadingException("ProgressBar::ProgressBar", backgroundTexturePath);

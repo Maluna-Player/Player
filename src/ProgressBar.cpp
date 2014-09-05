@@ -10,14 +10,15 @@
 #include "ProgressBar.hpp"
 #include "constants.hpp"
 #include "FileLoadingException.hpp"
+#include "Path.hpp"
 
 
 ProgressBar::ProgressBar()
 {
   m_Press = false;
 
-  std::string barTexturePath = std::string(IMAGES_SUBDIR) + "/progressBar.png";
-  std::string markerTexturePath = std::string(IMAGES_SUBDIR) + "/marker.png";
+  std::string barTexturePath = std::string(IMAGES_SUBDIR) + Path::separator() + "progressBar.png";
+  std::string markerTexturePath = std::string(IMAGES_SUBDIR) + Path::separator() + "marker.png";
 
   if (!m_BarTexture.loadFromFile(barTexturePath))
     throw FileLoadingException("ProgressBar::ProgressBar", barTexturePath);
