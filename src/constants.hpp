@@ -90,8 +90,10 @@
 #define PROGRESSBAR_Y                   (PROGRESS_BACKGROUND_Y + 6)
 
 // Temps de la musique
-#define TIME_X                          0
-#define TIME_Y                          530
+#define POS_TEXT_X                      0
+#define POS_TEXT_Y                      530
+#define LENGTH_TEXT_X                   750
+#define LENGTH_TEXT_Y                   POS_TEXT_Y
 
 // Volume
 #define VOLUME_X                        100
@@ -106,6 +108,9 @@
 
 // Liste des textures générales
 enum { BUTTONS_TEXTURE, NB_TEXTURES };
+
+// Liste des textes
+enum { TITLE_TEXT, POS_TEXT, LENGTH_TEXT, NB_TEXTS };
 
 // Liste des objets cliquables
 enum Clickable_t { PLAY_BUTTON, STOP_BUTTON, PREV_BUTTON, NEXT_BUTTON,

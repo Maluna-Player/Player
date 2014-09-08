@@ -72,7 +72,8 @@ void Application::changeSong(int song)
       setState(STOP_STATE);
 
     m_Player.changeSong(song);
-    m_Interface.setTitle(Path::baseName(m_Player.getCurrentSong().getFile()));
+    m_Interface.setSong(Path::baseName(m_Player.getCurrentSong().getFile()),
+                          m_Player.getCurrentSong().getLength());
   }
   else
   {

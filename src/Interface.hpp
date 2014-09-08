@@ -30,8 +30,7 @@ class Interface
   private:
 
     sf::Font m_Font;
-    sf::Text m_SongTitle;
-    sf::Text m_SongPos;
+    std::vector<sf::Text> m_Texts;
 
     Spectrum m_Spectrum;
 
@@ -84,10 +83,11 @@ class Interface
     virtual void drawContent(sf::RenderTarget& target, bool stopped);
 
     /**
-     * Change le titre du son courant.
+     * Change le titre et la durée du son courant.
      * @param title Titre à afficher
+     * @param length Durée du son
     */
-    virtual void setTitle(const std::string& title);
+    virtual void setSong(const std::string& title, SoundPos_t length);
 
     /**
      * Modifie la texture du bouton
