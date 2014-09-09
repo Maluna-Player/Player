@@ -82,6 +82,9 @@
 #define VOLUME_L_X          220
 #define VOLUME_L_Y          595
 
+#define REFRESH_DIR_X       600
+#define REFRESH_DIR_Y       580
+
 // Barre de progression
 #define PROGRESS_BACKGROUND_HEIGHT      30
 #define PROGRESS_BACKGROUND_X           0
@@ -114,7 +117,8 @@ enum { TITLE_TEXT, POS_TEXT, LENGTH_TEXT, NB_TEXTS };
 
 // Liste des objets cliquables
 enum Clickable_t { PLAY_BUTTON, STOP_BUTTON, PREV_BUTTON, NEXT_BUTTON,
-                   VOLUME_MORE_BUTTON, VOLUME_LESS_BUTTON, NB_BUTTONS,
+                   VOLUME_MORE_BUTTON, VOLUME_LESS_BUTTON,
+                   REFRESH_DIR_BUTTON, NB_BUTTONS,
 
                    PROGRESS_BACKGROUND = NB_BUTTONS,
                    VOLUME_VIEWER,

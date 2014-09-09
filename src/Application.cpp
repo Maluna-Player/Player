@@ -141,6 +141,16 @@ void Application::setMute(bool mute)
 // ==============================
 // ==============================
 
+void Application::refreshSongsList()
+{
+  setState(STOP_STATE);
+  m_Player.loadSongs(SONGS_SUBDIR);
+  changeSong(m_Player.first());
+}
+
+// ==============================
+// ==============================
+
 void Application::run()
 {
   m_Interface.loadTexts();
@@ -183,6 +193,8 @@ void Application::run()
         setVolume(VOLUME_MORE_BUTTON);
       else if (m_Interface.button(VOLUME_LESS_BUTTON).collision(x, y))
         setVolume(VOLUME_LESS_BUTTON);
+      else if (m_Interface.button(REFRESH_DIR_BUTTON).collision(x, y))
+        refreshSongsList();
       else if (m_Interface.button(PROGRESSBAR).collision(x, y))
         m_Interface.button(PROGRESSBAR).m_Press = true;
       else if (m_Interface.button(PROGRESS_BACKGROUND).collision(x, y))

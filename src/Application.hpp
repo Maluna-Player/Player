@@ -75,6 +75,12 @@ class Application
     */
     virtual void setMute(bool mute);
 
+    /**
+     * Met à jour la liste des musiques
+     * du répertoire.
+    */
+    virtual void refreshSongsList();
+
   public:
 
     Application();

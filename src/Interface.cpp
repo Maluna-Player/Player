@@ -126,6 +126,7 @@ void Interface::loadImages()
   m_Buttons[NEXT_BUTTON].setPosition(sf::Vector2f(NEXT_X, NEXT_Y));
   m_Buttons[VOLUME_MORE_BUTTON].setPosition(sf::Vector2f(VOLUME_M_X, VOLUME_M_Y));
   m_Buttons[VOLUME_LESS_BUTTON].setPosition(sf::Vector2f(VOLUME_L_X, VOLUME_L_Y));
+  m_Buttons[REFRESH_DIR_BUTTON].setPosition(sf::Vector2f(REFRESH_DIR_X, REFRESH_DIR_Y));
 
 
   /* Création de la barre de progression */
