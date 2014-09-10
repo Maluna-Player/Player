@@ -71,9 +71,16 @@ void Application::changeSong(int song)
     if (m_Player.isPaused())
       setState(STOP_STATE);
 
-    m_Player.changeSong(song);
-    m_Interface.setSong(Path::baseName(m_Player.getCurrentSong().getFile()),
-                          m_Player.getCurrentSong().getLength());
+    try
+    {
+      m_Player.changeSong(song);
+      m_Interface.setSong(Path::baseName(m_Player.getCurrentSong().getFile()),
+                            m_Player.getCurrentSong().getLength());
+    }
+    catch(StreamError_t error)
+    {
+      refreshSongsList();
+    }
   }
   else
   {
@@ -143,9 +150,11 @@ void Application::setMute(bool mute)
 
 void Application::refreshSongsList()
 {
-  setState(STOP_STATE);
   m_Player.loadSongs(SONGS_SUBDIR);
   changeSong(m_Player.first());
+
+  if (!m_Player.isStopped())
+    setState(STOP_STATE);
 }
 
 // ==============================

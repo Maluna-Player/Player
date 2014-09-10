@@ -84,7 +84,7 @@ SoundID_t Fmod::getSoundID() const
 // ==============================
 // ==============================
 
-SoundID_t Fmod::openFromFile(const std::string& soundFile)
+SoundID_t Fmod::openFromFile(const std::string& soundFile) throw (StreamError_t)
 {
   SoundID_t id = getSoundID();
 
@@ -94,7 +94,7 @@ SoundID_t Fmod::openFromFile(const std::string& soundFile)
   FMOD_RESULT res;
 
   if ((res = FMOD_System_CreateStream(mp_System, soundFile.c_str(), FMOD_DEFAULT, 0, &mp_Sounds.at(id))) != FMOD_OK)
-    throw LibException("Fmod::openSound", "FMOD_System_CreateStream", FMOD_ErrorString(res));
+    throw FILE_ERROR;
 
   return id;
 }

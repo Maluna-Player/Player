@@ -22,6 +22,8 @@
 #define VOLUME_MIN    0.0
 #define VOLUME_MAX    1.0
 
+enum StreamError_t { FILE_ERROR };
+
 typedef unsigned int  SoundID_t;
 typedef unsigned int  SoundPos_t;
 
@@ -76,7 +78,7 @@ class Fmod
      * @param soundFile Fichier à ouvrir
      * @return identifiant du canal associé
     */
-    virtual SoundID_t openFromFile(const std::string& soundFile);
+    virtual SoundID_t openFromFile(const std::string& soundFile) throw (StreamError_t);
 
     /**
      * Joue le son chargé.
