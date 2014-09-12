@@ -49,15 +49,18 @@ Song& Player::getCurrentSong()
 
 void Player::play()
 {
-  if (m_Stop)
+  if (m_Songs.size() > 0)
   {
-    m_Stop = false;
-    getCurrentSong().play();
-  }
-  else if (m_Pause)
-  {
-    m_Pause = false;
-    getCurrentSong().pause(false);
+    if (m_Stop)
+    {
+      m_Stop = false;
+      getCurrentSong().play();
+    }
+    else if (m_Pause)
+    {
+      m_Pause = false;
+      getCurrentSong().pause(false);
+    }
   }
 }
 
@@ -68,7 +71,9 @@ void Player::stop()
 {
   m_Pause = false;
   m_Stop = true;
-  getCurrentSong().stop();
+
+  if (m_Songs.size() > 0)
+    getCurrentSong().stop();
 }
 
 // ==============================
@@ -77,7 +82,9 @@ void Player::stop()
 void Player::pause()
 {
   m_Pause = true;
-  getCurrentSong().pause(true);
+
+  if (m_Songs.size() > 0)
+    getCurrentSong().pause(true);
 }
 
 // ==============================
@@ -155,7 +162,7 @@ int Player::prev() const
 {
   if (m_CurrentSong > FIRST_SONG)
     return (m_CurrentSong - 1);
-  else if (m_Loop)
+  else if (m_Loop && m_Songs.size() > 0)
     return LAST_SONG;
   else
     return UNDEFINED_SONG;
@@ -168,7 +175,7 @@ int Player::next() const
 {
   if (m_CurrentSong < LAST_SONG)
     return (m_CurrentSong + 1);
-  else if (m_Loop)
+  else if (m_Loop && m_Songs.size() > 0)
     return FIRST_SONG;
   else
     return UNDEFINED_SONG;

@@ -16,7 +16,7 @@
 #include "Song.hpp"
 
 #define FIRST_SONG        0
-#define LAST_SONG         (m_Songs.size() - 1)
+#define LAST_SONG         (static_cast<int>(m_Songs.size()) - 1)
 #define UNDEFINED_SONG   -1
 
 class Player
