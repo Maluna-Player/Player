@@ -48,6 +48,26 @@ void SongList::draw(sf::RenderTarget& target, sf::RenderStates states) const
 // ==============================
 // ==============================
 
+bool SongList::collision(int x, int y) const
+{
+  return (x >= SONG_LIST_X && x <= WINDOW_WIDTH
+            && y >= SONG_LIST_Y && y <=(SONG_LIST_Y + (m_Titles.size() * SONG_TITLE_H)));
+}
+
+// ==============================
+// ==============================
+
+int SongList::getClickedSong(int x, int y) const
+{
+  if (!collision(x, y))
+    return -1;
+  else
+    return ((y - SONG_LIST_Y) / SONG_TITLE_H);
+}
+
+// ==============================
+// ==============================
+
 void SongList::add(const std::string& title)
 {
   sf::Text element;
@@ -80,12 +100,4 @@ void SongList::clear()
   m_Titles.clear();
 }
 
-// ==============================
-// ==============================
-
-bool SongList::collision(int x, int y) const
-{
-  return (x >= SONG_LIST_X && x <= WINDOW_WIDTH
-            && y >= SONG_LIST_Y && y <=(SONG_LIST_Y + (m_Titles.size() * SONG_TITLE_H)));
-}
 

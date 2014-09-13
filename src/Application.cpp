@@ -214,6 +214,8 @@ void Application::run()
         setSongPosition(x);
       else if (m_Interface.button(VOLUME_VIEWER).collision(x, y))
         setMute(!m_Player.isMuted());
+      else if (m_Interface.button(SONG_LIST).collision(x, y))
+        changeSong(m_Interface.getSongList().getClickedSong(x, y));
     }
     else if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
       m_Interface.button(PROGRESSBAR).m_Press = false;

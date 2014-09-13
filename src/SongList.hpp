@@ -38,6 +38,15 @@ class SongList : public sf::Drawable, public sf::Transformable, public Clickable
     virtual bool collision(int x, int y) const;
 
     /**
+     * Détermine la chanson cliquée
+     * avec le point (x,y).
+     * @param x Abscisse du point
+     * @param y Ordonnée du point
+     * @return Numéro de la chanson, -1 si aucune
+    */
+    virtual int getClickedSong(int x, int y) const;
+
+    /**
      * Ajoute le titre passé en paramètre à la liste.
      * @param title Titre à ajouter
     */
