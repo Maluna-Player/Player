@@ -13,6 +13,7 @@
 #define __PLAYER_HPP__
 
 #include <vector>
+#include <utility>
 #include "Song.hpp"
 
 #define FIRST_SONG        0
@@ -46,9 +47,9 @@ class Player
     virtual Song& getCurrentSong();
 
     /**
-     * @return Liste des titres des musiques du dossier.
+     * @return Liste des musiques (titre + durée) du dossier.
     */
-    virtual std::vector<std::string> getTitleList() const;
+    virtual std::vector<std::pair<std::string, int> > getSongDetails() const;
 
     /**
      * Active la lecture.

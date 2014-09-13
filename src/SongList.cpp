@@ -32,8 +32,6 @@ SongList::~SongList()
 
 void SongList::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-  unsigned int i;
-
   // on applique la transformation
   states.transform *= getTransform();
 
@@ -41,8 +39,13 @@ void SongList::draw(sf::RenderTarget& target, sf::RenderStates states) const
   states.texture = 0;
 
   // on dessine les titres
-  for (i = 0; i < m_Titles.size(); i++)
-    target.draw(m_Titles.at(i), states);
+  SongTexts_t::const_iterator songIt;
+
+  for (songIt = m_SongDetails.begin(); songIt != m_SongDetails.end(); ++songIt)
+  {
+    target.draw(songIt->first, states);
+    target.draw(songIt->second, states);
+  }
 }
 
 // ==============================
@@ -51,7 +54,7 @@ void SongList::draw(sf::RenderTarget& target, sf::RenderStates states) const
 bool SongList::collision(int x, int y) const
 {
   return (x >= SONG_LIST_X && x <= WINDOW_WIDTH
-            && y >= SONG_LIST_Y && y <=(SONG_LIST_Y + (m_Titles.size() * SONG_TITLE_H)));
+            && y >= SONG_LIST_Y && y <=(SONG_LIST_Y + (m_SongDetails.size() * SONG_TITLE_H)));
 }
 
 // ==============================
@@ -68,28 +71,38 @@ int SongList::getClickedSong(int x, int y) const
 // ==============================
 // ==============================
 
-void SongList::add(const std::string& title)
+void SongList::add(const std::string& title, const std::string& length)
 {
-  sf::Text element;
+  /* Construction du titre */
+  sf::Text titleText;
 
-  element.setFont(m_Font);
-  element.setString(title);
-  element.setColor(sf::Color::White);
-  element.setCharacterSize(13);
-  element.setPosition(sf::Vector2f(SONG_LIST_X, SONG_LIST_Y + (m_Titles.size() * SONG_TITLE_H)));
+  titleText.setFont(m_Font);
+  titleText.setString(title);
+  titleText.setColor(sf::Color::White);
+  titleText.setCharacterSize(13);
+  titleText.setPosition(sf::Vector2f(SONG_LIST_X, SONG_LIST_Y + (m_SongDetails.size() * SONG_TITLE_H)));
 
-  m_Titles.push_back(element);
+  /* Construction de la durée */
+  sf::Text lengthText;
+
+  lengthText.setFont(m_Font);
+  lengthText.setString(length);
+  lengthText.setColor(sf::Color::White);
+  lengthText.setCharacterSize(13);
+  lengthText.setPosition(sf::Vector2f(LENGTH_LIST_X, SONG_LIST_Y + (m_SongDetails.size() * SONG_TITLE_H)));
+
+  m_SongDetails.push_back(std::make_pair(titleText, lengthText));
 }
 
 // ==============================
 // ==============================
 
-void SongList::add(const std::vector<std::string>& titles)
+void SongList::add(const std::vector<std::pair<std::string, std::string> >& songs)
 {
-  unsigned int i;
+  std::vector<std::pair<std::string, std::string> >::const_iterator songIt;
 
-  for (i = 0; i < titles.size(); i++)
-    add(titles.at(i));
+  for (songIt = songs.begin(); songIt != songs.end(); ++songIt)
+    add(songIt->first, songIt->second);
 }
 
 // ==============================
@@ -97,7 +110,7 @@ void SongList::add(const std::vector<std::string>& titles)
 
 void SongList::clear()
 {
-  m_Titles.clear();
+  m_SongDetails.clear();
 }
 
 

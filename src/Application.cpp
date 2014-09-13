@@ -152,7 +152,7 @@ void Application::refreshSongsList()
 {
   m_Player.loadSongs(SONGS_SUBDIR);
   m_Interface.getSongList().clear();
-  m_Interface.getSongList().add(m_Player.getTitleList());
+  m_Interface.addToSongList(m_Player.getSongDetails());
 
   changeSong(m_Player.first());
 
@@ -168,7 +168,7 @@ void Application::run()
   m_Interface.loadTexts();
   m_Interface.loadImages();
   m_Player.loadSongs(SONGS_SUBDIR);
-  m_Interface.getSongList().add(m_Player.getTitleList());
+  m_Interface.addToSongList(m_Player.getSongDetails());
 
   changeSong(m_Player.first());
 

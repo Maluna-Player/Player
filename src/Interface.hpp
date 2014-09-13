@@ -12,6 +12,9 @@
 #ifndef __INTERFACE_HPP__
 #define __INTERFACE_HPP__
 
+#include <vector>
+#include <utility>
+
 /** SFML Graphics includes **/
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Text.hpp>
@@ -119,6 +122,14 @@ class Interface
      * @param id Identifiant du canal
     */
     virtual void updateSpectrum(SoundID_t id);
+
+    /**
+     * Ajoute les infos de la liste passée en paramètre
+     * à la SongList en formatant les données
+     * (longueur du titre et type de la durée).
+     * @param songs Liste de sons (titre/durée) à ajouter
+    */
+    virtual void addToSongList(const std::vector<std::pair<std::string, int> >& songs);
 };
 
 #endif  // __INTERFACE_HPP__

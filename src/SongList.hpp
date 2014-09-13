@@ -13,6 +13,7 @@
 #define __SONGLIST_HPP__
 
 #include <vector>
+#include <utility>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
@@ -24,9 +25,11 @@ class SongList : public sf::Drawable, public sf::Transformable, public Clickable
 {
   private:
 
+    typedef std::vector<std::pair<sf::Text, sf::Text> >   SongTexts_t;
+
     sf::Font m_Font;
 
-    std::vector<sf::Text> m_Titles;
+    SongTexts_t m_SongDetails;
 
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -47,16 +50,17 @@ class SongList : public sf::Drawable, public sf::Transformable, public Clickable
     virtual int getClickedSong(int x, int y) const;
 
     /**
-     * Ajoute le titre passé en paramètre à la liste.
+     * Ajoute le titre et la durée passés en paramètre.
      * @param title Titre à ajouter
+     * @param length Durée à ajouter
     */
-    virtual void add(const std::string& title);
+    virtual void add(const std::string& title, const std::string& length);
 
     /**
-     * Ajoute les titres de la liste passée en paramètre.
-     * @param titles Liste de titres à ajouter
+     * Ajoute les titres et durées de la liste passée en paramètre.
+     * @param songs Liste de sons (titre/durée) à ajouter
     */
-    virtual void add(const std::vector<std::string>& titles);
+    virtual void add(const std::vector<std::pair<std::string, std::string> >& songs);
 
     /**
      * Efface la liste des titres affichés.

@@ -105,9 +105,11 @@
 #define VOLUME_SPRITE_H                 75
 
 // Liste des musiques
-#define SONG_LIST_X                     600
+#define SONG_LIST_X                     500
 #define SONG_LIST_Y                     50
 #define SONG_TITLE_H                    25
+#define LENGTH_LIST_X                   SONG_LIST_X + 250
+#define TITLE_LIST_MAX_WIDTH            30
 
 
 /*******************************

@@ -223,3 +223,24 @@ void Interface::updateSpectrum(SoundID_t id)
 {
   m_Spectrum.update(id);
 }
+
+// ==============================
+// ==============================
+
+void Interface::addToSongList(const std::vector<std::pair<std::string, int> >& songs)
+{
+  std::vector<std::pair<std::string, std::string> > songList;
+  std::vector<std::pair<std::string, int> >::const_iterator songIt;
+
+  for (songIt = songs.begin(); songIt != songs.end(); ++songIt)
+  {
+    std::string title = songIt->first;
+
+    if (title.size() > TITLE_LIST_MAX_WIDTH)
+      title.resize(TITLE_LIST_MAX_WIDTH);
+
+    songList.push_back(std::make_pair(title, timeToString(songIt->second / 1000)));
+  }
+
+  mp_SongList->add(songList);
+}
