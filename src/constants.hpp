@@ -104,6 +104,11 @@
 #define VOLUME_SPRITE_W                 85
 #define VOLUME_SPRITE_H                 75
 
+// Liste des musiques
+#define SONG_LIST_X                     600
+#define SONG_LIST_Y                     50
+#define SONG_TITLE_H                    25
+
 
 /*******************************
 /** Liste des éléments
@@ -122,6 +127,7 @@ enum Clickable_t { PLAY_BUTTON, STOP_BUTTON, PREV_BUTTON, NEXT_BUTTON,
 
                    PROGRESS_BACKGROUND = NB_BUTTONS,
                    VOLUME_VIEWER,
+                   SONG_LIST,
                    NB_CLICKABLES
                  };
 

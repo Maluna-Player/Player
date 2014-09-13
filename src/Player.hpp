@@ -40,7 +40,15 @@ class Player
     Player();
     virtual ~Player();
 
+    /**
+     * @return Référence vers le son actuel.
+    */
     virtual Song& getCurrentSong();
+
+    /**
+     * @return Liste des titres des musiques du dossier.
+    */
+    virtual std::vector<std::string> getTitleList() const;
 
     /**
      * Active la lecture.

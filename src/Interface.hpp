@@ -23,6 +23,7 @@
 #include "ProgressBar.hpp"
 #include "ProgressBackground.hpp"
 #include "VolumeViewer.hpp"
+#include "SongList.hpp"
 
 
 class Interface
@@ -40,6 +41,7 @@ class Interface
     ProgressBackground *mp_ProgressBackground;
     ProgressBar *mp_ProgressBar;
     VolumeViewer *mp_VolumeViewer;
+    SongList *mp_SongList;
 
     std::vector<Clickable*> mp_ClickableObjects;
     std::vector<Movable*>   mp_MovableObjects;
@@ -57,6 +59,8 @@ class Interface
 
     Interface();
     virtual ~Interface();
+
+    virtual SongList& getSongList();
 
     virtual Clickable& button(Clickable_t index) const;
 

@@ -47,6 +47,20 @@ Song& Player::getCurrentSong()
 // ==============================
 // ==============================
 
+std::vector<std::string> Player::getTitleList() const
+{
+  int i;
+  std::vector<std::string> titles;
+
+  for (i = 0; i < m_Songs.size(); i++)
+    titles.push_back(Path::baseName(m_Songs.at(i).getFile()));
+
+  return titles;
+}
+
+// ==============================
+// ==============================
+
 void Player::play()
 {
   if (m_Songs.size() > 0)

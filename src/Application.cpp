@@ -68,14 +68,14 @@ void Application::changeSong(int song)
 {
   if (song != UNDEFINED_SONG)
   {
-    if (m_Player.isPaused())
-      setState(STOP_STATE);
-
     try
     {
       m_Player.changeSong(song);
       m_Interface.setSong(Path::baseName(m_Player.getCurrentSong().getFile()),
                             m_Player.getCurrentSong().getLength());
+
+      if (m_Player.isPaused())
+        setState(STOP_STATE);
     }
     catch(StreamError_t error)
     {
@@ -151,6 +151,9 @@ void Application::setMute(bool mute)
 void Application::refreshSongsList()
 {
   m_Player.loadSongs(SONGS_SUBDIR);
+  m_Interface.getSongList().clear();
+  m_Interface.getSongList().add(m_Player.getTitleList());
+
   changeSong(m_Player.first());
 
   if (!m_Player.isStopped())
@@ -165,6 +168,7 @@ void Application::run()
   m_Interface.loadTexts();
   m_Interface.loadImages();
   m_Player.loadSongs(SONGS_SUBDIR);
+  m_Interface.getSongList().add(m_Player.getTitleList());
 
   changeSong(m_Player.first());
 

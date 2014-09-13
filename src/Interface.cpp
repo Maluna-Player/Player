@@ -18,7 +18,7 @@
 Interface::Interface()
   :  m_Texts(NB_TEXTS), m_Textures(NB_TEXTURES),
     m_Buttons(NB_BUTTONS, CircleButton(BUTTON_SIZE / 2)),
-    mp_ProgressBackground(0), mp_ProgressBar(0), mp_VolumeViewer(0),
+    mp_ProgressBackground(0), mp_ProgressBar(0), mp_VolumeViewer(0), mp_SongList(0),
     mp_ClickableObjects(NB_CLICKABLES), mp_MovableObjects(NB_MOVABLES)
 {
   int i;
@@ -35,6 +35,7 @@ Interface::~Interface()
   delete mp_ProgressBar;
   delete mp_ProgressBackground;
   delete mp_VolumeViewer;
+  delete mp_SongList;
 }
 
 // ==============================
@@ -46,6 +47,14 @@ const std::string Interface::timeToString(int seconds) const
   time << seconds / 60 << ":" << seconds % 60 / 10 << seconds % 10;
 
   return time.str();
+}
+
+// ==============================
+// ==============================
+
+SongList& Interface::getSongList()
+{
+  return *mp_SongList;
 }
 
 // ==============================
@@ -139,6 +148,10 @@ void Interface::loadImages()
   /* Création du visualisateur du volume */
   mp_VolumeViewer = new VolumeViewer;
   mp_ClickableObjects[VOLUME_VIEWER] = mp_VolumeViewer;
+
+  /* Liste des musiques */
+  mp_SongList = new SongList;
+  mp_ClickableObjects[SONG_LIST] = mp_SongList;
 }
 
 // ==============================
@@ -164,6 +177,7 @@ void Interface::drawContent(sf::RenderTarget& target, bool stopped)
 
   target.draw(m_Texts[LENGTH_TEXT]);
   target.draw(m_Texts[TITLE_TEXT]);
+  target.draw(*mp_SongList);
 }
 
 // ==============================
