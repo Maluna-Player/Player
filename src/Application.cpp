@@ -71,7 +71,8 @@ void Application::changeSong(int song)
     try
     {
       m_Player.changeSong(song);
-      m_Interface.setSong(Path::baseName(m_Player.getCurrentSong().getFile()),
+      m_Interface.setSong(m_Player.getCurrentSong().getNum(),
+                            Path::baseName(m_Player.getCurrentSong().getFile()),
                             m_Player.getCurrentSong().getLength());
 
       if (m_Player.isPaused())

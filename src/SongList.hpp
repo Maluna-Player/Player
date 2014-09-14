@@ -50,6 +50,13 @@ class SongList : public sf::Drawable, public sf::Transformable, public Clickable
     virtual int getClickedSong(int x, int y) const;
 
     /**
+     * Change le son marqué comme son courant
+     * dans la liste.
+     * @param song Indice de la musique actuelle
+    */
+    virtual void setCurrentSong(int song);
+
+    /**
      * Ajoute le titre et la durée passés en paramètre.
      * @param title Titre à ajouter
      * @param length Durée à ajouter

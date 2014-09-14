@@ -45,6 +45,14 @@ SoundID_t Song::getSoundID() const
 // ==============================
 // ==============================
 
+int Song::getNum() const
+{
+  return m_Num;
+}
+
+// ==============================
+// ==============================
+
 std::string Song::getFile() const
 {
   return m_File;

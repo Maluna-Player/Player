@@ -31,6 +31,7 @@ class Song
 		virtual ~Song();
 
     virtual SoundID_t getSoundID() const;
+    virtual int getNum() const;
     virtual std::string getFile() const;
     virtual SoundPos_t getLength() const;
 

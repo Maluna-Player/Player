@@ -140,7 +140,7 @@ class Player
 
     /**
      * Lance la musique d'indice song.
-     * @param song indice de la musique
+     * @param song Indice de la musique
     */
     virtual void changeSong(int song);
 };

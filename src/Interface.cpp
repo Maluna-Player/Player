@@ -183,10 +183,12 @@ void Interface::drawContent(sf::RenderTarget& target, bool stopped)
 // ==============================
 // ==============================
 
-void Interface::setSong(const std::string& title, SoundPos_t length)
+void Interface::setSong(int num, const std::string& title, SoundPos_t length)
 {
   m_Texts[TITLE_TEXT].setString(title);
   m_Texts[LENGTH_TEXT].setString(timeToString(length / 1000));
+
+  mp_SongList->setCurrentSong(num - 1);
 }
 
 // ==============================

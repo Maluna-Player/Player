@@ -91,10 +91,11 @@ class Interface
 
     /**
      * Change le titre et la durée du son courant.
+     * @param num Numéro de la musique dans la liste
      * @param title Titre à afficher
      * @param length Durée du son
     */
-    virtual void setSong(const std::string& title, SoundPos_t length);
+    virtual void setSong(int num, const std::string& title, SoundPos_t length);
 
     /**
      * Modifie la texture du bouton

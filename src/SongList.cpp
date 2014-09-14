@@ -71,6 +71,28 @@ int SongList::getClickedSong(int x, int y) const
 // ==============================
 // ==============================
 
+void SongList::setCurrentSong(int song)
+{
+  unsigned int i;
+
+  for (i = 0; i < m_SongDetails.size(); i++)
+  {
+    if (i == song)
+    {
+      m_SongDetails.at(i).first.setColor(sf::Color(21, 191, 221));
+      m_SongDetails.at(i).second.setColor(sf::Color(21, 191, 221));
+    }
+    else
+    {
+      m_SongDetails.at(i).first.setColor(sf::Color::White);
+      m_SongDetails.at(i).second.setColor(sf::Color::White);
+    }
+  }
+}
+
+// ==============================
+// ==============================
+
 void SongList::add(const std::string& title, const std::string& length)
 {
   /* Construction du titre */

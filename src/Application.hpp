@@ -53,6 +53,7 @@ class Application
      * Lance le son song du player
      * et actualise l'interface graphique
      * (titre, durée...)
+     * @param song Indice de la musique
     */
     virtual void changeSong(int song);
 
