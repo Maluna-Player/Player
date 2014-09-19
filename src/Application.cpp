@@ -20,7 +20,7 @@
 
 Application::Application()
 {
-  m_Window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_TITLE);
+  m_Window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_TITLE, sf::Style::Titlebar | sf::Style::Close);
   m_Window.setVerticalSyncEnabled(true);
   m_Window.setKeyRepeatEnabled(false);
 }
