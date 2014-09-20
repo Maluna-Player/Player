@@ -27,6 +27,9 @@ class SongList : public sf::Drawable, public sf::Transformable, public Clickable
 
     typedef std::vector<std::pair<sf::Text, sf::Text> >   SongTexts_t;
 
+
+    int m_Selected;
+
     sf::Font m_Font;
 
     SongTexts_t m_SongDetails;
