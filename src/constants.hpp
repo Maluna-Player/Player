@@ -107,9 +107,11 @@
 // Liste des musiques
 #define SONG_LIST_X                     500
 #define SONG_LIST_Y                     50
+#define SONG_LIST_W                     (WINDOW_WIDTH - SONG_LIST_X)
 #define SONG_TITLE_H                    25
 #define LENGTH_LIST_X                   SONG_LIST_X + 250
 #define TITLE_LIST_MAX_WIDTH            30
+#define TEXT_HEIGHT_SPACE               4
 
 
 /*******************************

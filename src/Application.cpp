@@ -216,15 +216,20 @@ void Application::run()
       else if (m_Interface.button(VOLUME_VIEWER).collision(x, y))
         setMute(!m_Player.isMuted());
       else if (m_Interface.button(SONG_LIST).collision(x, y))
-        changeSong(m_Interface.getSongList().getClickedSong(x, y));
+        changeSong(m_Interface.getSongList().getSong(x, y));
     }
     else if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
       m_Interface.button(PROGRESSBAR).m_Press = false;
 
     if (m_In.motion())
     {
+      int x = sf::Mouse::getPosition(m_Window).x,
+          y = sf::Mouse::getPosition(m_Window).y;
+
       if (m_Interface.button(PROGRESSBAR).m_Press)
-        setSongPosition(sf::Mouse::getPosition(m_Window).x);
+        setSongPosition(x);
+      else
+        m_Interface.getSongList().setPointedSong(m_Interface.getSongList().getSong(x, y));
     }
 
     wait(REFRESH_TIME_MS);

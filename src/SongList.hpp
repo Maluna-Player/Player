@@ -19,6 +19,8 @@
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 #include "Clickable.hpp"
 
 class SongList : public sf::Drawable, public sf::Transformable, public Clickable
@@ -29,8 +31,12 @@ class SongList : public sf::Drawable, public sf::Transformable, public Clickable
 
 
     int m_Selected;
+    int m_Pointed;
 
     sf::Font m_Font;
+
+    sf::Texture m_PointingTexture;
+    sf::RectangleShape m_PointingBox;
 
     SongTexts_t m_SongDetails;
 
@@ -44,13 +50,13 @@ class SongList : public sf::Drawable, public sf::Transformable, public Clickable
     virtual bool collision(int x, int y) const;
 
     /**
-     * Détermine la chanson cliquée
-     * avec le point (x,y).
+     * Détermine la chanson située aux coordonnées
+     * (x,y), qui soit pointée ou cliquée.
      * @param x Abscisse du point
      * @param y Ordonnée du point
      * @return Numéro de la chanson, -1 si aucune
     */
-    virtual int getClickedSong(int x, int y) const;
+    virtual int getSong(int x, int y) const;
 
     /**
      * Change le son marqué comme son courant
@@ -58,6 +64,13 @@ class SongList : public sf::Drawable, public sf::Transformable, public Clickable
      * @param song Indice de la musique actuelle
     */
     virtual void setCurrentSong(int song);
+
+    /**
+     * Change le son marqué comme pointé
+     * par l'utilisateur dans la liste.
+     * @param song Indice de la musique
+    */
+    virtual void setPointedSong(int song);
 
     /**
      * Ajoute le titre et la durée passés en paramètre.
