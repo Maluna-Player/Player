@@ -168,10 +168,9 @@ void Application::run()
 {
   m_Interface.loadTexts();
   m_Interface.loadImages();
-  m_Player.loadSongs(SONGS_SUBDIR);
-  m_Interface.addToSongList(m_Player.getSongDetails());
+  refreshSongsList();
 
-  changeSong(m_Player.first());
+  setState(PLAY_STATE);
 
   while (m_Window.isOpen())
   {

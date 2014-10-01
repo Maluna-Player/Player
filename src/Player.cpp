@@ -19,7 +19,7 @@
 
 Player::Player()
   : m_CurrentSong(0), m_Playlist(true), m_Loop(false),
-    m_Pause(false), m_Stop(false), m_Mute(false),
+    m_Pause(false), m_Stop(true), m_Mute(false),
     m_VolumeState(NB_VOLUME_STATES - 1)
 {
 
