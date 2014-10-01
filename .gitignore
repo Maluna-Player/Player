@@ -36,5 +36,8 @@ stderr.txt
 
 # Music files
 *.mp3
+*.mp4
 *.wav
 *.ogg
+*.wma
+*.wmv

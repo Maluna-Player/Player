@@ -104,12 +104,33 @@
 #define VOLUME_SPRITE_W                 85
 #define VOLUME_SPRITE_H                 75
 
+// Onglet
+#define TAB_HEAD_W                      40
+#define TAB_HEAD_H                      77
+#define TAB_CONTENT_W                   300
+#define TAB_CONTENT_H                   300
+
+#define CLOSED_TAB_HEAD_X               (WINDOW_WIDTH - TAB_HEAD_W)
+#define OPENED_TAB_HEAD_X               (CLOSED_TAB_HEAD_X - TAB_CONTENT_W)
+
+#define TAB_HEAD_X                      CLOSED_TAB_HEAD_X
+#define TAB_HEAD_Y                      45
+#define TAB_CONTENT_X                   (TAB_HEAD_X + TAB_HEAD_W)
+#define TAB_CONTENT_Y                   (TAB_HEAD_Y - 10)
+
+#define TAB_MOVING_INTERVAL             10
+
 // Liste des musiques
-#define SONG_LIST_X                     500
-#define SONG_LIST_Y                     50
-#define SONG_LIST_W                     (WINDOW_WIDTH - SONG_LIST_X)
+#define SONG_LIST_X                     10
+#define SONG_LIST_Y                     10
+#define LENGTH_LIST_X                   250
+
+#define MAX_SONGS_NB                    11
+
+#define SONG_LIST_W                     (TAB_CONTENT_W - SONG_LIST_X)
+#define SONG_LIST_H                     (MAX_SONGS_NB * SONG_TITLE_H)
+
 #define SONG_TITLE_H                    25
-#define LENGTH_LIST_X                   SONG_LIST_X + 250
 #define TITLE_LIST_MAX_WIDTH            30
 #define TEXT_HEIGHT_SPACE               4
 
@@ -132,6 +153,7 @@ enum Clickable_t { PLAY_BUTTON, STOP_BUTTON, PREV_BUTTON, NEXT_BUTTON,
                    PROGRESS_BACKGROUND = NB_BUTTONS,
                    VOLUME_VIEWER,
                    SONG_LIST,
+                   TAB,
                    NB_CLICKABLES
                  };
 

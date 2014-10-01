@@ -27,6 +27,7 @@
 #include "ProgressBackground.hpp"
 #include "VolumeViewer.hpp"
 #include "SongList.hpp"
+#include "PlayerTab.hpp"
 
 
 class Interface
@@ -45,6 +46,7 @@ class Interface
     ProgressBar *mp_ProgressBar;
     VolumeViewer *mp_VolumeViewer;
     SongList *mp_SongList;
+    PlayerTab *mp_Tab;
 
     std::vector<Clickable*> mp_ClickableObjects;
     std::vector<Movable*>   mp_MovableObjects;
@@ -56,7 +58,15 @@ class Interface
      * @param seconds Nombre de secondes
      * @return Chaîne formatée
     */
-    const std::string timeToString(int seconds) const;
+    virtual const std::string timeToString(int seconds) const;
+
+    /**
+     * Convertit des coordonnées de la fenêtre
+     * en coordonnées relatives à l'onglet.
+     * @param pos Coordonnées d'un point la fenêtre
+     * @return Coordonnées dans l'onglet
+    */
+    virtual const sf::Vector2f getTabRelativePosition(const sf::Vector2f& pos) const;
 
   public:
 
@@ -65,9 +75,17 @@ class Interface
 
     virtual SongList& getSongList();
 
-    virtual Clickable& button(Clickable_t index) const;
-
     virtual Movable& button(Movable_t index) const;
+
+    /**
+     * Détermine s'il y a collision entre l'objet et les
+     * coordonnées passés en paramètre.
+     * @param index Objet cliquable à tester
+     * @param x Abscisse du point
+     * @param y Ordonnée du point
+     * @return true si collision, false sinon
+    */
+    virtual bool collision(Clickable_t index, int x, int y) const;
 
     /**
      * Charge les polices et créé
@@ -131,6 +149,25 @@ class Interface
      * @param songs Liste de sons (titre/durée) à ajouter
     */
     virtual void addToSongList(const std::vector<std::pair<std::string, int> >& songs);
+
+    /**
+     * Change l'état de l'onglet (ouvert/fermé/déplacement).
+    */
+    virtual void changeTabState();
+
+    /**
+     * Déplace l'onglet s'il est en déplacement.
+    */
+    virtual void moveTab();
+
+    /**
+     * Détermine le son pointé/cliqué par
+     * le point de coordonnées (x,y).
+     * @param x Abscisse du point
+     * @param x Ordonnée du point
+     * @return Numéro de la chanson, -1 si aucune
+    */
+    virtual int getSongInList(int x, int y) const;
 };
 
 #endif  // __INTERFACE_HPP__

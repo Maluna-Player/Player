@@ -187,36 +187,38 @@ void Application::run()
     {
       int x = m_In.buttonX(), y = m_In.buttonY();
 
-      if (m_Interface.button(PLAY_BUTTON).collision(x, y))
+      if (m_Interface.collision(PLAY_BUTTON, x, y))
       {
         if (!m_Player.isPlayed())
           setState(PLAY_STATE);
         else
           setState(PAUSE_STATE);
       }
-      else if (m_Interface.button(STOP_BUTTON).collision(x, y))
+      else if (m_Interface.collision(STOP_BUTTON, x, y))
       {
         if (!m_Player.isStopped())
           setState(STOP_STATE);
       }
-      else if (m_Interface.button(PREV_BUTTON).collision(x, y))
+      else if (m_Interface.collision(PREV_BUTTON, x, y))
         changeSong(m_Player.prev());
-      else if (m_Interface.button(NEXT_BUTTON).collision(x, y))
+      else if (m_Interface.collision(NEXT_BUTTON, x, y))
         changeSong(m_Player.next());
-      else if (m_Interface.button(VOLUME_MORE_BUTTON).collision(x, y))
+      else if (m_Interface.collision(VOLUME_MORE_BUTTON, x, y))
         setVolume(VOLUME_MORE_BUTTON);
-      else if (m_Interface.button(VOLUME_LESS_BUTTON).collision(x, y))
+      else if (m_Interface.collision(VOLUME_LESS_BUTTON, x, y))
         setVolume(VOLUME_LESS_BUTTON);
-      else if (m_Interface.button(REFRESH_DIR_BUTTON).collision(x, y))
+      else if (m_Interface.collision(REFRESH_DIR_BUTTON, x, y))
         refreshSongsList();
       else if (m_Interface.button(PROGRESSBAR).collision(x, y))
         m_Interface.button(PROGRESSBAR).m_Press = true;
-      else if (m_Interface.button(PROGRESS_BACKGROUND).collision(x, y))
+      else if (m_Interface.collision(PROGRESS_BACKGROUND, x, y))
         setSongPosition(x);
-      else if (m_Interface.button(VOLUME_VIEWER).collision(x, y))
+      else if (m_Interface.collision(VOLUME_VIEWER, x, y))
         setMute(!m_Player.isMuted());
-      else if (m_Interface.button(SONG_LIST).collision(x, y))
-        changeSong(m_Interface.getSongList().getSong(x, y));
+      else if (m_Interface.collision(TAB, x, y))
+        m_Interface.changeTabState();
+      else if (m_Interface.collision(SONG_LIST, x, y))
+        changeSong(m_Interface.getSongInList(x, y));
     }
     else if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
       m_Interface.button(PROGRESSBAR).m_Press = false;
@@ -229,10 +231,12 @@ void Application::run()
       if (m_Interface.button(PROGRESSBAR).m_Press)
         setSongPosition(x);
       else
-        m_Interface.getSongList().setPointedSong(m_Interface.getSongList().getSong(x, y));
+        m_Interface.getSongList().setPointedSong(m_Interface.getSongInList(x, y));
     }
 
     wait(REFRESH_TIME_MS);
+
+    m_Interface.moveTab();
 
     if (m_Player.isPlayed())
     {

@@ -27,6 +27,7 @@ SongList::SongList() : m_Selected(-1), m_Pointed(-1)
 
   m_PointingBox.setTexture(&m_PointingTexture);
   m_PointingBox.setSize(sf::Vector2f(SONG_LIST_W, SONG_TITLE_H));
+  setPosition(sf::Vector2f(SONG_LIST_X, SONG_LIST_Y));
 }
 
 // ==============================
@@ -53,12 +54,16 @@ void SongList::draw(sf::RenderTarget& target, sf::RenderStates states) const
     target.draw(m_PointingBox, states);
 
   // on dessine les titres
-  SongTexts_t::const_iterator songIt;
+  int songsNb = 0;
+  SongTexts_t::const_iterator songIt = m_SongDetails.begin();
 
-  for (songIt = m_SongDetails.begin(); songIt != m_SongDetails.end(); ++songIt)
+  while (songsNb < MAX_SONGS_NB && songIt != m_SongDetails.end())
   {
     target.draw(songIt->first, states);
     target.draw(songIt->second, states);
+
+    songIt++;
+    songsNb++;
   }
 }
 
@@ -67,8 +72,11 @@ void SongList::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 bool SongList::collision(int x, int y) const
 {
-  return (x >= SONG_LIST_X && x <= WINDOW_WIDTH
-            && y >= SONG_LIST_Y && y < (SONG_LIST_Y + (m_SongDetails.size() * SONG_TITLE_H)));
+  return (x >= SONG_LIST_X
+          && x <= (SONG_LIST_X + SONG_LIST_W)
+          && y >= SONG_LIST_Y
+          && y < (SONG_LIST_Y + (m_SongDetails.size() * SONG_TITLE_H))
+          && y < (SONG_LIST_Y + SONG_LIST_H));
 }
 
 // ==============================
@@ -104,7 +112,7 @@ void SongList::setCurrentSong(int song)
 void SongList::setPointedSong(int song)
 {
   m_Pointed = song;
-  m_PointingBox.setPosition(sf::Vector2f(SONG_LIST_X, SONG_LIST_Y + (m_Pointed * SONG_TITLE_H)));
+  m_PointingBox.setPosition(sf::Vector2f(0, (m_Pointed * SONG_TITLE_H)));
 }
 
 // ==============================
@@ -112,7 +120,7 @@ void SongList::setPointedSong(int song)
 
 void SongList::add(const std::string& title, const std::string& length)
 {
-  int yPos = SONG_LIST_Y + (m_SongDetails.size() * SONG_TITLE_H) + TEXT_HEIGHT_SPACE;
+  int yPos = (m_SongDetails.size() * SONG_TITLE_H) + TEXT_HEIGHT_SPACE;
 
   /* Construction du titre */
   sf::Text titleText;
@@ -121,7 +129,7 @@ void SongList::add(const std::string& title, const std::string& length)
   titleText.setString(title);
   titleText.setColor(sf::Color::White);
   titleText.setCharacterSize(13);
-  titleText.setPosition(sf::Vector2f(SONG_LIST_X, yPos));
+  titleText.setPosition(sf::Vector2f(0, yPos));
 
   /* Construction de la durée */
   sf::Text lengthText;

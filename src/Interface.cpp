@@ -18,7 +18,7 @@
 Interface::Interface()
   :  m_Texts(NB_TEXTS), m_Textures(NB_TEXTURES),
     m_Buttons(NB_BUTTONS, CircleButton(BUTTON_SIZE / 2)),
-    mp_ProgressBackground(0), mp_ProgressBar(0), mp_VolumeViewer(0), mp_SongList(0),
+    mp_ProgressBackground(0), mp_ProgressBar(0), mp_VolumeViewer(0), mp_SongList(0), mp_Tab(0),
     mp_ClickableObjects(NB_CLICKABLES), mp_MovableObjects(NB_MOVABLES)
 {
   int i;
@@ -36,6 +36,7 @@ Interface::~Interface()
   delete mp_ProgressBackground;
   delete mp_VolumeViewer;
   delete mp_SongList;
+  delete mp_Tab;
 }
 
 // ==============================
@@ -52,6 +53,15 @@ const std::string Interface::timeToString(int seconds) const
 // ==============================
 // ==============================
 
+const sf::Vector2f Interface::getTabRelativePosition(const sf::Vector2f& pos) const
+{
+  return sf::Vector2f(pos.x - mp_Tab->getPosition().x,
+                      pos.y - mp_Tab->getPosition().y);
+}
+
+// ==============================
+// ==============================
+
 SongList& Interface::getSongList()
 {
   return *mp_SongList;
@@ -60,12 +70,18 @@ SongList& Interface::getSongList()
 // ==============================
 // ==============================
 
-Clickable& Interface::button(Clickable_t index) const
+bool Interface::collision(Clickable_t index, int x, int y) const
 {
   if (index >= mp_ClickableObjects.size())
     throw ArrayAccesException("Interface::button", mp_ClickableObjects.size(), index);
 
-  return *mp_ClickableObjects.at(index);
+  if (index != SONG_LIST)
+    return mp_ClickableObjects[index]->collision(x, y);
+  else
+  {
+    sf::Vector2f relativePos = getTabRelativePosition(sf::Vector2f(x, y));
+    return mp_SongList->collision(relativePos.x, relativePos.y);
+  }
 }
 
 // ==============================
@@ -152,6 +168,11 @@ void Interface::loadImages()
   /* Liste des musiques */
   mp_SongList = new SongList;
   mp_ClickableObjects[SONG_LIST] = mp_SongList;
+
+  /* Onglet */
+  mp_Tab = new PlayerTab;
+  mp_ClickableObjects[TAB] = mp_Tab;
+  mp_Tab->add(mp_SongList);
 }
 
 // ==============================
@@ -177,7 +198,11 @@ void Interface::drawContent(sf::RenderTarget& target, bool stopped)
 
   target.draw(m_Texts[LENGTH_TEXT]);
   target.draw(m_Texts[TITLE_TEXT]);
-  target.draw(*mp_SongList);
+
+  if (mp_Tab->isOpened())
+    mp_Tab->drawContentOnBackground();
+
+  target.draw(*mp_Tab);
 }
 
 // ==============================
@@ -245,4 +270,30 @@ void Interface::addToSongList(const std::vector<std::pair<std::string, int> >& s
   }
 
   mp_SongList->add(songList);
+}
+
+// ==============================
+// ==============================
+
+void Interface::changeTabState()
+{
+  mp_Tab->changeState();
+}
+
+// ==============================
+// ==============================
+
+void Interface::moveTab()
+{
+  if (mp_Tab->isMoving())
+    mp_Tab->moveTab();
+}
+
+// ==============================
+// ==============================
+
+int Interface::getSongInList(int x, int y) const
+{
+  sf::Vector2f relativePos = getTabRelativePosition(sf::Vector2f(x, y));
+  return mp_SongList->getSong(relativePos.x, relativePos.y);
 }
