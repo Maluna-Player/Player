@@ -3,7 +3,7 @@
  * @date    22/09/14
  * @author  Manuel
  *
- * Définitions de la classe PlayerTab.
+ * DÃ©finitions de la classe PlayerTab.
  *************************************
 */
 
