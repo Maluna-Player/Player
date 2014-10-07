@@ -27,15 +27,18 @@ class Input
     int m_ButtonX;
     int m_ButtonY;
 
+    int m_WheelDelta;
+
   public:
 
     Input();
     virtual ~Input();
 
-    inline bool motion() const {return m_Motion;}
-    inline bool clic() const {return m_Clic;}
-    inline int buttonX() const {return m_ButtonX;}
-    inline int buttonY() const {return m_ButtonY;}
+    inline bool motion() const    {return m_Motion;}
+    inline bool clic() const      {return m_Clic;}
+    inline int buttonX() const    {return m_ButtonX;}
+    inline int buttonY() const    {return m_ButtonY;}
+    inline int wheelDelta() const {return m_WheelDelta;}
 
     /**
      * Teste si la touche est pressée et remet

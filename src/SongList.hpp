@@ -40,6 +40,8 @@ class SongList : public sf::Drawable, public sf::Transformable, public Clickable
 
     SongTexts_t m_SongDetails;
 
+    int m_Scroll;
+
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
   public:
@@ -89,6 +91,13 @@ class SongList : public sf::Drawable, public sf::Transformable, public Clickable
      * Efface la liste des titres affichés.
     */
     virtual void clear();
+
+    /**
+     * Fait défiler la liste et modifie
+     * l'affichage des titres visibles.
+     * @param delta Nombre de crans de scroll
+    */
+    virtual void scroll(int delta);
 };
 
 #endif  // __SONGLIST_HPP__

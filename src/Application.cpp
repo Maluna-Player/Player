@@ -176,12 +176,15 @@ void Application::run()
   {
     m_In.update(m_Window);
 
+    int motionX = sf::Mouse::getPosition(m_Window).x,
+        motionY = sf::Mouse::getPosition(m_Window).y;
+
     /* Raccourcis clavier */
     if      (m_In.keyPressed(sf::Keyboard::N))  changeSong(m_Player.next());
     else if (m_In.keyPressed(sf::Keyboard::P))  changeSong(m_Player.prev());
     else if (m_In.keyPressed(sf::Keyboard::L))  m_Player.setLoop(!m_Player.isLoop());
 
-    /* Evénements souris */
+    /* Clic souris */
     if (m_In.clic() && sf::Mouse::isButtonPressed(sf::Mouse::Left))
     {
       int x = m_In.buttonX(), y = m_In.buttonY();
@@ -222,15 +225,20 @@ void Application::run()
     else if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
       m_Interface.button(PROGRESSBAR).m_Press = false;
 
+    /* Roulette souris */
+    if (m_In.wheelDelta() != 0 && m_Interface.collision(SONG_LIST, motionX, motionY))
+    {
+      m_Interface.getSongList().scroll(m_In.wheelDelta());
+      m_Interface.getSongList().setPointedSong(m_Interface.getSongInList(motionX, motionY));
+    }
+
+    /* Mouvement souris */
     if (m_In.motion())
     {
-      int x = sf::Mouse::getPosition(m_Window).x,
-          y = sf::Mouse::getPosition(m_Window).y;
-
       if (m_Interface.button(PROGRESSBAR).m_Press)
-        setSongPosition(x);
+        setSongPosition(motionX);
       else
-        m_Interface.getSongList().setPointedSong(m_Interface.getSongInList(x, y));
+        m_Interface.getSongList().setPointedSong(m_Interface.getSongInList(motionX, motionY));
     }
 
     wait(REFRESH_TIME_MS);

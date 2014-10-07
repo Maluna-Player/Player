@@ -13,7 +13,7 @@
 #include "Path.hpp"
 
 
-SongList::SongList() : m_Selected(-1), m_Pointed(-1)
+SongList::SongList() : m_Selected(-1), m_Pointed(-1), m_Scroll(0)
 {
   if (!m_Font.loadFromFile(FONT_FILE))
     throw FileLoadingException("SongList::SongList", FONT_FILE);
@@ -54,16 +54,19 @@ void SongList::draw(sf::RenderTarget& target, sf::RenderStates states) const
     target.draw(m_PointingBox, states);
 
   // on dessine les titres
-  int songsNb = 0;
-  SongTexts_t::const_iterator songIt = m_SongDetails.begin();
+  const int scrolledSongs = m_Scroll / SONG_TITLE_H;
+  const int songsToDrawMax = TAB_CONTENT_H / SONG_TITLE_H + 1;
 
-  while (songsNb < MAX_SONGS_NB && songIt != m_SongDetails.end())
+  int drawnSongsNb = 0;
+  SongTexts_t::const_iterator songIt = m_SongDetails.begin() + scrolledSongs;
+
+  while (drawnSongsNb < songsToDrawMax && songIt != m_SongDetails.end())
   {
     target.draw(songIt->first, states);
     target.draw(songIt->second, states);
 
     songIt++;
-    songsNb++;
+    drawnSongsNb++;
   }
 }
 
@@ -87,7 +90,7 @@ int SongList::getSong(int x, int y) const
   if (!collision(x, y))
     return -1;
   else
-    return ((y - SONG_LIST_Y) / SONG_TITLE_H);
+    return ((y - SONG_LIST_Y + m_Scroll) / SONG_TITLE_H);
 }
 
 // ==============================
@@ -112,7 +115,7 @@ void SongList::setCurrentSong(int song)
 void SongList::setPointedSong(int song)
 {
   m_Pointed = song;
-  m_PointingBox.setPosition(sf::Vector2f(0, (m_Pointed * SONG_TITLE_H)));
+  m_PointingBox.setPosition(sf::Vector2f(0, m_Pointed * SONG_TITLE_H - m_Scroll));
 }
 
 // ==============================
@@ -162,4 +165,26 @@ void SongList::clear()
   m_SongDetails.clear();
 }
 
+// ==============================
+// ==============================
+
+void SongList::scroll(int delta)
+{
+  int deltaPos = -(delta * SCROLL_INTERVAL);    // Inversion du signe
+
+  if ((m_Scroll + deltaPos) < 0)                // Trop haut
+    deltaPos = -m_Scroll;
+  else if ((m_Scroll + deltaPos) > SCROLL_MAX)  // Trop bas
+    deltaPos = SCROLL_MAX - m_Scroll;
+
+  m_Scroll += deltaPos;
+
+  SongTexts_t::iterator songIt;
+
+  for (songIt = m_SongDetails.begin(); songIt != m_SongDetails.end(); ++songIt)
+  {
+    songIt->first.move(0, -deltaPos);
+    songIt->second.move(0, -deltaPos);
+  }
+}
 

@@ -50,6 +50,7 @@ void Input::update(sf::Window& window)
 
   m_Motion = false;
   m_Clic = false;
+  m_WheelDelta = 0;
 
   while (window.pollEvent(event))
   {
@@ -67,6 +68,10 @@ void Input::update(sf::Window& window)
         m_Clic = true;
         m_ButtonX = event.mouseButton.x;
         m_ButtonY = event.mouseButton.y;
+        break;
+
+      case sf::Event::MouseWheelMoved:
+        m_WheelDelta = event.mouseWheel.delta;
         break;
 
       case sf::Event::KeyPressed:

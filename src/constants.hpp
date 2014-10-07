@@ -125,14 +125,16 @@
 #define SONG_LIST_Y                     10
 #define LENGTH_LIST_X                   250
 
-#define MAX_SONGS_NB                    11
-
 #define SONG_LIST_W                     (TAB_CONTENT_W - SONG_LIST_X)
-#define SONG_LIST_H                     (MAX_SONGS_NB * SONG_TITLE_H)
+#define SONG_LIST_H                     (TAB_CONTENT_H - SONG_LIST_Y * 2)
 
 #define SONG_TITLE_H                    25
 #define TITLE_LIST_MAX_WIDTH            30
 #define TEXT_HEIGHT_SPACE               4
+
+#define SCROLL_INTERVAL                 10
+#define TOTAL_SONG_LIST_H               (m_SongDetails.size() * SONG_TITLE_H)
+#define SCROLL_MAX                      (TOTAL_SONG_LIST_H - SONG_LIST_H)
 
 
 /*******************************
