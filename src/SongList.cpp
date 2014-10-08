@@ -10,6 +10,7 @@
 #include "SongList.hpp"
 #include "constants.hpp"
 #include "FileLoadingException.hpp"
+#include "ArrayAccessException.hpp"
 #include "Path.hpp"
 
 
@@ -100,9 +101,15 @@ void SongList::setCurrentSong(int song)
 {
   if (m_Selected != -1)
   {
+    if (m_Selected >= m_SongDetails.size())
+      throw ArrayAccesException("SongList::setCurrentSong", m_SongDetails.size(), m_Selected);
+
     m_SongDetails.at(m_Selected).first.setColor(sf::Color::White);
     m_SongDetails.at(m_Selected).second.setColor(sf::Color::White);
   }
+
+  if (song >= m_SongDetails.size())
+    throw ArrayAccesException("SongList::setCurrentSong", m_SongDetails.size(), song);
 
   m_Selected = song;
   m_SongDetails.at(m_Selected).first.setColor(sf::Color(21, 191, 221));
@@ -163,6 +170,10 @@ void SongList::add(const std::vector<std::pair<std::string, std::string> >& song
 void SongList::clear()
 {
   m_SongDetails.clear();
+
+  m_Selected = -1;
+  m_Pointed = -1;
+  m_Scroll = 0;
 }
 
 // ==============================
@@ -170,21 +181,30 @@ void SongList::clear()
 
 void SongList::scroll(int delta)
 {
-  int deltaPos = -(delta * SCROLL_INTERVAL);    // Inversion du signe
+  const int totalSongListHeight = m_SongDetails.size() * SONG_TITLE_H;
 
-  if ((m_Scroll + deltaPos) < 0)                // Trop haut
-    deltaPos = -m_Scroll;
-  else if ((m_Scroll + deltaPos) > SCROLL_MAX)  // Trop bas
-    deltaPos = SCROLL_MAX - m_Scroll;
-
-  m_Scroll += deltaPos;
-
-  SongTexts_t::iterator songIt;
-
-  for (songIt = m_SongDetails.begin(); songIt != m_SongDetails.end(); ++songIt)
+  if (totalSongListHeight > SONG_LIST_H)
   {
-    songIt->first.move(0, -deltaPos);
-    songIt->second.move(0, -deltaPos);
+    const int scrollMax = totalSongListHeight - SONG_LIST_H;
+    int deltaPos = -(delta * SCROLL_INTERVAL);    // Inversion du signe
+
+    if ((m_Scroll + deltaPos) < 0)                // Trop haut
+      deltaPos = -m_Scroll;
+    else if ((m_Scroll + deltaPos) > scrollMax)   // Trop bas
+      deltaPos = scrollMax - m_Scroll;
+
+    if (deltaPos != 0)
+    {
+      m_Scroll += deltaPos;
+
+      SongTexts_t::iterator songIt;
+
+      for (songIt = m_SongDetails.begin(); songIt != m_SongDetails.end(); ++songIt)
+      {
+        songIt->first.move(0, -deltaPos);
+        songIt->second.move(0, -deltaPos);
+      }
+    }
   }
 }
 

@@ -133,8 +133,6 @@
 #define TEXT_HEIGHT_SPACE               4
 
 #define SCROLL_INTERVAL                 10
-#define TOTAL_SONG_LIST_H               (m_SongDetails.size() * SONG_TITLE_H)
-#define SCROLL_MAX                      (TOTAL_SONG_LIST_H - SONG_LIST_H)
 
 
 /*******************************
