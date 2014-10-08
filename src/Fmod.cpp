@@ -106,11 +106,13 @@ void Fmod::releaseSound(SoundID_t id)
 {
   FMOD_RESULT res;
 
+  if (mp_Channels.at(id))
+    stopSound(id);
+
   if ((res = FMOD_Sound_Release(mp_Sounds.at(id))) != FMOD_OK)
     throw LibException("Fmod::releaseSound", "FMOD_Sound_Release", FMOD_ErrorString(res));
 
   mp_Sounds.at(id) = 0;
-  mp_Channels.at(id) = 0;
 }
 
 // ==============================
@@ -127,12 +129,14 @@ void Fmod::playSound(SoundID_t id)
 // ==============================
 // ==============================
 
-void Fmod::stopSound(SoundID_t id) const
+void Fmod::stopSound(SoundID_t id)
 {
   FMOD_RESULT res;
 
   if ((res = FMOD_Channel_Stop(mp_Channels.at(id))) != FMOD_OK)
     throw LibException("Fmod::stopSound", "FMOD_Channel_Stop", FMOD_ErrorString(res));
+
+  mp_Channels.at(id) = 0;
 }
 
 // ==============================

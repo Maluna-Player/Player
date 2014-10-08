@@ -90,7 +90,7 @@ class Fmod
      * Arrête le son joué sur le canal id.
      * @param id Identifiant du canal à stopper
     */
-    virtual void stopSound(SoundID_t id) const;
+    virtual void stopSound(SoundID_t id);
 
     /**
      * Met ou retire la pause du canal id.
