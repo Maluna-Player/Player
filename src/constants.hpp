@@ -92,6 +92,11 @@
 #define PROGRESSBAR_HEIGHT              17
 #define PROGRESSBAR_Y                   (PROGRESS_BACKGROUND_Y + 6)
 
+// Background du bas
+#define BOTTOM_BACKGROUND_X             0
+#define BOTTOM_BACKGROUND_Y             (PROGRESS_BACKGROUND_Y + PROGRESS_BACKGROUND_HEIGHT - 3)
+#define BOTTOM_BACKGROUND_H             (WINDOW_HEIGHT - BOTTOM_BACKGROUND_Y)
+
 // Temps de la musique
 #define POS_TEXT_X                      0
 #define POS_TEXT_Y                      530
@@ -140,7 +145,7 @@
 /*******************************/
 
 // Liste des textures générales
-enum { BUTTONS_TEXTURE, NB_TEXTURES };
+enum { BUTTONS_TEXTURE, BOTTOM_BACKGROUND, NB_TEXTURES };
 
 // Liste des textes
 enum { TITLE_TEXT, POS_TEXT, LENGTH_TEXT, NB_TEXTS };

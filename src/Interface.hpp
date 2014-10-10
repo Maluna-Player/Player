@@ -20,6 +20,7 @@
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 
 #include "Spectrum.hpp"
 #include "CircleButton.hpp"
@@ -41,6 +42,8 @@ class Interface
 
     std::vector<sf::Texture> m_Textures;
     std::vector<CircleButton> m_Buttons;
+
+    sf::RectangleShape m_BottomBackground;
 
     ProgressBackground *mp_ProgressBackground;
     ProgressBar *mp_ProgressBar;

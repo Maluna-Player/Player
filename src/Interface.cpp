@@ -138,6 +138,12 @@ void Interface::loadImages()
       throw FileLoadingException("Interface::loadImages", texturePath.str());
   }
 
+  /* Background du bas */
+  m_Textures[BOTTOM_BACKGROUND].setRepeated(true);
+  m_BottomBackground.setTexture(&m_Textures[BOTTOM_BACKGROUND]);
+  m_BottomBackground.setPosition(sf::Vector2f(BOTTOM_BACKGROUND_X, BOTTOM_BACKGROUND_Y));
+  m_BottomBackground.setSize(sf::Vector2f(WINDOW_WIDTH, BOTTOM_BACKGROUND_H));
+
   /* Création des boutons */
   for (i = 0; i < NB_BUTTONS; i++)
   {
@@ -181,6 +187,8 @@ void Interface::loadImages()
 void Interface::drawContent(sf::RenderTarget& target, bool stopped)
 {
   int i;
+
+  target.draw(m_BottomBackground);
 
   /* Affichage des boutons */
   for (i = 0; i < NB_BUTTONS; i++)
