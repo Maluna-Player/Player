@@ -159,6 +159,11 @@ class Fmod
     */
     virtual void setMute(bool mute) const;
 
+    /**
+     * @return Titre dans le tag du son, "" si pas de tag.
+    */
+    virtual std::string getSongTitle(SoundID_t id) const;
+
 };
 
 #endif  // __FMOD_HPP__

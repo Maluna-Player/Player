@@ -262,3 +262,24 @@ void Fmod::setMute(bool mute) const
   if ((res = FMOD_ChannelGroup_SetMute(mp_ChannelGroup, static_cast<FMOD_BOOL>(mute))) != FMOD_OK)
     throw LibException("Fmod::setMute", "FMOD_ChannelGroup_SetMute", FMOD_ErrorString(res));
 }
+
+// ==============================
+// ==============================
+
+std::string Fmod::getSongTitle(SoundID_t id) const
+{
+  FMOD_RESULT res;
+  FMOD_TAG tag;
+
+  res = FMOD_Sound_GetTag(mp_Sounds.at(id), "TITLE", 0, &tag);
+
+  if (res == FMOD_ERR_TAGNOTFOUND)
+    return "";
+  else if (res != FMOD_OK)
+    throw LibException("Fmod::getSongTitle", "FMOD_Sound_GetTag", FMOD_ErrorString(res));
+  else
+  {
+    std::string title = static_cast<char*>(tag.data);
+    return title;
+  }
+}

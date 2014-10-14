@@ -21,19 +21,25 @@ class Song
     std::string m_File;
     int m_Num;
     SoundPos_t m_Length;
+    std::string m_Title;
 
     SoundID_t m_SoundID;
 
   public:
 
 		Song(const std::string& file, int num);
-		Song(const Song& song);
 		virtual ~Song();
 
     virtual SoundID_t getSoundID() const;
     virtual int getNum() const;
     virtual std::string getFile() const;
     virtual SoundPos_t getLength() const;
+
+    /**
+     * @return Titre du son (tag) si le son en possède
+     *         ou le nom du fichier.
+    */
+    virtual std::string getTitle() const;
 
     /**
      * Ouvre le fichier avec FMOD pour stream.

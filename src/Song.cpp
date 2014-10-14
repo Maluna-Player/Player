@@ -8,6 +8,7 @@
 */
 
 #include "Song.hpp"
+#include "Path.hpp"
 
 
 Song::Song(const std::string& file, int num)
@@ -15,15 +16,13 @@ Song::Song(const std::string& file, int num)
 {
   SoundID_t id = Fmod::getInstance()->openFromFile(m_File);
   m_Length = Fmod::getInstance()->getSoundLength(id);
-}
 
-// ==============================
-// ==============================
+  std::string title = Fmod::getInstance()->getSongTitle(id);
 
-Song::Song(const Song& song)
-  : m_File(song.m_File), m_Num(song.m_Num), m_Length(song.m_Length), m_SoundID(0)
-{
-
+  if (title.empty())
+    m_Title = Path::baseName(getFile());
+  else
+    m_Title = title;
 }
 
 // ==============================
@@ -64,6 +63,14 @@ std::string Song::getFile() const
 SoundPos_t Song::getLength() const
 {
   return m_Length;
+}
+
+// ==============================
+// ==============================
+
+std::string Song::getTitle() const
+{
+  return m_Title;
 }
 
 // ==============================

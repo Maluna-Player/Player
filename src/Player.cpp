@@ -53,10 +53,7 @@ std::vector<std::pair<std::string, int> > Player::getSongDetails() const
   std::vector<std::pair<std::string, int> > songs;
 
   for (i = 0; i < m_Songs.size(); i++)
-  {
-    std::string songTitle = Path::baseName(m_Songs.at(i).getFile());
-    songs.push_back(std::make_pair(songTitle, m_Songs.at(i).getLength()));
-  }
+    songs.push_back(std::make_pair(m_Songs.at(i).getTitle(), m_Songs.at(i).getLength()));
 
   return songs;
 }
