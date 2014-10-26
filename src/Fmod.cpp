@@ -70,7 +70,10 @@ Fmod* Fmod::getInstance()
 void Fmod::deleteInstance()
 {
   if (mp_Instance)
+  {
     delete mp_Instance;
+    mp_Instance = 0;
+  }
 }
 
 // ==============================

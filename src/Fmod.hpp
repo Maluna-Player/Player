@@ -44,6 +44,9 @@ class Fmod
     static Fmod *mp_Instance;
 
 
+    Fmod(int maxChannels = MAX_CHANNELS_NB);
+    virtual ~Fmod();
+
     /**
      * Attribue un SoundID libre.
      * @return id attribué
@@ -57,9 +60,6 @@ class Fmod
     virtual void releaseSound(SoundID_t id);
 
   public:
-
-    Fmod(int maxChannels = MAX_CHANNELS_NB);
-    virtual ~Fmod();
 
     /**
      * Créé le singleton s'il n'existe pas
