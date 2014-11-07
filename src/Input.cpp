@@ -50,6 +50,7 @@ void Input::update(sf::Window& window)
 
   m_Motion = false;
   m_Clic = false;
+  m_Unclick = false;
   m_WheelDelta = 0;
 
   while (window.pollEvent(event))
@@ -66,6 +67,12 @@ void Input::update(sf::Window& window)
 
       case sf::Event::MouseButtonPressed:
         m_Clic = true;
+        m_ButtonX = event.mouseButton.x;
+        m_ButtonY = event.mouseButton.y;
+        break;
+
+      case sf::Event::MouseButtonReleased:
+        m_Unclick = true;
         m_ButtonX = event.mouseButton.x;
         m_ButtonY = event.mouseButton.y;
         break;

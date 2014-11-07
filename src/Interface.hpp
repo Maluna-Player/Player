@@ -54,6 +54,8 @@ class Interface
     std::vector<Clickable*> mp_ClickableObjects;
     std::vector<Movable*>   mp_MovableObjects;
 
+    bool m_Press[NB_BUTTONS];
+
 
     /**
      * Convertit le temps passé en secondes
@@ -82,13 +84,23 @@ class Interface
 
     /**
      * Détermine s'il y a collision entre l'objet et les
-     * coordonnées passés en paramètre.
+     * coordonnées passées en paramètre.
      * @param index Objet cliquable à tester
      * @param x Abscisse du point
      * @param y Ordonnée du point
      * @return true si collision, false sinon
     */
     virtual bool collision(Clickable_t index, int x, int y) const;
+
+    /**
+     * Détermine l'objet en collision avec les coordonnées
+     * passées en paramètre.
+     * @param x Abscisse du point
+     * @param y Ordonnée du point
+     * @return Objet en collision, UNDEFINED_CLICKABLE
+     *          si pas d'objet à la position (x,y)
+    */
+    virtual Clickable_t getClickedObject(int x, int y) const;
 
     /**
      * Charge les polices et créé
@@ -124,6 +136,26 @@ class Interface
      * @param play Etat du player
     */
     virtual void setPlayButtonTexture(bool play);
+
+    /**
+     * Teste si le bouton reçu en paramètre est pressé.
+     * @param button Bouton à tester
+     * @return true si le bouton est pressé
+    */
+    virtual bool isPressed(Clickable_t button) const;
+
+    /**
+     * Presse le bouton reçu en paramètre
+     * (change la texture et marque comme pressé).
+     * @param button Bouton à presser
+    */
+    virtual void pressButton(Clickable_t button);
+
+    /**
+     * Relâche l'ensemble des boutons
+     * et des objets movable.
+    */
+    virtual void releaseButtons();
 
     /**
      * Modifie la texture du volume.

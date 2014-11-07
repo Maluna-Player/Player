@@ -189,41 +189,55 @@ void Application::run()
     {
       int x = m_In.buttonX(), y = m_In.buttonY();
 
-      if (m_Interface.collision(PLAY_BUTTON, x, y))
-      {
-        if (!m_Player.isPlayed())
-          setState(PLAY_STATE);
-        else
-          setState(PAUSE_STATE);
-      }
-      else if (m_Interface.collision(STOP_BUTTON, x, y))
-      {
-        if (!m_Player.isStopped())
-          setState(STOP_STATE);
-      }
-      else if (m_Interface.collision(PREV_BUTTON, x, y))
-        changeSong(m_Player.prev());
-      else if (m_Interface.collision(NEXT_BUTTON, x, y))
-        changeSong(m_Player.next());
-      else if (m_Interface.collision(VOLUME_MORE_BUTTON, x, y))
-        setVolume(VOLUME_MORE_BUTTON);
-      else if (m_Interface.collision(VOLUME_LESS_BUTTON, x, y))
-        setVolume(VOLUME_LESS_BUTTON);
-      else if (m_Interface.collision(REFRESH_DIR_BUTTON, x, y))
-        refreshSongsList();
-      else if (m_Interface.button(PROGRESSBAR).collision(x, y))
+      if (m_Interface.button(PROGRESSBAR).collision(x, y))
         m_Interface.button(PROGRESSBAR).m_Press = true;
-      else if (m_Interface.collision(PROGRESS_BACKGROUND, x, y))
-        setSongPosition(x);
-      else if (m_Interface.collision(VOLUME_VIEWER, x, y))
-        setMute(!m_Player.isMuted());
-      else if (m_Interface.collision(TAB, x, y))
-        m_Interface.changeTabState();
-      else if (m_Interface.collision(SONG_LIST, x, y))
-        changeSong(m_Interface.getSongInList(x, y));
+      else
+      {
+        Clickable_t object = m_Interface.getClickedObject(x, y);
+
+        if (object < NB_BUTTONS)
+          m_Interface.pressButton(object);
+        else
+        {
+          switch (object)
+          {
+            case PROGRESS_BACKGROUND: setSongPosition(x);                             break;
+            case VOLUME_VIEWER:       setMute(!m_Player.isMuted());                   break;
+            case TAB:                 m_Interface.changeTabState();                   break;
+            case SONG_LIST:           changeSong(m_Interface.getSongInList(x, y));    break;
+            default: break;
+          }
+        }
+      }
     }
-    else if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
-      m_Interface.button(PROGRESSBAR).m_Press = false;
+    else if (m_In.unclic())
+    {
+      Clickable_t object = m_Interface.getClickedObject(m_In.buttonX(), m_In.buttonY());
+      if (object < NB_BUTTONS && m_Interface.isPressed(object))
+      {
+        switch(object)
+        {
+          case PLAY_BUTTON:
+            if (!m_Player.isPlayed())
+              setState(PLAY_STATE);
+            else
+              setState(PAUSE_STATE);
+            break;
+          case STOP_BUTTON:
+            if (!m_Player.isStopped())
+              setState(STOP_STATE);
+            break;
+          case PREV_BUTTON:         changeSong(m_Player.prev());       break;
+          case NEXT_BUTTON:         changeSong(m_Player.next());       break;
+          case VOLUME_MORE_BUTTON:  setVolume(VOLUME_MORE_BUTTON);     break;
+          case VOLUME_LESS_BUTTON:  setVolume(VOLUME_LESS_BUTTON);     break;
+          case REFRESH_DIR_BUTTON:  refreshSongsList();                break;
+          default: break;
+        }
+      }
+
+      m_Interface.releaseButtons();
+    }
 
     /* Roulette souris */
     if (m_In.wheelDelta() != 0 && m_Interface.collision(SONG_LIST, motionX, motionY))

@@ -24,7 +24,10 @@ Interface::Interface()
   int i;
 
   for (i = 0; i < NB_BUTTONS; i++)
+  {
     mp_ClickableObjects[i] = &m_Buttons[i];
+    m_Press[i] = false;
+  }
 }
 
 // ==============================
@@ -87,10 +90,28 @@ bool Interface::collision(Clickable_t index, int x, int y) const
 // ==============================
 // ==============================
 
+Clickable_t Interface::getClickedObject(int x, int y) const
+{
+  int i;
+
+  for (i = 0; i < NB_CLICKABLES; i++)
+  {
+    Clickable_t object = static_cast<Clickable_t>(i);
+
+    if (collision(object, x, y))
+      return object;
+  }
+
+  return UNDEFINED_CLICKABLE;
+}
+
+// ==============================
+// ==============================
+
 Movable& Interface::button(Movable_t index) const
 {
   if (index >= mp_MovableObjects.size())
-    throw ArrayAccesException("Interfacce::button", mp_MovableObjects.size(), index);
+    throw ArrayAccesException("Interface::button", mp_MovableObjects.size(), index);
 
   return *mp_MovableObjects.at(index);
 }
@@ -230,7 +251,52 @@ void Interface::setSong(int num, const std::string& title, SoundPos_t length)
 void Interface::setPlayButtonTexture(bool play)
 {
   int textX = (play ? (BUTTON_SIZE + 1) : 0);
-  m_Buttons[PLAY_BUTTON].setTextureRect(sf::IntRect(textX, 0, BUTTON_SIZE, BUTTON_SIZE));
+  int textY = (isPressed(PLAY_BUTTON) ? (BUTTON_SIZE + 2) : 0);
+  m_Buttons[PLAY_BUTTON].setTextureRect(sf::IntRect(textX, textY, BUTTON_SIZE, BUTTON_SIZE));
+}
+
+// ==============================
+// ==============================
+
+bool Interface::isPressed(Clickable_t button) const
+{
+  if (button >= NB_BUTTONS)
+    throw ArrayAccesException("Interface::isPressed", NB_BUTTONS, button);
+
+  return m_Press[button];
+}
+
+// ==============================
+// ==============================
+
+void Interface::pressButton(Clickable_t button)
+{
+  sf::IntRect buttonRect(m_Buttons[button].getTextureRect().left, BUTTON_SIZE + 2, BUTTON_SIZE, BUTTON_SIZE);
+
+  m_Buttons[button].setTextureRect(buttonRect);
+  m_Press[button] = true;
+}
+
+// ==============================
+// ==============================
+
+void Interface::releaseButtons()
+{
+  int i;
+
+  for (i = 0; i < NB_BUTTONS; i++)
+  {
+    if (m_Press[i])
+    {
+      sf::IntRect buttonRect(m_Buttons[i].getTextureRect().left, 0, BUTTON_SIZE, BUTTON_SIZE);
+
+      m_Buttons[i].setTextureRect(buttonRect);
+      m_Press[i] = false;
+    }
+  }
+
+  for (i = 0; i < NB_MOVABLES; i++)
+    mp_MovableObjects[i]->m_Press = false;
 }
 
 // ==============================
