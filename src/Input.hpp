@@ -22,6 +22,7 @@ class Input
 
     bool m_Motion;
     bool m_Clic;
+    bool m_Unclick;
     bool m_Keys[sf::Keyboard::KeyCount];
 
     int m_ButtonX;
@@ -36,6 +37,7 @@ class Input
 
     inline bool motion() const    {return m_Motion;}
     inline bool clic() const      {return m_Clic;}
+    inline bool unclic() const    {return m_Unclick;}
     inline int buttonX() const    {return m_ButtonX;}
     inline int buttonY() const    {return m_ButtonY;}
     inline int wheelDelta() const {return m_WheelDelta;}

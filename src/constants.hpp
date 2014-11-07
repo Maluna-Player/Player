@@ -159,7 +159,7 @@ enum Clickable_t { PLAY_BUTTON, STOP_BUTTON, PREV_BUTTON, NEXT_BUTTON,
                    VOLUME_VIEWER,
                    SONG_LIST,
                    TAB,
-                   NB_CLICKABLES
+                   NB_CLICKABLES, UNDEFINED_CLICKABLE = NB_CLICKABLES
                  };
 
 // Liste des objets déplaçables
