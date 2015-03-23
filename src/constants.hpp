@@ -47,6 +47,8 @@
 #define NB_VOLUME_STATES    4
 #define MUTE_STATE          NB_VOLUME_STATES
 
+#define MOVE_INTERVAL                 1     // sec
+#define BUTTON_ACTIVATION_DELAY       10
 
 /*******************************
 /** Paramètres du spectre

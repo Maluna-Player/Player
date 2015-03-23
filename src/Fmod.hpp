@@ -25,7 +25,7 @@
 enum StreamError_t { FILE_ERROR };
 
 typedef unsigned int  SoundID_t;
-typedef unsigned int  SoundPos_t;
+typedef unsigned int  SoundPos_t;   // Position en ms
 
 class Fmod
 {
@@ -101,13 +101,13 @@ class Fmod
 
     /**
      * @param id Identifiant du son à mesurer
-     * @return durée de la musique
+     * @return durée de la musique (ms).
     */
     virtual SoundPos_t getSoundLength(SoundID_t id) const;
 
     /**
      * @param id Identifiant du canal à tester
-     * @return position courante de la musique jouée.
+     * @return position courante de la musique jouée (ms).
     */
     virtual SoundPos_t getSoundPosition(SoundID_t id) const;
 

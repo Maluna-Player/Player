@@ -63,7 +63,7 @@ class Song
     virtual void stop() const;
 
     /**
-     * @return Position de la musique.
+     * @return Position de la musique (ms).
     */
     virtual SoundPos_t getPosition() const;
 

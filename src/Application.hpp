@@ -65,6 +65,13 @@ class Application
     virtual void setSongPosition(int x);
 
     /**
+     * Déplace la position du son selon
+     * l'offset passé en paramètre.
+     * @param offset Décalage dans le son
+    */
+    virtual void moveInCurrentSong(int offset);
+
+    /**
      * Modifie le volume du son joué.
      * @param volumeType Modification (plus ou moins)
     */

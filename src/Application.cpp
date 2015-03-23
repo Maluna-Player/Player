@@ -107,6 +107,23 @@ void Application::setSongPosition(int x)
 // ==============================
 // ==============================
 
+void Application::moveInCurrentSong(int offset)
+{
+  int pos = m_Player.getCurrentSong().getPosition() / 1000;
+  int length = m_Player.getCurrentSong().getLength() / 1000;
+
+  int newPos = (pos + offset) * WINDOW_WIDTH / length;
+  if (newPos < 0)
+    newPos = 0;
+  else if (newPos > WINDOW_WIDTH)
+    newPos = WINDOW_WIDTH;
+
+  setSongPosition(newPos);
+}
+
+// ==============================
+// ==============================
+
 void Application::setVolume(int volumeType)
 {
   int previousVolume = m_Player.getVolumeState();
@@ -166,6 +183,8 @@ void Application::refreshSongsList()
 
 void Application::run()
 {
+  int delay = 0;
+
   m_Interface.loadTexts();
   m_Interface.loadImages();
   refreshSongsList();
@@ -227,8 +246,14 @@ void Application::run()
             if (!m_Player.isStopped())
               setState(STOP_STATE);
             break;
-          case PREV_BUTTON:         changeSong(m_Player.prev());       break;
-          case NEXT_BUTTON:         changeSong(m_Player.next());       break;
+          case PREV_BUTTON:
+            if (delay < BUTTON_ACTIVATION_DELAY)
+              changeSong(m_Player.prev());
+            break;
+          case NEXT_BUTTON:
+            if (delay < BUTTON_ACTIVATION_DELAY)
+              changeSong(m_Player.next());
+            break;
           case VOLUME_MORE_BUTTON:  setVolume(VOLUME_MORE_BUTTON);     break;
           case VOLUME_LESS_BUTTON:  setVolume(VOLUME_LESS_BUTTON);     break;
           case REFRESH_DIR_BUTTON:  refreshSongsList();                break;
@@ -236,6 +261,7 @@ void Application::run()
         }
       }
 
+      delay = 0;
       m_Interface.releaseButtons();
     }
 
@@ -266,6 +292,17 @@ void Application::run()
 
       if (m_Player.getCurrentSong().isFinished())
         changeSong(m_Player.next());
+
+      if (m_Interface.isPressed(PREV_BUTTON))
+      {
+        if (delay < BUTTON_ACTIVATION_DELAY)  delay++;
+        else                                  moveInCurrentSong(-MOVE_INTERVAL);
+      }
+      else if (m_Interface.isPressed(NEXT_BUTTON))
+      {
+        if (delay < BUTTON_ACTIVATION_DELAY)  delay++;
+        else                                  moveInCurrentSong(MOVE_INTERVAL);
+      }
     }
 
     m_Window.clear(sf::Color::Black);
