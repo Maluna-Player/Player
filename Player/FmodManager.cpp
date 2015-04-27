@@ -7,16 +7,16 @@
  *************************************
 */
 
-#include "Fmod.hpp"
-#include "LibException.hpp"
+#include "FmodManager.h"
+#include "LibException.h"
 
 
-Fmod* Fmod::mp_Instance = 0;
+FmodManager* FmodManager::mp_Instance = 0;
 
 // ==============================
 // ==============================
 
-Fmod::Fmod(int maxChannels)
+FmodManager::FmodManager(int maxChannels)
   : mp_System(0), mp_Channels(maxChannels), mp_Sounds(maxChannels), mp_ChannelGroup(0)
 {
   FMOD_RESULT res;
@@ -37,7 +37,7 @@ Fmod::Fmod(int maxChannels)
 // ==============================
 // ==============================
 
-Fmod::~Fmod()
+FmodManager::~FmodManager()
 {
   unsigned int i;
 
@@ -56,10 +56,10 @@ Fmod::~Fmod()
 // ==============================
 // ==============================
 
-Fmod* Fmod::getInstance()
+FmodManager* FmodManager::getInstance()
 {
   if (!mp_Instance)
-    mp_Instance = new Fmod;
+    mp_Instance = new FmodManager;
 
   return mp_Instance;
 }
@@ -67,7 +67,7 @@ Fmod* Fmod::getInstance()
 // ==============================
 // ==============================
 
-void Fmod::deleteInstance()
+void FmodManager::deleteInstance()
 {
   if (mp_Instance)
   {
@@ -79,7 +79,7 @@ void Fmod::deleteInstance()
 // ==============================
 // ==============================
 
-SoundID_t Fmod::getSoundID() const
+SoundID_t FmodManager::getSoundID() const
 {
   return 0;
 }
@@ -87,7 +87,7 @@ SoundID_t Fmod::getSoundID() const
 // ==============================
 // ==============================
 
-SoundID_t Fmod::openFromFile(const std::string& soundFile) throw (StreamError_t)
+SoundID_t FmodManager::openFromFile(const std::string& soundFile) throw (StreamError_t)
 {
   SoundID_t id = getSoundID();
 
@@ -105,7 +105,7 @@ SoundID_t Fmod::openFromFile(const std::string& soundFile) throw (StreamError_t)
 // ==============================
 // ==============================
 
-void Fmod::releaseSound(SoundID_t id)
+void FmodManager::releaseSound(SoundID_t id)
 {
   FMOD_RESULT res;
 
@@ -121,7 +121,7 @@ void Fmod::releaseSound(SoundID_t id)
 // ==============================
 // ==============================
 
-void Fmod::playSound(SoundID_t id)
+void FmodManager::playSound(SoundID_t id)
 {
   FMOD_RESULT res;
 
@@ -132,7 +132,7 @@ void Fmod::playSound(SoundID_t id)
 // ==============================
 // ==============================
 
-void Fmod::stopSound(SoundID_t id)
+void FmodManager::stopSound(SoundID_t id)
 {
   FMOD_RESULT res;
 
@@ -145,7 +145,7 @@ void Fmod::stopSound(SoundID_t id)
 // ==============================
 // ==============================
 
-void Fmod::pauseSound(SoundID_t id, bool paused) const
+void FmodManager::pauseSound(SoundID_t id, bool paused) const
 {
   FMOD_RESULT res;
 
@@ -156,7 +156,7 @@ void Fmod::pauseSound(SoundID_t id, bool paused) const
 // ==============================
 // ==============================
 
-SoundPos_t Fmod::getSoundLength(SoundID_t id) const
+SoundPos_t FmodManager::getSoundLength(SoundID_t id) const
 {
   FMOD_RESULT res;
   SoundPos_t length;
@@ -170,7 +170,7 @@ SoundPos_t Fmod::getSoundLength(SoundID_t id) const
 // ==============================
 // ==============================
 
-SoundPos_t Fmod::getSoundPosition(SoundID_t id) const
+SoundPos_t FmodManager::getSoundPosition(SoundID_t id) const
 {
   FMOD_RESULT res;
   SoundPos_t pos;
@@ -184,7 +184,7 @@ SoundPos_t Fmod::getSoundPosition(SoundID_t id) const
 // ==============================
 // ==============================
 
-void Fmod::setSoundPosition(SoundID_t id, SoundPos_t pos)
+void FmodManager::setSoundPosition(SoundID_t id, SoundPos_t pos)
 {
   FMOD_RESULT res;
 
@@ -195,7 +195,7 @@ void Fmod::setSoundPosition(SoundID_t id, SoundPos_t pos)
 // ==============================
 // ==============================
 
-bool Fmod::isPlaying(SoundID_t id) const
+bool FmodManager::isPlaying(SoundID_t id) const
 {
   FMOD_RESULT res;
   FMOD_BOOL playing;
@@ -209,7 +209,7 @@ bool Fmod::isPlaying(SoundID_t id) const
 // ==============================
 // ==============================
 
-float* Fmod::getChannelSpectrum(SoundID_t id, float *values) const
+float* FmodManager::getChannelSpectrum(SoundID_t id, float *values) const
 {
   FMOD_RESULT res;
 
@@ -222,7 +222,7 @@ float* Fmod::getChannelSpectrum(SoundID_t id, float *values) const
 // ==============================
 // ==============================
 
-float Fmod::getVolume(SoundID_t id) const
+float FmodManager::getVolume(SoundID_t id) const
 {
   FMOD_RESULT res;
   float volume;
@@ -236,7 +236,7 @@ float Fmod::getVolume(SoundID_t id) const
 // ==============================
 // ==============================
 
-void Fmod::setVolume(SoundID_t id, float volume) const
+void FmodManager::setVolume(SoundID_t id, float volume) const
 {
   FMOD_RESULT res;
 
@@ -247,7 +247,7 @@ void Fmod::setVolume(SoundID_t id, float volume) const
 // ==============================
 // ==============================
 
-void Fmod::setVolume(float volume) const
+void FmodManager::setVolume(float volume) const
 {
   FMOD_RESULT res;
 
@@ -258,7 +258,7 @@ void Fmod::setVolume(float volume) const
 // ==============================
 // ==============================
 
-void Fmod::setMute(bool mute) const
+void FmodManager::setMute(bool mute) const
 {
   FMOD_RESULT res;
 
@@ -269,7 +269,7 @@ void Fmod::setMute(bool mute) const
 // ==============================
 // ==============================
 
-std::string Fmod::getSongTitle(SoundID_t id) const
+std::string FmodManager::getSongTitle(SoundID_t id) const
 {
   FMOD_RESULT res;
   FMOD_TAG tag;

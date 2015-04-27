@@ -8,8 +8,8 @@
  *************************************
 */
 
-#ifndef __BASEEXCEPTION_HPP__
-#define __BASEEXCEPTION_HPP__
+#ifndef __BASEEXCEPTION_H__
+#define __BASEEXCEPTION_H__
 
 #include <string>
 #include <exception>
@@ -56,4 +56,4 @@ class BaseException : public std::exception
     }
 };
 
-#endif  // __BASEEXCEPTION_HPP__
+#endif  // __BASEEXCEPTION_H__

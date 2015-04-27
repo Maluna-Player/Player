@@ -8,10 +8,10 @@
  *************************************
 */
 
-#ifndef __LIBEXCEPTION_HPP__
-#define __LIBEXCEPTION_HPP__
+#ifndef __LIBEXCEPTION_H__
+#define __LIBEXCEPTION_H__
 
-#include "BaseException.hpp"
+#include "BaseException.h"
 
 class LibException : public BaseException
 {
@@ -43,4 +43,4 @@ class LibException : public BaseException
     }
 };
 
-#endif  // __LIBEXCEPTION_HPP__
+#endif  // __LIBEXCEPTION_H__

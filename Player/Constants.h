@@ -8,8 +8,8 @@
  *************************************
 */
 
-#ifndef __CONSTANTS_HPP__
-#define __CONSTANTS_HPP__
+#ifndef __CONSTANTS_H__
+#define __CONSTANTS_H__
 
 
 #define REFRESH_TIME_MS     50
@@ -170,4 +170,4 @@ enum Movable_t { PROGRESSBAR, NB_MOVABLES };
 // Etats du player
 enum State_t { PLAY_STATE, PAUSE_STATE, STOP_STATE };
 
-#endif  // __CONSTANTS_HPP__
+#endif  // __CONSTANTS_H__

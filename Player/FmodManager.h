@@ -9,15 +9,15 @@
  *************************************
 */
 
-#ifndef __FMOD_HPP__
-#define __FMOD_HPP__
+#ifndef __FMOD_H__
+#define __FMOD_H__
 
-#include <fmodex/fmod.h>
-#include <fmodex/fmod_errors.h>
+#include <fmod.h>
+#include <fmod_errors.h>
 #include <vector>
 #include <string>
 
-#include "constants.hpp"
+#include "Constants.h"
 
 #define VOLUME_MIN    0.0
 #define VOLUME_MAX    1.0
@@ -27,7 +27,7 @@ enum StreamError_t { FILE_ERROR };
 typedef unsigned int  SoundID_t;
 typedef unsigned int  SoundPos_t;   // Position en ms
 
-class Fmod
+class FmodManager
 {
   private:
 
@@ -41,11 +41,11 @@ class Fmod
 
 
     /* Instance du singleton */
-    static Fmod *mp_Instance;
+    static FmodManager *mp_Instance;
 
 
-    Fmod(int maxChannels = MAX_CHANNELS_NB);
-    virtual ~Fmod();
+    FmodManager(int maxChannels = MAX_CHANNELS_NB);
+    virtual ~FmodManager();
 
     /**
      * Attribue un SoundID libre.
@@ -66,7 +66,7 @@ class Fmod
      * et retourne l'instance correspondante.
      * @return instance du singleton
     */
-    static Fmod* getInstance();
+    static FmodManager* getInstance();
 
     /**
      * Détruit le singleton alloué dynamiquement.
@@ -166,4 +166,4 @@ class Fmod
 
 };
 
-#endif  // __FMOD_HPP__
+#endif  // __FMOD_H__
