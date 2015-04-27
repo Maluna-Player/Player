@@ -35,6 +35,6 @@ win32 {             # Window's paths
     LIBS += -L"C:\Program Files (x86)\FMOD SoundSystem\FMOD Programmers API Windows\api\lib"
     LIBS += -lfmodex
 } else {            # Linux
-    #INCLUDEPATH +=
-    #LIBS +=
+    INCLUDEPATH += /usr/local/include/fmodex
+    LIBS += -L/usr/local/lib/fmodex -lfmodex64
 }
