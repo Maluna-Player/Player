@@ -8,6 +8,11 @@
 bin/*
 obj/*
 
+# Qt files / directories
+*.pro.user
+moc_*
+build-*
+
 # Output files
 stdout.txt
 stderr.txt
