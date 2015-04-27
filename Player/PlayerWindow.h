@@ -12,10 +12,15 @@
 #define __PLAYERWINDOW_H__
 
 #include <QWidget>
+#include "Player.h"
 
 class PlayerWindow : public QWidget
 {
     Q_OBJECT
+
+    private:
+
+        Player m_Player;
 
     public:
 

@@ -7,10 +7,10 @@
  *************************************
 */
 
-#include "Player.hpp"
-#include "ArrayAccessException.hpp"
-#include "LibException.hpp"
-#include "Path.hpp"
+#include "Player.h"
+#include "ArrayAccessException.h"
+#include "LibException.h"
+#include "Path.h"
 
 #include <dirent.h>
 #include <cstring>
@@ -107,7 +107,7 @@ void Player::pause()
 void Player::mute(bool mute)
 {
   m_Mute = mute;
-  Fmod::getInstance()->setMute(mute);
+  FmodManager::getInstance()->setMute(mute);
 }
 
 // ==============================
@@ -211,7 +211,7 @@ void Player::setVolume(int volumeState)
   m_VolumeState = volumeState;
 
   float volume = static_cast<float>(volumeState) / (NB_VOLUME_STATES - 1);
-  Fmod::getInstance()->setVolume(volume);
+  FmodManager::getInstance()->setVolume(volume);
 }
 
 // ==============================

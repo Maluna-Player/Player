@@ -7,17 +7,17 @@
  *************************************
 */
 
-#include "Song.hpp"
-#include "Path.hpp"
+#include "Song.h"
+#include "Path.h"
 
 
 Song::Song(const std::string& file, int num)
   : m_File(file), m_Num(num), m_SoundID(0)
 {
-  SoundID_t id = Fmod::getInstance()->openFromFile(m_File);
-  m_Length = Fmod::getInstance()->getSoundLength(id);
+  SoundID_t id = FmodManager::getInstance()->openFromFile(m_File);
+  m_Length = FmodManager::getInstance()->getSoundLength(id);
 
-  std::string title = Fmod::getInstance()->getSongTitle(id);
+  std::string title = FmodManager::getInstance()->getSongTitle(id);
 
   if (title.empty())
     m_Title = Path::baseName(getFile());
@@ -78,7 +78,7 @@ std::string Song::getTitle() const
 
 void Song::open()
 {
-  m_SoundID = Fmod::getInstance()->openFromFile(m_File);
+  m_SoundID = FmodManager::getInstance()->openFromFile(m_File);
 }
 
 // ==============================
@@ -86,7 +86,7 @@ void Song::open()
 
 void Song::play() const
 {
-  Fmod::getInstance()->playSound(m_SoundID);
+  FmodManager::getInstance()->playSound(m_SoundID);
 }
 
 // ==============================
@@ -94,7 +94,7 @@ void Song::play() const
 
 void Song::pause(bool paused) const
 {
-  Fmod::getInstance()->pauseSound(m_SoundID, paused);
+  FmodManager::getInstance()->pauseSound(m_SoundID, paused);
 }
 
 // ==============================
@@ -102,7 +102,7 @@ void Song::pause(bool paused) const
 
 void Song::stop() const
 {
-  Fmod::getInstance()->stopSound(m_SoundID);
+  FmodManager::getInstance()->stopSound(m_SoundID);
 }
 
 // ==============================
@@ -110,7 +110,7 @@ void Song::stop() const
 
 SoundPos_t Song::getPosition() const
 {
-  return Fmod::getInstance()->getSoundPosition(m_SoundID);
+  return FmodManager::getInstance()->getSoundPosition(m_SoundID);
 }
 
 // ==============================
@@ -121,7 +121,7 @@ void Song::setPosition(SoundPos_t pos) const
   if (pos >= m_Length)
     pos = m_Length - 1;
 
-  Fmod::getInstance()->setSoundPosition(m_SoundID, pos);
+  FmodManager::getInstance()->setSoundPosition(m_SoundID, pos);
 }
 
 // ==============================
@@ -129,6 +129,6 @@ void Song::setPosition(SoundPos_t pos) const
 
 bool Song::isFinished() const
 {
-  return !(Fmod::getInstance()->isPlaying(m_SoundID));
+  return !(FmodManager::getInstance()->isPlaying(m_SoundID));
 }
 

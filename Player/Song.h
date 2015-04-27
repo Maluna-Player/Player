@@ -8,11 +8,11 @@
  *************************************
 */
 
-#ifndef __SONG_HPP__
-#define __SONG_HPP__
+#ifndef __SONG_H__
+#define __SONG_H__
 
 #include <string>
-#include "Fmod.hpp"
+#include "FmodManager.h"
 
 class Song
 {
@@ -80,4 +80,4 @@ class Song
 
 };
 
-#endif  // __SONG_HPP__
+#endif  // __SONG_H__

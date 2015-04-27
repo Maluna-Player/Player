@@ -9,12 +9,12 @@
  *************************************
 */
 
-#ifndef __PLAYER_HPP__
-#define __PLAYER_HPP__
+#ifndef __PLAYER_H__
+#define __PLAYER_H__
 
 #include <vector>
 #include <utility>
-#include "Song.hpp"
+#include "Song.h"
 
 #define FIRST_SONG        0
 #define LAST_SONG         (static_cast<int>(m_Songs.size()) - 1)
@@ -145,4 +145,4 @@ class Player
     virtual void changeSong(int song);
 };
 
-#endif  // __PLAYER_HPP__
+#endif  // __PLAYER_H__

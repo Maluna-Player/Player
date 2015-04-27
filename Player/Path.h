@@ -9,8 +9,8 @@
  *************************************
 */
 
-#ifndef __PATH_HPP__
-#define __PATH_HPP__
+#ifndef __PATH_H__
+#define __PATH_H__
 
 #include <string>
 
@@ -31,4 +31,4 @@ class Path
     static char separator();
 };
 
-#endif  // __PATH_HPP__
+#endif  // __PATH_H__

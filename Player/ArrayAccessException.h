@@ -9,10 +9,10 @@
  *************************************
 */
 
-#ifndef __ARRAYACCESSEXCEPTION_HPP__
-#define __ARRAYACCESSEXCEPTION_HPP__
+#ifndef __ARRAYACCESSEXCEPTION_H__
+#define __ARRAYACCESSEXCEPTION_H__
 
-#include "BaseException.hpp"
+#include "BaseException.h"
 #include <sstream>
 
 class ArrayAccesException : public BaseException
@@ -48,4 +48,4 @@ class ArrayAccesException : public BaseException
     }
 };
 
-#endif  // __ARRAYACCESSEXCEPTION_HPP__
+#endif  // __ARRAYACCESSEXCEPTION_H__

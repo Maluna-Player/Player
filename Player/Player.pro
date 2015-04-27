@@ -14,13 +14,20 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
     PlayerWindow.cpp \
-    FmodManager.cpp
+    FmodManager.cpp \
+    Player.cpp \
+    Song.cpp \
+    Path.cpp
 
 HEADERS  += PlayerWindow.h \
     LibException.h \
     BaseException.h \
     Constants.h \
-    FmodManager.h
+    FmodManager.h \
+    Player.h \
+    ArrayAccessException.h \
+    Song.h \
+    Path.h
 
 
 # Removal of warnings
