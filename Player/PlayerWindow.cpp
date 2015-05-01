@@ -11,11 +11,25 @@
 #include "FmodManager.h"
 #include "Path.h"
 
+#include <QGridLayout>
+#include <QPalette>
+
 PlayerWindow::PlayerWindow(QWidget *parent)
-    : QWidget(parent), m_TimerId(0)
+    : QWidget(parent), m_TimerId(0), m_Spectrum(SPECTRUM_WIDTH)
 {
     setWindowTitle(tr(WINDOW_TITLE));
     resize(WINDOW_WIDTH, WINDOW_HEIGHT);
+
+    QPalette pal(palette());
+    pal.setColor(QPalette::Background, Qt::black);
+    setAutoFillBackground(true);
+    setPalette(pal);
+
+    QGridLayout *layout = new QGridLayout;
+
+    layout->addWidget(&m_Spectrum, 0, 0);
+
+    setLayout(layout);
 
     refreshSongsList();
     setState(PLAY_STATE);
@@ -90,6 +104,8 @@ void PlayerWindow::timerEvent(QTimerEvent *event)
     {
         if (m_Player.isPlayed())
         {
+            m_Spectrum.updateValues(m_Player.getCurrentSong().getSoundID());
+
             if (m_Player.getCurrentSong().isFinished())
                 changeSong(m_Player.next());
         }

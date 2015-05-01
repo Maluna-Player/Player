@@ -1,0 +1,54 @@
+/*************************************
+ * @file    Spectrum.hpp
+ * @date    03/08/14
+ * @author  Manuel
+ *
+ * Déclarations de la classe Spectrum
+ * contenant les propriétés du spectre
+ * du son.
+ *************************************
+*/
+
+#ifndef __SPECTRUM_H__
+#define __SPECTRUM_H__
+
+#include "FmodManager.h"
+#include <QWidget>
+#include <QVector>
+#include <QRect>
+#include <QPainter>
+
+
+class Spectrum : public QWidget
+{
+    private:
+
+        int m_Width;
+
+        QVector<QRect> m_Lines;
+
+
+        /**
+         * @brief Dessine le contenu du spectre dans le painter passé en paramètre.
+         * @param painter Cible du dessin
+         */
+        virtual void draw(QPainter *painter) const;
+
+    protected:
+
+        virtual void paintEvent(QPaintEvent *event);
+
+    public:
+
+        Spectrum(int width);
+        virtual ~Spectrum();
+
+        /**
+         * Récupère les fréquences du son joué
+         * et met à jour les valeurs des vertices.
+         * @param id Identifiant du canal à tester
+        */
+        virtual void updateValues(SoundID_t id);
+};
+
+#endif  // __SPECTRUM_H__

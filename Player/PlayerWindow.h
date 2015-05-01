@@ -13,6 +13,7 @@
 
 #include <QWidget>
 #include "Player.h"
+#include "Spectrum.h"
 
 #include <QTimerEvent>
 #include <QShowEvent>
@@ -27,6 +28,8 @@ class PlayerWindow : public QWidget
         int m_TimerId;
 
         Player m_Player;
+
+        Spectrum m_Spectrum;
 
 
         /**

@@ -17,7 +17,8 @@ SOURCES += main.cpp\
     FmodManager.cpp \
     Player.cpp \
     Song.cpp \
-    Path.cpp
+    Path.cpp \
+    Spectrum.cpp
 
 HEADERS  += PlayerWindow.h \
     LibException.h \
@@ -27,7 +28,8 @@ HEADERS  += PlayerWindow.h \
     Player.h \
     ArrayAccessException.h \
     Song.h \
-    Path.h
+    Path.h \
+    Spectrum.h
 
 
 # Removal of warnings
