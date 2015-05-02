@@ -20,15 +20,41 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     setWindowTitle(tr(WINDOW_TITLE));
     resize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->setSpacing(0);
+    layout->setContentsMargins(0, 0, 0, 0);
+
+
+    QWidget *topPart = new QWidget;
+    QWidget *bottomPart = new QWidget;
+
+    /** Création des backgrounds **/
+
     QPalette pal(palette());
+
     pal.setColor(QPalette::Background, Qt::black);
-    setAutoFillBackground(true);
-    setPalette(pal);
+    topPart->setAutoFillBackground(true);
+    topPart->setPalette(pal);
 
-    QGridLayout *layout = new QGridLayout;
+    QLinearGradient gradient(0, 0, 0, BOTTOM_BACKGROUND_H);
+    gradient.setColorAt(0.0, QColor(66, 66, 66));
+    gradient.setColorAt(0.5, QColor(69, 69, 69));
+    gradient.setColorAt(0.6, QColor(60, 60, 60));
+    gradient.setColorAt(1.0, QColor(24, 24, 24));
 
-    layout->addWidget(&m_Spectrum, 0, 0);
+    pal.setBrush(QPalette::Window, gradient);
+    bottomPart->setAutoFillBackground(true);
+    bottomPart->setPalette(pal);
 
+
+    /** Ajout du contenu **/
+
+    QGridLayout *topLayout = new QGridLayout;
+    topLayout->addWidget(&m_Spectrum, 0, 0);
+    topPart->setLayout(topLayout);
+
+    layout->addWidget(topPart);
+    layout->addWidget(bottomPart);
     setLayout(layout);
 
     refreshSongsList();

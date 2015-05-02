@@ -21,7 +21,7 @@
 
 #define SONGS_SUBDIR        std::string("../resources") + Path::separator() + "Musiques"
 #define FONT_FILE           std::string("resources") + Path::separator() + "lsans.ttf"
-#define IMAGES_SUBDIR       std::string("resources") + Path::separator() + "Images"
+#define IMAGES_SUBDIR       std::string("../resources") + Path::separator() + "Images"
 
 
 /*******************************
@@ -29,11 +29,14 @@
 /*******************************/
 
 // Taille de la fenêtre du player
-#define WINDOW_WIDTH        800
-#define WINDOW_HEIGHT       650
+#define WINDOW_WIDTH            800
+#define WINDOW_HEIGHT           (SPECTRUM_HEIGHT + BOTTOM_BACKGROUND_H)
 
 // Titre de la fenêtre
-#define WINDOW_TITLE        "Player"
+#define WINDOW_TITLE            "Player"
+
+// Background du bas
+#define BOTTOM_BACKGROUND_H     150
 
 
 /*******************************
@@ -57,9 +60,6 @@
 #define SPECTRUM_WIDTH      512
 #define SPECTRUM_HEIGHT     450
 #define SPECTRUM_RATIO      15
-
-#define SPECTRUM_X          250
-#define SPECTRUM_Y          40
 
 
 /*******************************
@@ -93,11 +93,6 @@
 #define PROGRESS_BACKGROUND_Y           500
 #define PROGRESSBAR_HEIGHT              17
 #define PROGRESSBAR_Y                   (PROGRESS_BACKGROUND_Y + 6)
-
-// Background du bas
-#define BOTTOM_BACKGROUND_X             0
-#define BOTTOM_BACKGROUND_Y             (PROGRESS_BACKGROUND_Y + PROGRESS_BACKGROUND_HEIGHT - 3)
-#define BOTTOM_BACKGROUND_H             (WINDOW_HEIGHT - BOTTOM_BACKGROUND_Y)
 
 // Temps de la musique
 #define POS_TEXT_X                      0
