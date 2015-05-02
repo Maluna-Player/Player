@@ -25,36 +25,25 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     layout->setContentsMargins(0, 0, 0, 0);
 
 
-    QWidget *topPart = new QWidget;
-    QWidget *bottomPart = new QWidget;
-
     /** Création des backgrounds **/
 
     QPalette pal(palette());
 
     pal.setColor(QPalette::Background, Qt::black);
-    topPart->setAutoFillBackground(true);
-    topPart->setPalette(pal);
+    m_TopPart.setAutoFillBackground(true);
+    m_TopPart.setPalette(pal);
 
-    QLinearGradient gradient(0, 0, 0, BOTTOM_BACKGROUND_H);
-    gradient.setColorAt(0.0, QColor(66, 66, 66));
-    gradient.setColorAt(0.5, QColor(69, 69, 69));
-    gradient.setColorAt(0.6, QColor(60, 60, 60));
-    gradient.setColorAt(1.0, QColor(24, 24, 24));
-
-    pal.setBrush(QPalette::Window, gradient);
-    bottomPart->setAutoFillBackground(true);
-    bottomPart->setPalette(pal);
+    m_BottomPart.setAutoFillBackground(true);
 
 
     /** Ajout du contenu **/
 
     QGridLayout *topLayout = new QGridLayout;
     topLayout->addWidget(&m_Spectrum, 0, 0);
-    topPart->setLayout(topLayout);
+    m_TopPart.setLayout(topLayout);
 
-    layout->addWidget(topPart);
-    layout->addWidget(bottomPart);
+    layout->addWidget(&m_TopPart);
+    layout->addWidget(&m_BottomPart);
     setLayout(layout);
 
     refreshSongsList();
@@ -156,4 +145,21 @@ void PlayerWindow::showEvent(QShowEvent* /*event*/)
 void PlayerWindow::hideEvent(QHideEvent* /*event*/)
 {
     killTimer(m_TimerId);
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::resizeEvent(QResizeEvent* /*event*/)
+{
+    QPalette pal(m_BottomPart.palette());
+
+    QLinearGradient gradient(0, 0, 0, m_BottomPart.height());
+    gradient.setColorAt(0.0, QColor(66, 66, 66));
+    gradient.setColorAt(0.5, QColor(69, 69, 69));
+    gradient.setColorAt(0.6, QColor(60, 60, 60));
+    gradient.setColorAt(1.0, QColor(24, 24, 24));
+
+    pal.setBrush(QPalette::Window, gradient);
+    m_BottomPart.setPalette(pal);
 }

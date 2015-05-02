@@ -29,6 +29,9 @@ class PlayerWindow : public QWidget
 
         Player m_Player;
 
+        QWidget m_TopPart;
+        QWidget m_BottomPart;
+
         Spectrum m_Spectrum;
 
 
@@ -56,6 +59,8 @@ class PlayerWindow : public QWidget
         virtual void showEvent(QShowEvent *event);
 
         virtual void hideEvent(QHideEvent *event);
+
+        virtual void resizeEvent(QResizeEvent *event);
 
     public:
 
