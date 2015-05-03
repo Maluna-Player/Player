@@ -1,5 +1,5 @@
 /*************************************
- * @file    PlayerWindow.hpp
+ * @file    PlayerWindow.h
  * @date    26/04/15
  * @author  Manuel
  *

@@ -1,5 +1,5 @@
 /*************************************
- * @file    LibException.hpp
+ * @file    LibException.h
  * @date    02/08/14
  * @author  Manuel
  *

@@ -1,5 +1,5 @@
 /*************************************
- * @file    constants.hpp
+ * @file    constants.h
  * @date    27/07/14
  * @author  Manuel
  *

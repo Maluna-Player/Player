@@ -1,5 +1,5 @@
 /*************************************
- * @file    Song.hpp
+ * @file    Song.h
  * @date    27/07/14
  * @author  Manuel
  *

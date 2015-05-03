@@ -1,5 +1,5 @@
 /*************************************
- * @file    BaseException.hpp
+ * @file    BaseException.h
  * @date    02/08/14
  * @author  Manuel
  *

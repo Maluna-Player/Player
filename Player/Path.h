@@ -1,5 +1,5 @@
 /*************************************
- * @file    Path.hpp
+ * @file    Path.h
  * @date    01/08/14
  * @author  Manuel
  *

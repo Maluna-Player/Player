@@ -1,5 +1,5 @@
 /*************************************
- * @file    Fmod.hpp
+ * @file    Fmod.h
  * @date    29/07/14
  * @author  Manuel
  *

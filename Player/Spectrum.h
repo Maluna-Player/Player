@@ -1,5 +1,5 @@
 /*************************************
- * @file    Spectrum.hpp
+ * @file    Spectrum.h
  * @date    03/08/14
  * @author  Manuel
  *

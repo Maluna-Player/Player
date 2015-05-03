@@ -1,5 +1,5 @@
 /*************************************
- * @file    Player.hpp
+ * @file    Player.h
  * @date    27/07/14
  * @author  Manuel
  *

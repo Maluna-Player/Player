@@ -1,5 +1,5 @@
 /*************************************
- * @file    ArrayAccesException.hpp
+ * @file    ArrayAccesException.h
  * @date    04/08/14
  * @author  Manuel
  *
