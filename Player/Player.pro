@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     Player.cpp \
     Song.cpp \
     Path.cpp \
-    Spectrum.cpp
+    Spectrum.cpp \
+    ClickableLabel.cpp
 
 HEADERS  += PlayerWindow.h \
     LibException.h \
@@ -29,7 +30,8 @@ HEADERS  += PlayerWindow.h \
     ArrayAccessException.h \
     Song.h \
     Path.h \
-    Spectrum.h
+    Spectrum.h \
+    ClickableLabel.h
 
 
 # Removal of warnings
