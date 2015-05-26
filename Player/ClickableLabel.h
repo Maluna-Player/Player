@@ -12,6 +12,7 @@
 #define __CLICKABLELABEL_H__
 
 #include <QLabel>
+#include <QMouseEvent>
 
 class ClickableLabel : public QLabel
 {

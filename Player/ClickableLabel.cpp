@@ -26,7 +26,7 @@ ClickableLabel::~ClickableLabel()
 // ==============================
 // ==============================
 
-void ClickableLabel::mousePressEvent(QMouseEvent *event)
+void ClickableLabel::mousePressEvent(QMouseEvent * /*event*/)
 {
 
 }
@@ -36,5 +36,6 @@ void ClickableLabel::mousePressEvent(QMouseEvent *event)
 
 void ClickableLabel::mouseReleaseEvent(QMouseEvent *event)
 {
-    emit clicked();
+    if (event->x() >= 0 && event->x() <= width() && event->y() >= 0 && event->y() <= height())
+        emit clicked();
 }

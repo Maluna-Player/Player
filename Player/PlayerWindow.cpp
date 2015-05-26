@@ -14,6 +14,7 @@
 #include <QGridLayout>
 #include <QPalette>
 
+
 PlayerWindow::PlayerWindow(QWidget *parent)
     : QWidget(parent), m_TimerId(0), m_Spectrum(SPECTRUM_WIDTH)
 {
@@ -39,12 +40,41 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     /** Ajout du contenu **/
 
     QGridLayout *topLayout = new QGridLayout;
-    topLayout->addWidget(&m_Spectrum, 0, 0);
+    topLayout->setColumnStretch(0, 1);
+    topLayout->addWidget(&m_Spectrum, 0, 1);
     m_TopPart.setLayout(topLayout);
+
+    QGridLayout *bottomLayout = new QGridLayout;
+
+    mp_Buttons << new PlayerButton(IMAGES_SUBDIR + "play.png")
+            << new PlayerButton(IMAGES_SUBDIR + "pause.png")
+            << new PlayerButton(IMAGES_SUBDIR + "stop.png")
+            << new PlayerButton(IMAGES_SUBDIR + "prev.png")
+            << new PlayerButton(IMAGES_SUBDIR + "next.png");
+
+    mp_Buttons.at(PAUSE_BUTTON)->hide();
+
+    connect(mp_Buttons.at(PLAY_BUTTON), SIGNAL(clicked()), this, SLOT(play()));
+    connect(mp_Buttons.at(PAUSE_BUTTON), SIGNAL(clicked()), this, SLOT(pause()));
+    connect(mp_Buttons.at(STOP_BUTTON), SIGNAL(clicked()), this, SLOT(stop()));
+    connect(mp_Buttons.at(PREV_BUTTON), SIGNAL(clicked()), this, SLOT(previousSong()));
+    connect(mp_Buttons.at(NEXT_BUTTON), SIGNAL(clicked()), this, SLOT(nextSong()));
+
+    bottomLayout->setColumnStretch(0, 1);
+    bottomLayout->addWidget(mp_Buttons.at(PLAY_BUTTON), 0, 2);
+    bottomLayout->addWidget(mp_Buttons.at(PAUSE_BUTTON), 0, 2);
+    bottomLayout->addWidget(mp_Buttons.at(STOP_BUTTON), 2, 2);
+    bottomLayout->addWidget(mp_Buttons.at(PREV_BUTTON), 1, 1);
+    bottomLayout->addWidget(mp_Buttons.at(NEXT_BUTTON), 1, 3);
+    bottomLayout->setColumnStretch(4, 1);
+    m_BottomPart.setLayout(bottomLayout);
 
     layout->addWidget(&m_TopPart);
     layout->addWidget(&m_BottomPart);
     setLayout(layout);
+
+
+    /** Démarrage du player **/
 
     refreshSongsList();
     setState(PLAY_STATE);
@@ -69,6 +99,9 @@ void PlayerWindow::setState(State_t state)
         m_Player.pause();
     else if (state == STOP_STATE)
         m_Player.stop();
+
+    mp_Buttons.at(PLAY_BUTTON)->setHidden(m_Player.isPlaying());
+    mp_Buttons.at(PAUSE_BUTTON)->setHidden(!m_Player.isPlaying());
 }
 
 // ==============================
@@ -102,7 +135,8 @@ void PlayerWindow::changeSong(int song)
 
 void PlayerWindow::refreshSongsList()
 {
-    m_Player.loadSongs(SONGS_SUBDIR);
+    QString songsSubDir = SONGS_SUBDIR;
+    m_Player.loadSongs(songsSubDir.toStdString());
 
     changeSong(m_Player.first());
 
@@ -113,11 +147,51 @@ void PlayerWindow::refreshSongsList()
 // ==============================
 // ==============================
 
+void PlayerWindow::play()
+{
+    setState(PLAY_STATE);
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::pause()
+{
+    setState(PAUSE_STATE);
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::stop()
+{
+    setState(STOP_STATE);
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::previousSong()
+{
+    changeSong(m_Player.prev());
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::nextSong()
+{
+    changeSong(m_Player.next());
+}
+
+// ==============================
+// ==============================
+
 void PlayerWindow::timerEvent(QTimerEvent *event)
 {
     if (event->timerId() == m_TimerId)
     {
-        if (m_Player.isPlayed())
+        if (m_Player.isPlaying())
         {
             m_Spectrum.updateValues(m_Player.getCurrentSong().getSoundID());
 

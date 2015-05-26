@@ -14,10 +14,12 @@
 #include <QWidget>
 #include "Player.h"
 #include "Spectrum.h"
+#include "PlayerButton.h"
 
 #include <QTimerEvent>
 #include <QShowEvent>
 #include <QHideEvent>
+#include <QVector>
 
 class PlayerWindow : public QWidget
 {
@@ -33,6 +35,11 @@ class PlayerWindow : public QWidget
         QWidget m_BottomPart;
 
         Spectrum m_Spectrum;
+
+
+        enum ButtonId_t { PLAY_BUTTON, PAUSE_BUTTON, STOP_BUTTON, PREV_BUTTON, NEXT_BUTTON };
+
+        QVector<PlayerButton*> mp_Buttons;
 
 
         /**
@@ -51,6 +58,18 @@ class PlayerWindow : public QWidget
          * @brief Met à jour la liste des musiques du répertoire.
          */
         virtual void refreshSongsList();
+
+    private slots:
+
+        virtual void play();
+
+        virtual void pause();
+
+        virtual void stop();
+
+        virtual void previousSong();
+
+        virtual void nextSong();
 
     protected:
 

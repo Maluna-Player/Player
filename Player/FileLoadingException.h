@@ -1,5 +1,5 @@
 /*************************************
- * @file    FileLoadingException.hpp
+ * @file    FileLoadingException.h
  * @date    02/08/14
  * @author  Manuel
  *
@@ -8,10 +8,10 @@
  *************************************
 */
 
-#ifndef __FILELOADINGEXCEPTION_HPP__
-#define __FILELOADINGEXCEPTION_HPP__
+#ifndef __FILELOADINGEXCEPTION_H__
+#define __FILELOADINGEXCEPTION_H__
 
-#include "BaseException.hpp"
+#include "BaseException.h"
 
 class FileLoadingException : public BaseException
 {
@@ -41,4 +41,4 @@ class FileLoadingException : public BaseException
     }
 };
 
-#endif  // __FILELOADINGEXCEPTION_HPP__
+#endif  // __FILELOADINGEXCEPTION_H__

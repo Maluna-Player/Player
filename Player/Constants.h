@@ -19,9 +19,9 @@
 /** Chemins des ressources
 /*******************************/
 
-#define SONGS_SUBDIR        std::string("../resources") + Path::separator() + "Musiques"
-#define FONT_FILE           std::string("resources") + Path::separator() + "lsans.ttf"
-#define IMAGES_SUBDIR       std::string("../resources") + Path::separator() + "Images"
+#define SONGS_SUBDIR        "../resources" + QString(Path::separator()) + "Musiques/"
+#define FONT_FILE           "../resources" + QString(Path::separator()) + "lsans.ttf"
+#define IMAGES_SUBDIR       "../resources" + QString(Path::separator()) + "Images/"
 
 
 /*******************************
@@ -67,7 +67,7 @@
 /*******************************/
 
 // Taille d'un bouton
-#define BUTTON_SIZE         40
+#define BUTTON_SIZE         45
 
 // Coordonnées des boutons
 #define PLAY_X              380
@@ -148,8 +148,7 @@ enum { BUTTONS_TEXTURE, BOTTOM_BACKGROUND, NB_TEXTURES };
 enum { TITLE_TEXT, POS_TEXT, LENGTH_TEXT, NB_TEXTS };
 
 // Liste des objets cliquables
-enum Clickable_t { PLAY_BUTTON, STOP_BUTTON, PREV_BUTTON, NEXT_BUTTON,
-                   VOLUME_MORE_BUTTON, VOLUME_LESS_BUTTON,
+enum Clickable_t { VOLUME_MORE_BUTTON, VOLUME_LESS_BUTTON,
                    REFRESH_DIR_BUTTON, NB_BUTTONS,
 
                    PROGRESS_BACKGROUND = NB_BUTTONS,

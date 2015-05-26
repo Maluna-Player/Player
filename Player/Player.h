@@ -75,7 +75,7 @@ class Player
     /**
      * @return true si ni pause, ni stop.
     */
-    virtual bool isPlayed() const;
+    virtual bool isPlaying() const;
 
     /**
      * @return true si le player est stoppé.

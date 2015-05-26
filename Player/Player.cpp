@@ -83,11 +83,14 @@ void Player::play()
 
 void Player::stop()
 {
-  m_Pause = false;
-  m_Stop = true;
+  if (!isStopped())
+  {
+    m_Pause = false;
+    m_Stop = true;
 
-  if (m_Songs.size() > 0)
-    getCurrentSong().stop();
+    if (m_Songs.size() > 0)
+      getCurrentSong().stop();
+  }
 }
 
 // ==============================
@@ -113,7 +116,7 @@ void Player::mute(bool mute)
 // ==============================
 // ==============================
 
-bool Player::isPlayed() const
+bool Player::isPlaying() const
 {
   return (!m_Pause && !m_Stop);
 }
