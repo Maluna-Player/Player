@@ -11,7 +11,7 @@
 #include "PlayerWindow.h"
 #include "BaseException.h"
 #include <QApplication>
-#include <iostream>
+#include <QDebug>
 
 int main(int argc, char *argv[])
 {
@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     }
     catch (BaseException& e)
     {
-        std::cerr << e.what() << std::endl;
+        qDebug() << e.what();
         return EXIT_FAILURE;
     }
 }

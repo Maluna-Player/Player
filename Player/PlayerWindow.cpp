@@ -46,11 +46,8 @@ PlayerWindow::PlayerWindow(QWidget *parent)
 
     QGridLayout *bottomLayout = new QGridLayout;
 
-    mp_Buttons << new PlayerButton(IMAGES_SUBDIR + "play.png")
-            << new PlayerButton(IMAGES_SUBDIR + "pause.png")
-            << new PlayerButton(IMAGES_SUBDIR + "stop.png")
-            << new PlayerButton(IMAGES_SUBDIR + "prev.png")
-            << new PlayerButton(IMAGES_SUBDIR + "next.png");
+    mp_Buttons << new PlayerButton("play") << new PlayerButton("pause") << new PlayerButton("stop")
+                << new PlayerButton("prev") << new PlayerButton("next");
 
     mp_Buttons.at(PAUSE_BUTTON)->hide();
 

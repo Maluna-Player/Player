@@ -19,9 +19,10 @@
 /** Chemins des ressources
 /*******************************/
 
-#define SONGS_SUBDIR        "../resources" + QString(Path::separator()) + "Musiques/"
-#define FONT_FILE           "../resources" + QString(Path::separator()) + "lsans.ttf"
-#define IMAGES_SUBDIR       "../resources" + QString(Path::separator()) + "Images/"
+#define SONGS_SUBDIR        "../resources/Musiques/"
+#define FONT_FILE           "../resources/lsans.ttf"
+#define IMAGES_SUBDIR       QString("../resources/Images/")
+#define BUTTONS_SUBDIR      IMAGES_SUBDIR + "Buttons/"
 
 
 /*******************************
