@@ -16,7 +16,7 @@
 
 
 PlayerWindow::PlayerWindow(QWidget *parent)
-    : QWidget(parent), m_TimerId(0), m_Spectrum(SPECTRUM_WIDTH)
+    : QWidget(parent), m_TimerId(0)
 {
     setWindowTitle(tr(WINDOW_TITLE));
     resize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -26,23 +26,33 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     layout->setContentsMargins(0, 0, 0, 0);
 
 
-    /** Création des backgrounds **/
+    /** Partie du haut **/
 
-    QPalette pal(palette());
-
-    pal.setColor(QPalette::Background, Qt::black);
-    m_TopPart.setAutoFillBackground(true);
-    m_TopPart.setPalette(pal);
-
-    m_BottomPart.setAutoFillBackground(true);
-
-
-    /** Ajout du contenu **/
-
+    mp_TopPart = new QWidget;
     QGridLayout *topLayout = new QGridLayout;
-    topLayout->setColumnStretch(0, 1);
-    topLayout->addWidget(&m_Spectrum, 0, 1);
-    m_TopPart.setLayout(topLayout);
+
+    mp_SongTitle = new QLabel;
+    mp_SongTitle->setStyleSheet("QLabel {color : white; }");
+
+    QFont titleFont = mp_SongTitle->font();
+    titleFont.setPointSize(20);
+
+    mp_SongTitle->setFont(titleFont);
+
+    mp_Spectrum = new Spectrum(SPECTRUM_WIDTH);
+
+    topLayout->addWidget(mp_SongTitle, 0, 0, 1, 2, Qt::AlignTop);
+    topLayout->addWidget(mp_Spectrum, 0, 1);
+
+    mp_TopPart->setLayout(topLayout);
+
+    mp_SongTitle->raise();
+
+
+    /** Partie du bas **/
+
+    mp_BottomPart = new QWidget;
+    mp_BottomPart->setAutoFillBackground(true);
 
     QGridLayout *bottomLayout = new QGridLayout;
 
@@ -64,10 +74,11 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     bottomLayout->addWidget(mp_Buttons.at(PREV_BUTTON), 1, 1);
     bottomLayout->addWidget(mp_Buttons.at(NEXT_BUTTON), 1, 3);
     bottomLayout->setColumnStretch(4, 1);
-    m_BottomPart.setLayout(bottomLayout);
+    mp_BottomPart->setLayout(bottomLayout);
 
-    layout->addWidget(&m_TopPart);
-    layout->addWidget(&m_BottomPart);
+
+    layout->addWidget(mp_TopPart);
+    layout->addWidget(mp_BottomPart);
     setLayout(layout);
 
 
@@ -111,6 +122,7 @@ void PlayerWindow::changeSong(int song)
         try
         {
             m_Player.changeSong(song);
+            mp_SongTitle->setText(QString::fromStdString(m_Player.getCurrentSong().getTitle()));
 
             if (m_Player.isPaused())
                 setState(STOP_STATE);
@@ -190,7 +202,7 @@ void PlayerWindow::timerEvent(QTimerEvent *event)
     {
         if (m_Player.isPlaying())
         {
-            m_Spectrum.updateValues(m_Player.getCurrentSong().getSoundID());
+            mp_Spectrum->updateValues(m_Player.getCurrentSong().getSoundID());
 
             if (m_Player.getCurrentSong().isFinished())
                 changeSong(m_Player.next());
@@ -223,14 +235,26 @@ void PlayerWindow::hideEvent(QHideEvent* /*event*/)
 
 void PlayerWindow::resizeEvent(QResizeEvent* /*event*/)
 {
-    QPalette pal(m_BottomPart.palette());
 
-    QLinearGradient gradient(0, 0, 0, m_BottomPart.height());
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::paintEvent(QPaintEvent *event)
+{
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    painter.fillRect(event->rect(), Qt::black);
+
+    QPalette pal(mp_BottomPart->palette());
+
+    QLinearGradient gradient(0, 0, 0, mp_BottomPart->height());
     gradient.setColorAt(0.0, QColor(66, 66, 66));
     gradient.setColorAt(0.5, QColor(69, 69, 69));
     gradient.setColorAt(0.6, QColor(60, 60, 60));
     gradient.setColorAt(1.0, QColor(24, 24, 24));
 
     pal.setBrush(QPalette::Window, gradient);
-    m_BottomPart.setPalette(pal);
+    mp_BottomPart->setPalette(pal);
 }

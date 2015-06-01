@@ -31,10 +31,11 @@ class PlayerWindow : public QWidget
 
         Player m_Player;
 
-        QWidget m_TopPart;
-        QWidget m_BottomPart;
+        QWidget *mp_TopPart;
+        QWidget *mp_BottomPart;
 
-        Spectrum m_Spectrum;
+        QLabel *mp_SongTitle;
+        Spectrum *mp_Spectrum;
 
 
         enum ButtonId_t { PLAY_BUTTON, PAUSE_BUTTON, STOP_BUTTON, PREV_BUTTON, NEXT_BUTTON };
@@ -80,6 +81,8 @@ class PlayerWindow : public QWidget
         virtual void hideEvent(QHideEvent *event);
 
         virtual void resizeEvent(QResizeEvent *event);
+
+        virtual void paintEvent(QPaintEvent *event);
 
     public:
 

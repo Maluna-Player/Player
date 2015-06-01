@@ -17,6 +17,7 @@
 #include <QVector>
 #include <QRect>
 #include <QPainter>
+#include <QPaintEvent>
 
 
 class Spectrum : public QWidget

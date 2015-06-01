@@ -53,13 +53,14 @@ void Spectrum::draw(QPainter *painter) const
 // ==============================
 // ==============================
 
-void Spectrum::paintEvent(QPaintEvent* /*event*/)
+void Spectrum::paintEvent(QPaintEvent *event)
 {
     QImage image(m_Width, SPECTRUM_HEIGHT, QImage::Format_ARGB32_Premultiplied);
     QPainter imagePainter(&image);
     imagePainter.initFrom(this);
     imagePainter.setRenderHint(QPainter::Antialiasing, true);
     imagePainter.eraseRect(rect());
+    imagePainter.fillRect(event->rect(), Qt::black);
 
     draw(&imagePainter);
     imagePainter.end();
