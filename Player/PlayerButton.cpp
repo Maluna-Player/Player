@@ -35,7 +35,7 @@ void PlayerButton::loadImage(const QString& fileName)
     QString filePath(BUTTONS_SUBDIR + fileName);
     QPixmap image(filePath);
     if (image.isNull())
-        throw FileLoadingException("PlayerButton::PlayerButton", filePath.toStdString());
+        throw FileLoadingException("PlayerButton::loadImage", filePath.toStdString());
 
     setPixmap(image.scaled(70, 70, Qt::KeepAspectRatio));
 }

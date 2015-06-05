@@ -20,7 +20,9 @@ SOURCES += main.cpp\
     Path.cpp \
     Spectrum.cpp \
     ClickableLabel.cpp \
-    PlayerButton.cpp
+    PlayerButton.cpp \
+    ProgressBar.cpp \
+    ProgressBackground.cpp
 
 HEADERS  += PlayerWindow.h \
     LibException.h \
@@ -34,7 +36,9 @@ HEADERS  += PlayerWindow.h \
     Spectrum.h \
     ClickableLabel.h \
     PlayerButton.h \
-    FileLoadingException.h
+    FileLoadingException.h \
+    ProgressBar.h \
+    ProgressBackground.h
 
 
 # Removal of warnings

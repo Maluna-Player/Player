@@ -13,7 +13,8 @@
 #include <QImage>
 #include <QLinearGradient>
 
-Spectrum::Spectrum(int width) : m_Width(width), m_Lines(m_Width)
+Spectrum::Spectrum(int width, QWidget *parent)
+    : QWidget(parent), m_Width(width), m_Lines(m_Width)
 {
     setMinimumSize(m_Width, SPECTRUM_HEIGHT);
 

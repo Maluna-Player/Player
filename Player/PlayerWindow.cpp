@@ -49,6 +49,13 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     mp_SongTitle->raise();
 
 
+    mp_ProgressBackground = new ProgressBackground;
+    mp_ProgressBar = new ProgressBar(mp_ProgressBackground);
+    mp_ProgressBar->setGeometry(0, (PROGRESS_BACKGROUND_HEIGHT - PROGRESSBAR_HEIGHT) / 2, mp_ProgressBackground->width(), 0);
+
+    connect(mp_ProgressBar, SIGNAL(posChanged(int)), this, SLOT(setSongPosition(int)));
+
+
     /** Partie du bas **/
 
     mp_BottomPart = new QWidget;
@@ -78,6 +85,7 @@ PlayerWindow::PlayerWindow(QWidget *parent)
 
 
     layout->addWidget(mp_TopPart);
+    layout->addWidget(mp_ProgressBackground);
     layout->addWidget(mp_BottomPart);
     setLayout(layout);
 
@@ -123,6 +131,8 @@ void PlayerWindow::changeSong(int song)
         {
             m_Player.changeSong(song);
             mp_SongTitle->setText(QString::fromStdString(m_Player.getCurrentSong().getTitle()));
+            mp_ProgressBar->setValue(0);
+            mp_ProgressBar->setMaximum(m_Player.getCurrentSong().getLength());
 
             if (m_Player.isPaused())
                 setState(STOP_STATE);
@@ -196,6 +206,20 @@ void PlayerWindow::nextSong()
 // ==============================
 // ==============================
 
+void PlayerWindow::setSongPosition(int value)
+{
+    if (!m_Player.isStopped())
+    {
+        SoundPos_t pos = value * m_Player.getCurrentSong().getLength() / 100;
+
+        m_Player.getCurrentSong().setPosition(pos);
+        mp_ProgressBar->setValue(pos);
+    }
+}
+
+// ==============================
+// ==============================
+
 void PlayerWindow::timerEvent(QTimerEvent *event)
 {
     if (event->timerId() == m_TimerId)
@@ -203,6 +227,7 @@ void PlayerWindow::timerEvent(QTimerEvent *event)
         if (m_Player.isPlaying())
         {
             mp_Spectrum->updateValues(m_Player.getCurrentSong().getSoundID());
+            mp_ProgressBar->setValue(m_Player.getCurrentSong().getPosition());
 
             if (m_Player.getCurrentSong().isFinished())
                 changeSong(m_Player.next());
@@ -233,9 +258,9 @@ void PlayerWindow::hideEvent(QHideEvent* /*event*/)
 // ==============================
 // ==============================
 
-void PlayerWindow::resizeEvent(QResizeEvent* /*event*/)
+void PlayerWindow::resizeEvent(QResizeEvent* event)
 {
-
+    mp_ProgressBar->resize(event->size().width(), mp_ProgressBar->height());
 }
 
 // ==============================

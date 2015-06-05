@@ -41,7 +41,7 @@ class Spectrum : public QWidget
 
     public:
 
-        Spectrum(int width);
+        Spectrum(int width, QWidget *parent = 0);
         virtual ~Spectrum();
 
         /**

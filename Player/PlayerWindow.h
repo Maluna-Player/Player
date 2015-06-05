@@ -15,6 +15,8 @@
 #include "Player.h"
 #include "Spectrum.h"
 #include "PlayerButton.h"
+#include "ProgressBackground.h"
+#include "ProgressBar.h"
 
 #include <QTimerEvent>
 #include <QShowEvent>
@@ -36,6 +38,9 @@ class PlayerWindow : public QWidget
 
         QLabel *mp_SongTitle;
         Spectrum *mp_Spectrum;
+
+        ProgressBackground *mp_ProgressBackground;
+        ProgressBar *mp_ProgressBar;
 
 
         enum ButtonId_t { PLAY_BUTTON, PAUSE_BUTTON, STOP_BUTTON, PREV_BUTTON, NEXT_BUTTON };
@@ -71,6 +76,12 @@ class PlayerWindow : public QWidget
         virtual void previousSong();
 
         virtual void nextSong();
+
+        /**
+         * @brief Modifie la position du son et met à jour la barre de progression.
+         * @param value Nouvelle position de la barre
+         */
+        virtual void setSongPosition(int value);
 
     protected:
 

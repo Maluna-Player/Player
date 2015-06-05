@@ -59,7 +59,7 @@
 /*******************************/
 
 #define SPECTRUM_WIDTH      512
-#define SPECTRUM_HEIGHT     450
+#define SPECTRUM_HEIGHT     400
 #define SPECTRUM_RATIO      15
 
 
@@ -92,7 +92,7 @@
 #define PROGRESS_BACKGROUND_HEIGHT      30
 #define PROGRESS_BACKGROUND_X           0
 #define PROGRESS_BACKGROUND_Y           500
-#define PROGRESSBAR_HEIGHT              17
+#define PROGRESSBAR_HEIGHT              23
 #define PROGRESSBAR_Y                   (PROGRESS_BACKGROUND_Y + 6)
 
 // Temps de la musique
