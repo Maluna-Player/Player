@@ -12,7 +12,7 @@
 #include "FileLoadingException.h"
 
 
-ProgressBar::ProgressBar(QWidget *parent) : QProgressBar(parent)
+ProgressBar::ProgressBar(QWidget *parent) : QProgressBar(parent), m_Press(false)
 {
     setFixedHeight(PROGRESSBAR_HEIGHT);
 }
@@ -65,7 +65,24 @@ void ProgressBar::mousePressEvent(QMouseEvent *event)
     int xBarValue = value() * width() / maximum();
 
     if (event->x() >= xBarValue - 2 && event->x() <= xBarValue + 3)
-        ; // Press
+        m_Press = true;
     else
         emit(posChanged(event->x() * 100 / width()));
+}
+
+// ==============================
+// ==============================
+
+void ProgressBar::mouseMoveEvent(QMouseEvent *event)
+{
+    if (m_Press)
+        emit(posChanged(event->x() * 100 / width()));
+}
+
+// ==============================
+// ==============================
+
+void ProgressBar::mouseReleaseEvent(QMouseEvent *event)
+{
+    m_Press = false;
 }
