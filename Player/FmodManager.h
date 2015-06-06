@@ -9,8 +9,8 @@
  *************************************
 */
 
-#ifndef __FMOD_H__
-#define __FMOD_H__
+#ifndef __FMODMANAGER_H__
+#define __FMODMANAGER_H__
 
 #include <fmod.h>
 #include <fmod_errors.h>
@@ -29,141 +29,147 @@ typedef unsigned int  SoundPos_t;   // Position en ms
 
 class FmodManager
 {
-  private:
+    private:
 
-    FMOD_SYSTEM *mp_System;
+        FMOD_SYSTEM *mp_System;
 
-    std::vector<FMOD_CHANNEL*> mp_Channels;
+        std::vector<FMOD_CHANNEL*> mp_Channels;
 
-    std::vector<FMOD_SOUND*> mp_Sounds;
+        std::vector<FMOD_SOUND*> mp_Sounds;
 
-    FMOD_CHANNELGROUP *mp_ChannelGroup;
-
-
-    /* Instance du singleton */
-    static FmodManager *mp_Instance;
+        FMOD_CHANNELGROUP *mp_ChannelGroup;
 
 
-    FmodManager(int maxChannels = MAX_CHANNELS_NB);
-    virtual ~FmodManager();
+        /* Instance du singleton */
+        static FmodManager *mp_Instance;
 
-    /**
-     * Attribue un SoundID libre.
-     * @return id attribué
-    */
-    virtual SoundID_t getSoundID() const;
 
-    /**
-     * Libère la mémoire du son chargé.
-     * @param id Identifiant du son à libérer.
-    */
-    virtual void releaseSound(SoundID_t id);
+        FmodManager(int maxChannels = MAX_CHANNELS_NB);
+        virtual ~FmodManager();
 
-  public:
+        /**
+         * Attribue un SoundID libre.
+         * @return id attribué
+        */
+        virtual SoundID_t getSoundID() const;
 
-    /**
-     * Créé le singleton s'il n'existe pas
-     * et retourne l'instance correspondante.
-     * @return instance du singleton
-    */
-    static FmodManager* getInstance();
+        /**
+         * Libère la mémoire du son chargé.
+         * @param id Identifiant du son à libérer.
+        */
+        virtual void releaseSound(SoundID_t id);
 
-    /**
-     * Détruit le singleton alloué dynamiquement.
-    */
-    static void deleteInstance();
+        /**
+         * Vérifie si le canal associé à l'id est utilisé ou non.
+         * @param id Identifiant du canal à vérifier
+         * @return true si le canal est utilisé, false sinon.
+         */
+        virtual bool isChannelUsed(SoundID_t id) const;
 
-    /**
-     * Ouvre le fichier son passé en paramètre.
-     * @param soundFile Fichier à ouvrir
-     * @return identifiant du canal associé
-    */
-    virtual SoundID_t openFromFile(const std::string& soundFile) throw (StreamError_t);
+    public:
 
-    /**
-     * Joue le son chargé.
-     * @param id Identifiant du son à jouer
-    */
-    virtual void playSound(SoundID_t id);
+        /**
+         * Créé le singleton s'il n'existe pas
+         * et retourne l'instance correspondante.
+         * @return instance du singleton
+        */
+        static FmodManager* getInstance();
 
-    /**
-     * Arrête le son joué sur le canal id.
-     * @param id Identifiant du canal à stopper
-    */
-    virtual void stopSound(SoundID_t id);
+        /**
+         * Détruit le singleton alloué dynamiquement.
+        */
+        static void deleteInstance();
 
-    /**
-     * Met ou retire la pause du canal id.
-     * @param id Identifiant du canal à modifier.
-     * @param paused Etat pause à mettre.
-    */
-    virtual void pauseSound(SoundID_t id, bool paused) const;
+        /**
+         * Ouvre le fichier son passé en paramètre.
+         * @param soundFile Fichier à ouvrir
+         * @return identifiant du canal associé
+        */
+        virtual SoundID_t openFromFile(const std::string& soundFile) throw (StreamError_t);
 
-    /**
-     * @param id Identifiant du son à mesurer
-     * @return durée de la musique (ms).
-    */
-    virtual SoundPos_t getSoundLength(SoundID_t id) const;
+        /**
+         * Joue le son chargé.
+         * @param id Identifiant du son à jouer
+        */
+        virtual void playSound(SoundID_t id);
 
-    /**
-     * @param id Identifiant du canal à tester
-     * @return position courante de la musique jouée (ms).
-    */
-    virtual SoundPos_t getSoundPosition(SoundID_t id) const;
+        /**
+         * Arrête le son joué sur le canal id.
+         * @param id Identifiant du canal à stopper
+        */
+        virtual void stopSound(SoundID_t id);
 
-    /**
-     * Change la position de la musique.
-     * @param id Identifiant du canal à modifier
-     * @param pos Position à appliquer
-    */
-    virtual void setSoundPosition(SoundID_t id, SoundPos_t pos);
+        /**
+         * Met ou retire la pause du canal id.
+         * @param id Identifiant du canal à modifier.
+         * @param paused Etat pause à mettre.
+        */
+        virtual void pauseSound(SoundID_t id, bool paused) const;
 
-    /**
-     * @param id Identifiant du canal à tester
-     * @return true si le canal id est en train de jouer.
-    */
-    virtual bool isPlaying(SoundID_t id) const;
+        /**
+         * @param id Identifiant du son à mesurer
+         * @return durée de la musique (ms).
+        */
+        virtual SoundPos_t getSoundLength(SoundID_t id) const;
 
-    /**
-     * Récupère le spectre du son joué dans le canal.
-     * @param id Identifiant du canal à tester
-     * @param values Tableau dans lequel sont stockées
-     *               les valeurs.
-     * @return Tableau dans lequel sont stockées les valeurs.
-    */
-    virtual float* getChannelSpectrum(SoundID_t id, float *values) const;
+        /**
+         * @param id Identifiant du canal à tester
+         * @return position courante de la musique jouée (ms).
+        */
+        virtual SoundPos_t getSoundPosition(SoundID_t id) const;
 
-    /**
-     * Récupère le volume du canal.
-     * @param id Identifiant du canal
-     * @return Volume du canal
-    */
-    virtual float getVolume(SoundID_t id) const;
+        /**
+         * Change la position de la musique.
+         * @param id Identifiant du canal à modifier
+         * @param pos Position à appliquer
+        */
+        virtual void setSoundPosition(SoundID_t id, SoundPos_t pos);
 
-    /**
-     * Modifie le volume du canal.
-     * @param id Identifiant du canal à modifier
-     * @param volume Volume à appliquer
-    */
-    virtual void setVolume(SoundID_t id, float volume) const;
+        /**
+         * @param id Identifiant du canal à tester
+         * @return true si le canal id est en train de jouer.
+        */
+        virtual bool isPlaying(SoundID_t id) const;
 
-    /**
-     * Modifie le volume de l'ensemble des canaux.
-     * @param volume Volume à appliquer
-    */
-    virtual void setVolume(float volume) const;
+        /**
+         * Récupère le spectre du son joué dans le canal.
+         * @param id Identifiant du canal à tester
+         * @param values Tableau dans lequel sont stockées
+         *               les valeurs.
+         * @return Tableau dans lequel sont stockées les valeurs.
+        */
+        virtual float* getChannelSpectrum(SoundID_t id, float *values) const;
 
-    /**
-     * Change l'état mute de l'ensemble des canaux.
-     * @param mute Etat à appliquer
-    */
-    virtual void setMute(bool mute) const;
+        /**
+         * Récupère le volume du canal.
+         * @param id Identifiant du canal
+         * @return Volume du canal
+        */
+        virtual float getVolume(SoundID_t id) const;
 
-    /**
-     * @return Titre dans le tag du son, "" si pas de tag.
-    */
-    virtual std::string getSongTitle(SoundID_t id) const;
+        /**
+         * Modifie le volume du canal.
+         * @param id Identifiant du canal à modifier
+         * @param volume Volume à appliquer
+        */
+        virtual void setVolume(SoundID_t id, float volume) const;
 
+        /**
+         * Modifie le volume de l'ensemble des canaux.
+         * @param volume Volume à appliquer
+        */
+        virtual void setVolume(float volume) const;
+
+        /**
+         * Change l'état mute de l'ensemble des canaux.
+         * @param mute Etat à appliquer
+        */
+        virtual void setMute(bool mute) const;
+
+        /**
+         * @return Titre dans le tag du son, "" si pas de tag.
+        */
+        virtual std::string getSongTitle(SoundID_t id) const;
 };
 
-#endif  // __FMOD_H__
+#endif  // __FMODMANAGER_H__

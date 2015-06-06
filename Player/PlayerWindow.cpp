@@ -114,7 +114,11 @@ void PlayerWindow::setState(State_t state)
     else if (state == PAUSE_STATE)
         m_Player.pause();
     else if (state == STOP_STATE)
+    {
         m_Player.stop();
+        mp_Spectrum->updateValues(m_Player.getCurrentSong().getSoundID());
+        mp_ProgressBar->setValue(m_Player.getCurrentSong().getPosition());
+    }
 
     mp_Buttons.at(PLAY_BUTTON)->setHidden(m_Player.isPlaying());
     mp_Buttons.at(PAUSE_BUTTON)->setHidden(!m_Player.isPlaying());
