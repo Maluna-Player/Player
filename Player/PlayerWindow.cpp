@@ -60,7 +60,8 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     mp_SongLength = new PlayerLabel(QColor(21, 191, 221), 15);
 
     mp_Buttons << new PlayerButton("play") << new PlayerButton("pause") << new PlayerButton("stop")
-                << new PlayerButton("prev") << new PlayerButton("next");
+                << new PlayerButton("prev") << new PlayerButton("next") << new PlayerButton("volumem")
+                << new PlayerButton("volumel");
 
     mp_Buttons.at(PAUSE_BUTTON)->hide();
 
@@ -69,16 +70,28 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     connect(mp_Buttons.at(STOP_BUTTON), SIGNAL(clicked()), this, SLOT(stop()));
     connect(mp_Buttons.at(PREV_BUTTON), SIGNAL(clicked()), this, SLOT(previousSong()));
     connect(mp_Buttons.at(NEXT_BUTTON), SIGNAL(clicked()), this, SLOT(nextSong()));
+    connect(mp_Buttons.at(VOLUME_MORE_BUTTON), SIGNAL(clicked()), this, SLOT(increaseVolume()));
+    connect(mp_Buttons.at(VOLUME_LESS_BUTTON), SIGNAL(clicked()), this, SLOT(decreaseVolume()));
 
-    bottomLayout->setColumnStretch(0, 1);
+    mp_SoundVolume = new VolumeViewer;
+    mp_SoundVolume->setImage(m_Player.getVolumeState());
+
+
+    bottomLayout->setColumnStretch(3, 1);
     bottomLayout->addWidget(mp_SongPos, 0, 0);
     bottomLayout->addWidget(mp_SongLength, 0, 10);
-    bottomLayout->addWidget(mp_Buttons.at(PLAY_BUTTON), 1, 2);
-    bottomLayout->addWidget(mp_Buttons.at(PAUSE_BUTTON), 1, 2);
-    bottomLayout->addWidget(mp_Buttons.at(STOP_BUTTON), 5, 2);
-    bottomLayout->addWidget(mp_Buttons.at(PREV_BUTTON), 3, 1);
-    bottomLayout->addWidget(mp_Buttons.at(NEXT_BUTTON), 3, 3);
-    bottomLayout->setColumnStretch(4, 1);
+
+    bottomLayout->addWidget(mp_Buttons.at(PLAY_BUTTON), 0, 5, 2, 1);
+    bottomLayout->addWidget(mp_Buttons.at(PAUSE_BUTTON), 0, 5, 2, 1);
+    bottomLayout->addWidget(mp_Buttons.at(STOP_BUTTON), 2, 5, 2, 1);
+    bottomLayout->addWidget(mp_Buttons.at(PREV_BUTTON), 1, 4, 2, 1);
+    bottomLayout->addWidget(mp_Buttons.at(NEXT_BUTTON), 1, 6, 2, 1);
+    bottomLayout->addWidget(mp_Buttons.at(VOLUME_MORE_BUTTON), 0, 3, 2, 1);
+    bottomLayout->addWidget(mp_Buttons.at(VOLUME_LESS_BUTTON), 2, 3, 2, 1);
+
+    bottomLayout->addWidget(mp_SoundVolume, 1, 1, 2, 2);
+
+    bottomLayout->setColumnStretch(7, 1);
     mp_BottomPart->setLayout(bottomLayout);
 
 
@@ -207,6 +220,38 @@ void PlayerWindow::previousSong()
 void PlayerWindow::nextSong()
 {
     changeSong(m_Player.next());
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::increaseVolume()
+{
+    int previousVolume = m_Player.getVolumeState();
+
+    if (previousVolume < (NB_VOLUME_STATES - 1))
+    {
+        m_Player.setVolume(previousVolume + 1);
+
+        if (!m_Player.isMuted())
+           mp_SoundVolume->setImage(previousVolume + 1);
+    }
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::decreaseVolume()
+{
+    int previousVolume = m_Player.getVolumeState();
+
+    if (previousVolume > 0)
+    {
+        m_Player.setVolume(previousVolume - 1);
+
+        if (!m_Player.isMuted())
+            mp_SoundVolume->setImage(previousVolume - 1);
+    }
 }
 
 // ==============================

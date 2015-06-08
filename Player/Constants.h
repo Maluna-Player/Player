@@ -149,8 +149,7 @@ enum { BUTTONS_TEXTURE, BOTTOM_BACKGROUND, NB_TEXTURES };
 enum { TITLE_TEXT, POS_TEXT, LENGTH_TEXT, NB_TEXTS };
 
 // Liste des objets cliquables
-enum Clickable_t { VOLUME_MORE_BUTTON, VOLUME_LESS_BUTTON,
-                   REFRESH_DIR_BUTTON, NB_BUTTONS,
+enum Clickable_t { REFRESH_DIR_BUTTON, NB_BUTTONS,
 
                    PROGRESS_BACKGROUND = NB_BUTTONS,
                    VOLUME_VIEWER,

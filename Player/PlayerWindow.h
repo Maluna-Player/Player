@@ -18,6 +18,7 @@
 #include "PlayerButton.h"
 #include "ProgressBackground.h"
 #include "ProgressBar.h"
+#include "VolumeViewer.h"
 
 #include <QTimerEvent>
 #include <QShowEvent>
@@ -46,8 +47,10 @@ class PlayerWindow : public QWidget
         ProgressBackground *mp_ProgressBackground;
         ProgressBar *mp_ProgressBar;
 
+        VolumeViewer *mp_SoundVolume;
 
-        enum ButtonId_t { PLAY_BUTTON, PAUSE_BUTTON, STOP_BUTTON, PREV_BUTTON, NEXT_BUTTON };
+        enum ButtonId_t { PLAY_BUTTON, PAUSE_BUTTON, STOP_BUTTON, PREV_BUTTON, NEXT_BUTTON,
+                          VOLUME_MORE_BUTTON, VOLUME_LESS_BUTTON, };
 
         QVector<PlayerButton*> mp_Buttons;
 
@@ -80,6 +83,10 @@ class PlayerWindow : public QWidget
         virtual void previousSong();
 
         virtual void nextSong();
+
+        virtual void increaseVolume();
+
+        virtual void decreaseVolume();
 
         /**
          * @brief Modifie la position du son et met à jour la barre de progression.

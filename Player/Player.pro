@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     PlayerButton.cpp \
     ProgressBar.cpp \
     ProgressBackground.cpp \
-    PlayerLabel.cpp
+    PlayerLabel.cpp \
+    VolumeViewer.cpp
 
 HEADERS  += PlayerWindow.h \
     LibException.h \
@@ -40,7 +41,8 @@ HEADERS  += PlayerWindow.h \
     FileLoadingException.h \
     ProgressBar.h \
     ProgressBackground.h \
-    PlayerLabel.h
+    PlayerLabel.h \
+    VolumeViewer.h
 
 
 # Removal of warnings
