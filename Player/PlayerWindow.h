@@ -40,6 +40,9 @@ class PlayerWindow : public QWidget
         PlayerLabel *mp_SongTitle;
         Spectrum *mp_Spectrum;
 
+        PlayerLabel *mp_SongPos;
+        PlayerLabel *mp_SongLength;
+
         ProgressBackground *mp_ProgressBackground;
         ProgressBar *mp_ProgressBar;
 

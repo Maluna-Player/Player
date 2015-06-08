@@ -56,6 +56,9 @@ PlayerWindow::PlayerWindow(QWidget *parent)
 
     QGridLayout *bottomLayout = new QGridLayout;
 
+    mp_SongPos = new PlayerLabel(QColor(21, 191, 221), 15);
+    mp_SongLength = new PlayerLabel(QColor(21, 191, 221), 15);
+
     mp_Buttons << new PlayerButton("play") << new PlayerButton("pause") << new PlayerButton("stop")
                 << new PlayerButton("prev") << new PlayerButton("next");
 
@@ -68,11 +71,13 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     connect(mp_Buttons.at(NEXT_BUTTON), SIGNAL(clicked()), this, SLOT(nextSong()));
 
     bottomLayout->setColumnStretch(0, 1);
-    bottomLayout->addWidget(mp_Buttons.at(PLAY_BUTTON), 0, 2);
-    bottomLayout->addWidget(mp_Buttons.at(PAUSE_BUTTON), 0, 2);
-    bottomLayout->addWidget(mp_Buttons.at(STOP_BUTTON), 2, 2);
-    bottomLayout->addWidget(mp_Buttons.at(PREV_BUTTON), 1, 1);
-    bottomLayout->addWidget(mp_Buttons.at(NEXT_BUTTON), 1, 3);
+    bottomLayout->addWidget(mp_SongPos, 0, 0);
+    bottomLayout->addWidget(mp_SongLength, 0, 10);
+    bottomLayout->addWidget(mp_Buttons.at(PLAY_BUTTON), 1, 2);
+    bottomLayout->addWidget(mp_Buttons.at(PAUSE_BUTTON), 1, 2);
+    bottomLayout->addWidget(mp_Buttons.at(STOP_BUTTON), 5, 2);
+    bottomLayout->addWidget(mp_Buttons.at(PREV_BUTTON), 3, 1);
+    bottomLayout->addWidget(mp_Buttons.at(NEXT_BUTTON), 3, 3);
     bottomLayout->setColumnStretch(4, 1);
     mp_BottomPart->setLayout(bottomLayout);
 
@@ -111,6 +116,7 @@ void PlayerWindow::setState(State_t state)
         m_Player.stop();
         mp_Spectrum->updateValues(m_Player.getCurrentSong().getSoundID());
         mp_ProgressBar->setValue(m_Player.getCurrentSong().getPosition());
+        mp_SongPos->setTime(0);
     }
 
     mp_Buttons.at(PLAY_BUTTON)->setHidden(m_Player.isPlaying());
@@ -127,7 +133,10 @@ void PlayerWindow::changeSong(int song)
         try
         {
             m_Player.changeSong(song);
+
             mp_SongTitle->setText(QString::fromStdString(m_Player.getCurrentSong().getTitle()));
+            mp_SongLength->setTime(m_Player.getCurrentSong().getLength());
+
             mp_ProgressBar->setValue(0);
             mp_ProgressBar->setMaximum(m_Player.getCurrentSong().getLength());
 
@@ -225,6 +234,7 @@ void PlayerWindow::timerEvent(QTimerEvent *event)
         {
             mp_Spectrum->updateValues(m_Player.getCurrentSong().getSoundID());
             mp_ProgressBar->setValue(m_Player.getCurrentSong().getPosition());
+            mp_SongPos->setTime(m_Player.getCurrentSong().getPosition());
 
             if (m_Player.getCurrentSong().isFinished())
                 changeSong(m_Player.next());

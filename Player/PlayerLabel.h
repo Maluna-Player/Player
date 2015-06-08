@@ -41,6 +41,12 @@ class PlayerLabel : public QLabel
          * @param enable true si l'effet doit être activé
          */
         virtual void setItalic(bool enable);
+
+        /**
+         * @brief Change le texte du label et affiche le temps dans le format mm:ss ou hh:mm:ss.
+         * @param ms Temps à afficher en ms
+         */
+        virtual void setTime(int ms);
 };
 
 #endif // __PLAYERLABEL_H__

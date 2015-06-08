@@ -8,6 +8,7 @@
 */
 
 #include "PlayerLabel.h"
+#include <QTime>
 
 
 PlayerLabel::PlayerLabel(QWidget *parent)
@@ -75,4 +76,21 @@ void PlayerLabel::setItalic(bool enable)
     QFont f = font();
     f.setItalic(enable);
     setFont(f);
+}
+
+// ==============================
+// ==============================
+
+void PlayerLabel::setTime(int ms)
+{
+    QTime baseTime(0, 0, 0);
+    QTime labelTime = baseTime.addMSecs(ms);
+
+    QString format;
+    if (labelTime.hour() >= 1)
+        format = "hh:mm:ss";
+    else
+        format = "mm:ss";
+
+    setText(labelTime.toString(format));
 }
