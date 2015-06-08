@@ -14,6 +14,7 @@
 #include <QWidget>
 #include "Player.h"
 #include "Spectrum.h"
+#include "PlayerLabel.h"
 #include "PlayerButton.h"
 #include "ProgressBackground.h"
 #include "ProgressBar.h"
@@ -36,7 +37,7 @@ class PlayerWindow : public QWidget
         QWidget *mp_TopPart;
         QWidget *mp_BottomPart;
 
-        QLabel *mp_SongTitle;
+        PlayerLabel *mp_SongTitle;
         Spectrum *mp_Spectrum;
 
         ProgressBackground *mp_ProgressBackground;

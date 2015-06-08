@@ -31,14 +31,7 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     mp_TopPart = new QWidget;
     QGridLayout *topLayout = new QGridLayout;
 
-    mp_SongTitle = new QLabel;
-    mp_SongTitle->setStyleSheet("QLabel {color : white; }");
-
-    QFont titleFont = mp_SongTitle->font();
-    titleFont.setPointSize(20);
-
-    mp_SongTitle->setFont(titleFont);
-
+    mp_SongTitle = new PlayerLabel(Qt::white, 20);
     mp_Spectrum = new Spectrum(SPECTRUM_WIDTH);
 
     topLayout->addWidget(mp_SongTitle, 0, 0, 1, 2, Qt::AlignTop);
