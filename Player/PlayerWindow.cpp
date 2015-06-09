@@ -9,7 +9,6 @@
 
 #include "PlayerWindow.h"
 #include "FmodManager.h"
-#include "Path.h"
 
 #include <QGridLayout>
 #include <QPalette>
@@ -148,7 +147,7 @@ void PlayerWindow::changeSong(int song)
         {
             m_Player.changeSong(song);
 
-            mp_SongTitle->setText(QString::fromStdString(m_Player.getCurrentSong().getTitle()));
+            mp_SongTitle->setText(m_Player.getCurrentSong().getTitle());
             mp_SongLength->setTime(m_Player.getCurrentSong().getLength());
 
             mp_ProgressBar->setValue(0);
@@ -174,8 +173,7 @@ void PlayerWindow::changeSong(int song)
 
 void PlayerWindow::refreshSongsList()
 {
-    QString songsSubDir = SONGS_SUBDIR;
-    m_Player.loadSongs(songsSubDir.toStdString());
+    m_Player.loadSongs(SONGS_SUBDIR);
 
     changeSong(m_Player.first());
 

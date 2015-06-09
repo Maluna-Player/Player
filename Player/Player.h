@@ -12,8 +12,8 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 
-#include <vector>
-#include <utility>
+#include <QVector>
+#include <QPair>
 #include "Song.h"
 
 #define FIRST_SONG        0
@@ -22,127 +22,139 @@
 
 class Player
 {
-  private:
+    private:
 
-    std::vector<Song> m_Songs;
-    int m_CurrentSong;
+        QVector<Song> m_Songs;
+        int m_CurrentSong;
 
-    bool m_Playlist;
-    bool m_Loop;
+        bool m_Playlist;
+        bool m_Loop;
 
-    bool m_Pause;
-    bool m_Stop;
+        bool m_Pause;
+        bool m_Stop;
 
-    bool m_Mute;
-    int m_VolumeState;
+        bool m_Mute;
+        int m_VolumeState;
 
-  public:
+    public:
 
-    Player();
-    virtual ~Player();
+        Player();
+        virtual ~Player();
 
-    /**
-     * @return Référence vers le son actuel.
-    */
-    virtual Song& getCurrentSong();
+        /**
+         * @brief getCurrentSong
+         * @return Référence vers le son actuel.
+         */
+        virtual Song& getCurrentSong();
 
-    /**
-     * @return Liste des musiques (titre + durée) du dossier.
-    */
-    virtual std::vector<std::pair<std::string, int> > getSongDetails() const;
+        /**
+         * @brief getSongDetails
+         * @return Liste des musiques (titre + durée) du dossier.
+         */
+        virtual QVector<QPair<QString, int> > getSongDetails() const;
 
-    /**
-     * Active la lecture.
-    */
-    virtual void play();
+        /**
+         * @brief Active la lecture.
+         */
+        virtual void play();
 
-    /**
-     * Stoppe le player.
-    */
-    virtual void stop();
+        /**
+         * @brief Stoppe le player.
+         */
+        virtual void stop();
 
-    /**
-     * Met en pause le player.
-    */
-    virtual void pause();
+        /**
+         * @brief Met en pause le player.
+         */
+        virtual void pause();
 
-    /**
-     * Change l'état mute du player (mute/unmute).
-     * @param mute Etat mute à appliquer
-    */
-    virtual void mute(bool mute);
+        /**
+         * @brief Change l'état mute du player (mute/unmute).
+         * @param mute Etat mute à appliquer
+         */
+        virtual void mute(bool mute);
 
-    /**
-     * @return true si ni pause, ni stop.
-    */
-    virtual bool isPlaying() const;
+        /**
+         * @brief isPlaying
+         * @return true si ni pause, ni stop.
+         */
+        virtual bool isPlaying() const;
 
-    /**
-     * @return true si le player est stoppé.
-    */
-    virtual bool isStopped() const;
+        /**
+         * @brief isStopped
+         * @return true si le player est stoppé.
+         */
+        virtual bool isStopped() const;
 
-    /**
-     * @return true si le player est en pause.
-    */
-    virtual bool isPaused() const;
+        /**
+         * @brief isPaused
+         * @return true si le player est en pause.
+         */
+        virtual bool isPaused() const;
 
-    /**
-     * @return true si le player est mute.
-    */
-    virtual bool isMuted() const;
+        /**
+         * @brief isMuted
+         * @return true si le player est mute.
+         */
+        virtual bool isMuted() const;
 
-    /**
-     * @return true si la boucle est activée.
-    */
-    virtual bool isLoop() const;
+        /**
+         * @brief isLoop
+         * @return true si la boucle est activée.
+         */
+        virtual bool isLoop() const;
 
-    /**
-     * @param loop Valeur à affecter à l'attribut Loop.
-    */
-    virtual void setLoop(bool loop);
+        /**
+         * @brief Applique ou retire l'état loop au player.
+         * @param loop Valeur à affecter à l'attribut Loop.
+         */
+        virtual void setLoop(bool loop);
 
-    /**
-     * @return numéro de la première chanson,
-     *         UNDEFINED_SONG si pas de chanson.
-    */
-    virtual int first() const;
+        /**
+         * @brief first
+         * @return numéro de la première chanson,
+         *         UNDEFINED_SONG si pas de chanson.
+         */
+        virtual int first() const;
 
-    /**
-     * @return numéro de chanson précédente,
-     *         UNDEFINED_SONG si pas de précédent.
-    */
-    virtual int prev() const;
+        /**
+         * @brief prev
+         * @return numéro de chanson précédente,
+         *         UNDEFINED_SONG si pas de précédent.
+         */
+        virtual int prev() const;
 
-    /**
-     * @return numéro de la chanson suivante,
-     *         UNDEFINED_SONG si pas de suivant.
-    */
-    virtual int next() const;
+        /**
+         * @brief next
+         * @return numéro de la chanson suivante,
+         *         UNDEFINED_SONG si pas de suivant.
+         */
+        virtual int next() const;
 
-    /**
-     * @return Etat du volume
-    */
-    virtual int getVolumeState() const;
+        /**
+         * @brief getVolumeState
+         * @return Etat du volume.
+         */
+        virtual int getVolumeState() const;
 
-    /**
-     * Modifie le volume du player.
-     * @param volumeState Etat du volume
-    */
-    virtual void setVolume(int volumeState);
+        /**
+         * @brief Modifie le volume du player.
+         * @param volumeState Etat du volume
+         */
+        virtual void setVolume(int volumeState);
 
-    /**
-     * Rempli le vecteur Musiques à partir des fichiers
-     * contenus dans le répertoire donné en paramètre.
-     * @param dir Répertoire à parcourir
-    */
-    virtual void loadSongs(const std::string& dir);
+        /**
+         * @brief Rempli le vecteur Musiques à partir des fichiers
+         *        contenus dans le répertoire donné en paramètre.
+         * @param dir Répertoire à parcourir
+         */
+        virtual void loadSongs(const QString& dir);
 
-    /**
-     * Lance la musique d'indice song.
-     * @param song Indice de la musique
-    */
-    virtual void changeSong(int song);
+        /**
+         * @brief Lance la musique d'indice song.
+         * @param song Indice de la musique
+         */
+        virtual void changeSong(int song);
 };
 
 #endif  // __PLAYER_H__

@@ -8,21 +8,24 @@
 */
 
 #include "Song.h"
-#include "Path.h"
+#include <QFileInfo>
 
 
-Song::Song(const std::string& file, int num)
-  : m_File(file), m_Num(num), m_SoundID(0)
+Song::Song(const QString& file, int num)
+    : m_File(file), m_Num(num), m_SoundID(0)
 {
-  SoundID_t id = FmodManager::getInstance()->openFromFile(m_File);
-  m_Length = FmodManager::getInstance()->getSoundLength(id);
+    SoundID_t id = FmodManager::getInstance()->openFromFile(m_File.toStdString());
+    m_Length = FmodManager::getInstance()->getSoundLength(id);
 
-  std::string title = FmodManager::getInstance()->getSongTitle(id);
+    QString title = QString::fromStdString(FmodManager::getInstance()->getSongTitle(id));
 
-  if (title.empty())
-    m_Title = Path::baseName(getFile());
-  else
-    m_Title = title;
+    if (title.isEmpty())
+    {
+        QFileInfo fileInfo(getFile());
+        m_Title = fileInfo.baseName();
+    }
+    else
+        m_Title = title;
 }
 
 // ==============================
@@ -38,7 +41,7 @@ Song::~Song()
 
 SoundID_t Song::getSoundID() const
 {
-  return m_SoundID;
+    return m_SoundID;
 }
 
 // ==============================
@@ -46,15 +49,15 @@ SoundID_t Song::getSoundID() const
 
 int Song::getNum() const
 {
-  return m_Num;
+    return m_Num;
 }
 
 // ==============================
 // ==============================
 
-std::string Song::getFile() const
+const QString& Song::getFile() const
 {
-  return m_File;
+    return m_File;
 }
 
 // ==============================
@@ -62,15 +65,15 @@ std::string Song::getFile() const
 
 SoundPos_t Song::getLength() const
 {
-  return m_Length;
+    return m_Length;
 }
 
 // ==============================
 // ==============================
 
-std::string Song::getTitle() const
+const QString& Song::getTitle() const
 {
-  return m_Title;
+    return m_Title;
 }
 
 // ==============================
@@ -78,7 +81,7 @@ std::string Song::getTitle() const
 
 void Song::open()
 {
-  m_SoundID = FmodManager::getInstance()->openFromFile(m_File);
+    m_SoundID = FmodManager::getInstance()->openFromFile(m_File.toStdString());
 }
 
 // ==============================
@@ -86,7 +89,7 @@ void Song::open()
 
 void Song::play() const
 {
-  FmodManager::getInstance()->playSound(m_SoundID);
+    FmodManager::getInstance()->playSound(m_SoundID);
 }
 
 // ==============================
@@ -94,7 +97,7 @@ void Song::play() const
 
 void Song::pause(bool paused) const
 {
-  FmodManager::getInstance()->pauseSound(m_SoundID, paused);
+    FmodManager::getInstance()->pauseSound(m_SoundID, paused);
 }
 
 // ==============================
@@ -102,7 +105,7 @@ void Song::pause(bool paused) const
 
 void Song::stop() const
 {
-  FmodManager::getInstance()->stopSound(m_SoundID);
+    FmodManager::getInstance()->stopSound(m_SoundID);
 }
 
 // ==============================
@@ -110,7 +113,7 @@ void Song::stop() const
 
 SoundPos_t Song::getPosition() const
 {
-  return FmodManager::getInstance()->getSoundPosition(m_SoundID);
+    return FmodManager::getInstance()->getSoundPosition(m_SoundID);
 }
 
 // ==============================
@@ -118,10 +121,10 @@ SoundPos_t Song::getPosition() const
 
 void Song::setPosition(SoundPos_t pos) const
 {
-  if (pos >= m_Length)
-    pos = m_Length - 1;
+    if (pos >= m_Length)
+        pos = m_Length - 1;
 
-  FmodManager::getInstance()->setSoundPosition(m_SoundID, pos);
+    FmodManager::getInstance()->setSoundPosition(m_SoundID, pos);
 }
 
 // ==============================
@@ -129,6 +132,6 @@ void Song::setPosition(SoundPos_t pos) const
 
 bool Song::isFinished() const
 {
-  return !(FmodManager::getInstance()->isPlaying(m_SoundID));
+    return !(FmodManager::getInstance()->isPlaying(m_SoundID));
 }
 

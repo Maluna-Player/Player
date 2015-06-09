@@ -11,73 +11,74 @@
 #ifndef __SONG_H__
 #define __SONG_H__
 
-#include <string>
+#include <QString>
 #include "FmodManager.h"
 
 class Song
 {
-  private:
+    private:
 
-    std::string m_File;
-    int m_Num;
-    SoundPos_t m_Length;
-    std::string m_Title;
+        QString m_File;
+        int m_Num;
+        SoundPos_t m_Length;
+        QString m_Title;
 
-    SoundID_t m_SoundID;
+        SoundID_t m_SoundID;
 
-  public:
+    public:
 
-		Song(const std::string& file, int num);
-		virtual ~Song();
+        Song(const QString& file = "", int num = -1);
+        virtual ~Song();
 
-    virtual SoundID_t getSoundID() const;
-    virtual int getNum() const;
-    virtual std::string getFile() const;
-    virtual SoundPos_t getLength() const;
+        virtual SoundID_t getSoundID() const;
+        virtual int getNum() const;
+        virtual const QString& getFile() const;
+        virtual SoundPos_t getLength() const;
 
-    /**
-     * @return Titre du son (tag) si le son en possède
-     *         ou le nom du fichier.
-    */
-    virtual std::string getTitle() const;
+        /**
+         * @brief getTitle
+         * @return Titre du son (tag) si le son en possède ou le nom du fichier.
+         */
+        virtual const QString& getTitle() const;
 
-    /**
-     * Ouvre le fichier avec FMOD pour stream.
-    */
-    virtual void open();
+        /**
+         * @brief Ouvre le fichier avec FMOD pour stream.
+         */
+        virtual void open();
 
-    /**
-     * Joue le son ouvert avec FMOD.
-    */
-    virtual void play() const;
+        /**
+         * @brief Joue le son ouvert avec FMOD.
+         */
+        virtual void play() const;
 
-    /**
-     * Met le son en pause ou le redémarre.
-     * @param paused Etat pause à mettre
-    */
-    virtual void pause(bool paused) const;
+        /**
+         * @brief Met le son en pause ou le redémarre.
+         * @param paused Etat pause à mettre
+         */
+        virtual void pause(bool paused) const;
 
-    /**
-     * Stoppe le son.
-    */
-    virtual void stop() const;
+        /**
+         * @brief Stoppe le son.
+         */
+        virtual void stop() const;
 
-    /**
-     * @return Position de la musique (ms).
-    */
-    virtual SoundPos_t getPosition() const;
+        /**
+         * @brief getPosition
+         * @return Position de la musique (ms)
+         */
+        virtual SoundPos_t getPosition() const;
 
-    /**
-     * Modifie la position de la musique.
-     * @param pos Nouvelle position en ms
-    */
-    virtual void setPosition(SoundPos_t pos) const;
+        /**
+         * @brief Modifie la position de la musique.
+         * @param pos Nouvelle position en ms
+         */
+        virtual void setPosition(SoundPos_t pos) const;
 
-    /**
-     * @return true si la musique est terminée.
-    */
-    virtual bool isFinished() const;
-
+        /**
+         * @brief isFinished
+         * @return true si la musique est terminée.
+         */
+        virtual bool isFinished() const;
 };
 
 #endif  // __SONG_H__
