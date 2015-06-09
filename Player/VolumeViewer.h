@@ -16,9 +16,22 @@
 
 class VolumeViewer : public QLabel
 {
+    Q_OBJECT
+
     private:
 
         QPixmap m_Image;
+
+    protected:
+
+        virtual void mousePressEvent(QMouseEvent *event);
+
+    signals:
+
+        /**
+         * @brief Signal émis lors du clic sur le volume
+         */
+        void stateChanged();
 
     public:
 

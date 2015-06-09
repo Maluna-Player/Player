@@ -75,6 +75,7 @@ PlayerWindow::PlayerWindow(QWidget *parent)
 
     mp_SoundVolume = new VolumeViewer;
     mp_SoundVolume->setImage(m_Player.getVolumeState());
+    connect(mp_SoundVolume, SIGNAL(stateChanged()), this, SLOT(setMute()));
 
 
     bottomLayout->setColumnStretch(3, 1);
@@ -266,6 +267,19 @@ void PlayerWindow::setSongPosition(int value)
         m_Player.getCurrentSong().setPosition(pos);
         mp_ProgressBar->setValue(pos);
     }
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::setMute()
+{
+    m_Player.mute(!m_Player.isMuted());
+
+    if (m_Player.isMuted())
+        mp_SoundVolume->setImage(MUTE_STATE);
+    else
+        mp_SoundVolume->setImage(m_Player.getVolumeState());
 }
 
 // ==============================

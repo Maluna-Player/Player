@@ -74,18 +74,39 @@ class PlayerWindow : public QWidget
 
     private slots:
 
+        /**
+         * @brief Applique l'état play.
+         */
         virtual void play();
 
+        /**
+         * @brief Applique l'état pause.
+         */
         virtual void pause();
 
+        /**
+         * @brief Applique l'état stop.
+         */
         virtual void stop();
 
+        /**
+         * @brief Lance la musique précédente si elle existe.
+         */
         virtual void previousSong();
 
+        /**
+         * @brief Lance la musique suivante si elle existe.
+         */
         virtual void nextSong();
 
+        /**
+         * @brief Augmente le volume de l'application.
+         */
         virtual void increaseVolume();
 
+        /**
+         * @brief Diminue le volume de l'application.
+         */
         virtual void decreaseVolume();
 
         /**
@@ -93,6 +114,11 @@ class PlayerWindow : public QWidget
          * @param value Nouvelle position de la barre
          */
         virtual void setSongPosition(int value);
+
+        /**
+         * @brief Applique ou retire l'état mute à l'application.
+         */
+        virtual void setMute();
 
     protected:
 

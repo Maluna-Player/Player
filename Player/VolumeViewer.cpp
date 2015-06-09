@@ -37,3 +37,11 @@ void VolumeViewer::setImage(int volumeState)
 
     setPixmap(m_Image.copy(rect));
 }
+
+// ==============================
+// ==============================
+
+void VolumeViewer::mousePressEvent(QMouseEvent * /*event*/)
+{
+    emit(stateChanged());
+}
