@@ -144,11 +144,16 @@ class Player
         virtual void setVolume(int volumeState);
 
         /**
-         * @brief Rempli le vecteur Musiques à partir des fichiers
+         * @brief Vide la liste des musiques du player.
+         */
+        virtual void clearSongs();
+
+        /**
+         * @brief Remplit le vecteur Musiques à partir des fichiers
          *        contenus dans le répertoire donné en paramètre.
          * @param dir Répertoire à parcourir
          */
-        virtual void loadSongs(const QString& dir);
+        virtual void loadSongs(const QString& dirPath);
 
         /**
          * @brief Lance la musique d'indice song.

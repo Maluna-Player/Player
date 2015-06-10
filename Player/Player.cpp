@@ -10,11 +10,10 @@
 #include "Player.h"
 #include "ArrayAccessException.h"
 #include "LibException.h"
-#include "Path.h"
+#include "FileLoadingException.h"
 
-#include <dirent.h>
-#include <cstring>
-#include <cerrno>
+#include <QDir>
+#include <QFileInfo>
 
 
 Player::Player()
@@ -220,40 +219,31 @@ void Player::setVolume(int volumeState)
 // ==============================
 // ==============================
 
-void Player::loadSongs(const QString& dir)
+void Player::clearSongs()
 {
-    DIR *rep = 0;
-
-    /* Ouverture du répertoire */
-    if ((rep = opendir(dir.toStdString().c_str())) == 0)
-        throw LibException("Player::loadSongs", "opendir", std::strerror(errno));
-
     m_Songs.clear();
+}
 
-    struct dirent* file = 0;
-    errno = 0;
-    int songsNb = 0;
+// ==============================
+// ==============================
 
-    /* Parcours des fichiers du répertoire */
-    while ((file = readdir(rep)) != 0)
+void Player::loadSongs(const QString& dirPath)
+{
+    QDir dir(dirPath);
+    if (!dir.exists())
+        throw FileLoadingException("Player::loadSongs", dirPath.toStdString());
+
+    QFileInfoList files = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
+
+    for (int i = 0; i < files.size(); i++)
     {
-        // fichier trouvé
-        if (std::string(file->d_name) != "." && std::string(file->d_name) != "..")
-        {
-            songsNb++;
-            QString filePath = dir + Path::separator() + QString(file->d_name);
+        QString filePath = files.at(i).filePath();
 
-            m_Songs.append(Song(filePath, songsNb));
-        }
+        if (files.at(i).isDir())
+            loadSongs(filePath);
+        else
+            m_Songs.append(Song(filePath, i+1));
     }
-
-    /* Erreur lors du parcours */
-    if (errno)
-        throw LibException("Player::loadSongs", "readdir", std::strerror(errno));
-
-    /* Fermeture du répertoire */
-    if (closedir(rep) == -1)
-        throw LibException("Player::loadSongs", "closedir", std::strerror(errno));
 }
 
 // ==============================

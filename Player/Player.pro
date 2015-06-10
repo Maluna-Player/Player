@@ -17,7 +17,6 @@ SOURCES += main.cpp\
     FmodManager.cpp \
     Player.cpp \
     Song.cpp \
-    Path.cpp \
     Spectrum.cpp \
     ClickableLabel.cpp \
     PlayerButton.cpp \
@@ -34,7 +33,6 @@ HEADERS  += PlayerWindow.h \
     Player.h \
     ArrayAccessException.h \
     Song.h \
-    Path.h \
     Spectrum.h \
     ClickableLabel.h \
     PlayerButton.h \

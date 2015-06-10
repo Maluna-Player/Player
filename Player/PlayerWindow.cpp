@@ -173,6 +173,7 @@ void PlayerWindow::changeSong(int song)
 
 void PlayerWindow::refreshSongsList()
 {
+    m_Player.clearSongs();
     m_Player.loadSongs(SONGS_SUBDIR);
 
     changeSong(m_Player.first());
