@@ -82,7 +82,7 @@ void ProgressBar::mouseMoveEvent(QMouseEvent *event)
 // ==============================
 // ==============================
 
-void ProgressBar::mouseReleaseEvent(QMouseEvent *event)
+void ProgressBar::mouseReleaseEvent(QMouseEvent * /*event*/)
 {
     m_Press = false;
 }

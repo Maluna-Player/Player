@@ -13,6 +13,8 @@
 
 #include <QLabel>
 #include <QPixmap>
+#include <QPainter>
+#include <QPaintEvent>
 
 class VolumeViewer : public QLabel
 {
@@ -20,9 +22,12 @@ class VolumeViewer : public QLabel
 
     private:
 
-        QPixmap m_Image;
+        QPixmap m_VolumeImage;
+        QPixmap m_VolumeValueImage;
 
     protected:
+
+        virtual void paintEvent(QPaintEvent *event);
 
         virtual void mousePressEvent(QMouseEvent *event);
 
