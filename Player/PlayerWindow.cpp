@@ -9,6 +9,7 @@
 
 #include "PlayerWindow.h"
 #include "FmodManager.h"
+#include "Tools.h"
 
 #include <QGridLayout>
 #include <QPalette>
@@ -32,9 +33,12 @@ PlayerWindow::PlayerWindow(QWidget *parent)
 
     mp_SongTitle = new PlayerLabel(Qt::white, 20);
     mp_Spectrum = new Spectrum(SPECTRUM_WIDTH);
+    mp_SongList = new SongList;
 
+    topLayout->setColumnStretch(0, 1);
     topLayout->addWidget(mp_SongTitle, 0, 0, 1, 2, Qt::AlignTop);
     topLayout->addWidget(mp_Spectrum, 0, 1);
+    topLayout->addWidget(mp_SongList, 0, 2);
 
     mp_TopPart->setLayout(topLayout);
 
@@ -129,7 +133,7 @@ void PlayerWindow::setState(State_t state)
         m_Player.stop();
         mp_Spectrum->updateValues(m_Player.getCurrentSong().getSoundID());
         mp_ProgressBar->setValue(m_Player.getCurrentSong().getPosition());
-        mp_SongPos->setTime(0);
+        mp_SongPos->setText(Tools::msToString(0));
     }
 
     mp_Buttons.at(PLAY_BUTTON)->setHidden(m_Player.isPlaying());
@@ -148,7 +152,7 @@ void PlayerWindow::changeSong(int song)
             m_Player.changeSong(song);
 
             mp_SongTitle->setText(m_Player.getCurrentSong().getTitle());
-            mp_SongLength->setTime(m_Player.getCurrentSong().getLength());
+            mp_SongLength->setText(Tools::msToString(m_Player.getCurrentSong().getLength()));
 
             mp_ProgressBar->setValue(0);
             mp_ProgressBar->setMaximum(m_Player.getCurrentSong().getLength());
@@ -175,6 +179,9 @@ void PlayerWindow::refreshSongsList()
 {
     m_Player.clearSongs();
     m_Player.loadSongs(SONGS_SUBDIR);
+
+    mp_SongList->clear();
+    mp_SongList->add(m_Player.getSongDetails());
 
     changeSong(m_Player.first());
 
@@ -295,7 +302,7 @@ void PlayerWindow::timerEvent(QTimerEvent *event)
         {
             mp_Spectrum->updateValues(m_Player.getCurrentSong().getSoundID());
             mp_ProgressBar->setValue(m_Player.getCurrentSong().getPosition());
-            mp_SongPos->setTime(m_Player.getCurrentSong().getPosition());
+            mp_SongPos->setText(Tools::msToString(m_Player.getCurrentSong().getPosition()));
 
             if (m_Player.getCurrentSong().isFinished())
                 changeSong(m_Player.next());

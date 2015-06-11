@@ -19,6 +19,7 @@
 #include "ProgressBackground.h"
 #include "ProgressBar.h"
 #include "VolumeViewer.h"
+#include "SongList.h"
 
 #include <QTimerEvent>
 #include <QShowEvent>
@@ -40,6 +41,7 @@ class PlayerWindow : public QWidget
 
         PlayerLabel *mp_SongTitle;
         Spectrum *mp_Spectrum;
+        SongList *mp_SongList;
 
         PlayerLabel *mp_SongPos;
         PlayerLabel *mp_SongLength;
