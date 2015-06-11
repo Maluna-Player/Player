@@ -76,7 +76,7 @@ void Spectrum::paintEvent(QPaintEvent *event)
 void Spectrum::updateValues(SoundID_t id)
 {
     int i;
-    float spectrumValues[m_Width] = {0.0};
+    float *spectrumValues = new float[m_Width]();
 
     /* Récupération des valeurs spectrales de FMOD */
     FmodManager::getInstance()->getChannelSpectrum(id, spectrumValues);
@@ -95,6 +95,8 @@ void Spectrum::updateValues(SoundID_t id)
         /* Calcul de la position de la colonne */
         m_Lines[i].setBottom(yPos);
     }
+
+    delete[] spectrumValues;
 
     update();
 }
