@@ -14,6 +14,7 @@
 
 #include <QDir>
 #include <QFileInfo>
+#include <QDebug>
 
 
 Player::Player()
@@ -242,7 +243,20 @@ void Player::loadSongs(const QString& dirPath)
         if (files.at(i).isDir())
             loadSongs(filePath);
         else
-            m_Songs.append(Song(filePath, i+1));
+        {
+            try
+            {
+                FmodManager::getInstance()->openFromFile(filePath.toStdString());
+                m_Songs.append(Song(filePath, i+1));
+            }
+            catch (FmodManager::StreamError_t error)
+            {
+                if (error == FmodManager::FILE_ERROR)
+                    qWarning() << "Error loading" << filePath;
+                else if (error == FmodManager::FORMAT_ERROR)
+                    qWarning() << "Unsupported format for" << filePath;
+            }
+        }
     }
 }
 

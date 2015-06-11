@@ -22,8 +22,6 @@
 #define VOLUME_MIN    0.0
 #define VOLUME_MAX    1.0
 
-enum StreamError_t { FILE_ERROR };
-
 typedef unsigned int  SoundID_t;
 typedef unsigned int  SoundPos_t;   // Position en ms
 
@@ -67,6 +65,8 @@ class FmodManager
         virtual bool isChannelUsed(SoundID_t id) const;
 
     public:
+
+        enum StreamError_t { FILE_ERROR, FORMAT_ERROR };
 
         /**
          * Créé le singleton s'il n'existe pas

@@ -94,9 +94,11 @@ SoundID_t FmodManager::openFromFile(const std::string& soundFile) throw (StreamE
     if (mp_Sounds.at(id))
         releaseSound(id);
 
-    FMOD_RESULT res;
+    FMOD_RESULT res = FMOD_System_CreateStream(mp_System, soundFile.c_str(), FMOD_DEFAULT, 0, &mp_Sounds.at(id));
 
-    if ((res = FMOD_System_CreateStream(mp_System, soundFile.c_str(), FMOD_DEFAULT, 0, &mp_Sounds.at(id))) != FMOD_OK)
+    if (res == FMOD_ERR_FORMAT)
+        throw FORMAT_ERROR;
+    else if (res != FMOD_OK)
         throw FILE_ERROR;
 
     return id;

@@ -156,7 +156,7 @@ void PlayerWindow::changeSong(int song)
             if (m_Player.isPaused())
                 setState(STOP_STATE);
         }
-        catch(StreamError_t error)
+        catch(FmodManager::StreamError_t error)
         {
             refreshSongsList();
         }
@@ -187,7 +187,8 @@ void PlayerWindow::refreshSongsList()
 
 void PlayerWindow::play()
 {
-    setState(PLAY_STATE);
+    if (!m_Player.isPlaying())
+        setState(PLAY_STATE);
 }
 
 // ==============================
@@ -195,7 +196,8 @@ void PlayerWindow::play()
 
 void PlayerWindow::pause()
 {
-    setState(PAUSE_STATE);
+    if (!m_Player.isPaused())
+        setState(PAUSE_STATE);
 }
 
 // ==============================
@@ -203,7 +205,8 @@ void PlayerWindow::pause()
 
 void PlayerWindow::stop()
 {
-    setState(STOP_STATE);
+    if (!m_Player.isStopped())
+        setState(STOP_STATE);
 }
 
 // ==============================
