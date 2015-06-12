@@ -18,7 +18,7 @@
 
 
 Player::Player()
-    : m_CurrentSong(0), m_Playlist(true), m_Loop(false),
+    : mp_SongTree(0), m_CurrentSong(0), m_Playlist(true), m_Loop(false),
       m_Pause(false), m_Stop(true), m_Mute(false),
       m_VolumeState(NB_VOLUME_STATES - 1)
 {
@@ -30,7 +30,13 @@ Player::Player()
 
 Player::~Player()
 {
-    m_Songs.clear();
+    for (int i = 0; i < mp_Songs.size(); i++)
+        delete mp_Songs[i];
+
+    mp_Songs.clear();
+
+    if (mp_SongTree)
+        delete mp_SongTree;
 }
 
 // ==============================
@@ -38,24 +44,18 @@ Player::~Player()
 
 Song& Player::getCurrentSong()
 {
-    if (m_CurrentSong >= m_Songs.size())
-        throw ArrayAccesException("Player::getCurrentSong", m_Songs.size(), m_CurrentSong);
+    if (m_CurrentSong >= mp_Songs.size())
+        throw ArrayAccesException("Player::getCurrentSong", mp_Songs.size(), m_CurrentSong);
 
-    return m_Songs[m_CurrentSong];
+    return *(mp_Songs[m_CurrentSong]);
 }
 
 // ==============================
 // ==============================
 
-QVector<QPair<QString, int> > Player::getSongDetails() const
+QList<QTreeWidgetItem*> Player::getSongDetails() const
 {
-    int i;
-    QVector<QPair<QString, int> > songs;
-
-    for (i = 0; i < m_Songs.size(); i++)
-        songs.append(qMakePair(m_Songs.at(i).getTitle(), m_Songs.at(i).getLength()));
-
-    return songs;
+    return mp_SongTree->takeChildren();
 }
 
 // ==============================
@@ -63,7 +63,7 @@ QVector<QPair<QString, int> > Player::getSongDetails() const
 
 void Player::play()
 {
-    if (m_Songs.size() > 0)
+    if (mp_Songs.size() > 0)
     {
         if (m_Stop)
         {
@@ -88,7 +88,7 @@ void Player::stop()
         m_Pause = false;
         m_Stop = true;
 
-        if (m_Songs.size() > 0)
+        if (mp_Songs.size() > 0)
             getCurrentSong().stop();
     }
 }
@@ -100,7 +100,7 @@ void Player::pause()
 {
     m_Pause = true;
 
-    if (m_Songs.size() > 0)
+    if (mp_Songs.size() > 0)
         getCurrentSong().pause(true);
 }
 
@@ -166,7 +166,7 @@ void Player::setLoop(bool loop)
 
 int Player::first() const
 {
-    if (m_Songs.size() > 0)
+    if (mp_Songs.size() > 0)
         return FIRST_SONG;
     else
         return UNDEFINED_SONG;
@@ -179,7 +179,7 @@ int Player::prev() const
 {
     if (m_CurrentSong > FIRST_SONG)
         return (m_CurrentSong - 1);
-    else if (m_Loop && m_Songs.size() > 0)
+    else if (m_Loop && mp_Songs.size() > 0)
         return LAST_SONG;
     else
         return UNDEFINED_SONG;
@@ -192,7 +192,7 @@ int Player::next() const
 {
     if (m_CurrentSong < LAST_SONG)
         return (m_CurrentSong + 1);
-    else if (m_Loop && m_Songs.size() > 0)
+    else if (m_Loop && mp_Songs.size() > 0)
         return FIRST_SONG;
     else
         return UNDEFINED_SONG;
@@ -222,14 +222,23 @@ void Player::setVolume(int volumeState)
 
 void Player::clearSongs()
 {
-    m_Songs.clear();
+    for (int i = 0; i < mp_Songs.size(); i++)
+        delete mp_Songs[i];
+
+    mp_Songs.clear();
+
+    if (mp_SongTree)
+        delete mp_SongTree;
 }
 
 // ==============================
 // ==============================
 
-void Player::loadSongs(const QString& dirPath)
+void Player::loadSongs(const QString& dirPath, QTreeWidgetItem *parentDir)
 {
+    if (!parentDir)
+        parentDir = new QTreeWidgetItem;
+
     QDir dir(dirPath);
     if (!dir.exists())
         throw FileLoadingException("Player::loadSongs", dirPath.toStdString());
@@ -240,14 +249,24 @@ void Player::loadSongs(const QString& dirPath)
     {
         QString filePath = files.at(i).filePath();
 
+        QTreeWidgetItem *item = new QTreeWidgetItem;
+        item->setText(0, files.at(i).completeBaseName());
+
         if (files.at(i).isDir())
-            loadSongs(filePath);
+        {
+            parentDir->addChild(item);
+            loadSongs(filePath, item);
+        }
         else
         {
             try
             {
                 FmodManager::getInstance()->openFromFile(filePath.toStdString());
-                m_Songs.append(Song(filePath, i+1));
+                Song *song = new Song(filePath, i+1);
+
+                mp_Songs.append(song);
+                item->setData(0, Qt::UserRole, reinterpret_cast<quintptr>(song));
+                parentDir->addChild(item);
             }
             catch (FmodManager::StreamError_t error)
             {
@@ -255,9 +274,13 @@ void Player::loadSongs(const QString& dirPath)
                     qWarning() << "Error loading" << filePath;
                 else if (error == FmodManager::FORMAT_ERROR)
                     qWarning() << "Unsupported format for" << filePath;
+
+                delete item;
             }
         }
     }
+
+    mp_SongTree = parentDir;
 }
 
 // ==============================

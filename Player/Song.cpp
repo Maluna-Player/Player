@@ -22,7 +22,7 @@ Song::Song(const QString& file, int num)
     if (title.isEmpty())
     {
         QFileInfo fileInfo(getFile());
-        m_Title = fileInfo.baseName();
+        m_Title = fileInfo.completeBaseName();
     }
     else
         m_Title = title;

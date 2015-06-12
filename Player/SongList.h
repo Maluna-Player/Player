@@ -35,17 +35,16 @@ class SongList : public QTreeWidget
         virtual void setCurrentSong(int song);
 
         /**
-         * @brief Ajoute le titre et la durée passés en paramètre dans la liste.
-         * @param title Titre à ajouter
-         * @param length Durée à ajouter
-        */
-        virtual void add(const QString& title, const QString& length);
+         * @brief Affiche l'ensemble des informations dans la liste à partie de l'arborescence.
+         * @param item Parent de l'arborescence à afficher
+         */
+        virtual void displaySongs(QTreeWidgetItem *item) const;
 
         /**
          * @brief Ajoute les titres et durées de la liste passée en paramètre.
-         * @param songs Liste de sons (titre/durée) à ajouter
+         * @param songs Liste de sons à ajouter
         */
-        virtual void add(const QVector<QPair<QString, int> >& songs);
+        virtual void add(const QList<QTreeWidgetItem*>& songs);
 };
 
 #endif  // __SONGLIST_H__

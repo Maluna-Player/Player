@@ -8,6 +8,7 @@
 */
 
 #include "SongList.h"
+#include "Song.h"
 #include "Constants.h"
 #include "FileLoadingException.h"
 #include "ArrayAccessException.h"
@@ -18,10 +19,10 @@
 SongList::SongList(QWidget *parent) : QTreeWidget(parent), m_Selected(-1)
 {
     QPalette p(palette());
-    p.setColor(QPalette::Base, QColor(50, 50, 50));
+    p.setColor(QPalette::Base, QColor(24, 0, 96));
     setPalette(p);
 
-    setStyleSheet("border: 3px solid rgb(25, 25, 25);");
+    setStyleSheet("color: rgb(212, 255, 250); border: 3px solid rgb(25, 25, 25);");
     verticalScrollBar()->setStyleSheet("background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop: 0  rgb(200, 150, 130), stop: 0.5 rgb(150, 47, 130),  stop:1 rgb(200, 30, 150));");
 
     setColumnCount(2);
@@ -65,22 +66,31 @@ void SongList::setCurrentSong(int song)
 // ==============================
 // ==============================
 
-void SongList::add(const QString& title, const QString& length)
+void SongList::displaySongs(QTreeWidgetItem *item) const
 {
-    QStringList songDetails;
-    songDetails << title << length;
-
-    QTreeWidgetItem *item = new QTreeWidgetItem(songDetails);
-    item->setTextColor(0, Qt::white);
-    item->setTextColor(1, Qt::white);
-    addTopLevelItem(item);
+    if (item->childCount() > 0)
+    {
+        for (int i = 0; i < item->childCount(); i++)
+            displaySongs(item->child(i));
+    }
+    else
+    {
+        Song *song = reinterpret_cast<Song*>(item->data(0, Qt::UserRole).value<quintptr>());
+        if (song)
+        {
+            item->setText(0, song->getTitle());
+            item->setText(1, Tools::msToString(song->getLength()));
+        }
+    }
 }
 
 // ==============================
 // ==============================
 
-void SongList::add(const QVector<QPair<QString, int> >& songs)
+void SongList::add(const QList<QTreeWidgetItem*>& songs)
 {
-    for (int i = 0; i < songs.size(); i++)
-        add(songs.at(i).first, Tools::msToString(songs.at(i).second));
+    addTopLevelItems(songs);
+
+    for (int i = 0; i < topLevelItemCount(); i++)
+        displaySongs(topLevelItem(i));
 }

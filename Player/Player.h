@@ -14,17 +14,19 @@
 
 #include <QVector>
 #include <QPair>
+#include <QTreeWidgetItem>
 #include "Song.h"
 
 #define FIRST_SONG        0
-#define LAST_SONG         (static_cast<int>(m_Songs.size()) - 1)
+#define LAST_SONG         (static_cast<int>(mp_Songs.size()) - 1)
 #define UNDEFINED_SONG   -1
 
 class Player
 {
     private:
 
-        QVector<Song> m_Songs;
+        QTreeWidgetItem *mp_SongTree;
+        QVector<Song*> mp_Songs;
         int m_CurrentSong;
 
         bool m_Playlist;
@@ -48,10 +50,10 @@ class Player
         virtual Song& getCurrentSong();
 
         /**
-         * @brief getSongDetails
-         * @return Liste des musiques (titre + durée) du dossier.
+         * @brief Retourne l'arborescence de l'ensemble des musiques enregistrées
+         * @return Liste des musiques du dossier.
          */
-        virtual QVector<QPair<QString, int> > getSongDetails() const;
+        virtual QList<QTreeWidgetItem*> getSongDetails() const;
 
         /**
          * @brief Active la lecture.
@@ -151,9 +153,10 @@ class Player
         /**
          * @brief Remplit le vecteur Musiques à partir des fichiers
          *        contenus dans le répertoire donné en paramètre.
-         * @param dir Répertoire à parcourir
+         * @param dirPath Répertoire à parcourir
+         * @param parentDir Parent dans l'arborescence
          */
-        virtual void loadSongs(const QString& dirPath);
+        virtual void loadSongs(const QString& dirPath, QTreeWidgetItem *parentDir = 0);
 
         /**
          * @brief Lance la musique d'indice song.
