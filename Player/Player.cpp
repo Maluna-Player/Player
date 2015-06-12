@@ -262,7 +262,7 @@ void Player::loadSongs(const QString& dirPath, QTreeWidgetItem *parentDir)
             try
             {
                 FmodManager::getInstance()->openFromFile(filePath.toStdString());
-                Song *song = new Song(filePath, i+1);
+                Song *song = new Song(filePath, mp_Songs.size());
 
                 mp_Songs.append(song);
                 item->setData(0, Qt::UserRole, reinterpret_cast<quintptr>(song));

@@ -16,7 +16,7 @@
 #include <QScrollBar>
 
 
-SongList::SongList(QWidget *parent) : QTreeWidget(parent), m_Selected(-1)
+SongList::SongList(QWidget *parent) : QTreeWidget(parent), m_CurrentSong(-1)
 {
     QPalette p(palette());
     p.setColor(QPalette::Base, QColor(24, 0, 96));
@@ -44,44 +44,34 @@ SongList::~SongList()
 // ==============================
 // ==============================
 
-void SongList::setCurrentSong(int song)
+void SongList::setCurrentSong(int songNum)
 {
-    /*if (m_Selected != -1)
+    QTreeWidgetItemIterator it(this);
+    while (*it)
     {
-        if (m_Selected >= m_SongDetails.size())
-            throw ArrayAccesException("SongList::setCurrentSong", m_SongDetails.size(), m_Selected);
-
-        m_SongDetails.at(m_Selected).first.setColor(sf::Color::White);
-        m_SongDetails.at(m_Selected).second.setColor(sf::Color::White);
-    }
-
-    if (song >= m_SongDetails.size())
-        throw ArrayAccesException("SongList::setCurrentSong", m_SongDetails.size(), song);
-
-    m_Selected = song;
-    m_SongDetails.at(m_Selected).first.setColor(sf::Color(21, 191, 221));
-    m_SongDetails.at(m_Selected).second.setColor(sf::Color(21, 191, 221));*/
-}
-
-// ==============================
-// ==============================
-
-void SongList::displaySongs(QTreeWidgetItem *item) const
-{
-    if (item->childCount() > 0)
-    {
-        for (int i = 0; i < item->childCount(); i++)
-            displaySongs(item->child(i));
-    }
-    else
-    {
-        Song *song = reinterpret_cast<Song*>(item->data(0, Qt::UserRole).value<quintptr>());
-        if (song)
+        if ((*it)->childCount() <= 0)
         {
-            item->setText(0, song->getTitle());
-            item->setText(1, Tools::msToString(song->getLength()));
+            Song *song = reinterpret_cast<Song*>((*it)->data(0, Qt::UserRole).value<quintptr>());
+            if (song)
+            {
+                if (song->getNum() == m_CurrentSong)
+                {
+                    (*it)->setTextColor(0, QColor(212, 255, 250));
+                    (*it)->setTextColor(1, QColor(212, 255, 250));
+                }
+
+                if (song->getNum() == songNum)
+                {
+                    (*it)->setTextColor(0, QColor(21, 191, 221));
+                    (*it)->setTextColor(1, QColor(21, 191, 221));
+                }
+            }
         }
+
+        ++it;
     }
+
+    m_CurrentSong = songNum;
 }
 
 // ==============================
@@ -91,6 +81,19 @@ void SongList::add(const QList<QTreeWidgetItem*>& songs)
 {
     addTopLevelItems(songs);
 
-    for (int i = 0; i < topLevelItemCount(); i++)
-        displaySongs(topLevelItem(i));
+    QTreeWidgetItemIterator it(this);
+    while (*it)
+    {
+       if ((*it)->childCount() <= 0)
+       {
+           Song *song = reinterpret_cast<Song*>((*it)->data(0, Qt::UserRole).value<quintptr>());
+           if (song)
+           {
+               (*it)->setText(0, song->getTitle());
+               (*it)->setText(1, Tools::msToString(song->getLength()));
+           }
+       }
+
+       ++it;
+    }
 }

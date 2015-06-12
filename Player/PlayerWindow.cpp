@@ -157,6 +157,8 @@ void PlayerWindow::changeSong(int song)
             mp_ProgressBar->setValue(0);
             mp_ProgressBar->setMaximum(m_Player.getCurrentSong().getLength());
 
+            mp_SongList->setCurrentSong(song);
+
             if (m_Player.isPaused())
                 setState(STOP_STATE);
         }

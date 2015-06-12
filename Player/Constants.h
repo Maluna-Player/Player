@@ -95,20 +95,6 @@
 
 #define TAB_MOVING_INTERVAL             10
 
-// Liste des musiques
-#define SONG_LIST_X                     10
-#define SONG_LIST_Y                     10
-#define LENGTH_LIST_X                   250
-
-#define SONG_LIST_W                     (TAB_CONTENT_W - SONG_LIST_X)
-#define SONG_LIST_H                     (TAB_CONTENT_H - SONG_LIST_Y * 2)
-
-#define SONG_TITLE_H                    25
-#define TITLE_LIST_MAX_WIDTH            30
-#define TEXT_HEIGHT_SPACE               4
-
-#define SCROLL_INTERVAL                 10
-
 
 /*******************************
 /** Liste des éléments
@@ -117,7 +103,6 @@
 // Liste des objets cliquables
 enum Clickable_t { REFRESH_DIR_BUTTON, NB_BUTTONS,
 
-                   SONG_LIST,
                    TAB,
                    NB_CLICKABLES, UNDEFINED_CLICKABLE = NB_CLICKABLES
                  };

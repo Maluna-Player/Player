@@ -21,7 +21,7 @@ class SongList : public QTreeWidget
 {
     private:
 
-        int m_Selected;
+        int m_CurrentSong;
 
     public:
 
@@ -30,15 +30,9 @@ class SongList : public QTreeWidget
 
         /**
          * @brief Change le son marqué comme son courant dans la liste.
-         * @param song Indice de la musique actuelle
+         * @param songNum Indice de la musique actuelle
         */
-        virtual void setCurrentSong(int song);
-
-        /**
-         * @brief Affiche l'ensemble des informations dans la liste à partie de l'arborescence.
-         * @param item Parent de l'arborescence à afficher
-         */
-        virtual void displaySongs(QTreeWidgetItem *item) const;
+        virtual void setCurrentSong(int songNum);
 
         /**
          * @brief Ajoute les titres et durées de la liste passée en paramètre.
