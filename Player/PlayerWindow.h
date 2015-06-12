@@ -58,12 +58,6 @@ class PlayerWindow : public QWidget
 
 
         /**
-         * @brief Lance le son song du player et actualise l'interface graphique (titre, durée...)
-         * @param song Indice de la musique
-         */
-        virtual void changeSong(int song);
-
-        /**
          * @brief Change l'état du player et modifie l'affichage.
          * @param state Nouvel état du player
          */
@@ -75,6 +69,12 @@ class PlayerWindow : public QWidget
         virtual void refreshSongsList();
 
     private slots:
+
+        /**
+         * @brief Lance le son song du player et actualise l'interface graphique (titre, durée...)
+         * @param song Indice de la musique
+         */
+        virtual void changeSong(int song);
 
         /**
          * @brief Applique l'état play.

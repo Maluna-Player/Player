@@ -35,6 +35,8 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     mp_Spectrum = new Spectrum(SPECTRUM_WIDTH);
     mp_SongList = new SongList;
 
+    connect(mp_SongList, SIGNAL(songPressed(int)), this, SLOT(changeSong(int)));
+
     topLayout->setColumnStretch(0, 1);
     topLayout->addWidget(mp_SongTitle, 0, 0, 1, 2, Qt::AlignTop);
     topLayout->addWidget(mp_Spectrum, 0, 1);

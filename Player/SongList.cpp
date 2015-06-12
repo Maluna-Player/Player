@@ -14,6 +14,7 @@
 #include "ArrayAccessException.h"
 #include "Tools.h"
 #include <QScrollBar>
+#include <QMouseEvent>
 
 
 SongList::SongList(QWidget *parent) : QTreeWidget(parent), m_CurrentSong(-1)
@@ -44,12 +45,20 @@ SongList::~SongList()
 // ==============================
 // ==============================
 
+bool SongList::isSong(QTreeWidgetItem *item) const
+{
+    return (item->childCount() <= 0);
+}
+
+// ==============================
+// ==============================
+
 void SongList::setCurrentSong(int songNum)
 {
     QTreeWidgetItemIterator it(this);
     while (*it)
     {
-        if ((*it)->childCount() <= 0)
+        if (isSong(*it))
         {
             Song *song = reinterpret_cast<Song*>((*it)->data(0, Qt::UserRole).value<quintptr>());
             if (song)
@@ -77,6 +86,23 @@ void SongList::setCurrentSong(int songNum)
 // ==============================
 // ==============================
 
+void SongList::mousePressEvent(QMouseEvent *event)
+{
+    QTreeWidgetItem *selectedItem = itemAt(event->x(), event->y());
+
+    if (selectedItem && isSong(selectedItem))
+    {
+        Song *song = reinterpret_cast<Song*>(selectedItem->data(0, Qt::UserRole).value<quintptr>());
+        if (song)
+            emit(songPressed(song->getNum()));
+    }
+
+    QTreeWidget::mousePressEvent(event);
+}
+
+// ==============================
+// ==============================
+
 void SongList::add(const QList<QTreeWidgetItem*>& songs)
 {
     addTopLevelItems(songs);
@@ -84,7 +110,7 @@ void SongList::add(const QList<QTreeWidgetItem*>& songs)
     QTreeWidgetItemIterator it(this);
     while (*it)
     {
-       if ((*it)->childCount() <= 0)
+       if (isSong(*it))
        {
            Song *song = reinterpret_cast<Song*>((*it)->data(0, Qt::UserRole).value<quintptr>());
            if (song)

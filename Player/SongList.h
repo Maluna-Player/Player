@@ -19,9 +19,30 @@
 
 class SongList : public QTreeWidget
 {
+    Q_OBJECT
+
     private:
 
         int m_CurrentSong;
+
+        /**
+         * @brief Détermine si l'item de la liste passé en paramètre est une musique ou non.
+         * @param item Elément de la liste à vérifier
+         * @return true si c'est une musique
+         */
+        virtual bool isSong(QTreeWidgetItem *item) const;
+
+    protected:
+
+        virtual void mousePressEvent(QMouseEvent *event);
+
+    signals:
+
+        /**
+         * @brief Signal émis lorsque l'utilisateur clique sur une musique de la liste.
+         * @param song Musique sélectionnée
+         */
+        void songPressed(int song);
 
     public:
 
