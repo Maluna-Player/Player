@@ -12,6 +12,7 @@
 #define __TOOLS_H__
 
 #include <QString>
+#include <QPixmap>
 
 class Tools
 {
@@ -22,6 +23,13 @@ class Tools
          * @param ms Temps à afficher en ms
          */
         static QString msToString(int ms);
+
+        /**
+         * @brief Charge l'image du chemin passé en paramètre et vérifie le chargement.
+         * @param fileName Chemin de l'image à charger
+         * @return Image chargée
+         */
+        static QPixmap loadImage(const QString& fileName);
 };
 
 #endif  // __TOOLS_H__

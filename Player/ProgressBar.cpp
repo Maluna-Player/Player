@@ -9,7 +9,7 @@
 
 #include "ProgressBar.h"
 #include "Constants.h"
-#include "FileLoadingException.h"
+#include "Tools.h"
 
 
 ProgressBar::ProgressBar(QWidget *parent) : QProgressBar(parent), m_Press(false)
@@ -33,18 +33,12 @@ void ProgressBar::paintEvent(QPaintEvent * /*event*/)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
 
-    QString barImagePath(IMAGES_SUBDIR + "progressBar.png");
-    QPixmap bar(barImagePath);
-    if (bar.isNull())
-        throw FileLoadingException("ProgressBar::paintEvent", barImagePath.toStdString());
+    QPixmap bar = Tools::loadImage(IMAGES_SUBDIR + "progressBar.png");
 
     int xBarValue = value() * width() / maximum();
     painter.fillRect(0, 0, xBarValue, bar.height(), QBrush(bar));
 
-    QString markerImagePath(IMAGES_SUBDIR + "marker.png");
-    QPixmap marker(markerImagePath);
-    if (marker.isNull())
-        throw FileLoadingException("ProgressBar::paintEvent", markerImagePath.toStdString());
+    QPixmap marker = Tools::loadImage(IMAGES_SUBDIR + "marker.png");
 
     painter.drawPixmap(xBarValue - 2, 0, marker);
 }

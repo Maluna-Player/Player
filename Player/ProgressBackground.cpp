@@ -9,7 +9,7 @@
 
 #include "ProgressBackground.h"
 #include "Constants.h"
-#include "FileLoadingException.h"
+#include "Tools.h"
 
 
 ProgressBackground::ProgressBackground(QWidget *parent) : QWidget(parent)
@@ -33,10 +33,7 @@ void ProgressBackground::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
 
-    QString imagePath(IMAGES_SUBDIR + "progressBackground.png");
-    QPixmap background(imagePath);
-    if (background.isNull())
-        throw FileLoadingException("ProgressBackground::paintEvent", imagePath.toStdString());
+    QPixmap background = Tools::loadImage(IMAGES_SUBDIR + "progressBackground.png");
 
     painter.fillRect(event->rect(), QBrush(background));
 }

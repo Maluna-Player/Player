@@ -9,7 +9,7 @@
 
 #include "PlayerButton.h"
 #include "Constants.h"
-#include "FileLoadingException.h"
+#include "Tools.h"
 #include <QPixmap>
 
 
@@ -32,10 +32,7 @@ PlayerButton::~PlayerButton()
 
 void PlayerButton::loadImage(const QString& fileName)
 {
-    QString filePath(BUTTONS_SUBDIR + fileName);
-    QPixmap image(filePath);
-    if (image.isNull())
-        throw FileLoadingException("PlayerButton::loadImage", filePath.toStdString());
+    QPixmap image = Tools::loadImage(BUTTONS_SUBDIR + fileName);
 
     setPixmap(image.scaled(70, 70, Qt::KeepAspectRatio));
 }

@@ -9,7 +9,7 @@
 
 #include "VolumeViewer.h"
 #include "Constants.h"
-#include "FileLoadingException.h"
+#include "Tools.h"
 
 
 VolumeViewer::VolumeViewer(QWidget *parent) : QLabel(parent)
@@ -32,27 +32,15 @@ void VolumeViewer::setImage(int volumeState)
 {
     if (volumeState == MUTE_STATE)
     {
-        QString volumeImagePath(IMAGES_SUBDIR + "volumeMute.png");
-        m_VolumeImage.load(volumeImagePath);
-        if (m_VolumeImage.isNull())
-            throw FileLoadingException("VolumeViewer::setImage", volumeImagePath.toStdString());
-
+        m_VolumeImage = Tools::loadImage(IMAGES_SUBDIR + "volumeMute.png");
         m_VolumeValueImage = QPixmap();
     }
     else
     {
-        QString volumeImagePath(IMAGES_SUBDIR + "volume.png");
-        m_VolumeImage.load(volumeImagePath);
-        if (m_VolumeImage.isNull())
-            throw FileLoadingException("VolumeViewer::setImage", volumeImagePath.toStdString());
-
-        QString volumeValueImagePath(IMAGES_SUBDIR + "volumeValue.png");
-        QPixmap volumeValueImage(volumeValueImagePath);
-        if (volumeValueImage.isNull())
-            throw FileLoadingException("VolumeViewer::setImage", volumeValueImagePath.toStdString());
+        m_VolumeImage = Tools::loadImage(IMAGES_SUBDIR + "volume.png");
+        QPixmap volumeValueImage = Tools::loadImage(IMAGES_SUBDIR + "volumeValue.png");
 
         QRect rect(volumeState * VOLUME_VALUE_W, 0, VOLUME_VALUE_W, VOLUME_VALUE_H);
-
         m_VolumeValueImage = volumeValueImage.copy(rect).scaledToHeight(VOLUME_VIEWER_H);
     }
 

@@ -9,6 +9,7 @@
 
 #include "Tools.h"
 #include <QTime>
+#include "FileLoadingException.h"
 
 
 QString Tools::msToString(int ms)
@@ -23,4 +24,16 @@ QString Tools::msToString(int ms)
         format = "mm:ss";
 
     return labelTime.toString(format);
+}
+
+// ==============================
+// ==============================s
+
+QPixmap Tools::loadImage(const QString &fileName)
+{
+    QPixmap image(fileName);
+    if (image.isNull())
+        throw FileLoadingException("Tools::loadImage", fileName.toStdString());
+
+    return image;
 }
