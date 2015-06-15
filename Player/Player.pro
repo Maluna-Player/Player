@@ -46,6 +46,7 @@ HEADERS  += PlayerWindow.h \
     SongList.h \
     Tools.h
 
+RC_FILE = Player.rc
 
 # Removal of warnings
 QMAKE_CXXFLAGS_WARN_ON += -Wno-comment
