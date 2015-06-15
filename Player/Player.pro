@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     PlayerLabel.cpp \
     VolumeViewer.cpp \
     SongList.cpp \
-    Tools.cpp
+    Tools.cpp \
+    AboutDialog.cpp
 
 HEADERS  += PlayerWindow.h \
     LibException.h \
@@ -44,7 +45,8 @@ HEADERS  += PlayerWindow.h \
     PlayerLabel.h \
     VolumeViewer.h \
     SongList.h \
-    Tools.h
+    Tools.h \
+    AboutDialog.h
 
 RC_FILE = Player.rc
 

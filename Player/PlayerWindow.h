@@ -122,6 +122,11 @@ class PlayerWindow : public QWidget
          */
         virtual void setMute();
 
+        /**
+         * @brief Ouvre la fenêtre contenant les informations sur l'application.
+         */
+        virtual void openInformation();
+
     protected:
 
         virtual void timerEvent(QTimerEvent *event);

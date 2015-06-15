@@ -10,6 +10,7 @@
 #include "PlayerWindow.h"
 #include "FmodManager.h"
 #include "Tools.h"
+#include "AboutDialog.h"
 
 #include <QGridLayout>
 #include <QPalette>
@@ -82,6 +83,9 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     mp_SoundVolume->setImage(m_Player.getVolumeState());
     connect(mp_SoundVolume, SIGNAL(stateChanged()), this, SLOT(setMute()));
 
+    ClickableLabel *informationButton = new ClickableLabel;
+    informationButton->setPixmap(Tools::loadImage(IMAGES_SUBDIR + "info.png"));
+    connect(informationButton, SIGNAL(clicked()), this, SLOT(openInformation()));
 
     bottomLayout->setColumnStretch(3, 1);
     bottomLayout->addWidget(mp_SongPos, 0, 0);
@@ -96,6 +100,8 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     bottomLayout->addWidget(mp_Buttons.at(VOLUME_LESS_BUTTON), 2, 3, 2, 1);
 
     bottomLayout->addWidget(mp_SoundVolume, 1, 1, 2, 2);
+
+    bottomLayout->addWidget(informationButton, 2, 10, 2, 1);
 
     bottomLayout->setColumnStretch(7, 1);
     mp_BottomPart->setLayout(bottomLayout);
@@ -293,6 +299,16 @@ void PlayerWindow::setMute()
         mp_SoundVolume->setImage(MUTE_STATE);
     else
         mp_SoundVolume->setImage(m_Player.getVolumeState());
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::openInformation()
+{
+    AboutDialog informationWindow(this);
+    informationWindow.setWindowTitle("A propos");
+    informationWindow.exec();
 }
 
 // ==============================
