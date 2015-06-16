@@ -234,6 +234,40 @@ void Player::clearSongs()
 // ==============================
 // ==============================
 
+void Player::addNewSong(const QString& filePath, QTreeWidgetItem *parentDir)
+{
+    QTreeWidgetItem *item = new QTreeWidgetItem;
+
+    QFileInfo fileInfo(filePath);
+    item->setText(0, fileInfo.completeBaseName());
+
+    try
+    {
+        FmodManager::getInstance()->openFromFile(filePath.toStdString());
+        Song *song = new Song(filePath, mp_Songs.size());
+
+        mp_Songs.append(song);
+        item->setData(0, Qt::UserRole, reinterpret_cast<quintptr>(song));
+
+        if (parentDir)
+            parentDir->addChild(item);
+        else
+            mp_SongTree->addChild(item);
+    }
+    catch (FmodManager::StreamError_t error)
+    {
+        if (error == FmodManager::FILE_ERROR)
+            qWarning() << "Error loading" << filePath;
+        else if (error == FmodManager::FORMAT_ERROR)
+            qWarning() << "Unsupported format for" << filePath;
+
+        delete item;
+    }
+}
+
+// ==============================
+// ==============================
+
 void Player::loadSongs(const QString& dirPath, QTreeWidgetItem *parentDir)
 {
     if (!parentDir)
@@ -249,35 +283,16 @@ void Player::loadSongs(const QString& dirPath, QTreeWidgetItem *parentDir)
     {
         QString filePath = files.at(i).filePath();
 
-        QTreeWidgetItem *item = new QTreeWidgetItem;
-        item->setText(0, files.at(i).completeBaseName());
-
         if (files.at(i).isDir())
         {
+            QTreeWidgetItem *item = new QTreeWidgetItem;
+            item->setText(0, files.at(i).completeBaseName());
             parentDir->addChild(item);
+
             loadSongs(filePath, item);
         }
         else
-        {
-            try
-            {
-                FmodManager::getInstance()->openFromFile(filePath.toStdString());
-                Song *song = new Song(filePath, mp_Songs.size());
-
-                mp_Songs.append(song);
-                item->setData(0, Qt::UserRole, reinterpret_cast<quintptr>(song));
-                parentDir->addChild(item);
-            }
-            catch (FmodManager::StreamError_t error)
-            {
-                if (error == FmodManager::FILE_ERROR)
-                    qWarning() << "Error loading" << filePath;
-                else if (error == FmodManager::FORMAT_ERROR)
-                    qWarning() << "Unsupported format for" << filePath;
-
-                delete item;
-            }
-        }
+            addNewSong(filePath, parentDir);
     }
 
     mp_SongTree = parentDir;

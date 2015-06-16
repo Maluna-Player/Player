@@ -151,6 +151,12 @@ class Player
         virtual void clearSongs();
 
         /**
+         * @brief Ajoute une nouvelle musique dans la liste du player.
+         * @param filePath Chemin du fichier à ajouter
+         */
+        virtual void addNewSong(const QString& filePath, QTreeWidgetItem *parentDir = 0);
+
+        /**
          * @brief Remplit le vecteur Musiques à partir des fichiers
          *        contenus dans le répertoire donné en paramètre.
          * @param dirPath Répertoire à parcourir
