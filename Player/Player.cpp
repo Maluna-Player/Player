@@ -53,6 +53,14 @@ Song& Player::getCurrentSong()
 // ==============================
 // ==============================
 
+int Player::songCount() const
+{
+    return mp_Songs.size();
+}
+
+// ==============================
+// ==============================
+
 QList<QTreeWidgetItem*> Player::getSongDetails() const
 {
     return mp_SongTree->takeChildren();
@@ -243,7 +251,6 @@ void Player::addNewSong(const QString& filePath, QTreeWidgetItem *parentDir)
 
     try
     {
-        FmodManager::getInstance()->openFromFile(filePath.toStdString());
         Song *song = new Song(filePath, mp_Songs.size());
 
         mp_Songs.append(song);

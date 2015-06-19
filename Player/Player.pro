@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -26,7 +26,10 @@ SOURCES += main.cpp\
     VolumeViewer.cpp \
     SongList.cpp \
     Tools.cpp \
-    AboutDialog.cpp
+    AboutDialog.cpp \
+    RemoteSong.cpp \
+    PlayerSocket.cpp \
+    SendingThread.cpp
 
 HEADERS  += PlayerWindow.h \
     LibException.h \
@@ -46,7 +49,10 @@ HEADERS  += PlayerWindow.h \
     VolumeViewer.h \
     SongList.h \
     Tools.h \
-    AboutDialog.h
+    AboutDialog.h \
+    RemoteSong.h \
+    PlayerSocket.h \
+    SendingThread.h
 
 RC_FILE = Player.rc
 

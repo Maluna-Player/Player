@@ -46,8 +46,16 @@ class SongList : public QTreeWidget
 
     public:
 
+        enum SongList_t { LOCAL_SONGS, REMOTE_SONGS };
+
         SongList(QWidget *parent = 0);
         virtual ~SongList();
+
+        /**
+         * @brief Vide la liste du noeud passé en paramètre.
+         * @param list Liste à nettoyer (locale/distante)
+         */
+        virtual void clearList(SongList_t list = LOCAL_SONGS);
 
         /**
          * @brief Change le son marqué comme son courant dans la liste.
@@ -56,10 +64,18 @@ class SongList : public QTreeWidget
         virtual void setCurrentSong(int songNum);
 
         /**
+         * @brief getSongHierarchy
+         * @param list Liste à retourner
+         * @return Liste des objets de l'arborescence.
+         */
+        virtual const QList<QTreeWidgetItem*> getSongHierarchy(SongList_t list = LOCAL_SONGS) const;
+
+        /**
          * @brief Ajoute les titres et durées de la liste passée en paramètre.
+         * @param list Type de liste dans laquelle ajouter les musiques (locales, distantes)
          * @param songs Liste de sons à ajouter
         */
-        virtual void add(const QList<QTreeWidgetItem*>& songs);
+        virtual void add(SongList_t list, const QList<QTreeWidgetItem*>& songs);
 };
 
 #endif  // __SONGLIST_H__

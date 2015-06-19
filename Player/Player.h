@@ -50,6 +50,12 @@ class Player
         virtual Song& getCurrentSong();
 
         /**
+         * @brief countSongs
+         * @return Nombre de musiques enregistrées.
+         */
+        virtual int songCount() const;
+
+        /**
          * @brief Retourne l'arborescence de l'ensemble des musiques enregistrées
          * @return Liste des musiques du dossier.
          */
@@ -153,6 +159,7 @@ class Player
         /**
          * @brief Ajoute une nouvelle musique dans la liste du player.
          * @param filePath Chemin du fichier à ajouter
+         * @param parentDir Parent dans l'arborescence
          */
         virtual void addNewSong(const QString& filePath, QTreeWidgetItem *parentDir = 0);
 

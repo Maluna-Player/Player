@@ -25,6 +25,9 @@
 #include <QShowEvent>
 #include <QHideEvent>
 #include <QVector>
+#include "PlayerSocket.h"
+#include <QPushButton>
+#include <QLineEdit>
 
 class PlayerWindow : public QWidget
 {
@@ -55,6 +58,12 @@ class PlayerWindow : public QWidget
                           VOLUME_MORE_BUTTON, VOLUME_LESS_BUTTON, };
 
         QVector<PlayerButton*> mp_Buttons;
+
+        PlayerSocket *mp_Socket;
+
+        QLineEdit *mp_HostLine;
+        QPushButton *mp_ListenButton;
+        QPushButton *mp_ConnectButton;
 
 
         /**
@@ -126,6 +135,32 @@ class PlayerWindow : public QWidget
          * @brief Ouvre la fenêtre contenant les informations sur l'application.
          */
         virtual void openInformation();
+
+        /**
+         * @brief Met l'application en écoute de clients.
+         */
+        virtual void listen();
+
+        /**
+         * @brief Se connecte à l'hôte défini.
+         */
+        virtual void connectToHost();
+
+        /**
+         * @brief Commence la connexion entre les deux hôtes (envoi des musiques).
+         */
+        virtual void startConnection();
+
+        /**
+         * @brief Termine la connexion.
+         */
+        virtual void closeConnection();
+
+        /**
+         * @brief Ajoute la liste des musiques reçues dans les musiques distantes.
+         * @param songs Liste des musiques à ajouter
+         */
+        virtual void addRemoteSongList(const QList<QTreeWidgetItem*>& songs);
 
     protected:
 

@@ -11,21 +11,26 @@
 #include <QFileInfo>
 
 
-Song::Song(const QString& file, int num)
+Song::Song(const QString& file, int num, bool openable)
     : m_File(file), m_Num(num), m_SoundID(0)
 {
-    SoundID_t id = FmodManager::getInstance()->openFromFile(m_File.toStdString());
-    m_Length = FmodManager::getInstance()->getSoundLength(id);
-
-    QString title = QString::fromStdString(FmodManager::getInstance()->getSongTitle(id));
-
-    if (title.isEmpty())
+    if (openable)
     {
-        QFileInfo fileInfo(getFile());
-        m_Title = fileInfo.completeBaseName();
+        SoundID_t id = FmodManager::getInstance()->openFromFile(m_File.toStdString());
+        m_Length = FmodManager::getInstance()->getSoundLength(id);
+
+        QString title = QString::fromStdString(FmodManager::getInstance()->getSongTitle(id));
+
+        if (title.isEmpty())
+        {
+            QFileInfo fileInfo(getFile());
+            m_Title = fileInfo.completeBaseName();
+        }
+        else
+            m_Title = title;
     }
     else
-        m_Title = title;
+        m_Title = m_File;
 }
 
 // ==============================
@@ -66,6 +71,14 @@ const QString& Song::getFile() const
 SoundPos_t Song::getLength() const
 {
     return m_Length;
+}
+
+// ==============================
+// ==============================
+
+bool Song::isRemote() const
+{
+    return false;
 }
 
 // ==============================

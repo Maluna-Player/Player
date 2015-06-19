@@ -32,6 +32,15 @@ SongList::SongList(QWidget *parent) : QTreeWidget(parent), m_CurrentSong(-1)
     resizeColumnToContents(1);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setFixedWidth(260);
+
+    QTreeWidgetItem *localSongsItem = new QTreeWidgetItem;
+    localSongsItem->setText(0, "Mes musiques");
+
+    QTreeWidgetItem *remoteSongsItem = new QTreeWidgetItem;
+    remoteSongsItem->setText(0, "Musiques distantes");
+
+    addTopLevelItem(localSongsItem);
+    addTopLevelItem(remoteSongsItem);
 }
 
 // ==============================
@@ -48,6 +57,16 @@ SongList::~SongList()
 bool SongList::isSong(QTreeWidgetItem *item) const
 {
     return (item->childCount() <= 0);
+}
+
+// ==============================
+// ==============================
+
+void SongList::clearList(SongList_t list)
+{
+    QTreeWidgetItem *root = topLevelItem(list);
+
+    root->takeChildren();
 }
 
 // ==============================
@@ -93,7 +112,7 @@ void SongList::mousePressEvent(QMouseEvent *event)
     if (selectedItem && isSong(selectedItem))
     {
         Song *song = reinterpret_cast<Song*>(selectedItem->data(0, Qt::UserRole).value<quintptr>());
-        if (song)
+        if (song && !song->isRemote())
             emit(songPressed(song->getNum()));
     }
 
@@ -103,23 +122,41 @@ void SongList::mousePressEvent(QMouseEvent *event)
 // ==============================
 // ==============================
 
-void SongList::add(const QList<QTreeWidgetItem*>& songs)
+const QList<QTreeWidgetItem*> SongList::getSongHierarchy(SongList_t list) const
 {
-    addTopLevelItems(songs);
+    QTreeWidgetItem *root = topLevelItem(list);
 
-    QTreeWidgetItemIterator it(this);
+    QList<QTreeWidgetItem*> children;
+
+    for (int i = 0; i < root->childCount(); i++)
+        children.append(root->child(i));
+
+    return children;
+}
+
+// ==============================
+// ==============================
+
+void SongList::add(SongList_t list, const QList<QTreeWidgetItem*>& songs)
+{
+    QTreeWidgetItem *root = topLevelItem(list);
+    root->addChildren(songs);
+
+    QTreeWidgetItemIterator it(root);
     while (*it)
     {
-       if (isSong(*it))
-       {
-           Song *song = reinterpret_cast<Song*>((*it)->data(0, Qt::UserRole).value<quintptr>());
-           if (song)
-           {
-               (*it)->setText(0, song->getTitle());
-               (*it)->setText(1, Tools::msToString(song->getLength()));
-           }
-       }
+        if (isSong(*it))
+        {
+            Song *song = reinterpret_cast<Song*>((*it)->data(0, Qt::UserRole).value<quintptr>());
+            if (song)
+            {
+                (*it)->setText(0, song->getTitle());
+                (*it)->setText(1, Tools::msToString(song->getLength()));
+            }
+        }
 
-       ++it;
+        ++it;
     }
+
+    root->setExpanded(true);
 }

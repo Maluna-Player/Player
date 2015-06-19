@@ -20,20 +20,29 @@ class Song
 
         QString m_File;
         int m_Num;
-        SoundPos_t m_Length;
         QString m_Title;
 
         SoundID_t m_SoundID;
 
+    protected:
+
+        SoundPos_t m_Length;
+
     public:
 
-        Song(const QString& file = "", int num = -1);
+        Song(const QString& file = "", int num = -1, bool openable = true);
         virtual ~Song();
 
         virtual SoundID_t getSoundID() const;
         virtual int getNum() const;
         virtual const QString& getFile() const;
         virtual SoundPos_t getLength() const;
+
+        /**
+         * @brief Détermine si la musique est distante ou non.
+         * @return true si musique distante
+         */
+        virtual bool isRemote() const;
 
         /**
          * @brief getTitle
