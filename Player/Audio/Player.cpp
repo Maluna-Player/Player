@@ -8,9 +8,9 @@
 */
 
 #include "Player.h"
-#include "ArrayAccessException.h"
-#include "LibException.h"
-#include "FileLoadingException.h"
+#include "../Exceptions/ArrayAccessException.h"
+#include "../Exceptions/LibException.h"
+#include "../Exceptions/FileLoadingException.h"
 
 #include <QDir>
 #include <QFileInfo>

@@ -12,12 +12,12 @@
 #define __PLAYERWINDOW_H__
 
 #include <QWidget>
-#include "Player.h"
-#include "Spectrum.h"
-#include "PlayerLabel.h"
-#include "PlayerButton.h"
-#include "ProgressBackground.h"
-#include "ProgressBar.h"
+#include "../Audio/Player.h"
+#include "../Gui/Spectrum.h"
+#include "../Gui/PlayerLabel.h"
+#include "../Gui/PlayerButton.h"
+#include "../Gui/ProgressBackground.h"
+#include "../Gui/ProgressBar.h"
 #include "VolumeViewer.h"
 #include "SongList.h"
 
@@ -25,7 +25,7 @@
 #include <QShowEvent>
 #include <QHideEvent>
 #include <QVector>
-#include "PlayerSocket.h"
+#include "./Network/PlayerSocket.h"
 #include <QPushButton>
 #include <QLineEdit>
 

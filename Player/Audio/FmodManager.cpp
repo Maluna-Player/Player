@@ -8,7 +8,7 @@
 */
 
 #include "FmodManager.h"
-#include "LibException.h"
+#include "../Exceptions/LibException.h"
 
 
 FmodManager* FmodManager::mp_Instance = 0;

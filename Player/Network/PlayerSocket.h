@@ -105,7 +105,7 @@ class PlayerSocket : public QObject
          * @brief Met le socket serveur en écoute de clients.
          * @param address Adresse sur laquelle écouter les connexions entrantes
          */
-        virtual void listen(const QHostAddress& address);
+        virtual void listen(QHostAddress address);
 
         /**
          * @brief Se connecte à l'hôte passé en paramètre par le port défini par l'application.

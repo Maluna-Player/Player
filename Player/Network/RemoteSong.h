@@ -11,7 +11,7 @@
 #ifndef __REMOTESONG_H__
 #define __REMOTESONG_H__
 
-#include "Song.h"
+#include "../Audio/Song.h"
 
 class RemoteSong : public Song
 {

@@ -13,46 +13,46 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-    PlayerWindow.cpp \
-    FmodManager.cpp \
-    Player.cpp \
-    Song.cpp \
-    Spectrum.cpp \
-    ClickableLabel.cpp \
-    PlayerButton.cpp \
-    ProgressBar.cpp \
-    ProgressBackground.cpp \
-    PlayerLabel.cpp \
-    VolumeViewer.cpp \
-    SongList.cpp \
     Tools.cpp \
-    AboutDialog.cpp \
-    RemoteSong.cpp \
-    PlayerSocket.cpp \
-    SendingThread.cpp
+    Gui/AboutDialog.cpp \
+    Gui/ClickableLabel.cpp \
+    Gui/PlayerButton.cpp \
+    Gui/PlayerLabel.cpp \
+    Gui/PlayerWindow.cpp \
+    Gui/ProgressBackground.cpp \
+    Gui/ProgressBar.cpp \
+    Gui/SongList.cpp \
+    Gui/Spectrum.cpp \
+    Gui/VolumeViewer.cpp \
+    Network/PlayerSocket.cpp \
+    Network/RemoteSong.cpp \
+    Network/SendingThread.cpp \
+    Audio/FmodManager.cpp \
+    Audio/Player.cpp \
+    Audio/Song.cpp
 
-HEADERS  += PlayerWindow.h \
-    LibException.h \
-    BaseException.h \
-    Constants.h \
-    FmodManager.h \
-    Player.h \
-    ArrayAccessException.h \
-    Song.h \
-    Spectrum.h \
-    ClickableLabel.h \
-    PlayerButton.h \
-    FileLoadingException.h \
-    ProgressBar.h \
-    ProgressBackground.h \
-    PlayerLabel.h \
-    VolumeViewer.h \
-    SongList.h \
+HEADERS  += Constants.h \
     Tools.h \
-    AboutDialog.h \
-    RemoteSong.h \
-    PlayerSocket.h \
-    SendingThread.h
+    Gui/AboutDialog.h \
+    Gui/ClickableLabel.h \
+    Gui/PlayerButton.h \
+    Gui/PlayerLabel.h \
+    Gui/PlayerWindow.h \
+    Gui/ProgressBackground.h \
+    Gui/ProgressBar.h \
+    Gui/SongList.h \
+    Gui/Spectrum.h \
+    Gui/VolumeViewer.h \
+    Network/PlayerSocket.h \
+    Network/RemoteSong.h \
+    Network/SendingThread.h \
+    Exceptions/ArrayAccessException.h \
+    Exceptions/BaseException.h \
+    Exceptions/FileLoadingException.h \
+    Exceptions/LibException.h \
+    Audio/FmodManager.h \
+    Audio/Player.h \
+    Audio/Song.h
 
 RC_FILE = Player.rc
 

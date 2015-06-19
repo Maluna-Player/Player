@@ -12,7 +12,7 @@
 #ifndef __SPECTRUM_H__
 #define __SPECTRUM_H__
 
-#include "FmodManager.h"
+#include "../Audio/FmodManager.h"
 #include <QWidget>
 #include <QVector>
 #include <QRect>

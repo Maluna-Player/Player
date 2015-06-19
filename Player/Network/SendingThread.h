@@ -14,7 +14,7 @@
 #include <QThread>
 #include <QTcpSocket>
 #include <QTreeWidgetItem>
-#include "Song.h"
+#include "../Audio/Song.h"
 
 class SendingThread : public QThread
 {

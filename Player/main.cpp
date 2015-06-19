@@ -8,8 +8,8 @@
  *************************************
 */
 
-#include "PlayerWindow.h"
-#include "BaseException.h"
+#include "Gui/PlayerWindow.h"
+#include "Exceptions/BaseException.h"
 #include <QApplication>
 #include <QDebug>
 

@@ -8,10 +8,10 @@
 */
 
 #include "SongList.h"
-#include "Song.h"
-#include "Constants.h"
-#include "FileLoadingException.h"
-#include "ArrayAccessException.h"
+#include "../Audio/Song.h"
+#include "../Constants.h"
+#include "../Exceptions/FileLoadingException.h"
+#include "../Exceptions/ArrayAccessException.h"
 #include "Tools.h"
 #include <QScrollBar>
 #include <QMouseEvent>

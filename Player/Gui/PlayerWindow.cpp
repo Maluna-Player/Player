@@ -8,7 +8,7 @@
 */
 
 #include "PlayerWindow.h"
-#include "FmodManager.h"
+#include "../Audio/FmodManager.h"
 #include "Tools.h"
 #include "AboutDialog.h"
 

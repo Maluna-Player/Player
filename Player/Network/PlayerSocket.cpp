@@ -8,8 +8,8 @@
 */
 
 #include "PlayerSocket.h"
-#include "LibException.h"
-#include "RemoteSong.h"
+#include "../Exceptions/LibException.h"
+#include "../Network/RemoteSong.h"
 
 
 PlayerSocket::PlayerSocket()
@@ -27,7 +27,8 @@ PlayerSocket::~PlayerSocket()
     if (mp_Server)
         mp_Server->deleteLater();
 
-    mp_Socket->deleteLater();
+    if (mp_Socket)
+        mp_Socket->deleteLater();
 
     delete mp_RecievedSongs;
 }
@@ -35,7 +36,7 @@ PlayerSocket::~PlayerSocket()
 // ==============================
 // ==============================
 
-void PlayerSocket::listen(const QHostAddress& address)
+void PlayerSocket::listen(QHostAddress address)
 {
     mp_Server = new QTcpServer(this);
 
@@ -84,16 +85,13 @@ void PlayerSocket::disconnection()
 
 void PlayerSocket::clientDisconnection()
 {
-    mp_Socket->deleteLater();
-
     emit(endedConnection());
 }
 
-
 // ==============================
 // ==============================
 
-void PlayerSocket::connectToHost(const QString &address)
+void PlayerSocket::connectToHost(const QString& address)
 {
     mp_Socket = new QTcpSocket(this);
     mp_Socket->abort();
