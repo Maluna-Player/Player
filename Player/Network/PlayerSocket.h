@@ -15,8 +15,10 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QHostAddress>
+#include <QThread>
 #include <QTreeWidgetItem>
-#include "SendingThread.h"
+#include "RemoteSong.h"
+#include "PlayerMessage.h"
 
 class PlayerSocket : public QObject
 {
@@ -29,22 +31,35 @@ class PlayerSocket : public QObject
         QTcpServer *mp_Server;
         QTcpSocket *mp_Socket;
 
-        quint16 messageSize;
+        int m_NbSentListItems;
+        QVector<RemoteSong*> mp_RemoteSongs;
 
-        SendingThread *mp_SendingThread;
+        PlayerMessage *mp_SendMessage;
+        PlayerMessage *mp_ReceiveMessage;
 
-        int nbRecievedSongs;
-        int nbSongsToRecieve;
-        QTreeWidgetItem *mp_RecievedSongs;
+        QThread *mp_SocketThread;
 
 
         /**
-         * @brief Cherche l'item correspondant au numéro passé en paramètre.
+         * @brief Cherche l'item correspondant au numéro passé en paramètre dans l'arborescence parent.
          * @param num Numéro de l'item à chercher
          * @param parent Racine de l'arborescence dans laquelle chercher
          * @return Item correspondant au numéro indiqué
          */
-        virtual QTreeWidgetItem* getItem(int num, QTreeWidgetItem *parent = 0) const;
+        virtual QTreeWidgetItem* getItem(int num, QTreeWidgetItem *parent) const;
+
+        /**
+         * @brief Envoie la liste des éléments récursivement à partir de item.
+         * @param item Element racine à partir duquel envoyer la liste
+         * @param parent Parent de item dans l'arborescence
+         */
+        virtual void sendSongs(QTreeWidgetItem *item, int parent);
+
+        /**
+         * @brief Lit les données des musiques distantes reçues sur le socket.
+         * @return Liste des musiques reçues
+         */
+        virtual QList<QTreeWidgetItem*> readRemoteSongList();
 
     private slots:
 
@@ -73,11 +88,6 @@ class PlayerSocket : public QObject
          */
         virtual void error();
 
-        /**
-         * @brief Lit les données des musiques distantes reçues sur le socket.
-         */
-        virtual void readRemoteSongList();
-
     signals:
 
         /**
@@ -88,13 +98,7 @@ class PlayerSocket : public QObject
         /**
          * @brief Signal émis lors de la fin de la connexion avec un autre client.
          */
-        void endedConnection();
-
-        /**
-         * @brief Signal émis lorsque l'ensemble de la liste des musiques distantes a été reçue.
-         * @param Liste des musiques reçue
-         */
-        void songsRecieved(QList<QTreeWidgetItem*>);
+        void disconnected();
 
     public:
 
@@ -114,11 +118,12 @@ class PlayerSocket : public QObject
         virtual void connectToHost(const QString& address);
 
         /**
-         * @brief Envoie au client la liste des musiques enregistrées.
+         * @brief Envoie au client la liste des musiques enregistrées et reçoit ses musiques.
          * @param songs Arborescence des musiques
          * @param nbSons Nombre de musiques à envoyer
+         * @return Arborescence des musiques de l'autre client
          */
-        virtual void send(const QList<QTreeWidgetItem*>& songs, int nbSongs);
+        virtual QList<QTreeWidgetItem*> exchangeSongList(const QList<QTreeWidgetItem*>& songs, int nbSongs);
 };
 
 #endif  // __PLAYERSOCKET_H__

@@ -176,7 +176,7 @@ void PlayerWindow::changeSong(int song)
             mp_ProgressBar->setValue(0);
             mp_ProgressBar->setMaximum(m_Player.getCurrentSong().getLength());
 
-            mp_SongList->setCurrentSong(song);
+            mp_SongList->setCurrentSong(SongList::LOCAL_SONGS, song);
 
             if (m_Player.isPaused())
                 setState(STOP_STATE);
@@ -333,7 +333,7 @@ void PlayerWindow::listen()
 
     mp_Socket = new PlayerSocket;
     connect(mp_Socket, SIGNAL(connected()), this, SLOT(startConnection()));
-    connect(mp_Socket, SIGNAL(endedConnection()), this, SLOT(closeConnection()));
+    connect(mp_Socket, SIGNAL(disconnected()), this, SLOT(closeConnection()));
 
     mp_Socket->listen(QHostAddress::Any);
 }
@@ -349,7 +349,7 @@ void PlayerWindow::connectToHost()
 
     mp_Socket = new PlayerSocket;
     connect(mp_Socket, SIGNAL(connected()), this, SLOT(startConnection()));
-    connect(mp_Socket, SIGNAL(endedConnection()), this, SLOT(closeConnection()));
+    connect(mp_Socket, SIGNAL(disconnected()), this, SLOT(closeConnection()));
 
     mp_Socket->connectToHost(mp_HostLine->text());
 }
@@ -365,9 +365,7 @@ void PlayerWindow::startConnection()
     mp_ConnectButton->setEnabled(false);
     mp_ConnectButton->setText("Connecté");
 
-    connect(mp_Socket, SIGNAL(songsRecieved(QList<QTreeWidgetItem*>)), this, SLOT(addRemoteSongList(QList<QTreeWidgetItem*>)));
-
-    mp_Socket->send(mp_SongList->getSongHierarchy(), m_Player.songCount());
+    addRemoteSongList(mp_Socket->exchangeSongList(mp_SongList->getSongHierarchy(), m_Player.songCount()));
 }
 
 // ==============================
@@ -411,7 +409,7 @@ void PlayerWindow::timerEvent(QTimerEvent *event)
             mp_ProgressBar->setValue(m_Player.getCurrentSong().getPosition());
             mp_SongPos->setText(Tools::msToString(m_Player.getCurrentSong().getPosition()));
 
-            if (m_Player.getCurrentSong().isFinished())
+            if (!m_Player.m_Remote && m_Player.getCurrentSong().isFinished())
                 changeSong(m_Player.next());
         }
     }

@@ -26,10 +26,11 @@ SOURCES += main.cpp\
     Gui/VolumeViewer.cpp \
     Network/PlayerSocket.cpp \
     Network/RemoteSong.cpp \
-    Network/SendingThread.cpp \
     Audio/FmodManager.cpp \
     Audio/Player.cpp \
-    Audio/Song.cpp
+    Audio/Song.cpp \
+    Network/PlayerMessage.cpp \
+    Network/SongListItem.cpp
 
 HEADERS  += Constants.h \
     Tools.h \
@@ -45,14 +46,16 @@ HEADERS  += Constants.h \
     Gui/VolumeViewer.h \
     Network/PlayerSocket.h \
     Network/RemoteSong.h \
-    Network/SendingThread.h \
     Exceptions/ArrayAccessException.h \
     Exceptions/BaseException.h \
     Exceptions/FileLoadingException.h \
     Exceptions/LibException.h \
     Audio/FmodManager.h \
     Audio/Player.h \
-    Audio/Song.h
+    Audio/Song.h \
+    Network/PlayerMessage.h \
+    Network/Sendable.h \
+    Network/SongListItem.h
 
 RC_FILE = Player.rc
 

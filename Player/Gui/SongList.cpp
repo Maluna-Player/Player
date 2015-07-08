@@ -72,9 +72,11 @@ void SongList::clearList(SongList_t list)
 // ==============================
 // ==============================
 
-void SongList::setCurrentSong(int songNum)
+void SongList::setCurrentSong(SongList_t list, int songNum)
 {
-    QTreeWidgetItemIterator it(this);
+    QTreeWidgetItem *root = topLevelItem(list);
+    QTreeWidgetItemIterator it(root);
+
     while (*it)
     {
         if (isSong(*it))

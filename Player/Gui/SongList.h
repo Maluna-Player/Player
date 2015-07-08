@@ -39,7 +39,7 @@ class SongList : public QTreeWidget
     signals:
 
         /**
-         * @brief Signal émis lorsque l'utilisateur clique sur une musique de la liste.
+         * @brief Signal émis lorsque l'utilisateur clique sur une musique locale de la liste.
          * @param song Musique sélectionnée
          */
         void songPressed(int song);
@@ -59,9 +59,10 @@ class SongList : public QTreeWidget
 
         /**
          * @brief Change le son marqué comme son courant dans la liste.
+         * @param list Liste dans laquelle sélectionner la musique
          * @param songNum Indice de la musique actuelle
         */
-        virtual void setCurrentSong(int songNum);
+        virtual void setCurrentSong(SongList_t list, int songNum);
 
         /**
          * @brief getSongHierarchy
