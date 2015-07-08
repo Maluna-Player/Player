@@ -65,5 +65,5 @@ void VolumeViewer::paintEvent(QPaintEvent * /*event*/)
 void VolumeViewer::mousePressEvent(QMouseEvent *event)
 {
     if (event->x() <= VOLUME_SPRITE_W)
-        emit(stateChanged());
+        emit stateChanged();
 }

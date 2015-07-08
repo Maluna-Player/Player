@@ -115,7 +115,7 @@ void SongList::mousePressEvent(QMouseEvent *event)
     {
         Song *song = reinterpret_cast<Song*>(selectedItem->data(0, Qt::UserRole).value<quintptr>());
         if (song && !song->isRemote())
-            emit(songPressed(song->getNum()));
+            emit songPressed(song->getNum());
     }
 
     QTreeWidget::mousePressEvent(event);
