@@ -74,11 +74,6 @@ class PlayerSocket : public QObject
         virtual void disconnection();
 
         /**
-         * @brief Libère le socket client et signale à l'application la fin de la communication.
-         */
-        virtual void clientDisconnection();
-
-        /**
          * @brief Envoie la liste des musiques.
          */
         virtual void startConnection();

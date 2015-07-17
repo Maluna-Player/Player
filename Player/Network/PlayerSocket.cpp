@@ -53,7 +53,7 @@ void PlayerSocket::clientConnexion()
 {
     mp_Socket = mp_Server->nextPendingConnection();
 
-    connect(mp_Socket, SIGNAL(disconnected()), this, SLOT(clientDisconnection()));
+    connect(mp_Socket, SIGNAL(disconnected()), this, SLOT(disconnection()));
 
     startConnection();
 
@@ -65,8 +65,6 @@ void PlayerSocket::clientConnexion()
 
 void PlayerSocket::startConnection()
 {
-    m_Connected = true;
-
     mp_SocketThread = new QThread(this);
     mp_SocketThread->start();
 
@@ -81,6 +79,7 @@ void PlayerSocket::startConnection()
     mp_SendMessage->moveToThread(mp_SocketThread);
     mp_ReceiveMessage->moveToThread(mp_SocketThread);
 
+    m_Connected = true;
     emit connected();
 }
 
@@ -89,21 +88,16 @@ void PlayerSocket::startConnection()
 
 void PlayerSocket::disconnection()
 {
+    m_Connected = false;
+
     mp_Socket->close();
 
     mp_SocketThread->quit();
+    mp_SocketThread->wait();
 
     delete mp_SendMessage;
     delete mp_ReceiveMessage;
 
-    emit disconnected();
-}
-
-// ==============================
-// ==============================
-
-void PlayerSocket::clientDisconnection()
-{
     emit disconnected();
 }
 
@@ -120,7 +114,7 @@ void PlayerSocket::connectToHost(const QString& address)
 
     connect(mp_Socket, SIGNAL(connected()), this, SLOT(startConnection()));
     connect(mp_Socket, SIGNAL(disconnected()), this, SLOT(disconnection()));
-    connect(mp_Socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(error()));
+    connect(mp_Socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(error()), Qt::DirectConnection);
 }
 
 // ==============================
