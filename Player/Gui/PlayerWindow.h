@@ -156,12 +156,6 @@ class PlayerWindow : public QWidget
          */
         virtual void closeConnection();
 
-        /**
-         * @brief Ajoute la liste des musiques reçues dans les musiques distantes.
-         * @param songs Liste des musiques à ajouter
-         */
-        virtual void addRemoteSongList(const QList<QTreeWidgetItem*>& songs);
-
     protected:
 
         virtual void timerEvent(QTimerEvent *event);

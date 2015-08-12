@@ -87,14 +87,31 @@ SoundID_t FmodManager::getSoundID() const
 // ==============================
 // ==============================
 
-SoundID_t FmodManager::openFromFile(const std::string& soundFile) throw (StreamError_t)
+SoundID_t FmodManager::openFromFile(const std::string& soundFile, SoundSettings *settings) throw (StreamError_t)
 {
     SoundID_t id = getSoundID();
 
     if (mp_Sounds.at(id))
         releaseSound(id);
 
-    FMOD_RESULT res = FMOD_System_CreateStream(mp_System, soundFile.c_str(), FMOD_DEFAULT, 0, &mp_Sounds.at(id));
+    FMOD_RESULT res;
+
+    if (!settings)
+        res = FMOD_System_CreateStream(mp_System, soundFile.c_str(), FMOD_DEFAULT, 0, &mp_Sounds.at(id));
+    else
+    {
+        FMOD_CREATESOUNDEXINFO *soundSettings = new FMOD_CREATESOUNDEXINFO();
+
+        soundSettings->cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
+        soundSettings->useropen = settings->openCallback;
+        soundSettings->userclose = settings->closeCallback;
+        soundSettings->userread = settings->readCallback;
+        soundSettings->userseek = settings->seekCallback;
+
+        res = FMOD_System_CreateStream(mp_System, soundFile.c_str(), FMOD_DEFAULT, soundSettings, &mp_Sounds.at(id));
+
+        delete soundSettings;
+    }
 
     if (res == FMOD_ERR_FORMAT)
         throw FORMAT_ERROR;

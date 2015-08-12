@@ -19,6 +19,10 @@
 #include <QTreeWidgetItem>
 #include "RemoteSong.h"
 #include "PlayerMessage.h"
+#include "Commands/Command.h"
+#include "Commands/CommandRequest.h"
+#include "Commands/CommandReply.h"
+#include "../Audio/FmodManager.h"
 
 class PlayerSocket : public QObject
 {
@@ -32,13 +36,25 @@ class PlayerSocket : public QObject
         QTcpSocket *mp_Socket;
 
         int m_NbSentListItems;
-        QVector<RemoteSong*> mp_RemoteSongs;
+        int m_NbReceivedSongs;
 
         PlayerMessage *mp_SendMessage;
         PlayerMessage *mp_ReceiveMessage;
 
         QThread *mp_SocketThread;
 
+        QVector<CommandRequest*> mp_ReceivedRequests;
+        QVector<CommandReply*> mp_ReceivedReplies;
+
+        SoundSettings m_CallbackSettings;
+
+
+        /* Instance du singleton */
+        static PlayerSocket *mp_Instance;
+
+
+        PlayerSocket();
+        virtual ~PlayerSocket();
 
         /**
          * @brief Cherche l'item correspondant au numéro passé en paramètre dans l'arborescence parent.
@@ -60,6 +76,25 @@ class PlayerSocket : public QObject
          * @return Liste des musiques reçues
          */
         virtual QList<QTreeWidgetItem*> readRemoteSongList();
+
+        /**
+         * @brief Construit l'objet Command à partir du message passé en paramètre.
+         * @param message Message contenant la commande
+         * @return Commande construite
+         */
+        virtual Command* buildCommand(QByteArray message) const;
+
+        /**
+         * @brief Récupère la prochaine requête parmi la liste des messages traités ou récupérés.
+         * @return Prochaine requête du client
+         */
+        virtual CommandRequest* getCommandRequest();
+
+        /**
+         * @brief Récupère la prochaine réponse parmi la liste des messages traités ou récupérés.
+         * @return Prochaine réponse du client
+         */
+        virtual CommandReply* getCommandReply();
 
     private slots:
 
@@ -95,10 +130,42 @@ class PlayerSocket : public QObject
          */
         void disconnected();
 
+        /**
+         * @brief Signal émis lorsqu'une commande est reçue.
+         * @param Commande reçue
+         */
+        void commandReceived(CommandRequest*);
+
     public:
 
-        PlayerSocket();
-        virtual ~PlayerSocket();
+        /**
+         * @brief Crée l'instance du singleton si non créée et la retourne.
+         * @return Instance du singleton
+         */
+        static PlayerSocket* createInstance();
+
+        /**
+         * Retourne l'instance du singleton.
+         * @return Instance du singleton
+        */
+        static PlayerSocket* getInstance();
+
+        /**
+         * Détruit le singleton alloué dynamiquement.
+        */
+        static void deleteInstance();
+
+        /**
+         * @brief getCallbackSettings
+         * @return Options fmod pour la lecture réseau
+         */
+        virtual SoundSettings& getCallbackSettings();
+
+        /**
+         * @brief isConnected
+         * @return true si la connexion entre les deux clients est établie et les listes échangées.
+         */
+        virtual bool isConnected() const;
 
         /**
          * @brief Met le socket serveur en écoute de clients.
@@ -119,7 +186,35 @@ class PlayerSocket : public QObject
          * @return Arborescence des musiques de l'autre client
          */
         virtual QList<QTreeWidgetItem*> exchangeSongList(const QList<QTreeWidgetItem*>& songs, int nbSongs);
+
+        /**
+         * @brief Vérifie s'il existe une prochaine requête client et signale sa réception.
+         */
+        virtual void processCommands();
+
+
+        /** Méthodes de callback appelées par les fonctions pour le stream de musique distantes **/
+
+        FMOD_RESULT openRemoteFile(const char *fileName, unsigned int *filesize, void **handle);
+        FMOD_RESULT closeRemoteFile(void *handle);
+        FMOD_RESULT readRemoteFile(void *handle, void *buffer, unsigned int sizebytes, unsigned int *bytesread);
+        FMOD_RESULT seekRemoteFile(void *handle, unsigned int pos);
+
+    public slots:
+
+        /**
+         * @brief Ajoute la réponse reçue en paramètre dans la liste des messages à envoyer.
+         * @param reply Réponse à envoyer
+         */
+        virtual void sendCommandReply(CommandReply *reply);
 };
+
+/** Callbacks FMOD pour le stream de musique distantes **/
+
+FMOD_RESULT F_CALLBACK openCallback(const char *fileName, int unicode, unsigned int *filesize, void **handle, void **userdata);
+FMOD_RESULT F_CALLBACK closeCallback(void *handle, void *userdata);
+FMOD_RESULT F_CALLBACK readCallback(void *handle, void *buffer, unsigned int sizebytes, unsigned int *bytesread, void *userdata);
+FMOD_RESULT F_CALLBACK seekCallback(void *handle, unsigned int pos, void *userdata);
 
 #endif  // __PLAYERSOCKET_H__
 

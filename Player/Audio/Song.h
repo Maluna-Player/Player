@@ -18,15 +18,16 @@ class Song
 {
     private:
 
-        QString m_File;
         int m_Num;
         QString m_Title;
 
-        SoundID_t m_SoundID;
-
     protected:
 
+        QString m_File;
+
         SoundPos_t m_Length;
+
+        SoundID_t m_SoundID;
 
     public:
 
@@ -37,6 +38,12 @@ class Song
         virtual int getNum() const;
         virtual const QString& getFile() const;
         virtual SoundPos_t getLength() const;
+
+        /**
+         * @brief Change le numéro du son.
+         * @param num Nouveau numéro
+         */
+        virtual void setNum(int num);
 
         /**
          * @brief Détermine si la musique est distante ou non.

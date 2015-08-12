@@ -15,7 +15,7 @@
 #include "BaseException.h"
 #include <sstream>
 
-class ArrayAccesException : public BaseException
+class ArrayAccessException : public BaseException
 {
   private:
 
@@ -36,13 +36,13 @@ class ArrayAccesException : public BaseException
 
   public:
 
-    ArrayAccesException(const std::string& method, unsigned int arraySize, int pos)
+    ArrayAccessException(const std::string& method, unsigned int arraySize, int pos)
       : BaseException(method), m_ArraySize(arraySize), m_Pos(pos)
     {
       buildMessage();
     }
 
-    virtual ~ArrayAccesException() throw()
+    virtual ~ArrayAccessException() throw()
     {
 
     }

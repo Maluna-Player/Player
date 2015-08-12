@@ -25,6 +25,15 @@
 typedef unsigned int  SoundID_t;
 typedef unsigned int  SoundPos_t;   // Position en ms
 
+typedef struct
+{
+    FMOD_FILE_OPENCALLBACK openCallback;
+    FMOD_FILE_CLOSECALLBACK closeCallback;
+    FMOD_FILE_READCALLBACK readCallback;
+    FMOD_FILE_SEEKCALLBACK seekCallback;
+
+} SoundSettings;
+
 class FmodManager
 {
     private:
@@ -83,9 +92,10 @@ class FmodManager
         /**
          * Ouvre le fichier son passé en paramètre.
          * @param soundFile Fichier à ouvrir
+         * @param settings Options de chargement de la musique (callbacks utilisés)
          * @return identifiant du canal associé
         */
-        virtual SoundID_t openFromFile(const std::string& soundFile) throw (StreamError_t);
+        virtual SoundID_t openFromFile(const std::string& soundFile, SoundSettings *settings = 0) throw (StreamError_t);
 
         /**
          * Joue le son chargé.

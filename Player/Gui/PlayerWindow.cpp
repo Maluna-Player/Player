@@ -17,7 +17,7 @@
 
 
 PlayerWindow::PlayerWindow(QWidget *parent)
-    : QWidget(parent), m_TimerId(0)
+    : QWidget(parent), m_TimerId(0), mp_Socket(0)
 {
     setWindowTitle(tr(WINDOW_TITLE));
     resize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -331,7 +331,7 @@ void PlayerWindow::listen()
     mp_ListenButton->setText("Listening..");
     mp_ConnectButton->hide();
 
-    mp_Socket = new PlayerSocket;
+    mp_Socket = PlayerSocket::createInstance();
     connect(mp_Socket, SIGNAL(connected()), this, SLOT(startConnection()));
     connect(mp_Socket, SIGNAL(disconnected()), this, SLOT(closeConnection()));
 
@@ -347,7 +347,7 @@ void PlayerWindow::connectToHost()
     mp_ConnectButton->setText("Connexion...");
     mp_ConnectButton->setEnabled(false);
 
-    mp_Socket = new PlayerSocket;
+    mp_Socket = PlayerSocket::createInstance();
     connect(mp_Socket, SIGNAL(connected()), this, SLOT(startConnection()));
     connect(mp_Socket, SIGNAL(disconnected()), this, SLOT(closeConnection()));
 
@@ -365,7 +365,12 @@ void PlayerWindow::startConnection()
     mp_ConnectButton->setEnabled(false);
     mp_ConnectButton->setText("Connecté");
 
-    addRemoteSongList(mp_Socket->exchangeSongList(mp_SongList->getSongHierarchy(), m_Player.songCount()));
+    QList<QTreeWidgetItem*> songList = mp_Socket->exchangeSongList(mp_SongList->getSongHierarchy(), m_Player.songCount());
+    m_Player.addSongs(songList);
+    mp_SongList->add(SongList::REMOTE_SONGS, songList);
+
+    connect(mp_Socket, SIGNAL(commandReceived(CommandRequest*)), &m_Player, SLOT(executeNetworkCommand(CommandRequest*)));
+    connect(&m_Player, SIGNAL(commandExecuted(CommandReply*)), mp_Socket, SLOT(sendCommandReply(CommandReply*)));
 }
 
 // ==============================
@@ -373,7 +378,8 @@ void PlayerWindow::startConnection()
 
 void PlayerWindow::closeConnection()
 {
-    delete mp_Socket;
+    PlayerSocket::deleteInstance();
+    mp_Socket = 0;
 
     mp_HostLine->show();
     mp_ListenButton->show();
@@ -385,15 +391,16 @@ void PlayerWindow::closeConnection()
     mp_ListenButton->setText("Listen");
     mp_ConnectButton->setText("Connect");
 
+    if (m_Player.getCurrentSong().isRemote())
+    {
+        if (!m_Player.isStopped())
+            setState(STOP_STATE);
+
+        changeSong(m_Player.first());
+    }
+
+    m_Player.removeRemoteSongs();
     mp_SongList->clearList(SongList::REMOTE_SONGS);
-}
-
-// ==============================
-// ==============================
-
-void PlayerWindow::addRemoteSongList(const QList<QTreeWidgetItem*>& songs)
-{
-    mp_SongList->add(SongList::REMOTE_SONGS, songs);
 }
 
 // ==============================
@@ -409,9 +416,12 @@ void PlayerWindow::timerEvent(QTimerEvent *event)
             mp_ProgressBar->setValue(m_Player.getCurrentSong().getPosition());
             mp_SongPos->setText(Tools::msToString(m_Player.getCurrentSong().getPosition()));
 
-            if (!m_Player.m_Remote && m_Player.getCurrentSong().isFinished())
+            if (m_Player.getCurrentSong().isFinished())
                 changeSong(m_Player.next());
         }
+
+        if (mp_Socket && mp_Socket->isConnected())
+            mp_Socket->processCommands();
     }
     else
     {

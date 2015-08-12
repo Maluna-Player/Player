@@ -30,7 +30,10 @@ SOURCES += main.cpp\
     Audio/Player.cpp \
     Audio/Song.cpp \
     Network/PlayerMessage.cpp \
-    Network/SongListItem.cpp
+    Network/SongListItem.cpp \
+    Network/Commands/Command.cpp \
+    Network/Commands/CommandReply.cpp \
+    Network/Commands/CommandRequest.cpp
 
 HEADERS  += Constants.h \
     Tools.h \
@@ -55,7 +58,10 @@ HEADERS  += Constants.h \
     Audio/Song.h \
     Network/PlayerMessage.h \
     Network/Sendable.h \
-    Network/SongListItem.h
+    Network/SongListItem.h \
+    Network/Commands/Command.h \
+    Network/Commands/CommandReply.h \
+    Network/Commands/CommandRequest.h
 
 RC_FILE = Player.rc
 

@@ -15,12 +15,21 @@
 
 class RemoteSong : public Song
 {
+    private:
+
+        int m_RemoteNum;
+
     public:
 
-        RemoteSong(const QString& file, int num, SoundPos_t length);
+        RemoteSong(const QString& file, int num, int remoteNum, SoundPos_t length);
         virtual ~RemoteSong();
 
         virtual bool isRemote() const;
+
+        /**
+         * @brief Ouvre le fichier avec FMOD pour stream du fichier distant.
+         */
+        virtual void open();
 };
 
 #endif  // __REMOTESONG_H__

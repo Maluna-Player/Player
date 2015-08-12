@@ -45,7 +45,7 @@ Player::~Player()
 Song& Player::getCurrentSong()
 {
     if (m_CurrentSong >= mp_Songs.size())
-        throw ArrayAccesException("Player::getCurrentSong", mp_Songs.size(), m_CurrentSong);
+        throw ArrayAccessException("Player::getCurrentSong", mp_Songs.size(), m_CurrentSong);
 
     return *(mp_Songs[m_CurrentSong]);
 }
@@ -308,6 +308,52 @@ void Player::loadSongs(const QString& dirPath, QTreeWidgetItem *parentDir)
 // ==============================
 // ==============================
 
+void Player::addSongs(const QList<QTreeWidgetItem*>& songs)
+{
+    QTreeWidget tree;
+    tree.addTopLevelItems(songs);
+
+    QTreeWidgetItemIterator it(&tree);
+    while (*it)
+    {
+        if ((*it)->childCount() <= 0)
+        {
+            Song *song = reinterpret_cast<Song*>((*it)->data(0, Qt::UserRole).value<quintptr>());
+            if (song)
+            {
+                song->setNum(mp_Songs.size());
+                mp_Songs.append(song);
+            }
+        }
+
+        ++it;
+    }
+
+    while (tree.topLevelItemCount() > 0)
+        tree.takeTopLevelItem(0);
+}
+
+// ==============================
+// ==============================
+
+void Player::removeRemoteSongs()
+{
+    int i = 0;
+
+    while (i < mp_Songs.size())
+    {
+        if (mp_Songs.at(i)->isRemote())
+            mp_Songs.remove(i);
+        else
+            i++;
+    }
+
+    clientFile.close();
+}
+
+// ==============================
+// ==============================
+
 void Player::changeSong(int song)
 {
     m_CurrentSong = song;
@@ -318,5 +364,60 @@ void Player::changeSong(int song)
     // Si le player n'est pas stoppé, on le joue
     if (!isStopped())
         getCurrentSong().play();
+}
+
+// ==============================
+// ==============================
+
+void Player::executeNetworkCommand(CommandRequest *command)
+{
+    int songNum = command->getSongNum();
+    CommandReply *reply = 0;
+
+    switch (command->getCommandType())
+    {
+        case 'o':
+            clientFile.setFileName(mp_Songs.at(songNum)->getFile());
+            if (!clientFile.open(QIODevice::ReadOnly))
+                reply = new OpenCommandReply(songNum, FMOD_ERR_FILE_NOTFOUND, -1);
+            else
+            {
+                unsigned int fileSize = clientFile.size();
+                clientFile.seek(0);
+
+                reply = new OpenCommandReply(songNum, FMOD_OK, fileSize);
+            }
+            break;
+
+        case 'c':
+            clientFile.close();
+            reply = new CloseCommandReply(songNum, FMOD_OK);
+            break;
+
+        case 'r':
+        {
+            unsigned int bytesToRead = static_cast<ReadCommandRequest*>(command)->getBytesToRead();
+            char *buffer = new char[bytesToRead];
+            unsigned int readBytes = clientFile.read(buffer, bytesToRead);
+
+            reply = new ReadCommandReply(songNum, FMOD_OK, buffer, readBytes);
+            break;
+        }
+
+        case 's':
+            if (clientFile.seek(static_cast<SeekCommandRequest*>(command)->getPos()))
+                reply = new SeekCommandReply(songNum, FMOD_OK);
+            else
+                reply = new SeekCommandReply(songNum, FMOD_ERR_FILE_COULDNOTSEEK);
+            break;
+
+        default:
+            break;
+    }
+
+    delete command;
+
+    if (reply)
+        emit commandExecuted(reply);
 }
 

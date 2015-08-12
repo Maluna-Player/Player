@@ -13,16 +13,22 @@
 #define __PLAYER_H__
 
 #include <QVector>
-#include <QPair>
 #include <QTreeWidgetItem>
+#include <QFile>
 #include "Song.h"
+#include "../Network/PlayerSocket.h"
+#include "../Network/Commands/Command.h"
+#include "../Network/Commands/CommandRequest.h"
+#include "../Network/Commands/CommandReply.h"
 
 #define FIRST_SONG        0
 #define LAST_SONG         (static_cast<int>(mp_Songs.size()) - 1)
 #define UNDEFINED_SONG   -1
 
-class Player
+class Player : public QObject
 {
+    Q_OBJECT
+
     private:
 
         QTreeWidgetItem *mp_SongTree;
@@ -37,6 +43,15 @@ class Player
 
         bool m_Mute;
         int m_VolumeState;
+
+        QFile clientFile;
+
+    signals:
+
+        /**
+         * @brief Signal émis lorsque la commande reçue a été traitée et que la réponse est créée.
+         */
+        void commandExecuted(CommandReply*);
 
     public:
 
@@ -172,10 +187,29 @@ class Player
         virtual void loadSongs(const QString& dirPath, QTreeWidgetItem *parentDir = 0);
 
         /**
+         * @brief Ajoute les sons de l'arborescence passée en paramètre à la liste du player.
+         * @param songs Arborescence de musiques à ajouter
+         */
+        virtual void addSongs(const QList<QTreeWidgetItem*>& songs);
+
+        /**
+         * @brief Supprime les musiques distantes de la liste.
+         */
+        virtual void removeRemoteSongs();
+
+        /**
          * @brief Lance la musique d'indice song.
          * @param song Indice de la musique
          */
         virtual void changeSong(int song);
+
+    public slots:
+
+        /**
+         * @brief Traite la commande passée en paramètre et émet la réponse une fois terminée.
+         * @param command Commande à traiter
+         */
+        virtual void executeNetworkCommand(CommandRequest *command);
 };
 
 #endif  // __PLAYER_H__

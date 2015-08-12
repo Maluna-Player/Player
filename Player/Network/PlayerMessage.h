@@ -23,13 +23,16 @@ class PlayerMessage : public QObject
 
     private:
 
+        typedef quint32 MessageSize_t;
+
         QTcpSocket *mp_Socket;
-        quint16 m_MessageSize;
+        MessageSize_t m_MessageSize;
 
         bool m_IsSending;
 
         QVector<QByteArray> m_Messages;
-        QMutex m_Mutex;
+        QMutex m_MessagesMutex;
+        QMutex m_MessageGettingMutex;
 
     private slots:
 

@@ -32,12 +32,16 @@ QByteArray PlayerMessage::getNextMessage()
 {
     QByteArray message;
 
-    m_Mutex.lock();
+    if (m_MessageGettingMutex.tryLock())
+    {
+        m_MessagesMutex.lock();
 
-    if (!m_Messages.isEmpty())
-        message = m_Messages.takeAt(0);
+        if (!m_Messages.isEmpty())
+            message = m_Messages.takeAt(0);
 
-    m_Mutex.unlock();
+        m_MessagesMutex.unlock();
+        m_MessageGettingMutex.unlock();
+    }
 
     return message;
 }
@@ -47,15 +51,36 @@ QByteArray PlayerMessage::getNextMessage()
 
 QByteArray PlayerMessage::waitNextMessage()
 {
-    QByteArray message = getNextMessage();
-    if (!message.isEmpty())
+    QByteArray message;
+
+    m_MessageGettingMutex.lock();
+    m_MessagesMutex.lock();
+
+    if (!m_Messages.isEmpty())
+    {
+        message = m_Messages.takeAt(0);
+
+        m_MessagesMutex.unlock();
+        m_MessageGettingMutex.unlock();
+
         return message;
+    }
+
+    m_MessagesMutex.unlock();
 
     QEventLoop pause;
     connect(this, SIGNAL(messageReceived()), &pause, SLOT(quit()));
     pause.exec();
 
-    return getNextMessage();
+    m_MessagesMutex.lock();
+
+    if (!m_Messages.isEmpty())
+        message = m_Messages.takeAt(0);
+
+    m_MessagesMutex.unlock();
+    m_MessageGettingMutex.unlock();
+
+    return message;
 }
 
 // ==============================
@@ -63,13 +88,13 @@ QByteArray PlayerMessage::waitNextMessage()
 
 void PlayerMessage::add(const QByteArray& message)
 {
-    m_Mutex.lock();
+    m_MessagesMutex.lock();
 
     m_Messages.append(message);
     if (!m_IsSending)
         emit newMessageToSend();
 
-    m_Mutex.unlock();
+    m_MessagesMutex.unlock();
 }
 
 // ==============================
@@ -85,9 +110,9 @@ void PlayerMessage::add(Sendable *objectToSend)
 
 void PlayerMessage::sendMessages()
 {
-    m_Mutex.lock();
+    m_MessagesMutex.lock();
     m_IsSending = true;
-    m_Mutex.unlock();
+    m_MessagesMutex.unlock();
 
     QByteArray message;
 
@@ -96,19 +121,24 @@ void PlayerMessage::sendMessages()
         QByteArray messageSize;
         QDataStream out(&messageSize, QIODevice::WriteOnly);
 
-        out << static_cast<quint16>(message.size());
+        out << static_cast<MessageSize_t>(message.size());
 
         // Ajout de la taille du message dans l'en-tête
         message.prepend(messageSize);
 
         mp_Socket->write(message);
 
-        m_Mutex.lock();
+        m_MessagesMutex.lock();
+
         if (m_Messages.isEmpty())
             m_IsSending = false;
 
-        m_Mutex.unlock();
+        m_MessagesMutex.unlock();
     }
+
+    m_MessagesMutex.lock();
+    m_IsSending = false;
+    m_MessagesMutex.unlock();
 }
 
 // ==============================
@@ -122,7 +152,7 @@ void PlayerMessage::receive()
 
         if (m_MessageSize == 0)
         {
-            if (mp_Socket->bytesAvailable() < sizeof(quint16))
+            if (mp_Socket->bytesAvailable() < sizeof(MessageSize_t))
                  return;
 
             in >> m_MessageSize;
@@ -134,9 +164,9 @@ void PlayerMessage::receive()
         QByteArray message(m_MessageSize, 0);
         mp_Socket->read(message.data(), m_MessageSize);
 
-        m_Mutex.lock();
+        m_MessagesMutex.lock();
         m_Messages.append(message);
-        m_Mutex.unlock();
+        m_MessagesMutex.unlock();
 
         emit messageReceived();
         m_MessageSize = 0;

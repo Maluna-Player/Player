@@ -114,7 +114,7 @@ void SongList::mousePressEvent(QMouseEvent *event)
     if (selectedItem && isSong(selectedItem))
     {
         Song *song = reinterpret_cast<Song*>(selectedItem->data(0, Qt::UserRole).value<quintptr>());
-        if (song && !song->isRemote())
+        if (song)
             emit songPressed(song->getNum());
     }
 

@@ -12,7 +12,7 @@
 
 
 Song::Song(const QString& file, int num, bool openable)
-    : m_File(file), m_Num(num), m_SoundID(0)
+    : m_Num(num), m_File(file), m_SoundID(0)
 {
     if (openable)
     {
@@ -71,6 +71,14 @@ const QString& Song::getFile() const
 SoundPos_t Song::getLength() const
 {
     return m_Length;
+}
+
+// ==============================
+// ==============================
+
+void Song::setNum(int num)
+{
+    m_Num = num;
 }
 
 // ==============================
@@ -145,6 +153,6 @@ void Song::setPosition(SoundPos_t pos) const
 
 bool Song::isFinished() const
 {
-    return !(FmodManager::getInstance()->isPlaying(m_SoundID));
+    return !(getPosition() < getLength());
 }
 
