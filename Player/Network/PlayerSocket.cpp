@@ -235,7 +235,9 @@ QTreeWidgetItem* PlayerSocket::getItem(int num, QTreeWidgetItem *parent) const
         if (isInt && itemNum == num)
             return parent->child(i);
 
-        getItem(num, parent->child(i));
+        QTreeWidgetItem *item = getItem(num, parent->child(i));
+        if (item)
+            return item;
     }
 
     return 0;
