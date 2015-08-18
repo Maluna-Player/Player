@@ -104,11 +104,6 @@ class PlayerSocket : public QObject
         virtual void clientConnexion();
 
         /**
-         * @brief Ferme le socket et signale à l'application la fin de la communication.
-         */
-        virtual void disconnection();
-
-        /**
          * @brief Envoie la liste des musiques.
          */
         virtual void startConnection();
@@ -201,6 +196,11 @@ class PlayerSocket : public QObject
         FMOD_RESULT seekRemoteFile(void *handle, unsigned int pos);
 
     public slots:
+
+        /**
+         * @brief Ferme le socket et signale à l'application la fin de la communication.
+         */
+        virtual void disconnection();
 
         /**
          * @brief Ajoute la réponse reçue en paramètre dans la liste des messages à envoyer.

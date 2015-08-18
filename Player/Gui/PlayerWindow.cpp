@@ -87,11 +87,11 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     informationButton->setPixmap(Tools::loadImage(IMAGES_SUBDIR + "info.png"));
     connect(informationButton, SIGNAL(clicked()), this, SLOT(openInformation()));
 
-    mp_HostLine = new QLineEdit;
-    mp_ListenButton = new QPushButton("Listen");
-    mp_ConnectButton = new QPushButton("Connect");
-    connect(mp_ListenButton, SIGNAL(clicked()), this, SLOT(listen()));
-    connect(mp_ConnectButton, SIGNAL(clicked()), this, SLOT(connectToHost()));
+    mp_ConnectionBox = new ConnectionBox;
+    connect(mp_ConnectionBox, SIGNAL(listened()), this, SLOT(listen()));
+    connect(mp_ConnectionBox, SIGNAL(connectedToHost(QString)), this, SLOT(connectToHost(QString)));
+    connect(mp_ConnectionBox, SIGNAL(canceled()), this, SLOT(closeConnection()));
+    connect(mp_ConnectionBox, SIGNAL(disconnected()), this, SLOT(closeConnection()));
 
 
     bottomLayout->setColumnStretch(3, 1);
@@ -107,12 +107,9 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     bottomLayout->addWidget(mp_Buttons.at(VOLUME_LESS_BUTTON), 2, 3, 2, 1);
 
     bottomLayout->addWidget(mp_SoundVolume, 1, 1, 2, 2);
-
     bottomLayout->addWidget(informationButton, 2, 10, 2, 1);
+    bottomLayout->addWidget(mp_ConnectionBox, 3, 7, 1, 3);
 
-    bottomLayout->addWidget(mp_HostLine, 3, 7);
-    bottomLayout->addWidget(mp_ListenButton, 3, 8);
-    bottomLayout->addWidget(mp_ConnectButton, 3, 9);
 
     bottomLayout->setColumnStretch(7, 1);
     mp_BottomPart->setLayout(bottomLayout);
@@ -327,10 +324,6 @@ void PlayerWindow::openInformation()
 
 void PlayerWindow::listen()
 {
-    mp_ListenButton->setEnabled(false);
-    mp_ListenButton->setText("Listening..");
-    mp_ConnectButton->hide();
-
     mp_Socket = PlayerSocket::createInstance();
     connect(mp_Socket, SIGNAL(connected()), this, SLOT(startConnection()));
     connect(mp_Socket, SIGNAL(disconnected()), this, SLOT(closeConnection()));
@@ -341,17 +334,13 @@ void PlayerWindow::listen()
 // ==============================
 // ==============================
 
-void PlayerWindow::connectToHost()
+void PlayerWindow::connectToHost(const QString& host)
 {
-    mp_ListenButton->hide();
-    mp_ConnectButton->setText("Connexion...");
-    mp_ConnectButton->setEnabled(false);
-
     mp_Socket = PlayerSocket::createInstance();
     connect(mp_Socket, SIGNAL(connected()), this, SLOT(startConnection()));
     connect(mp_Socket, SIGNAL(disconnected()), this, SLOT(closeConnection()));
 
-    mp_Socket->connectToHost(mp_HostLine->text());
+    mp_Socket->connectToHost(host);
 }
 
 // ==============================
@@ -359,15 +348,11 @@ void PlayerWindow::connectToHost()
 
 void PlayerWindow::startConnection()
 {
-    mp_HostLine->hide();
-    mp_ListenButton->hide();
-    mp_ConnectButton->show();
-    mp_ConnectButton->setEnabled(false);
-    mp_ConnectButton->setText("Connecté");
-
     QList<QTreeWidgetItem*> songList = mp_Socket->exchangeSongList(mp_SongList->getSongHierarchy(), m_Player.songCount());
     m_Player.addSongs(songList);
     mp_SongList->add(SongList::REMOTE_SONGS, songList);
+
+    mp_ConnectionBox->connected();
 
     connect(mp_Socket, SIGNAL(commandReceived(CommandRequest*)), &m_Player, SLOT(executeNetworkCommand(CommandRequest*)));
     connect(&m_Player, SIGNAL(commandExecuted(CommandReply*)), mp_Socket, SLOT(sendCommandReply(CommandReply*)));
@@ -378,29 +363,29 @@ void PlayerWindow::startConnection()
 
 void PlayerWindow::closeConnection()
 {
-    PlayerSocket::deleteInstance();
-    mp_Socket = 0;
-
-    mp_HostLine->show();
-    mp_ListenButton->show();
-    mp_ConnectButton->show();
-
-    mp_ListenButton->setEnabled(true);
-    mp_ConnectButton->setEnabled(true);
-
-    mp_ListenButton->setText("Listen");
-    mp_ConnectButton->setText("Connect");
-
-    if (m_Player.getCurrentSong().isRemote())
+    if (mp_Socket)
     {
-        if (!m_Player.isStopped())
-            setState(STOP_STATE);
+        if (mp_Socket->isConnected())
+            mp_Socket->disconnection();
+        else
+        {
+            if (m_Player.getCurrentSong().isRemote())
+            {
+                if (!m_Player.isStopped())
+                    setState(STOP_STATE);
 
-        changeSong(m_Player.first());
+                changeSong(m_Player.first());
+            }
+
+            m_Player.removeRemoteSongs();
+            mp_SongList->clearList(SongList::REMOTE_SONGS);
+
+            PlayerSocket::deleteInstance();
+            mp_Socket = 0;
+
+            mp_ConnectionBox->disconnect();
+        }
     }
-
-    m_Player.removeRemoteSongs();
-    mp_SongList->clearList(SongList::REMOTE_SONGS);
 }
 
 // ==============================

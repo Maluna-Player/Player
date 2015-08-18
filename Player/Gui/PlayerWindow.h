@@ -26,8 +26,7 @@
 #include <QHideEvent>
 #include <QVector>
 #include "./Network/PlayerSocket.h"
-#include <QPushButton>
-#include <QLineEdit>
+#include "ConnectionBox.h"
 
 class PlayerWindow : public QWidget
 {
@@ -61,9 +60,7 @@ class PlayerWindow : public QWidget
 
         PlayerSocket *mp_Socket;
 
-        QLineEdit *mp_HostLine;
-        QPushButton *mp_ListenButton;
-        QPushButton *mp_ConnectButton;
+        ConnectionBox *mp_ConnectionBox;
 
 
         /**
@@ -143,8 +140,9 @@ class PlayerWindow : public QWidget
 
         /**
          * @brief Se connecte à l'hôte défini.
+         * @param host Hôte auquel on essaie de se connecter
          */
-        virtual void connectToHost();
+        virtual void connectToHost(const QString& host);
 
         /**
          * @brief Commence la connexion entre les deux hôtes (envoi des musiques).

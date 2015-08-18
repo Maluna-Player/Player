@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     Network/SongListItem.cpp \
     Network/Commands/Command.cpp \
     Network/Commands/CommandReply.cpp \
-    Network/Commands/CommandRequest.cpp
+    Network/Commands/CommandRequest.cpp \
+    Gui/ConnectionBox.cpp
 
 HEADERS  += Constants.h \
     Tools.h \
@@ -61,7 +62,8 @@ HEADERS  += Constants.h \
     Network/SongListItem.h \
     Network/Commands/Command.h \
     Network/Commands/CommandReply.h \
-    Network/Commands/CommandRequest.h
+    Network/Commands/CommandRequest.h \
+    Gui/ConnectionBox.h
 
 RC_FILE = Player.rc
 

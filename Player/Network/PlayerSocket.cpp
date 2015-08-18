@@ -16,7 +16,8 @@
 PlayerSocket* PlayerSocket::mp_Instance = 0;
 
 PlayerSocket::PlayerSocket()
-    : m_Connected(false), mp_Server(0), mp_Socket(0), m_NbSentListItems(0), m_NbReceivedSongs(0)
+    : m_Connected(false), mp_Server(0), mp_Socket(0), m_NbSentListItems(0), m_NbReceivedSongs(0),
+      mp_SendMessage(0), mp_ReceiveMessage(0), mp_SocketThread(0)
 {
     m_CallbackSettings.openCallback = openCallback;
     m_CallbackSettings.closeCallback = closeCallback;
@@ -35,14 +36,20 @@ PlayerSocket::~PlayerSocket()
     for (int i = 0; i < mp_ReceivedReplies.size(); i++)
         delete mp_ReceivedReplies[i];
 
-    delete mp_SendMessage;
-    delete mp_ReceiveMessage;
+    if (mp_SendMessage)
+        delete mp_SendMessage;
+
+    if (mp_ReceiveMessage)
+        delete mp_ReceiveMessage;
 
     if (mp_Server)
         mp_Server->deleteLater();
 
     if (mp_Socket)
         mp_Socket->deleteLater();
+
+    if (mp_SocketThread)
+        delete mp_SocketThread;
 }
 
 // ==============================
@@ -116,7 +123,8 @@ void PlayerSocket::clientConnexion()
 
     startConnection();
 
-    mp_Server->close();
+    mp_Server->deleteLater();
+    mp_Server = 0;
 }
 
 // ==============================
@@ -146,12 +154,16 @@ void PlayerSocket::startConnection()
 
 void PlayerSocket::disconnection()
 {
+    mp_Socket->deleteLater();
+    mp_Socket = 0;
+
+    if (mp_SocketThread)
+    {
+        mp_SocketThread->quit();
+        mp_SocketThread->wait();
+    }
+
     m_Connected = false;
-
-    mp_Socket->close();
-
-    mp_SocketThread->quit();
-    mp_SocketThread->wait();
 
     emit disconnected();
 }
@@ -178,7 +190,7 @@ void PlayerSocket::connectToHost(const QString& address)
 void PlayerSocket::error()
 {
     qDebug() << mp_Socket->errorString();
- }
+}
 
 // ==============================
 // ==============================
