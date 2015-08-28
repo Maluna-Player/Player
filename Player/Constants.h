@@ -1,5 +1,5 @@
 /*************************************
- * @file    constants.h
+ * @file    Constants.h
  * @date    27/07/14
  * @author  Manuel
  *
@@ -70,6 +70,7 @@
 // Barre de progression
 #define PROGRESS_BACKGROUND_HEIGHT      30
 #define PROGRESSBAR_HEIGHT              23
+#define LOADBAR_HEIGHT                  17
 
 // Volume
 #define VOLUME_SPRITE_W                 50

@@ -94,6 +94,22 @@ SoundSettings& PlayerSocket::getCallbackSettings()
 // ==============================
 // ==============================
 
+quint32 PlayerSocket::getSongDataReceived() const
+{
+    return m_SongDataReceived;
+}
+
+// ==============================
+// ==============================
+
+quint32 PlayerSocket::getTotalCurrentSongData() const
+{
+    return m_TotalCurrentSongData;
+}
+
+// ==============================
+// ==============================
+
 bool PlayerSocket::isConnected() const
 {
     return m_Connected;
@@ -482,6 +498,9 @@ FMOD_RESULT PlayerSocket::openRemoteFile(const char *fileName, unsigned int *fil
             *filesize = static_cast<unsigned int>(reply->getFileSize());
             *handle = songNum;
 
+            m_TotalCurrentSongData = *filesize;
+            m_SongDataReceived = 0;
+
             delete reply;
             return result;
         }
@@ -540,10 +559,12 @@ FMOD_RESULT PlayerSocket::readRemoteFile(void *handle, void *buffer, unsigned in
             *bytesread = reply->getReadBytes();
             memcpy(buffer, reply->getBuffer(), *bytesread);
 
+            m_SongDataReceived += *bytesread;
+            delete reply;
+
             if (*bytesread < sizebytes)
                 return FMOD_ERR_FILE_EOF;
 
-            delete reply;
             return result;
         }
     }
@@ -570,6 +591,8 @@ FMOD_RESULT PlayerSocket::seekRemoteFile(void *handle, unsigned int pos)
     if (reply)
     {
         result = reply->getResult();
+        m_SongDataReceived = 0;
+
         delete reply;
     }
 

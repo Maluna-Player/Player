@@ -8,8 +8,8 @@
 */
 
 #include "SongList.h"
+#include "Constants.h"
 #include "../Audio/Song.h"
-#include "../Constants.h"
 #include "../Exceptions/FileLoadingException.h"
 #include "../Exceptions/ArrayAccessException.h"
 #include "Tools.h"

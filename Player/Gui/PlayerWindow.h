@@ -13,11 +13,12 @@
 
 #include <QWidget>
 #include "../Audio/Player.h"
-#include "../Gui/Spectrum.h"
-#include "../Gui/PlayerLabel.h"
-#include "../Gui/PlayerButton.h"
-#include "../Gui/ProgressBackground.h"
-#include "../Gui/ProgressBar.h"
+#include "Spectrum.h"
+#include "PlayerLabel.h"
+#include "PlayerButton.h"
+#include "ProgressBackground.h"
+#include "NetworkLoadBar.h"
+#include "ProgressBar.h"
 #include "VolumeViewer.h"
 #include "SongList.h"
 
@@ -49,6 +50,7 @@ class PlayerWindow : public QWidget
         PlayerLabel *mp_SongLength;
 
         ProgressBackground *mp_ProgressBackground;
+        NetworkLoadBar *mp_NetworkLoadBar;
         ProgressBar *mp_ProgressBar;
 
         VolumeViewer *mp_SoundVolume;

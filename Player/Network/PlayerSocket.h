@@ -48,6 +48,9 @@ class PlayerSocket : public QObject
 
         SoundSettings m_CallbackSettings;
 
+        quint32 m_SongDataReceived;
+        quint32 m_TotalCurrentSongData;
+
 
         /* Instance du singleton */
         static PlayerSocket *mp_Instance;
@@ -140,13 +143,13 @@ class PlayerSocket : public QObject
         static PlayerSocket* createInstance();
 
         /**
-         * Retourne l'instance du singleton.
+         * @brief Retourne l'instance du singleton.
          * @return Instance du singleton
         */
         static PlayerSocket* getInstance();
 
         /**
-         * Détruit le singleton alloué dynamiquement.
+         * @brief Détruit le singleton alloué dynamiquement.
         */
         static void deleteInstance();
 
@@ -155,6 +158,18 @@ class PlayerSocket : public QObject
          * @return Options fmod pour la lecture réseau
          */
         virtual SoundSettings& getCallbackSettings();
+
+        /**
+         * @brief getSongDataReceived
+         * @return Taille des données du son distant reçues
+         */
+        virtual quint32 getSongDataReceived() const;
+
+        /**
+         * @brief getTotalCurrentSongData
+         * @return Taille totale des données du son distant
+         */
+        virtual quint32 getTotalCurrentSongData() const;
 
         /**
          * @brief isConnected

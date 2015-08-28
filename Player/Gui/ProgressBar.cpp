@@ -35,12 +35,15 @@ void ProgressBar::paintEvent(QPaintEvent * /*event*/)
 
     QPixmap bar = Tools::loadImage(IMAGES_SUBDIR + "progressBar.png");
 
-    int xBarValue = value() * width() / maximum();
-    painter.fillRect(0, 0, xBarValue, bar.height(), QBrush(bar));
+    int barWidth = 0;
+    if (maximum())
+        barWidth = (static_cast<float>(value()) / maximum()) * width();
+
+    painter.fillRect(0, 0, barWidth, bar.height(), QBrush(bar));
 
     QPixmap marker = Tools::loadImage(IMAGES_SUBDIR + "marker.png");
 
-    painter.drawPixmap(xBarValue - 2, 0, marker);
+    painter.drawPixmap(barWidth - 2, 0, marker);
 }
 
 // ==============================

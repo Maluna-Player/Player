@@ -49,6 +49,8 @@ PlayerWindow::PlayerWindow(QWidget *parent)
 
 
     mp_ProgressBackground = new ProgressBackground;
+    mp_NetworkLoadBar = new NetworkLoadBar(mp_ProgressBackground);
+    mp_NetworkLoadBar->setGeometry(0, (PROGRESS_BACKGROUND_HEIGHT - LOADBAR_HEIGHT) / 2, mp_ProgressBackground->width(), 0);
     mp_ProgressBar = new ProgressBar(mp_ProgressBackground);
     mp_ProgressBar->setGeometry(0, (PROGRESS_BACKGROUND_HEIGHT - PROGRESSBAR_HEIGHT) / 2, mp_ProgressBackground->width(), 0);
 
@@ -148,6 +150,8 @@ void PlayerWindow::setState(State_t state)
     {
         m_Player.stop();
         mp_Spectrum->updateValues(m_Player.getCurrentSong().getSoundID());
+        mp_NetworkLoadBar->setValue(0);
+        mp_NetworkLoadBar->setStartPos(0);
         mp_ProgressBar->setValue(m_Player.getCurrentSong().getPosition());
         mp_SongPos->setText(Tools::msToString(0));
     }
@@ -172,6 +176,11 @@ void PlayerWindow::changeSong(int song)
 
             mp_ProgressBar->setValue(0);
             mp_ProgressBar->setMaximum(m_Player.getCurrentSong().getLength());
+            mp_NetworkLoadBar->setValue(0);
+            mp_NetworkLoadBar->setStartPos(0);
+
+            if (m_Player.getCurrentSong().isRemote())
+                mp_NetworkLoadBar->setMaximum(mp_Socket->getTotalCurrentSongData());
 
             mp_SongList->setCurrentSong(SongList::LOCAL_SONGS, song);
 
@@ -293,6 +302,12 @@ void PlayerWindow::setSongPosition(int value)
 
         m_Player.getCurrentSong().setPosition(pos);
         mp_ProgressBar->setValue(pos);
+
+        if (m_Player.getCurrentSong().isRemote())
+        {
+            mp_NetworkLoadBar->setValue(0);
+            mp_NetworkLoadBar->setStartPos(value);
+        }
     }
 }
 
@@ -401,6 +416,9 @@ void PlayerWindow::timerEvent(QTimerEvent *event)
             mp_ProgressBar->setValue(m_Player.getCurrentSong().getPosition());
             mp_SongPos->setText(Tools::msToString(m_Player.getCurrentSong().getPosition()));
 
+            if (m_Player.getCurrentSong().isRemote())
+                mp_NetworkLoadBar->setValue(mp_Socket->getSongDataReceived());
+
             if (m_Player.getCurrentSong().isFinished())
                 changeSong(m_Player.next());
         }
@@ -435,6 +453,7 @@ void PlayerWindow::hideEvent(QHideEvent* /*event*/)
 
 void PlayerWindow::resizeEvent(QResizeEvent* event)
 {
+    mp_NetworkLoadBar->resize(event->size().width(), mp_NetworkLoadBar->height());
     mp_ProgressBar->resize(event->size().width(), mp_ProgressBar->height());
 }
 
