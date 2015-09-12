@@ -43,6 +43,7 @@ class PlayerWindow : public QWidget
         QWidget *mp_BottomPart;
 
         PlayerLabel *mp_SongTitle;
+        PlayerLabel *mp_SongArtist;
         Spectrum *mp_Spectrum;
         SongList *mp_SongList;
 

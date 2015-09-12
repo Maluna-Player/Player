@@ -20,6 +20,7 @@ class Song
 
         int m_Num;
         QString m_Title;
+        QString m_Artist;
 
     protected:
 
@@ -56,6 +57,12 @@ class Song
          * @return Titre du son (tag) si le son en possède ou le nom du fichier.
          */
         virtual const QString& getTitle() const;
+
+        /**
+         * @brief getArtist
+         * @return Artiste du son (tag) si le son en possède, sinon "Artiste inconnu".
+         */
+        virtual const QString& getArtist() const;
 
         /**
          * @brief Ouvre le fichier avec FMOD pour stream.

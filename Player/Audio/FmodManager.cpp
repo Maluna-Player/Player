@@ -320,20 +320,20 @@ void FmodManager::setMute(bool mute) const
 // ==============================
 // ==============================
 
-std::string FmodManager::getSongTitle(SoundID_t id) const
+std::string FmodManager::getSongTag(SoundID_t id, const std::string& tagName) const
 {
     FMOD_RESULT res;
     FMOD_TAG tag;
 
-    res = FMOD_Sound_GetTag(mp_Sounds.at(id), "TITLE", 0, &tag);
+    res = FMOD_Sound_GetTag(mp_Sounds.at(id), tagName.c_str(), 0, &tag);
 
     if (res == FMOD_ERR_TAGNOTFOUND)
         return "";
     else if (res != FMOD_OK)
-        throw LibException("FmodManager::getSongTitle", "FMOD_Sound_GetTag", FMOD_ErrorString(res));
+        throw LibException("FmodManager::getSongTag", "FMOD_Sound_GetTag", FMOD_ErrorString(res));
     else
     {
-        std::string title = static_cast<char*>(tag.data);
-        return title;
+        std::string tagData = static_cast<char*>(tag.data);
+        return tagData;
     }
 }

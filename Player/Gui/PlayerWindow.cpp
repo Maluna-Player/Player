@@ -33,6 +33,7 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     QGridLayout *topLayout = new QGridLayout;
 
     mp_SongTitle = new PlayerLabel(Qt::white, 20);
+    mp_SongArtist = new PlayerLabel(Qt::white, 14);
     mp_Spectrum = new Spectrum(SPECTRUM_WIDTH);
     mp_SongList = new SongList;
 
@@ -40,12 +41,14 @@ PlayerWindow::PlayerWindow(QWidget *parent)
 
     topLayout->setColumnStretch(0, 1);
     topLayout->addWidget(mp_SongTitle, 0, 0, 1, 2, Qt::AlignTop);
-    topLayout->addWidget(mp_Spectrum, 0, 1);
-    topLayout->addWidget(mp_SongList, 0, 2);
+    topLayout->addWidget(mp_SongArtist, 1, 0, 1, 2, Qt::AlignTop);
+    topLayout->addWidget(mp_Spectrum, 0, 1, 10, 1);
+    topLayout->addWidget(mp_SongList, 0, 2, 10, 1);
 
     mp_TopPart->setLayout(topLayout);
 
     mp_SongTitle->raise();
+    mp_SongArtist->raise();
 
 
     mp_ProgressBackground = new ProgressBackground;
@@ -172,6 +175,7 @@ void PlayerWindow::changeSong(int song)
             m_Player.changeSong(song);
 
             mp_SongTitle->setText(m_Player.getCurrentSong().getTitle());
+            mp_SongArtist->setText(m_Player.getCurrentSong().getArtist());
             mp_SongLength->setText(Tools::msToString(m_Player.getCurrentSong().getLength()));
 
             mp_ProgressBar->setValue(0);

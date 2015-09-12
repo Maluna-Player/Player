@@ -177,9 +177,11 @@ class FmodManager
         virtual void setMute(bool mute) const;
 
         /**
-         * @return Titre dans le tag du son, "" si pas de tag.
-        */
-        virtual std::string getSongTitle(SoundID_t id) const;
+         * @param id Identifiant du canal dont on veut le tag
+         * @param tagName Tag que l'on cherche
+         * @return Tag du son, "" si pas de tag.
+         */
+        virtual std::string getSongTag(SoundID_t id, const std::string& tagName) const;
 };
 
 #endif  // __FMODMANAGER_H__

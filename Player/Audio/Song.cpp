@@ -12,14 +12,14 @@
 
 
 Song::Song(const QString& file, int num, bool openable)
-    : m_Num(num), m_File(file), m_SoundID(0)
+    : m_Num(num), m_File(file), m_SoundID(0), m_Artist("")
 {
     if (openable)
     {
         SoundID_t id = FmodManager::getInstance()->openFromFile(m_File.toStdString());
         m_Length = FmodManager::getInstance()->getSoundLength(id);
 
-        QString title = QString::fromStdString(FmodManager::getInstance()->getSongTitle(id));
+        QString title = QString::fromStdString(FmodManager::getInstance()->getSongTag(id, "TITLE"));
 
         if (title.isEmpty())
         {
@@ -28,6 +28,10 @@ Song::Song(const QString& file, int num, bool openable)
         }
         else
             m_Title = title;
+
+        m_Artist = QString::fromStdString(FmodManager::getInstance()->getSongTag(id, "ARTIST"));
+        if (m_Artist.isEmpty())
+            m_Artist = "Artiste inconnu";
     }
     else
         m_Title = m_File;
@@ -95,6 +99,14 @@ bool Song::isRemote() const
 const QString& Song::getTitle() const
 {
     return m_Title;
+}
+
+// ==============================
+// ==============================
+
+const QString& Song::getArtist() const
+{
+    return m_Artist;
 }
 
 // ==============================
