@@ -76,6 +76,12 @@ class PlayerWindow : public QWidget
          */
         virtual void refreshSongsList();
 
+        /**
+         * @brief Modifie le volume de l'application avec celui passé en paramètre.
+         * @param volume Nouveau volume à appliquer
+         */
+        virtual void setVolume(int volume);
+
     private slots:
 
         /**

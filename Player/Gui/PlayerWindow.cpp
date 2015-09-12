@@ -262,17 +262,23 @@ void PlayerWindow::nextSong()
 // ==============================
 // ==============================
 
+void PlayerWindow::setVolume(int volume)
+{
+    m_Player.setVolume(volume);
+
+    if (!m_Player.isMuted())
+        mp_SoundVolume->setImage(volume);
+}
+
+// ==============================
+// ==============================
+
 void PlayerWindow::increaseVolume()
 {
     int previousVolume = m_Player.getVolumeState();
 
     if (previousVolume < (NB_VOLUME_STATES - 1))
-    {
-        m_Player.setVolume(previousVolume + 1);
-
-        if (!m_Player.isMuted())
-           mp_SoundVolume->setImage(previousVolume + 1);
-    }
+        setVolume(previousVolume + 1);
 }
 
 // ==============================
@@ -283,12 +289,7 @@ void PlayerWindow::decreaseVolume()
     int previousVolume = m_Player.getVolumeState();
 
     if (previousVolume > 0)
-    {
-        m_Player.setVolume(previousVolume - 1);
-
-        if (!m_Player.isMuted())
-            mp_SoundVolume->setImage(previousVolume - 1);
-    }
+        setVolume(previousVolume - 1);
 }
 
 // ==============================
