@@ -12,7 +12,7 @@
 
 
 SongListItem::SongListItem(int num, const QString &title, int parent)
-    : m_Num(num), m_Parent(parent), m_Title(title), m_File(false), m_Length(-1)
+    : m_Num(num), m_Parent(parent), m_Title(title), m_Artist(""), m_File(false), m_Length(-1)
 {
 
 }
@@ -20,8 +20,8 @@ SongListItem::SongListItem(int num, const QString &title, int parent)
 // ==============================
 // ==============================
 
-SongListItem::SongListItem(int num, int length, const QString &title, int parent)
-    : m_Num(num), m_Parent(parent), m_Title(title), m_File(true), m_Length(length)
+SongListItem::SongListItem(int num, int length, const QString& title, const QString& artist, int parent)
+    : m_Num(num), m_Parent(parent), m_Title(title), m_Artist(artist), m_File(true), m_Length(length)
 {
 
 }
@@ -52,6 +52,7 @@ QByteArray SongListItem::toPacket() const
     {
         out << static_cast<quint8>(1);
         out << static_cast<quint32>(m_Length);  // Durée de la musique
+        out << m_Artist;                        // Artiste de la musique
     }
 
     return packet;

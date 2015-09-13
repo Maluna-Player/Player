@@ -11,11 +11,12 @@
 #include "PlayerSocket.h"
 
 
-RemoteSong::RemoteSong(const QString& file, int num, int remoteNum, SoundPos_t length)
+RemoteSong::RemoteSong(const QString& file, int num, int remoteNum, SoundPos_t length, const QString& artist)
     : Song(file, num, false), m_RemoteNum(remoteNum)
 {
     m_Length = length;
     m_File = QString::number(num);
+    m_Artist = artist;
 }
 
 // ==============================

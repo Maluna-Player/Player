@@ -22,6 +22,7 @@ class SongListItem : public Sendable
         int m_Num;
         int m_Parent;
         QString m_Title;
+        QString m_Artist;
 
         bool m_File;
         int m_Length;
@@ -36,7 +37,7 @@ class SongListItem : public Sendable
         /**
          * @brief Constructeur de musiques de l'arborescence.
          */
-        SongListItem(int num, int length, const QString& title, int parent = 0);
+        SongListItem(int num, int length, const QString& title, const QString& artist, int parent = 0);
 
         virtual ~SongListItem();
 

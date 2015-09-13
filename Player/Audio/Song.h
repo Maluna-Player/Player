@@ -20,7 +20,6 @@ class Song
 
         int m_Num;
         QString m_Title;
-        QString m_Artist;
 
     protected:
 
@@ -29,6 +28,8 @@ class Song
         SoundPos_t m_Length;
 
         SoundID_t m_SoundID;
+
+        QString m_Artist;
 
     public:
 

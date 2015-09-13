@@ -223,7 +223,7 @@ void PlayerSocket::sendSongs(QTreeWidgetItem *item, int parent)
     {
         Song *song = reinterpret_cast<Song*>(item->data(0, Qt::UserRole).value<quintptr>());
         if (song)
-            songListItem = new SongListItem(num, song->getLength(), item->text(0), parent);
+            songListItem = new SongListItem(num, song->getLength(), item->text(0), song->getArtist(), parent);
     }
 
     if (songListItem)
@@ -281,7 +281,6 @@ QList<QTreeWidgetItem*> PlayerSocket::readRemoteSongList()
         quint16 parent;
         QString fileName;
         quint8 itemType;
-        quint32 songLength;
 
         in >> num >> parent >> fileName >> itemType;
 
@@ -292,11 +291,15 @@ QList<QTreeWidgetItem*> PlayerSocket::readRemoteSongList()
             item->setData(0, Qt::UserRole, num);
         else
         {
+            quint32 songLength;
+            QString artist;
+
             in >> songLength;
+            in >> artist;
 
             int songNum = m_NbReceivedSongs;
 
-            RemoteSong *song = new RemoteSong(fileName, songNum, songNum, songLength);
+            RemoteSong *song = new RemoteSong(fileName, songNum, songNum, songLength, artist);
             item->setData(0, Qt::UserRole, reinterpret_cast<quintptr>(song));
 
             m_NbReceivedSongs++;
