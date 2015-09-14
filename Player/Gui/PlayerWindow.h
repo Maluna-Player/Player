@@ -44,6 +44,8 @@ class PlayerWindow : public QWidget
 
         PlayerLabel *mp_SongTitle;
         PlayerLabel *mp_SongArtist;
+        QLabel *mp_SongPicture;
+
         Spectrum *mp_Spectrum;
         SongList *mp_SongList;
 

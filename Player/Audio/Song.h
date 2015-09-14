@@ -66,6 +66,12 @@ class Song
         virtual const QString& getArtist() const;
 
         /**
+         * @brief Construit l'image de la pochette du son depuis le fichier.
+         * @return Image associée au fichier, image vide sinon
+         */
+        virtual QPixmap buildPicture() const;
+
+        /**
          * @brief Ouvre le fichier avec FMOD pour stream.
          */
         virtual void open();

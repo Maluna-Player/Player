@@ -112,6 +112,22 @@ const QString& Song::getArtist() const
 // ==============================
 // ==============================
 
+QPixmap Song::buildPicture() const
+{
+    unsigned int pictureDataLength(0);
+    char *pictureData = FmodManager::getInstance()->getSongPictureData(m_SoundID, &pictureDataLength);
+
+    QPixmap pixmap;
+
+    if (pictureData)
+        pixmap.loadFromData(reinterpret_cast<uchar*>(pictureData), pictureDataLength);
+
+    return pixmap;
+}
+
+// ==============================
+// ==============================
+
 void Song::open()
 {
     m_SoundID = FmodManager::getInstance()->openFromFile(m_File.toStdString());

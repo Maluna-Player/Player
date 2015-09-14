@@ -18,6 +18,7 @@
 #include <string>
 
 #include "Constants.h"
+#include <QPixmap>
 
 #define VOLUME_MIN    0.0
 #define VOLUME_MAX    1.0
@@ -182,6 +183,14 @@ class FmodManager
          * @return Tag du son, "" si pas de tag.
          */
         virtual std::string getSongTag(SoundID_t id, const std::string& tagName) const;
+
+        /**
+         * @brief Récupère les données de la pochette du mp3 dans les tags.
+         * @param id Identifiant du canal dont on veut le tag
+         * @param dataLength Pointeur vers la longueur du tag
+         * @return Données de l'image
+         */
+        virtual char* getSongPictureData(SoundID_t id, unsigned int *dataLength = 0) const;
 };
 
 #endif  // __FMODMANAGER_H__

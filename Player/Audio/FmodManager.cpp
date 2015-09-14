@@ -337,3 +337,33 @@ std::string FmodManager::getSongTag(SoundID_t id, const std::string& tagName) co
         return tagData;
     }
 }
+
+// ==============================
+// ==============================
+
+char* FmodManager::getSongPictureData(SoundID_t id, unsigned int *dataLength) const
+{
+    FMOD_RESULT res;
+    FMOD_TAG tag;
+
+    res = FMOD_Sound_GetTag(mp_Sounds.at(id), "APIC", 0, &tag);
+
+    if (res == FMOD_ERR_TAGNOTFOUND)
+        return 0;
+    else if (res != FMOD_OK)
+        throw LibException("FmodManager::getSongPictureData", "FMOD_Sound_GetTag", FMOD_ErrorString(res));
+    else
+    {
+        char *tagData = static_cast<char*>(tag.data);
+
+        while(*(++tagData));        // Skip MIME msg
+        ++tagData;                  // Skip content type
+        while(*(++tagData));        // Skip description
+        tagData++;                  // tagData is now pointing to the first byte of jpeg img
+
+        if (dataLength)
+            *dataLength = tag.datalen - (tagData - static_cast<char*>(tag.data));
+
+        return tagData;
+    }
+}
