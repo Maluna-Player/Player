@@ -31,7 +31,7 @@ class MenuBar : public QMenuBar
 
         /**
          * @brief getOpenAction
-         * @return Retourne le bouton d'ouverture de fichier.
+         * @return Retourne le bouton d'ouverture de dossier.
          */
         virtual QAction* getOpenAction() const;
 

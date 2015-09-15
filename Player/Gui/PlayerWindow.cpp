@@ -17,6 +17,7 @@
 #include "MenuBar.h"
 #include <QToolBar>
 #include <QApplication>
+#include <QDesktopServices>
 
 
 PlayerWindow::PlayerWindow(QWidget *parent)
@@ -41,6 +42,7 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     toolbar->addAction(static_cast<MenuBar*>(menuBar())->getQuitAction());
     toolbar->addAction(static_cast<MenuBar*>(menuBar())->getAboutAction());
 
+    connect(static_cast<MenuBar*>(menuBar())->getOpenAction(), SIGNAL(triggered()), this, SLOT(openSongsDir()));
     connect(static_cast<MenuBar*>(menuBar())->getAboutAction(), SIGNAL(triggered()), this, SLOT(openInformation()));
     connect(static_cast<MenuBar*>(menuBar())->getQuitAction(), SIGNAL(triggered()), qApp, SLOT(quit()));
 
@@ -348,6 +350,14 @@ void PlayerWindow::setMute()
         mp_SoundVolume->setImage(MUTE_STATE);
     else
         mp_SoundVolume->setImage(m_Player.getVolumeState());
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::openSongsDir() const
+{
+    QDesktopServices::openUrl(QUrl::fromLocalFile(SONGS_SUBDIR));
 }
 
 // ==============================

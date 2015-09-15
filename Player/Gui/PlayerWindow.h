@@ -140,6 +140,11 @@ class PlayerWindow : public QMainWindow
         virtual void setMute();
 
         /**
+         * @brief Ouvre le dossier des musiques lues par l'application.
+         */
+        virtual void openSongsDir() const;
+
+        /**
          * @brief Ouvre la fenêtre contenant les informations sur l'application.
          */
         virtual void openInformation();
