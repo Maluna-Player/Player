@@ -35,7 +35,8 @@ SOURCES += main.cpp\
     Network/Commands/CommandReply.cpp \
     Network/Commands/CommandRequest.cpp \
     Gui/ConnectionBox.cpp \
-    Gui/NetworkLoadBar.cpp
+    Gui/NetworkLoadBar.cpp \
+    Gui/MenuBar.cpp
 
 HEADERS  += Constants.h \
     Tools.h \
@@ -65,7 +66,8 @@ HEADERS  += Constants.h \
     Network/Commands/CommandReply.h \
     Network/Commands/CommandRequest.h \
     Gui/ConnectionBox.h \
-    Gui/NetworkLoadBar.h
+    Gui/NetworkLoadBar.h \
+    Gui/MenuBar.h
 
 RC_FILE = Player.rc
 

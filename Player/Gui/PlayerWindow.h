@@ -11,7 +11,7 @@
 #ifndef __PLAYERWINDOW_H__
 #define __PLAYERWINDOW_H__
 
-#include <QWidget>
+#include <QMainWindow>
 #include "../Audio/Player.h"
 #include "Spectrum.h"
 #include "PlayerLabel.h"
@@ -29,7 +29,7 @@
 #include "./Network/PlayerSocket.h"
 #include "ConnectionBox.h"
 
-class PlayerWindow : public QWidget
+class PlayerWindow : public QMainWindow
 {
     Q_OBJECT
 

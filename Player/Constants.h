@@ -23,6 +23,7 @@
 #define FONT_FILE           "../resources/lsans.ttf"
 #define IMAGES_SUBDIR       QString("../resources/Images/")
 #define BUTTONS_SUBDIR      IMAGES_SUBDIR + "Buttons/"
+#define MENU_SUBDIR         IMAGES_SUBDIR + "Menu/"
 
 
 /*******************************

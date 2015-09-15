@@ -63,7 +63,6 @@ void Spectrum::paintEvent(QPaintEvent *event)
     imagePainter.initFrom(this);
     imagePainter.setRenderHint(QPainter::Antialiasing, true);
 
-
     draw(&imagePainter);
     imagePainter.end();
 

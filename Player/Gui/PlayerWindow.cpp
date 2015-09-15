@@ -14,17 +14,35 @@
 
 #include <QGridLayout>
 #include <QPalette>
+#include "MenuBar.h"
+#include <QToolBar>
+#include <QApplication>
 
 
 PlayerWindow::PlayerWindow(QWidget *parent)
-    : QWidget(parent), m_TimerId(0), mp_Socket(0)
+    : QMainWindow(parent), m_TimerId(0), mp_Socket(0)
 {
     setWindowTitle(tr(WINDOW_TITLE));
     resize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
+    QWidget *centralArea = new QWidget;
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setSpacing(0);
     layout->setContentsMargins(0, 0, 0, 0);
+
+    /** Menu **/
+
+    setMenuBar(new MenuBar());
+
+    QToolBar *toolbar = addToolBar("toolbar");
+    toolbar->setStyleSheet("background-color: grey;");
+
+    toolbar->addAction(static_cast<MenuBar*>(menuBar())->getOpenAction());
+    toolbar->addAction(static_cast<MenuBar*>(menuBar())->getQuitAction());
+    toolbar->addAction(static_cast<MenuBar*>(menuBar())->getAboutAction());
+
+    connect(static_cast<MenuBar*>(menuBar())->getAboutAction(), SIGNAL(triggered()), this, SLOT(openInformation()));
+    connect(static_cast<MenuBar*>(menuBar())->getQuitAction(), SIGNAL(triggered()), qApp, SLOT(quit()));
 
 
     /** Partie du haut **/
@@ -90,10 +108,6 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     mp_SoundVolume->setImage(m_Player.getVolumeState());
     connect(mp_SoundVolume, SIGNAL(stateChanged()), this, SLOT(setMute()));
 
-    ClickableLabel *informationButton = new ClickableLabel;
-    informationButton->setPixmap(Tools::loadImage(IMAGES_SUBDIR + "info.png"));
-    connect(informationButton, SIGNAL(clicked()), this, SLOT(openInformation()));
-
     mp_ConnectionBox = new ConnectionBox;
     connect(mp_ConnectionBox, SIGNAL(listened()), this, SLOT(listen()));
     connect(mp_ConnectionBox, SIGNAL(connectedToHost(QString)), this, SLOT(connectToHost(QString)));
@@ -103,7 +117,7 @@ PlayerWindow::PlayerWindow(QWidget *parent)
 
     bottomLayout->setColumnStretch(3, 1);
     bottomLayout->addWidget(mp_SongPos, 0, 0);
-    bottomLayout->addWidget(mp_SongLength, 0, 10);
+    bottomLayout->addWidget(mp_SongLength, 0, 9, Qt::AlignRight);
 
     bottomLayout->addWidget(mp_Buttons.at(PLAY_BUTTON), 0, 5, 2, 1);
     bottomLayout->addWidget(mp_Buttons.at(PAUSE_BUTTON), 0, 5, 2, 1);
@@ -114,9 +128,7 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     bottomLayout->addWidget(mp_Buttons.at(VOLUME_LESS_BUTTON), 2, 3, 2, 1);
 
     bottomLayout->addWidget(mp_SoundVolume, 1, 1, 2, 2);
-    bottomLayout->addWidget(informationButton, 2, 10, 2, 1);
-    bottomLayout->addWidget(mp_ConnectionBox, 3, 7, 1, 3);
-
+    bottomLayout->addWidget(mp_ConnectionBox, 3, 8, 1, 2);
 
     bottomLayout->setColumnStretch(7, 1);
     mp_BottomPart->setLayout(bottomLayout);
@@ -125,7 +137,9 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     layout->addWidget(mp_TopPart);
     layout->addWidget(mp_ProgressBackground);
     layout->addWidget(mp_BottomPart);
-    setLayout(layout);
+    centralArea->setLayout(layout);
+
+    setCentralWidget(centralArea);
 
 
     /** Démarrage du player **/
