@@ -18,7 +18,6 @@
 #include <string>
 
 #include "Constants.h"
-#include <QPixmap>
 
 #define VOLUME_MIN    0.0
 #define VOLUME_MAX    1.0

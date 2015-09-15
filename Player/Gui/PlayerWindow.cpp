@@ -43,8 +43,8 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     topLayout->setColumnStretch(0, 1);
     topLayout->addWidget(mp_SongTitle, 0, 0, 1, 2, Qt::AlignTop);
     topLayout->addWidget(mp_SongArtist, 1, 0, 1, 2, Qt::AlignTop);
-    topLayout->addWidget(mp_SongPicture, 0, 1, 10, 1);
-    //topLayout->addWidget(mp_Spectrum, 0, 1, 10, 1);
+    topLayout->addWidget(mp_SongPicture, 0, 1, 10, 1, Qt::AlignHCenter);
+    topLayout->addWidget(mp_Spectrum, 0, 1, 10, 1);
     topLayout->addWidget(mp_SongList, 0, 2, 10, 1);
 
     mp_TopPart->setLayout(topLayout);
@@ -180,8 +180,8 @@ void PlayerWindow::changeSong(int song)
             mp_SongArtist->setText(m_Player.getCurrentSong().getArtist());
             mp_SongPicture->setPixmap(m_Player.getCurrentSong().buildPicture());
 
-            if (!mp_SongPicture->pixmap()->isNull() && mp_SongPicture->pixmap()->width() > 300)
-                mp_SongPicture->setPixmap(mp_SongPicture->pixmap()->scaledToWidth(300));
+            if (!mp_SongPicture->pixmap()->isNull() && mp_SongPicture->pixmap()->width() > 400)
+                mp_SongPicture->setPixmap(mp_SongPicture->pixmap()->scaledToWidth(400));
 
             mp_SongLength->setText(Tools::msToString(m_Player.getCurrentSong().getLength()));
 

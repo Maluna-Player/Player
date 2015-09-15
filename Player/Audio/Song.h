@@ -13,6 +13,7 @@
 
 #include <QString>
 #include "FmodManager.h"
+#include <QPixmap>
 
 class Song
 {
