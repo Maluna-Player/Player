@@ -271,8 +271,11 @@ SongTreeRoot* Player::loadSongs(const QString& dirPath, SongTreeRoot *parentDir)
 
         if (files.at(i).isDir())
         {
-            SongListItem *item = new SongListItem(SongListItem::DIRECTORY, parentDir, files.at(i).completeBaseName());
+            SongListItem *item = new SongListItem(SongListItem::DIRECTORY, 0, files.at(i).completeBaseName());
             loadSongs(filePath, item);
+
+            if (item->childCount() > 0)
+                item->setParent(parentDir);
         }
         else
             addNewSong(filePath, parentDir);
