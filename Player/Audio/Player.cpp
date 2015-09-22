@@ -18,7 +18,7 @@
 
 
 Player::Player()
-    : mp_SongTree(0), m_CurrentSong(0), m_Playlist(true), m_Loop(false),
+    : m_CurrentSong(0), m_Playlist(true), m_Loop(false),
       m_Pause(false), m_Stop(true), m_Mute(false),
       m_VolumeState(NB_VOLUME_STATES - 1)
 {
@@ -34,9 +34,6 @@ Player::~Player()
         delete mp_Songs[i];
 
     mp_Songs.clear();
-
-    if (mp_SongTree)
-        delete mp_SongTree;
 }
 
 // ==============================
@@ -53,17 +50,9 @@ Song& Player::getCurrentSong()
 // ==============================
 // ==============================
 
-int Player::songCount() const
+int Player::songsCount() const
 {
     return mp_Songs.size();
-}
-
-// ==============================
-// ==============================
-
-QList<QTreeWidgetItem*> Player::getSongDetails() const
-{
-    return mp_SongTree->takeChildren();
 }
 
 // ==============================
@@ -234,20 +223,15 @@ void Player::clearSongs()
         delete mp_Songs[i];
 
     mp_Songs.clear();
-
-    if (mp_SongTree)
-        delete mp_SongTree;
 }
 
 // ==============================
 // ==============================
 
-void Player::addNewSong(const QString& filePath, QTreeWidgetItem *parentDir)
+void Player::addNewSong(const QString& filePath, SongListItem *parentDir)
 {
-    QTreeWidgetItem *item = new QTreeWidgetItem;
-
     QFileInfo fileInfo(filePath);
-    item->setText(0, fileInfo.completeBaseName());
+    SongListItem *item = new SongListItem(SongListItem::SONG, parentDir, fileInfo.completeBaseName());
 
     try
     {
@@ -255,11 +239,6 @@ void Player::addNewSong(const QString& filePath, QTreeWidgetItem *parentDir)
 
         mp_Songs.append(song);
         item->setData(0, Qt::UserRole, reinterpret_cast<quintptr>(song));
-
-        if (parentDir)
-            parentDir->addChild(item);
-        else
-            mp_SongTree->addChild(item);
     }
     catch (FmodManager::StreamError_t error)
     {
@@ -275,10 +254,10 @@ void Player::addNewSong(const QString& filePath, QTreeWidgetItem *parentDir)
 // ==============================
 // ==============================
 
-void Player::loadSongs(const QString& dirPath, QTreeWidgetItem *parentDir)
+SongTreeRoot* Player::loadSongs(const QString& dirPath, SongTreeRoot *parentDir)
 {
     if (!parentDir)
-        parentDir = new QTreeWidgetItem;
+        parentDir = new SongTreeRoot(SongListItem::ROOT);
 
     QDir dir(dirPath);
     if (!dir.exists())
@@ -292,45 +271,38 @@ void Player::loadSongs(const QString& dirPath, QTreeWidgetItem *parentDir)
 
         if (files.at(i).isDir())
         {
-            QTreeWidgetItem *item = new QTreeWidgetItem;
-            item->setText(0, files.at(i).completeBaseName());
-            parentDir->addChild(item);
-
+            SongListItem *item = new SongListItem(SongListItem::DIRECTORY, parentDir, files.at(i).completeBaseName());
             loadSongs(filePath, item);
         }
         else
             addNewSong(filePath, parentDir);
     }
 
-    mp_SongTree = parentDir;
+    return parentDir;
 }
 
 // ==============================
 // ==============================
 
-void Player::addSongs(const QList<QTreeWidgetItem*>& songs)
+void Player::addSongs(SongTreeRoot *songs)
 {
     QTreeWidget tree;
-    tree.addTopLevelItems(songs);
+    tree.addTopLevelItem(songs);
 
-    QTreeWidgetItemIterator it(&tree);
+    QTreeWidgetItemIterator it(&tree, QTreeWidgetItemIterator::Selectable);
     while (*it)
     {
-        if ((*it)->childCount() <= 0)
+        Song *song = reinterpret_cast<Song*>((*it)->data(0, Qt::UserRole).value<quintptr>());
+        if (song)
         {
-            Song *song = reinterpret_cast<Song*>((*it)->data(0, Qt::UserRole).value<quintptr>());
-            if (song)
-            {
-                song->setNum(mp_Songs.size());
-                mp_Songs.append(song);
-            }
+            song->setNum(mp_Songs.size());
+            mp_Songs.append(song);
         }
 
         ++it;
     }
 
-    while (tree.topLevelItemCount() > 0)
-        tree.takeTopLevelItem(0);
+    tree.takeTopLevelItem(0);
 }
 
 // ==============================

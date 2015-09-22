@@ -16,7 +16,7 @@
 #include <QTcpSocket>
 #include <QHostAddress>
 #include <QThread>
-#include <QTreeWidgetItem>
+#include "../Gui/SongListItem.h"
 #include "RemoteSong.h"
 #include "PlayerMessage.h"
 #include "Commands/Command.h"
@@ -65,20 +65,19 @@ class PlayerSocket : public QObject
          * @param parent Racine de l'arborescence dans laquelle chercher
          * @return Item correspondant au numéro indiqué
          */
-        virtual QTreeWidgetItem* getItem(int num, QTreeWidgetItem *parent) const;
+        virtual SongListItem* getItem(int num, SongTreeRoot *parent) const;
 
         /**
          * @brief Envoie la liste des éléments récursivement à partir de item.
          * @param item Element racine à partir duquel envoyer la liste
-         * @param parent Parent de item dans l'arborescence
          */
-        virtual void sendSongs(QTreeWidgetItem *item, int parent);
+        virtual void sendSongs(SongTreeRoot *item);
 
         /**
          * @brief Lit les données des musiques distantes reçues sur le socket.
          * @return Liste des musiques reçues
          */
-        virtual QList<QTreeWidgetItem*> readRemoteSongList();
+        virtual SongTreeRoot* readRemoteSongList();
 
         /**
          * @brief Construit l'objet Command à partir du message passé en paramètre.
@@ -191,11 +190,11 @@ class PlayerSocket : public QObject
 
         /**
          * @brief Envoie au client la liste des musiques enregistrées et reçoit ses musiques.
-         * @param songs Arborescence des musiques
+         * @param songs Arborescence des musiques à envoyer
          * @param nbSons Nombre de musiques à envoyer
          * @return Arborescence des musiques de l'autre client
          */
-        virtual QList<QTreeWidgetItem*> exchangeSongList(const QList<QTreeWidgetItem*>& songs, int nbSongs);
+        virtual SongTreeRoot* exchangeSongList(SongTreeRoot *songs, int songsNb);
 
         /**
          * @brief Vérifie s'il existe une prochaine requête client et signale sa réception.

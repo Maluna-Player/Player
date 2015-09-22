@@ -54,7 +54,7 @@ void Spectrum::draw(QPainter *painter) const
 // ==============================
 // ==============================
 
-void Spectrum::paintEvent(QPaintEvent *event)
+void Spectrum::paintEvent(QPaintEvent * /*event*/)
 {
     QImage image(m_Width, height(), QImage::Format_ARGB32_Premultiplied);
     image.fill(Qt::transparent);

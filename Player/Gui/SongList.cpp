@@ -33,11 +33,8 @@ SongList::SongList(QWidget *parent) : QTreeWidget(parent), m_CurrentSong(-1)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setFixedWidth(260);
 
-    QTreeWidgetItem *localSongsItem = new QTreeWidgetItem;
-    localSongsItem->setText(0, "Mes musiques");
-
-    QTreeWidgetItem *remoteSongsItem = new QTreeWidgetItem;
-    remoteSongsItem->setText(0, "Musiques distantes");
+    SongListItem *localSongsItem = new SongListItem(SongListItem::ROOT, 0, "Mes musiques");
+    SongListItem *remoteSongsItem = new SongListItem(SongListItem::ROOT, 0, "Musiques distantes");
 
     addTopLevelItem(localSongsItem);
     addTopLevelItem(remoteSongsItem);
@@ -54,47 +51,34 @@ SongList::~SongList()
 // ==============================
 // ==============================
 
-bool SongList::isSong(QTreeWidgetItem *item) const
-{
-    return (item->childCount() <= 0);
-}
-
-// ==============================
-// ==============================
-
 void SongList::clearList(SongList_t list)
 {
     QTreeWidgetItem *root = topLevelItem(list);
-
     root->takeChildren();
 }
 
 // ==============================
 // ==============================
 
-void SongList::setCurrentSong(SongList_t list, int songNum)
+void SongList::setCurrentSong(int songNum)
 {
-    QTreeWidgetItem *root = topLevelItem(list);
-    QTreeWidgetItemIterator it(root);
+    QTreeWidgetItemIterator it(this, QTreeWidgetItemIterator::Selectable);
 
     while (*it)
     {
-        if (isSong(*it))
+        Song *song = reinterpret_cast<Song*>((*it)->data(0, Qt::UserRole).value<quintptr>());
+        if (song)
         {
-            Song *song = reinterpret_cast<Song*>((*it)->data(0, Qt::UserRole).value<quintptr>());
-            if (song)
+            if (song->getNum() == m_CurrentSong)
             {
-                if (song->getNum() == m_CurrentSong)
-                {
-                    (*it)->setTextColor(0, QColor(212, 255, 250));
-                    (*it)->setTextColor(1, QColor(212, 255, 250));
-                }
+                (*it)->setTextColor(0, QColor(212, 255, 250));
+                (*it)->setTextColor(1, QColor(212, 255, 250));
+            }
 
-                if (song->getNum() == songNum)
-                {
-                    (*it)->setTextColor(0, QColor(21, 191, 221));
-                    (*it)->setTextColor(1, QColor(21, 191, 221));
-                }
+            if (song->getNum() == songNum)
+            {
+                (*it)->setTextColor(0, QColor(21, 191, 221));
+                (*it)->setTextColor(1, QColor(21, 191, 221));
             }
         }
 
@@ -111,7 +95,7 @@ void SongList::mousePressEvent(QMouseEvent *event)
 {
     QTreeWidgetItem *selectedItem = itemAt(event->x(), event->y());
 
-    if (selectedItem && isSong(selectedItem))
+    if (selectedItem && static_cast<SongListItem*>(selectedItem)->isSong())
     {
         Song *song = reinterpret_cast<Song*>(selectedItem->data(0, Qt::UserRole).value<quintptr>());
         if (song)
@@ -124,41 +108,42 @@ void SongList::mousePressEvent(QMouseEvent *event)
 // ==============================
 // ==============================
 
-const QList<QTreeWidgetItem*> SongList::getSongHierarchy(SongList_t list) const
+SongTreeRoot* SongList::getSongHierarchy(SongList_t list) const
 {
-    QTreeWidgetItem *root = topLevelItem(list);
-
-    QList<QTreeWidgetItem*> children;
-
-    for (int i = 0; i < root->childCount(); i++)
-        children.append(root->child(i));
-
-    return children;
+    return static_cast<SongListItem*>(topLevelItem(list));
 }
 
 // ==============================
 // ==============================
 
-void SongList::add(SongList_t list, const QList<QTreeWidgetItem*>& songs)
+void SongList::add(SongList_t list, SongTreeRoot *songs)
 {
     QTreeWidgetItem *root = topLevelItem(list);
-    root->addChildren(songs);
-
-    QTreeWidgetItemIterator it(root);
-    while (*it)
+    if (root)
     {
-        if (isSong(*it))
+        root->addChildren(songs->takeChildren());
+
+        QTreeWidgetItemIterator it(root);
+        int nodesCount = 1;
+
+        for (int i = 0; i < nodesCount; i++)
         {
-            Song *song = reinterpret_cast<Song*>((*it)->data(0, Qt::UserRole).value<quintptr>());
-            if (song)
+            if (static_cast<SongListItem*>(*it)->isSong())
             {
-                (*it)->setText(0, song->getTitle());
-                (*it)->setText(1, Tools::msToString(song->getLength()));
+                Song *song = reinterpret_cast<Song*>((*it)->data(0, Qt::UserRole).value<quintptr>());
+                if (song)
+                {
+                    (*it)->setText(0, song->getTitle());
+                    (*it)->setText(1, Tools::msToString(song->getLength()));
+                }
             }
+
+            nodesCount += (*it)->childCount();
+            ++it;
         }
 
-        ++it;
+        root->setExpanded(true);
     }
 
-    root->setExpanded(true);
+    delete songs;
 }

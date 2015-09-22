@@ -13,7 +13,7 @@
 #define __PLAYER_H__
 
 #include <QVector>
-#include <QTreeWidgetItem>
+#include "../Gui/SongListItem.h"
 #include <QFile>
 #include "Song.h"
 #include "../Network/PlayerSocket.h"
@@ -31,7 +31,6 @@ class Player : public QObject
 
     private:
 
-        QTreeWidgetItem *mp_SongTree;
         QVector<Song*> mp_Songs;
         int m_CurrentSong;
 
@@ -68,13 +67,7 @@ class Player : public QObject
          * @brief countSongs
          * @return Nombre de musiques enregistrées.
          */
-        virtual int songCount() const;
-
-        /**
-         * @brief Retourne l'arborescence de l'ensemble des musiques enregistrées
-         * @return Liste des musiques du dossier.
-         */
-        virtual QList<QTreeWidgetItem*> getSongDetails() const;
+        virtual int songsCount() const;
 
         /**
          * @brief Active la lecture.
@@ -176,21 +169,22 @@ class Player : public QObject
          * @param filePath Chemin du fichier à ajouter
          * @param parentDir Parent dans l'arborescence
          */
-        virtual void addNewSong(const QString& filePath, QTreeWidgetItem *parentDir = 0);
+        virtual void addNewSong(const QString& filePath, SongListItem *parentDir = 0);
 
         /**
          * @brief Remplit le vecteur Musiques à partir des fichiers
          *        contenus dans le répertoire donné en paramètre.
          * @param dirPath Répertoire à parcourir
          * @param parentDir Parent dans l'arborescence
+         * @return Arborescence des fichiers lus
          */
-        virtual void loadSongs(const QString& dirPath, QTreeWidgetItem *parentDir = 0);
+        virtual SongTreeRoot* loadSongs(const QString& dirPath, SongTreeRoot *parentDir = 0);
 
         /**
          * @brief Ajoute les sons de l'arborescence passée en paramètre à la liste du player.
          * @param songs Arborescence de musiques à ajouter
          */
-        virtual void addSongs(const QList<QTreeWidgetItem*>& songs);
+        virtual void addSongs(SongTreeRoot *songs);
 
         /**
          * @brief Supprime les musiques distantes de la liste.

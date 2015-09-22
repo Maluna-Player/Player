@@ -10,7 +10,6 @@
 #include "PlayerSocket.h"
 #include "../Exceptions/LibException.h"
 #include "../Exceptions/ArrayAccessException.h"
-#include "SongListItem.h"
 
 
 PlayerSocket* PlayerSocket::mp_Instance = 0;
@@ -211,47 +210,31 @@ void PlayerSocket::error()
 // ==============================
 // ==============================
 
-void PlayerSocket::sendSongs(QTreeWidgetItem *item, int parent)
+void PlayerSocket::sendSongs(SongTreeRoot *item)
 {
-    int num = m_NbSentListItems + 1;
-
-    SongListItem *songListItem = 0;
-
-    if (item->childCount() > 0)
-        songListItem = new SongListItem(num, item->text(0), parent);
-    else
-    {
-        Song *song = reinterpret_cast<Song*>(item->data(0, Qt::UserRole).value<quintptr>());
-        if (song)
-            songListItem = new SongListItem(num, song->getLength(), item->text(0), song->getArtist(), parent);
-    }
-
-    if (songListItem)
-    {
-        mp_SendMessage->add(songListItem);
-        delete songListItem;
-    }
-
-    m_NbSentListItems++;
+    if (!item->isRoot())
+        mp_SendMessage->add(item);
 
     for (int i = 0; i < item->childCount(); i++)
-        sendSongs(item->child(i), num);
+        sendSongs(static_cast<SongListItem*>(item->child(i)));
 }
 
 // ==============================
 // ==============================
 
-QTreeWidgetItem* PlayerSocket::getItem(int num, QTreeWidgetItem *parent) const
+SongListItem* PlayerSocket::getItem(int num, SongTreeRoot *parent) const
 {
     for (int i = 0; i < parent->childCount(); i++)
     {
+        SongListItem *child = static_cast<SongListItem*>(parent->child(i));
+
         bool isInt;
-        int itemNum = parent->child(i)->data(0, Qt::UserRole).toInt(&isInt);
+        int itemNum = child->data(0, Qt::UserRole).toInt(&isInt);
 
         if (isInt && itemNum == num)
-            return parent->child(i);
+            return child;
 
-        QTreeWidgetItem *item = getItem(num, parent->child(i));
+        SongListItem *item = getItem(num, child);
         if (item)
             return item;
     }
@@ -262,9 +245,9 @@ QTreeWidgetItem* PlayerSocket::getItem(int num, QTreeWidgetItem *parent) const
 // ==============================
 // ==============================
 
-QList<QTreeWidgetItem*> PlayerSocket::readRemoteSongList()
+SongTreeRoot* PlayerSocket::readRemoteSongList()
 {
-    QTreeWidgetItem *receivedSongs = new QTreeWidgetItem;
+    SongListItem *receivedSongs = new SongListItem(SongListItem::ROOT);
     QByteArray message = mp_ReceiveMessage->waitNextMessage();
 
     QDataStream in(&message, QIODevice::ReadOnly);
@@ -278,16 +261,16 @@ QList<QTreeWidgetItem*> PlayerSocket::readRemoteSongList()
         in.device()->seek(0);
 
         quint16 num;
-        quint16 parent;
+        quint16 parentNum;
         QString fileName;
         quint8 itemType;
 
-        in >> num >> parent >> fileName >> itemType;
+        in >> num >> parentNum >> fileName >> itemType;
 
-        QTreeWidgetItem *item = new QTreeWidgetItem;
-        item->setText(0, fileName);
+        SongListItem::ElementType_t type = (itemType == 0) ? SongListItem::DIRECTORY : SongListItem::SONG;
+        SongListItem *item = new SongListItem(type, getItem(parentNum, receivedSongs), fileName);
 
-        if (itemType == 0)
+        if (!item->isSong())
             item->setData(0, Qt::UserRole, num);
         else
         {
@@ -305,36 +288,29 @@ QList<QTreeWidgetItem*> PlayerSocket::readRemoteSongList()
             m_NbReceivedSongs++;
         }
 
-        if (!parent)
+        if (!item->parent())
             receivedSongs->addChild(item);
-        else
-            getItem(parent, receivedSongs)->addChild(item);
     }
 
-    QList<QTreeWidgetItem*> children = receivedSongs->takeChildren();
-    delete receivedSongs;
-
-    return children;
+    return receivedSongs;
 }
 
 // ==============================
 // ==============================
 
-QList<QTreeWidgetItem*> PlayerSocket::exchangeSongList(const QList<QTreeWidgetItem*>& songs, int nbSongs)
+SongTreeRoot* PlayerSocket::exchangeSongList(SongTreeRoot *songs, int songsNb)
 {
     QByteArray packet;
     QDataStream out(&packet, QIODevice::WriteOnly);
 
     // Envoi du nombre de musiques
-    out << static_cast<quint8>(nbSongs);
+    out << static_cast<quint8>(songsNb);
 
     mp_SendMessage->add(packet);
 
-    for (int i = 0; i < songs.size(); i++)
-        sendSongs(songs.at(i), 0);
+    sendSongs(songs);
 
-
-    QList<QTreeWidgetItem*> receivedSongs = readRemoteSongList();
+    SongTreeRoot *receivedSongs = readRemoteSongList();
     m_Connected = true;
 
     return receivedSongs;
@@ -478,6 +454,7 @@ CommandReply* PlayerSocket::getCommandReply()
         return static_cast<CommandReply*>(command);
     }
 }
+
 // ==============================
 // ==============================
 

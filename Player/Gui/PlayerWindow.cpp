@@ -209,7 +209,7 @@ void PlayerWindow::changeSong(int song)
             if (m_Player.getCurrentSong().isRemote())
                 mp_NetworkLoadBar->setMaximum(mp_Socket->getTotalCurrentSongData());
 
-            mp_SongList->setCurrentSong(SongList::LOCAL_SONGS, song);
+            mp_SongList->setCurrentSong(song);
 
             if (m_Player.isPaused())
                 setState(STOP_STATE);
@@ -232,10 +232,10 @@ void PlayerWindow::changeSong(int song)
 void PlayerWindow::refreshSongsList()
 {
     m_Player.clearSongs();
-    m_Player.loadSongs(SONGS_SUBDIR);
-
     mp_SongList->clearList();
-    mp_SongList->add(SongList::LOCAL_SONGS, m_Player.getSongDetails());
+
+    SongTreeRoot *songTree = m_Player.loadSongs(SONGS_SUBDIR);
+    mp_SongList->add(SongList::LOCAL_SONGS, songTree);
 
     changeSong(m_Player.first());
 
@@ -399,7 +399,7 @@ void PlayerWindow::connectToHost(const QString& host)
 
 void PlayerWindow::startConnection()
 {
-    QList<QTreeWidgetItem*> songList = mp_Socket->exchangeSongList(mp_SongList->getSongHierarchy(), m_Player.songCount());
+    SongTreeRoot *songList = mp_Socket->exchangeSongList(mp_SongList->getSongHierarchy(), m_Player.songsCount());
     m_Player.addSongs(songList);
     mp_SongList->add(SongList::REMOTE_SONGS, songList);
 

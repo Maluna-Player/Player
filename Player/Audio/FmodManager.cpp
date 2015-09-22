@@ -359,7 +359,7 @@ char* FmodManager::getSongPictureData(SoundID_t id, unsigned int *dataLength) co
         while(*(++tagData));        // Skip MIME msg
         ++tagData;                  // Skip content type
         while(*(++tagData));        // Skip description
-        tagData++;                  // tagData is now pointing to the first byte of jpeg img
+        ++tagData;                  // tagData is now pointing to the first byte of jpeg img
 
         if (dataLength)
             *dataLength = tag.datalen - (tagData - static_cast<char*>(tag.data));

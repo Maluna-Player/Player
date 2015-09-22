@@ -16,6 +16,7 @@
 #include <QVector>
 #include <QPair>
 #include <QString>
+#include "SongListItem.h"
 
 class SongList : public QTreeWidget
 {
@@ -24,13 +25,6 @@ class SongList : public QTreeWidget
     private:
 
         int m_CurrentSong;
-
-        /**
-         * @brief Détermine si l'item de la liste passé en paramètre est une musique ou non.
-         * @param item Elément de la liste à vérifier
-         * @return true si c'est une musique
-         */
-        virtual bool isSong(QTreeWidgetItem *item) const;
 
     protected:
 
@@ -59,24 +53,23 @@ class SongList : public QTreeWidget
 
         /**
          * @brief Change le son marqué comme son courant dans la liste.
-         * @param list Liste dans laquelle sélectionner la musique
          * @param songNum Indice de la musique actuelle
         */
-        virtual void setCurrentSong(SongList_t list, int songNum);
+        virtual void setCurrentSong(int songNum);
 
         /**
          * @brief getSongHierarchy
          * @param list Liste à retourner
-         * @return Liste des objets de l'arborescence.
+         * @return Arborescence de musiques de la liste.
          */
-        virtual const QList<QTreeWidgetItem*> getSongHierarchy(SongList_t list = LOCAL_SONGS) const;
+        virtual SongTreeRoot* getSongHierarchy(SongList_t list = LOCAL_SONGS) const;
 
         /**
          * @brief Ajoute les titres et durées de la liste passée en paramètre.
          * @param list Type de liste dans laquelle ajouter les musiques (locales, distantes)
          * @param songs Liste de sons à ajouter
         */
-        virtual void add(SongList_t list, const QList<QTreeWidgetItem*>& songs);
+        virtual void add(SongList_t list, SongTreeRoot *songs);
 };
 
 #endif  // __SONGLIST_H__
