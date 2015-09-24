@@ -19,10 +19,12 @@ MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent)
     QMenu *fileMenu = addMenu("Fichier");
     QMenu *helpMenu = addMenu("Aide");
 
-    mp_OpenAction = fileMenu->addAction(QIcon(Tools::loadImage(MENU_SUBDIR + "open.png")), "Open");
+    mp_AddingSongAction = fileMenu->addAction(QIcon(Tools::loadImage(MENU_SUBDIR + "adding.png")), "Ajouter un son");
+    mp_OpenAction = fileMenu->addAction(QIcon(Tools::loadImage(MENU_SUBDIR + "open.png")), "Ouvrir");
     mp_QuitAction = fileMenu->addAction(QIcon(Tools::loadImage(MENU_SUBDIR + "quit.png")), "Quitter");
     mp_AboutAction = helpMenu->addAction(QIcon(Tools::loadImage(MENU_SUBDIR + "about.png")), "A propos");
 
+    mp_AddingSongAction->setShortcut(QKeySequence("Ctrl+N"));
     mp_OpenAction->setShortcut(QKeySequence("Ctrl+O"));
     mp_QuitAction->setShortcut(QKeySequence("Ctrl+Q"));
     mp_AboutAction->setShortcut(QKeySequence("Ctrl+A"));
@@ -34,6 +36,14 @@ MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent)
 MenuBar::~MenuBar()
 {
 
+}
+
+// ==============================
+// ==============================
+
+QAction* MenuBar::getAddingSongAction() const
+{
+    return mp_AddingSongAction;
 }
 
 // ==============================

@@ -59,7 +59,7 @@ class PlayerWindow : public QMainWindow
         VolumeViewer *mp_SoundVolume;
 
         enum ButtonId_t { PLAY_BUTTON, PAUSE_BUTTON, STOP_BUTTON, PREV_BUTTON, NEXT_BUTTON,
-                          VOLUME_MORE_BUTTON, VOLUME_LESS_BUTTON, };
+                          VOLUME_MORE_BUTTON, VOLUME_LESS_BUTTON };
 
         QVector<PlayerButton*> mp_Buttons;
 
@@ -143,6 +143,12 @@ class PlayerWindow : public QMainWindow
          * @brief Ouvre le dossier des musiques lues par l'application.
          */
         virtual void openSongsDir() const;
+
+        /**
+         * @brief Propose à l'utilisateur d'ajouter une nouvelle musique
+         *        et l'enregistre si un fichier a été sélectionné.
+         */
+        virtual void importSong();
 
         /**
          * @brief Ouvre la fenêtre contenant les informations sur l'application.

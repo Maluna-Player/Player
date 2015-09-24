@@ -17,6 +17,7 @@
 #include "MenuBar.h"
 #include <QToolBar>
 #include <QApplication>
+#include <QFileDialog>
 #include <QDesktopServices>
 
 
@@ -38,10 +39,12 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     QToolBar *toolbar = addToolBar("toolbar");
     toolbar->setStyleSheet("background-color: grey;");
 
+    toolbar->addAction(static_cast<MenuBar*>(menuBar())->getAddingSongAction());
     toolbar->addAction(static_cast<MenuBar*>(menuBar())->getOpenAction());
     toolbar->addAction(static_cast<MenuBar*>(menuBar())->getQuitAction());
     toolbar->addAction(static_cast<MenuBar*>(menuBar())->getAboutAction());
 
+    connect(static_cast<MenuBar*>(menuBar())->getAddingSongAction(), SIGNAL(triggered()), this, SLOT(importSong()));
     connect(static_cast<MenuBar*>(menuBar())->getOpenAction(), SIGNAL(triggered()), this, SLOT(openSongsDir()));
     connect(static_cast<MenuBar*>(menuBar())->getAboutAction(), SIGNAL(triggered()), this, SLOT(openInformation()));
     connect(static_cast<MenuBar*>(menuBar())->getQuitAction(), SIGNAL(triggered()), qApp, SLOT(quit()));
@@ -235,7 +238,7 @@ void PlayerWindow::refreshSongsList()
     mp_SongList->clearList();
 
     SongTreeRoot *songTree = m_Player.loadSongs(SONGS_SUBDIR);
-    mp_SongList->add(SongList::LOCAL_SONGS, songTree);
+    mp_SongList->addTree(SongList::LOCAL_SONGS, songTree);
 
     changeSong(m_Player.first());
 
@@ -355,6 +358,22 @@ void PlayerWindow::setMute()
 // ==============================
 // ==============================
 
+void PlayerWindow::importSong()
+{
+    QString filePath = QFileDialog::getOpenFileName(this, "Ajouter une musique", QString(), "Musiques (*.mp3 *.wav *.ogg *.wma)");
+
+    if (!filePath.isNull())
+    {
+        SongListItem *songItem = m_Player.addNewSong(filePath);
+
+        if (songItem)
+            mp_SongList->addSong(SongList::LOCAL_SONGS, songItem);
+    }
+}
+
+// ==============================
+// ==============================
+
 void PlayerWindow::openSongsDir() const
 {
     QDesktopServices::openUrl(QUrl::fromLocalFile(SONGS_SUBDIR));
@@ -401,7 +420,7 @@ void PlayerWindow::startConnection()
 {
     SongTreeRoot *songList = mp_Socket->exchangeSongList(mp_SongList->getSongHierarchy(), m_Player.songsCount());
     m_Player.addSongs(songList);
-    mp_SongList->add(SongList::REMOTE_SONGS, songList);
+    mp_SongList->addTree(SongList::REMOTE_SONGS, songList);
 
     mp_ConnectionBox->connected();
 

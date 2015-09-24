@@ -20,6 +20,8 @@ class MenuBar : public QMenuBar
 
         QAction *mp_OpenAction;
 
+        QAction *mp_AddingSongAction;
+
         QAction *mp_QuitAction;
 
         QAction *mp_AboutAction;
@@ -28,6 +30,12 @@ class MenuBar : public QMenuBar
 
         MenuBar(QWidget *parent = 0);
         virtual ~MenuBar();
+
+        /**
+         * @brief getAddingSongAction
+         * @return Retourne le bouton d'ajout de musiques.
+         */
+        virtual QAction* getAddingSongAction() const;
 
         /**
          * @brief getOpenAction

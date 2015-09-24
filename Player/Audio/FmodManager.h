@@ -56,15 +56,10 @@ class FmodManager
 
         /**
          * Attribue un SoundID libre.
+         * @param mainCanal true si la musique est ouverte sur le canal principal
          * @return id attribué
         */
-        virtual SoundID_t getSoundID() const;
-
-        /**
-         * Libère la mémoire du son chargé.
-         * @param id Identifiant du son à libérer.
-        */
-        virtual void releaseSound(SoundID_t id);
+        virtual SoundID_t getSoundID(bool mainCanal) const;
 
         /**
          * Vérifie si le canal associé à l'id est utilisé ou non.
@@ -92,10 +87,17 @@ class FmodManager
         /**
          * Ouvre le fichier son passé en paramètre.
          * @param soundFile Fichier à ouvrir
+         * @param mainCanal true si la musique est ouverte sur le canal principal
          * @param settings Options de chargement de la musique (callbacks utilisés)
          * @return identifiant du canal associé
         */
-        virtual SoundID_t openFromFile(const std::string& soundFile, SoundSettings *settings = 0) throw (StreamError_t);
+        virtual SoundID_t openFromFile(const std::string& soundFile, bool mainCanal = true, SoundSettings *settings = 0) throw (StreamError_t);
+
+        /**
+         * Libère la mémoire du son chargé.
+         * @param id Identifiant du son à libérer.
+        */
+        virtual void releaseSound(SoundID_t id);
 
         /**
          * Joue le son chargé.

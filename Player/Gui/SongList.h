@@ -65,11 +65,18 @@ class SongList : public QTreeWidget
         virtual SongTreeRoot* getSongHierarchy(SongList_t list = LOCAL_SONGS) const;
 
         /**
+         * @brief Ajoute le son passé en paramètre dans la liste.
+         * @param list Type de liste dans laquelle ajouter la musique
+         * @param item Elément à ajouter
+         */
+        virtual void addSong(SongList_t list, SongListItem *item);
+
+        /**
          * @brief Ajoute les titres et durées de la liste passée en paramètre.
          * @param list Type de liste dans laquelle ajouter les musiques (locales, distantes)
          * @param songs Liste de sons à ajouter
         */
-        virtual void add(SongList_t list, SongTreeRoot *songs);
+        virtual void addTree(SongList_t list, SongTreeRoot *songs);
 };
 
 #endif  // __SONGLIST_H__

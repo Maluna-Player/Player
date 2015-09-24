@@ -45,6 +45,14 @@ class Player : public QObject
 
         QFile clientFile;
 
+
+        /**
+         * @brief Détermine si le fichier passé en paramètre est déjà dans la liste.
+         * @param filePath Chemin du fichier à tester
+         * @return true si le fichier est déjà enregistré
+         */
+        virtual bool containsSong(const QString& filePath) const;
+
     signals:
 
         /**
@@ -168,8 +176,9 @@ class Player : public QObject
          * @brief Ajoute une nouvelle musique dans la liste du player.
          * @param filePath Chemin du fichier à ajouter
          * @param parentDir Parent dans l'arborescence
+         * @return Elément de l'arborescence contenant la nouvelle musique
          */
-        virtual void addNewSong(const QString& filePath, SongListItem *parentDir = 0);
+        virtual SongListItem* addNewSong(const QString& filePath, SongListItem *parentDir = 0);
 
         /**
          * @brief Remplit le vecteur Musiques à partir des fichiers

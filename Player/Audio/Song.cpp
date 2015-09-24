@@ -16,7 +16,7 @@ Song::Song(const QString& file, int num, bool openable)
 {
     if (openable)
     {
-        SoundID_t id = FmodManager::getInstance()->openFromFile(m_File.toStdString());
+        SoundID_t id = FmodManager::getInstance()->openFromFile(m_File.toStdString(), false);
         m_Length = FmodManager::getInstance()->getSoundLength(id);
 
         QString title = QString::fromStdString(FmodManager::getInstance()->getSongTag(id, "TITLE"));
@@ -32,6 +32,8 @@ Song::Song(const QString& file, int num, bool openable)
         m_Artist = QString::fromStdString(FmodManager::getInstance()->getSongTag(id, "ARTIST"));
         if (m_Artist.isEmpty())
             m_Artist = "Artiste inconnu";
+
+        FmodManager::getInstance()->releaseSound(id);
     }
     else
         m_Title = m_File;
@@ -42,7 +44,7 @@ Song::Song(const QString& file, int num, bool openable)
 
 Song::~Song()
 {
-
+    FmodManager::getInstance()->releaseSound(m_SoundID);
 }
 
 // ==============================

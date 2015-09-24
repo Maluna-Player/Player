@@ -40,5 +40,5 @@ bool RemoteSong::isRemote() const
 
 void RemoteSong::open()
 {
-    m_SoundID = FmodManager::getInstance()->openFromFile(m_File.toStdString(), &(PlayerSocket::getInstance()->getCallbackSettings()));
+    m_SoundID = FmodManager::getInstance()->openFromFile(m_File.toStdString(), true, &(PlayerSocket::getInstance()->getCallbackSettings()));
 }

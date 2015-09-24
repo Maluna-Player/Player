@@ -228,27 +228,53 @@ void Player::clearSongs()
 // ==============================
 // ==============================
 
-void Player::addNewSong(const QString& filePath, SongListItem *parentDir)
+bool Player::containsSong(const QString& filePath) const
+{
+    for (int i = 0; i < mp_Songs.size(); i++)
+    {
+        if (!mp_Songs.at(i)->isRemote())
+        {
+            if (mp_Songs.at(i)->getFile() == filePath)
+                return true;
+        }
+    }
+
+    return false;
+}
+
+// ==============================
+// ==============================
+
+SongListItem* Player::addNewSong(const QString& filePath, SongListItem *parentDir)
 {
     QFileInfo fileInfo(filePath);
-    SongListItem *item = new SongListItem(SongListItem::SONG, parentDir, fileInfo.completeBaseName());
+    QString absoluteFilePath = fileInfo.canonicalFilePath();
+    SongListItem *item = 0;
 
-    try
+    if (!containsSong(absoluteFilePath))
     {
-        Song *song = new Song(filePath, mp_Songs.size());
+        item = new SongListItem(SongListItem::SONG, parentDir, fileInfo.completeBaseName());
 
-        mp_Songs.append(song);
-        item->setData(0, Qt::UserRole, reinterpret_cast<quintptr>(song));
-    }
-    catch (FmodManager::StreamError_t error)
-    {
-        if (error == FmodManager::FILE_ERROR)
-            qWarning() << "Error loading" << filePath;
-        else if (error == FmodManager::FORMAT_ERROR)
-            qWarning() << "Unsupported format for" << filePath;
+        try
+        {
+            Song *song = new Song(absoluteFilePath, mp_Songs.size());
 
-        delete item;
+            mp_Songs.append(song);
+            item->setData(0, Qt::UserRole, reinterpret_cast<quintptr>(song));
+        }
+        catch (FmodManager::StreamError_t error)
+        {
+            if (error == FmodManager::FILE_ERROR)
+                qWarning() << "Error loading" << absoluteFilePath;
+            else if (error == FmodManager::FORMAT_ERROR)
+                qWarning() << "Unsupported format for" << absoluteFilePath;
+
+            delete item;
+            item = 0;
+        }
     }
+
+    return item;
 }
 
 // ==============================

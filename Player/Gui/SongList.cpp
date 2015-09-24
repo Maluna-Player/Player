@@ -116,7 +116,26 @@ SongTreeRoot* SongList::getSongHierarchy(SongList_t list) const
 // ==============================
 // ==============================
 
-void SongList::add(SongList_t list, SongTreeRoot *songs)
+void SongList::addSong(SongList_t list, SongListItem *item)
+{
+    QTreeWidgetItem *root = topLevelItem(list);
+    if (root)
+    {
+        root->addChild(item);
+
+        Song *song = reinterpret_cast<Song*>(item->data(0, Qt::UserRole).value<quintptr>());
+        if (song)
+        {
+            item->setText(0, song->getTitle());
+            item->setText(1, Tools::msToString(song->getLength()));
+        }
+    }
+}
+
+// ==============================
+// ==============================
+
+void SongList::addTree(SongList_t list, SongTreeRoot *songs)
 {
     QTreeWidgetItem *root = topLevelItem(list);
     if (root)
