@@ -57,6 +57,9 @@ PlayerWindow::PlayerWindow(QWidget *parent)
 
     mp_SongTitle = new PlayerLabel(Qt::white, 20);
     mp_SongArtist = new PlayerLabel(Qt::white, 14);
+    mp_SongTitle->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
+    mp_SongArtist->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
+
     mp_Spectrum = new Spectrum(SPECTRUM_WIDTH);
     mp_SongPicture = new QLabel;
     mp_SongList = new SongList;
