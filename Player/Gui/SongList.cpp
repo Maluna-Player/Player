@@ -13,6 +13,7 @@
 #include "../Exceptions/FileLoadingException.h"
 #include "../Exceptions/ArrayAccessException.h"
 #include "Tools.h"
+#include "SongListIterator.h"
 #include <QScrollBar>
 #include <QMouseEvent>
 
@@ -53,8 +54,8 @@ SongList::~SongList()
 
 void SongList::clearList(SongList_t list)
 {
-    QTreeWidgetItem *root = topLevelItem(list);
-    root->takeChildren();
+    if (list == LOCAL_SONGS || list == REMOTE_SONGS)
+        topLevelItem(list)->takeChildren();
 }
 
 // ==============================
@@ -62,11 +63,11 @@ void SongList::clearList(SongList_t list)
 
 void SongList::setCurrentSong(int songNum)
 {
-    QTreeWidgetItemIterator it(this, QTreeWidgetItemIterator::Selectable);
+    SongListIterator it(this, QTreeWidgetItemIterator::Selectable);
 
-    while (*it)
+    while (!it.isNull())
     {
-        Song *song = reinterpret_cast<Song*>((*it)->data(0, Qt::UserRole).value<quintptr>());
+        Song *song = (*it)->getAttachedSong();
         if (song)
         {
             if (song->getNum() == m_CurrentSong)
@@ -97,7 +98,7 @@ void SongList::mousePressEvent(QMouseEvent *event)
 
     if (selectedItem && static_cast<SongListItem*>(selectedItem)->isSong())
     {
-        Song *song = reinterpret_cast<Song*>(selectedItem->data(0, Qt::UserRole).value<quintptr>());
+        Song *song = static_cast<SongListItem*>(selectedItem)->getAttachedSong();
         if (song)
             emit songPressed(song->getNum());
     }
@@ -123,7 +124,7 @@ void SongList::addSong(SongList_t list, SongListItem *item)
     {
         root->addChild(item);
 
-        Song *song = reinterpret_cast<Song*>(item->data(0, Qt::UserRole).value<quintptr>());
+        Song *song = item->getAttachedSong();
         if (song)
         {
             item->setText(0, song->getTitle());
@@ -142,14 +143,13 @@ void SongList::addTree(SongList_t list, SongTreeRoot *songs)
     {
         root->addChildren(songs->takeChildren());
 
-        QTreeWidgetItemIterator it(root);
-        int nodesCount = 1;
+        SongListIterator it(root);
 
-        for (int i = 0; i < nodesCount; i++)
+        while (!it.isNull())
         {
-            if (static_cast<SongListItem*>(*it)->isSong())
+            if ((*it)->isSong())
             {
-                Song *song = reinterpret_cast<Song*>((*it)->data(0, Qt::UserRole).value<quintptr>());
+                Song *song = (*it)->getAttachedSong();
                 if (song)
                 {
                     (*it)->setText(0, song->getTitle());
@@ -157,7 +157,6 @@ void SongList::addTree(SongList_t list, SongTreeRoot *songs)
                 }
             }
 
-            nodesCount += (*it)->childCount();
             ++it;
         }
 

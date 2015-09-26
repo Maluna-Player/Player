@@ -15,6 +15,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QDebug>
+#include "../Gui/SongListIterator.h"
 
 
 Player::Player()
@@ -260,7 +261,7 @@ SongListItem* Player::addNewSong(const QString& filePath, SongListItem *parentDi
             Song *song = new Song(absoluteFilePath, mp_Songs.size());
 
             mp_Songs.append(song);
-            item->setData(0, Qt::UserRole, reinterpret_cast<quintptr>(song));
+            item->setAttachedSong(song);
         }
         catch (FmodManager::StreamError_t error)
         {
@@ -318,10 +319,10 @@ void Player::addSongs(SongTreeRoot *songs)
     QTreeWidget tree;
     tree.addTopLevelItem(songs);
 
-    QTreeWidgetItemIterator it(&tree, QTreeWidgetItemIterator::Selectable);
-    while (*it)
+    SongListIterator it(&tree, QTreeWidgetItemIterator::Selectable);
+    while (!it.isNull())
     {
-        Song *song = reinterpret_cast<Song*>((*it)->data(0, Qt::UserRole).value<quintptr>());
+        Song *song = (*it)->getAttachedSong();
         if (song)
         {
             song->setNum(mp_Songs.size());

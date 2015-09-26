@@ -13,6 +13,7 @@
 
 #include <QTreeWidgetItem>
 #include "../Network/Sendable.h"
+#include "../Audio/Song.h"
 
 class SongListItem;
 typedef SongListItem SongTreeRoot;
@@ -30,6 +31,8 @@ class SongListItem : public QTreeWidgetItem, public Sendable
         unsigned int m_Num;
 
         ElementType_t m_Type;
+
+        Song *mp_AttachedSong;
 
 
         /**
@@ -68,10 +71,22 @@ class SongListItem : public QTreeWidgetItem, public Sendable
         virtual SongListItem* parent() const;
 
         /**
+         * @brief getAttachedSong
+         * @return Son attaché à l'élément de l'arborescence.
+         */
+        virtual Song* getAttachedSong() const;
+
+        /**
          * @brief Attache l'élément courant au parent passé en paramètre.
          * @param parent Nouveau parent de l'élément courant
          */
         virtual void setParent(SongListItem *parent);
+
+        /**
+         * @brief Attache le son passé en paramètre à l'élément courant.
+         * @param song Son à attacher
+         */
+        virtual void setAttachedSong(Song *song);
 
         virtual QByteArray toPacket() const;
 };

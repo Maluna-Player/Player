@@ -283,7 +283,7 @@ SongTreeRoot* PlayerSocket::readRemoteSongList()
             int songNum = m_NbReceivedSongs;
 
             RemoteSong *song = new RemoteSong(fileName, songNum, songNum, songLength, artist);
-            item->setData(0, Qt::UserRole, reinterpret_cast<quintptr>(song));
+            item->setAttachedSong(song);
 
             m_NbReceivedSongs++;
         }

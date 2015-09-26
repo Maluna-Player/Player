@@ -12,7 +12,7 @@ TARGET = Player
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
+SOURCES += main.cpp \
     Tools.cpp \
     Gui/AboutDialog.cpp \
     Gui/ClickableLabel.cpp \
@@ -36,7 +36,8 @@ SOURCES += main.cpp\
     Gui/ConnectionBox.cpp \
     Gui/NetworkLoadBar.cpp \
     Gui/MenuBar.cpp \
-    Gui/SongListItem.cpp
+    Gui/SongListItem.cpp \
+    Gui/SongListIterator.cpp
 
 HEADERS  += Constants.h \
     Tools.h \
@@ -67,7 +68,8 @@ HEADERS  += Constants.h \
     Gui/ConnectionBox.h \
     Gui/NetworkLoadBar.h \
     Gui/MenuBar.h \
-    Gui/SongListItem.h
+    Gui/SongListItem.h \
+    Gui/SongListIterator.h
 
 RC_FILE = Player.rc
 

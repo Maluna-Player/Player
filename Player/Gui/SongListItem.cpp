@@ -14,7 +14,7 @@
 unsigned int SongListItem::cpt = 0;
 
 SongListItem::SongListItem(ElementType_t type, SongListItem *parent, const QString& name)
-    : QTreeWidgetItem(), m_Type(type)
+    : QTreeWidgetItem(), m_Type(type), mp_AttachedSong(0)
 {
     Qt::ItemFlags flags = Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled;
     if (type == SONG)
@@ -79,10 +79,26 @@ unsigned int SongListItem::getParentNum() const
 // ==============================
 // ==============================
 
+Song* SongListItem::getAttachedSong() const
+{
+    return mp_AttachedSong;
+}
+
+// ==============================
+// ==============================
+
 void SongListItem::setParent(SongListItem *parent)
 {
     if (parent)
         parent->addChild(this);
+}
+
+// ==============================
+// ==============================
+
+void SongListItem::setAttachedSong(Song *song)
+{
+    mp_AttachedSong = song;
 }
 
 // ==============================
@@ -103,7 +119,7 @@ QByteArray SongListItem::toPacket() const
     {
         out << static_cast<quint8>(1);
 
-        Song *song = reinterpret_cast<Song*>(data(0, Qt::UserRole).value<quintptr>());
+        Song *song = getAttachedSong();
         if (song)
         {
             out << static_cast<quint32>(song->getLength()); // Durée de la musique
