@@ -21,7 +21,7 @@
 Player::Player()
     : m_CurrentSong(0), m_Playlist(true), m_Loop(false),
       m_Pause(false), m_Stop(true), m_Mute(false),
-      m_VolumeState(NB_VOLUME_STATES - 1)
+      m_VolumeState(Constants::NB_VOLUME_STATES - 1)
 {
 
 }
@@ -211,7 +211,7 @@ void Player::setVolume(int volumeState)
 {
     m_VolumeState = volumeState;
 
-    float volume = static_cast<float>(volumeState) / (NB_VOLUME_STATES - 1);
+    float volume = static_cast<float>(volumeState) / (Constants::NB_VOLUME_STATES - 1);
     FmodManager::getInstance()->setVolume(volume);
 }
 

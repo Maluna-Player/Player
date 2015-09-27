@@ -51,7 +51,7 @@ class FmodManager
         static FmodManager *mp_Instance;
 
 
-        FmodManager(int maxChannels = MAX_CHANNELS_NB);
+        FmodManager(int maxChannels = Constants::MAX_CHANNELS_NB);
         virtual ~FmodManager();
 
         /**

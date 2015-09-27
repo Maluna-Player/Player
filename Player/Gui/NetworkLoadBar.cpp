@@ -16,7 +16,7 @@
 NetworkLoadBar::NetworkLoadBar(QWidget *parent)
     : QProgressBar(parent), m_StartPos(0)
 {
-    setFixedHeight(LOADBAR_HEIGHT);
+    setFixedHeight(Constants::LOADBAR_HEIGHT);
 }
 
 // ==============================

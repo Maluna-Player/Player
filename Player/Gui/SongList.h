@@ -17,6 +17,7 @@
 #include <QPair>
 #include <QString>
 #include "SongListItem.h"
+#include "Constants.h"
 
 class SongList : public QTreeWidget
 {
@@ -40,8 +41,6 @@ class SongList : public QTreeWidget
 
     public:
 
-        enum SongList_t { LOCAL_SONGS, REMOTE_SONGS };
-
         SongList(QWidget *parent = 0);
         virtual ~SongList();
 
@@ -49,7 +48,7 @@ class SongList : public QTreeWidget
          * @brief Vide la liste du noeud passé en paramètre.
          * @param list Liste à nettoyer (locale/distante)
          */
-        virtual void clearList(SongList_t list = LOCAL_SONGS);
+        virtual void clearList(Constants::SongList_t list = Constants::LOCAL_SONGS);
 
         /**
          * @brief Change le son marqué comme son courant dans la liste.
@@ -62,21 +61,21 @@ class SongList : public QTreeWidget
          * @param list Liste à retourner
          * @return Arborescence de musiques de la liste.
          */
-        virtual SongTreeRoot* getSongHierarchy(SongList_t list = LOCAL_SONGS) const;
+        virtual SongTreeRoot* getSongHierarchy(Constants::SongList_t list = Constants::LOCAL_SONGS) const;
 
         /**
          * @brief Ajoute le son passé en paramètre dans la liste.
          * @param list Type de liste dans laquelle ajouter la musique
          * @param item Elément à ajouter
          */
-        virtual void addSong(SongList_t list, SongListItem *item);
+        virtual void addSong(Constants::SongList_t list, SongListItem *item);
 
         /**
          * @brief Ajoute les titres et durées de la liste passée en paramètre.
          * @param list Type de liste dans laquelle ajouter les musiques (locales, distantes)
          * @param songs Liste de sons à ajouter
         */
-        virtual void addTree(SongList_t list, SongTreeRoot *songs);
+        virtual void addTree(Constants::SongList_t list, SongTreeRoot *songs);
 };
 
 #endif  // __SONGLIST_H__

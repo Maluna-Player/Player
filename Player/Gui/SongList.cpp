@@ -52,9 +52,9 @@ SongList::~SongList()
 // ==============================
 // ==============================
 
-void SongList::clearList(SongList_t list)
+void SongList::clearList(Constants::SongList_t list)
 {
-    if (list == LOCAL_SONGS || list == REMOTE_SONGS)
+    if (list == Constants::LOCAL_SONGS || list == Constants::REMOTE_SONGS)
         topLevelItem(list)->takeChildren();
 }
 
@@ -109,7 +109,7 @@ void SongList::mousePressEvent(QMouseEvent *event)
 // ==============================
 // ==============================
 
-SongTreeRoot* SongList::getSongHierarchy(SongList_t list) const
+SongTreeRoot* SongList::getSongHierarchy(Constants::SongList_t list) const
 {
     return static_cast<SongListItem*>(topLevelItem(list));
 }
@@ -117,7 +117,7 @@ SongTreeRoot* SongList::getSongHierarchy(SongList_t list) const
 // ==============================
 // ==============================
 
-void SongList::addSong(SongList_t list, SongListItem *item)
+void SongList::addSong(Constants::SongList_t list, SongListItem *item)
 {
     QTreeWidgetItem *root = topLevelItem(list);
     if (root)
@@ -136,7 +136,7 @@ void SongList::addSong(SongList_t list, SongListItem *item)
 // ==============================
 // ==============================
 
-void SongList::addTree(SongList_t list, SongTreeRoot *songs)
+void SongList::addTree(Constants::SongList_t list, SongTreeRoot *songs)
 {
     QTreeWidgetItem *root = topLevelItem(list);
     if (root)

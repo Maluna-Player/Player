@@ -72,7 +72,7 @@ class PlayerWindow : public QMainWindow
          * @brief Change l'état du player et modifie l'affichage.
          * @param state Nouvel état du player
          */
-        virtual void setState(State_t state);
+        virtual void setState(Constants::PlayerState_t state);
 
         /**
          * @brief Met à jour la liste des musiques du répertoire.

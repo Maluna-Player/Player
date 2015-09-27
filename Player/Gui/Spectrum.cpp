@@ -16,7 +16,7 @@
 Spectrum::Spectrum(int width, QWidget *parent)
     : QWidget(parent), m_Width(width), m_Lines(m_Width)
 {
-    setMinimumSize(m_Width, SPECTRUM_HEIGHT);
+    setMinimumSize(m_Width, Constants::SPECTRUM_HEIGHT);
 
     int i;
 
@@ -83,7 +83,7 @@ void Spectrum::updateValues(SoundID_t id)
 
     for (i = 0; i < m_Width; i++)
     {
-        int lineHeight = spectrumValues[i] * height() * SPECTRUM_RATIO;
+        int lineHeight = spectrumValues[i] * height() * Constants::SPECTRUM_RATIO;
 
         if (lineHeight > height())
           lineHeight = height();

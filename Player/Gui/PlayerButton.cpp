@@ -32,7 +32,7 @@ PlayerButton::~PlayerButton()
 
 void PlayerButton::loadImage(const QString& fileName)
 {
-    QPixmap image = Tools::loadImage(BUTTONS_SUBDIR + fileName);
+    QPixmap image = Tools::loadImage(Constants::BUTTONS_SUBDIR + fileName);
 
     setPixmap(image.scaled(70, 70, Qt::KeepAspectRatio));
 }
