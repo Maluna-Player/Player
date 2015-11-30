@@ -379,7 +379,7 @@ void PlayerWindow::importSong()
 
 void PlayerWindow::openSongsDir() const
 {
-    QDesktopServices::openUrl(QUrl::fromLocalFile(Constants::SONGS_SUBDIR));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(QFileInfo(Constants::SONGS_SUBDIR).absoluteFilePath()));
 }
 
 // ==============================
