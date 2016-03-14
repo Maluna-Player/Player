@@ -397,7 +397,7 @@ void PlayerWindow::openInformation()
 
 void PlayerWindow::listen()
 {
-    mp_Socket = PlayerSocket::createInstance();
+    mp_Socket = new PlayerSocket;
     connect(mp_Socket, SIGNAL(connected()), this, SLOT(startConnection()));
     connect(mp_Socket, SIGNAL(disconnected()), this, SLOT(closeConnection()));
 
@@ -409,7 +409,7 @@ void PlayerWindow::listen()
 
 void PlayerWindow::connectToHost(const QString& host)
 {
-    mp_Socket = PlayerSocket::createInstance();
+    mp_Socket = new PlayerSocket;
     connect(mp_Socket, SIGNAL(connected()), this, SLOT(startConnection()));
     connect(mp_Socket, SIGNAL(disconnected()), this, SLOT(closeConnection()));
 
@@ -453,7 +453,7 @@ void PlayerWindow::closeConnection()
             m_Player.removeRemoteSongs();
             mp_SongList->clearList(Constants::REMOTE_SONGS);
 
-            PlayerSocket::deleteInstance();
+            delete mp_Socket;
             mp_Socket = 0;
 
             mp_ConnectionBox->disconnect();

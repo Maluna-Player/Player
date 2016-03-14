@@ -32,6 +32,7 @@ typedef struct
     FMOD_FILE_READ_CALLBACK readCallback;
     FMOD_FILE_SEEK_CALLBACK seekCallback;
 
+    void *userdata;
 } SoundSettings;
 
 class FmodManager

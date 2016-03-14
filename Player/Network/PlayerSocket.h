@@ -52,13 +52,6 @@ class PlayerSocket : public QObject
         quint32 m_TotalCurrentSongData;
 
 
-        /* Instance du singleton */
-        static PlayerSocket *mp_Instance;
-
-
-        PlayerSocket();
-        virtual ~PlayerSocket();
-
         /**
          * @brief Cherche l'item correspondant au numéro passé en paramètre dans l'arborescence parent.
          * @param num Numéro de l'item à chercher
@@ -135,22 +128,8 @@ class PlayerSocket : public QObject
 
     public:
 
-        /**
-         * @brief Crée l'instance du singleton si non créée et la retourne.
-         * @return Instance du singleton
-         */
-        static PlayerSocket* createInstance();
-
-        /**
-         * @brief Retourne l'instance du singleton.
-         * @return Instance du singleton
-        */
-        static PlayerSocket* getInstance();
-
-        /**
-         * @brief Détruit le singleton alloué dynamiquement.
-        */
-        static void deleteInstance();
+        PlayerSocket();
+        virtual ~PlayerSocket();
 
         /**
          * @brief getCallbackSettings

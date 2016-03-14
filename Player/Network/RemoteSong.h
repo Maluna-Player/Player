@@ -19,9 +19,11 @@ class RemoteSong : public Song
 
         int m_RemoteNum;
 
+        SoundSettings *m_Settings;
+
     public:
 
-        RemoteSong(const QString& file, int num, int remoteNum, SoundPos_t length, const QString& artist);
+        RemoteSong(const QString& file, int num, int remoteNum, SoundPos_t length, const QString& artist, SoundSettings *settings);
         virtual ~RemoteSong();
 
         virtual bool isRemote() const;

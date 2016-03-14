@@ -12,8 +12,6 @@
 #include "../Exceptions/ArrayAccessException.h"
 
 
-PlayerSocket* PlayerSocket::mp_Instance = 0;
-
 PlayerSocket::PlayerSocket()
     : m_Connected(false), mp_Server(0), mp_Socket(0), m_NbSentListItems(0), m_NbReceivedSongs(0),
       mp_SendMessage(0), mp_ReceiveMessage(0), mp_SocketThread(0)
@@ -22,6 +20,7 @@ PlayerSocket::PlayerSocket()
     m_CallbackSettings.closeCallback = closeCallback;
     m_CallbackSettings.readCallback = readCallback;
     m_CallbackSettings.seekCallback = seekCallback;
+    m_CallbackSettings.userdata = this;
 }
 
 // ==============================
@@ -49,37 +48,6 @@ PlayerSocket::~PlayerSocket()
 
     if (mp_SocketThread)
         delete mp_SocketThread;
-}
-
-// ==============================
-// ==============================
-
-PlayerSocket* PlayerSocket::createInstance()
-{
-    if (!mp_Instance)
-        mp_Instance = new PlayerSocket;
-
-    return mp_Instance;
-}
-
-// ==============================
-// ==============================
-
-PlayerSocket* PlayerSocket::getInstance()
-{
-    return mp_Instance;
-}
-
-// ==============================
-// ==============================
-
-void PlayerSocket::deleteInstance()
-{
-    if (mp_Instance)
-    {
-        delete mp_Instance;
-        mp_Instance = 0;
-    }
 }
 
 // ==============================
@@ -282,7 +250,7 @@ SongTreeRoot* PlayerSocket::readRemoteSongList()
 
             int songNum = m_NbReceivedSongs;
 
-            RemoteSong *song = new RemoteSong(fileName, songNum, songNum, songLength, artist);
+            RemoteSong *song = new RemoteSong(fileName, songNum, songNum, songLength, artist, &getCallbackSettings());
             item->setAttachedSong(song);
 
             m_NbReceivedSongs++;
@@ -604,10 +572,7 @@ void PlayerSocket::sendCommandReply(CommandReply *reply)
 
 FMOD_RESULT openCallback(const char *fileName, unsigned int *filesize, void **handle, void *userdata)
 {
-    if (PlayerSocket::getInstance())
-        return PlayerSocket::getInstance()->openRemoteFile(fileName, filesize, handle);
-    else
-        return FMOD_OK;
+    return static_cast<PlayerSocket*>(userdata)->openRemoteFile(fileName, filesize, handle);
 }
 
 // ==============================
@@ -615,10 +580,7 @@ FMOD_RESULT openCallback(const char *fileName, unsigned int *filesize, void **ha
 
 FMOD_RESULT closeCallback(void *handle, void *userdata)
 {
-    if (PlayerSocket::getInstance())
-        return PlayerSocket::getInstance()->closeRemoteFile(handle);
-    else
-        return FMOD_OK;
+    return static_cast<PlayerSocket*>(userdata)->closeRemoteFile(handle);
 }
 
 // ==============================
@@ -626,10 +588,7 @@ FMOD_RESULT closeCallback(void *handle, void *userdata)
 
 FMOD_RESULT readCallback(void *handle, void *buffer, unsigned int sizebytes, unsigned int *bytesread, void *userdata)
 {
-    if (PlayerSocket::getInstance())
-        return PlayerSocket::getInstance()->readRemoteFile(handle, buffer, sizebytes, bytesread);
-    else
-        return FMOD_OK;
+    return static_cast<PlayerSocket*>(userdata)->readRemoteFile(handle, buffer, sizebytes, bytesread);
 }
 
 // ==============================
@@ -637,8 +596,5 @@ FMOD_RESULT readCallback(void *handle, void *buffer, unsigned int sizebytes, uns
 
 FMOD_RESULT seekCallback(void *handle, unsigned int pos, void *userdata)
 {
-    if (PlayerSocket::getInstance())
-        return PlayerSocket::getInstance()->seekRemoteFile(handle, pos);
-    else
-        return FMOD_OK;
+    return static_cast<PlayerSocket*>(userdata)->seekRemoteFile(handle, pos);
 }

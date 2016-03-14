@@ -132,6 +132,7 @@ SoundID_t FmodManager::openFromFile(const std::string& soundFile, bool mainCanal
         soundSettings->fileuserclose = settings->closeCallback;
         soundSettings->fileuserread = settings->readCallback;
         soundSettings->fileuserseek = settings->seekCallback;
+        soundSettings->fileuserdata = settings->userdata;
 
         res = FMOD_System_CreateStream(mp_System, soundFile.c_str(), FMOD_DEFAULT, soundSettings, &mp_Sounds.at(id));
 

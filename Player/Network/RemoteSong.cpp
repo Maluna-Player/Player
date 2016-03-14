@@ -11,8 +11,8 @@
 #include "PlayerSocket.h"
 
 
-RemoteSong::RemoteSong(const QString& file, int num, int remoteNum, SoundPos_t length, const QString& artist)
-    : Song(file, num, false), m_RemoteNum(remoteNum)
+RemoteSong::RemoteSong(const QString& file, int num, int remoteNum, SoundPos_t length, const QString& artist, SoundSettings *settings)
+    : Song(file, num, false), m_RemoteNum(remoteNum), m_Settings(settings)
 {
     m_Length = length;
     m_File = QString::number(num);
@@ -40,5 +40,5 @@ bool RemoteSong::isRemote() const
 
 void RemoteSong::open()
 {
-    m_SoundID = FmodManager::getInstance()->openFromFile(m_File.toStdString(), true, &(PlayerSocket::getInstance()->getCallbackSettings()));
+    m_SoundID = FmodManager::getInstance()->openFromFile(m_File.toStdString(), true, m_Settings);
 }
