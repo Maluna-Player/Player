@@ -470,6 +470,7 @@ void PlayerWindow::timerEvent(QTimerEvent *event)
     {
         if (m_Player.isPlaying())
         {
+            FmodManager::getInstance()->update();
             mp_Spectrum->updateValues(m_Player.getCurrentSong().getSoundID());
             mp_ProgressBar->setValue(m_Player.getCurrentSong().getPosition());
             mp_SongPos->setText(Tools::msToString(m_Player.getCurrentSong().getPosition()));

@@ -27,10 +27,10 @@ typedef unsigned int  SoundPos_t;   // Position en ms
 
 typedef struct
 {
-    FMOD_FILE_OPENCALLBACK openCallback;
-    FMOD_FILE_CLOSECALLBACK closeCallback;
-    FMOD_FILE_READCALLBACK readCallback;
-    FMOD_FILE_SEEKCALLBACK seekCallback;
+    FMOD_FILE_OPEN_CALLBACK openCallback;
+    FMOD_FILE_CLOSE_CALLBACK closeCallback;
+    FMOD_FILE_READ_CALLBACK readCallback;
+    FMOD_FILE_SEEK_CALLBACK seekCallback;
 
 } SoundSettings;
 
@@ -45,6 +45,8 @@ class FmodManager
         std::vector<FMOD_SOUND*> mp_Sounds;
 
         FMOD_CHANNELGROUP *mp_ChannelGroup;
+
+        FMOD_DSP *mp_Dsp;
 
 
         /* Instance du singleton */
@@ -83,6 +85,11 @@ class FmodManager
          * Détruit le singleton alloué dynamiquement.
         */
         static void deleteInstance();
+
+        /**
+         * Met à jour FMOD.
+         */
+        virtual void update() const;
 
         /**
          * Ouvre le fichier son passé en paramètre.

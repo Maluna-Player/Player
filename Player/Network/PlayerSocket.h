@@ -225,7 +225,7 @@ class PlayerSocket : public QObject
 
 /** Callbacks FMOD pour le stream de musique distantes **/
 
-FMOD_RESULT F_CALLBACK openCallback(const char *fileName, int unicode, unsigned int *filesize, void **handle, void **userdata);
+FMOD_RESULT F_CALLBACK openCallback(const char *fileName, unsigned int *filesize, void **handle, void *userdata);
 FMOD_RESULT F_CALLBACK closeCallback(void *handle, void *userdata);
 FMOD_RESULT F_CALLBACK readCallback(void *handle, void *buffer, unsigned int sizebytes, unsigned int *bytesread, void *userdata);
 FMOD_RESULT F_CALLBACK seekCallback(void *handle, unsigned int pos, void *userdata);

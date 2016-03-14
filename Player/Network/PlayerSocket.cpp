@@ -602,7 +602,7 @@ void PlayerSocket::sendCommandReply(CommandReply *reply)
 // ==============================
 // ==============================
 
-FMOD_RESULT openCallback(const char *fileName, int unicode, unsigned int *filesize, void **handle, void **userdata)
+FMOD_RESULT openCallback(const char *fileName, unsigned int *filesize, void **handle, void *userdata)
 {
     if (PlayerSocket::getInstance())
         return PlayerSocket::getInstance()->openRemoteFile(fileName, filesize, handle);

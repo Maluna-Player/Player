@@ -17,7 +17,7 @@ FmodManager* FmodManager::mp_Instance = 0;
 // ==============================
 
 FmodManager::FmodManager(int maxChannels)
-    : mp_System(0), mp_Channels(maxChannels), mp_Sounds(maxChannels), mp_ChannelGroup(0)
+    : mp_System(0), mp_Channels(maxChannels), mp_Sounds(maxChannels), mp_ChannelGroup(0), mp_Dsp(0)
 {
     FMOD_RESULT res;
 
@@ -32,6 +32,16 @@ FmodManager::FmodManager(int maxChannels)
     /* Récupération du groupe de canaux */
     if ((res = FMOD_System_GetMasterChannelGroup(mp_System, &mp_ChannelGroup)) != FMOD_OK)
         throw LibException("FmodManager::FmodManager", "FMOD_System_GetMasterChannelGroup", FMOD_ErrorString(res));
+
+    /* Création du DSP */
+    if ((res = FMOD_System_CreateDSPByType(mp_System, FMOD_DSP_TYPE_FFT, &mp_Dsp)) != FMOD_OK)
+        throw LibException("FmodManager::FmodManager", "FMOD_System_CreateDSPByType", FMOD_ErrorString(res));
+
+    if ((res = FMOD_DSP_SetParameterInt(mp_Dsp, FMOD_DSP_FFT_WINDOWSIZE, Constants::SPECTRUM_WIDTH)) != FMOD_OK)
+        throw LibException("FmodManager::FmodManager", "FMOD_DSP_SetParameterInt", FMOD_ErrorString(res));
+
+    if ((res = FMOD_ChannelGroup_AddDSP(mp_ChannelGroup, 0, mp_Dsp)) != FMOD_OK)
+        throw LibException("FmodManager::FmodManager", "FMOD_ChannelGroup_AddDSP", FMOD_ErrorString(res));
 }
 
 // ==============================
@@ -92,6 +102,17 @@ SoundID_t FmodManager::getSoundID(bool mainCanal) const
 // ==============================
 // ==============================
 
+void FmodManager::update() const
+{
+    FMOD_RESULT res;
+
+    if ((res = FMOD_System_Update(mp_System)) != FMOD_OK)
+        throw LibException("FmodManager::update", "FMOD_System_Update", FMOD_ErrorString(res));
+}
+
+// ==============================
+// ==============================
+
 SoundID_t FmodManager::openFromFile(const std::string& soundFile, bool mainCanal, SoundSettings *settings) throw (StreamError_t)
 {
     SoundID_t id = getSoundID(mainCanal);
@@ -107,10 +128,10 @@ SoundID_t FmodManager::openFromFile(const std::string& soundFile, bool mainCanal
         FMOD_CREATESOUNDEXINFO *soundSettings = new FMOD_CREATESOUNDEXINFO();
 
         soundSettings->cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
-        soundSettings->useropen = settings->openCallback;
-        soundSettings->userclose = settings->closeCallback;
-        soundSettings->userread = settings->readCallback;
-        soundSettings->userseek = settings->seekCallback;
+        soundSettings->fileuseropen = settings->openCallback;
+        soundSettings->fileuserclose = settings->closeCallback;
+        soundSettings->fileuserread = settings->readCallback;
+        soundSettings->fileuserseek = settings->seekCallback;
 
         res = FMOD_System_CreateStream(mp_System, soundFile.c_str(), FMOD_DEFAULT, soundSettings, &mp_Sounds.at(id));
 
@@ -151,7 +172,7 @@ void FmodManager::playSound(SoundID_t id)
 {
     FMOD_RESULT res;
 
-    if ((res = FMOD_System_PlaySound(mp_System, FMOD_CHANNEL_FREE, mp_Sounds.at(id), false, &mp_Channels.at(id))) != FMOD_OK)
+    if ((res = FMOD_System_PlaySound(mp_System, mp_Sounds.at(id), 0, false, &mp_Channels.at(id))) != FMOD_OK)
         throw LibException("FmodManager::playSound", "FMOD_System_PlaySound", FMOD_ErrorString(res));
 }
 
@@ -262,9 +283,13 @@ float* FmodManager::getChannelSpectrum(SoundID_t id, float *values) const
     if (isChannelUsed(id))
     {
         FMOD_RESULT res;
+        FMOD_DSP_PARAMETER_FFT *fft;
 
-        if ((res = FMOD_Channel_GetSpectrum(mp_Channels.at(id), values, Constants::SPECTRUM_WIDTH, 0, FMOD_DSP_FFT_WINDOW_RECT)) != FMOD_OK)
-            throw LibException("FmodManager::getChannelSpectrum", "FMOD_Channel_GetSpectrum", FMOD_ErrorString(res));
+        if ((res = FMOD_DSP_GetParameterData(mp_Dsp, FMOD_DSP_FFT_SPECTRUMDATA, (void**)&fft, 0, 0, 0)) != FMOD_OK)
+            throw LibException("FmodManager::getChannelSpectrum", "FMOD_DSP_GetParameterData", FMOD_ErrorString(res));
+
+        for (int bin = 0; bin < fft->length; bin++)
+            values[bin] = (fft->spectrum[0][bin] + fft->spectrum[1][bin]) / 2.0;
     }
 
     return values;
