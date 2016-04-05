@@ -8,7 +8,6 @@
 */
 
 #include "Player.h"
-#include "../Exceptions/ArrayAccessException.h"
 #include "../Exceptions/LibException.h"
 #include "../Exceptions/FileLoadingException.h"
 
@@ -19,7 +18,8 @@
 
 
 Player::Player()
-    : m_CurrentSong(0), m_Playlist(true), m_Loop(false),
+    : mp_Songs({Constants::DIRECTORY_SONGS, Constants::IMPORTED_SONGS, Constants::REMOTE_SONGS}),
+      m_CurrentSong(UNDEFINED_SONG), m_Playlist(true), m_Loop(false),
       m_Pause(false), m_Stop(true), m_Mute(false),
       m_VolumeState(Constants::NB_VOLUME_STATES - 1)
 {
@@ -31,29 +31,41 @@ Player::Player()
 
 Player::~Player()
 {
-    for (int i = 0; i < mp_Songs.size(); i++)
-        delete mp_Songs[i];
-
+    clearSongs();
     mp_Songs.clear();
 }
 
 // ==============================
 // ==============================
 
-Song& Player::getCurrentSong()
+Song* Player::getCurrentSong()
 {
-    if (m_CurrentSong >= mp_Songs.size())
-        throw ArrayAccessException("Player::getCurrentSong", mp_Songs.size(), m_CurrentSong);
-
-    return *(mp_Songs[m_CurrentSong]);
+    if (m_CurrentSong == UNDEFINED_SONG)
+        return nullptr;
+    else
+        return *m_CurrentSong;
 }
 
 // ==============================
 // ==============================
 
-int Player::songsCount() const
+Player::SongIt Player::findSong(int song) const
 {
-    return mp_Songs.size();
+    for (auto it = mp_Songs.begin(); it != mp_Songs.end(); ++it)
+    {
+        if ((*it)->getNum() == song)
+            return it;
+    }
+
+    return UNDEFINED_SONG;
+}
+
+// ==============================
+// ==============================
+
+int Player::songsCount(Constants::SongList_t list) const
+{
+    return mp_Songs.getSubSets(list).elementsCount();
 }
 
 // ==============================
@@ -61,17 +73,17 @@ int Player::songsCount() const
 
 void Player::play()
 {
-    if (mp_Songs.size() > 0)
+    if (m_CurrentSong != UNDEFINED_SONG)
     {
         if (m_Stop)
         {
             m_Stop = false;
-            getCurrentSong().play();
+            getCurrentSong()->play();
         }
         else if (m_Pause)
         {
             m_Pause = false;
-            getCurrentSong().pause(false);
+            getCurrentSong()->pause(false);
         }
     }
 }
@@ -86,8 +98,10 @@ void Player::stop()
         m_Pause = false;
         m_Stop = true;
 
-        if (mp_Songs.size() > 0)
-            getCurrentSong().stop();
+        if (m_CurrentSong != UNDEFINED_SONG)
+            getCurrentSong()->stop();
+
+        emit stopped();
     }
 }
 
@@ -98,8 +112,8 @@ void Player::pause()
 {
     m_Pause = true;
 
-    if (mp_Songs.size() > 0)
-        getCurrentSong().pause(true);
+    if (m_CurrentSong != UNDEFINED_SONG)
+        getCurrentSong()->pause(true);
 }
 
 // ==============================
@@ -116,7 +130,7 @@ void Player::mute(bool mute)
 
 bool Player::isPlaying() const
 {
-    return (!m_Pause && !m_Stop);
+    return (!m_Pause && !m_Stop && m_CurrentSong != UNDEFINED_SONG);
 }
 
 // ==============================
@@ -162,38 +176,34 @@ void Player::setLoop(bool loop)
 // ==============================
 // ==============================
 
-int Player::first() const
+Player::SongIt Player::first() const
 {
-    if (mp_Songs.size() > 0)
-        return FIRST_SONG;
-    else
-        return UNDEFINED_SONG;
+    return FIRST_SONG;
 }
 
 // ==============================
 // ==============================
 
-int Player::prev() const
+Player::SongIt Player::prev() const
 {
-    if (m_CurrentSong > FIRST_SONG)
-        return (m_CurrentSong - 1);
-    else if (m_Loop && mp_Songs.size() > 0)
-        return LAST_SONG;
-    else
-        return UNDEFINED_SONG;
+    SongIt prev = (m_Loop && m_CurrentSong == FIRST_SONG) ? mp_Songs.end() : m_CurrentSong;
+
+    --prev;
+    return prev;
 }
 
 // ==============================
 // ==============================
 
-int Player::next() const
+Player::SongIt Player::next() const
 {
-    if (m_CurrentSong < LAST_SONG)
-        return (m_CurrentSong + 1);
-    else if (m_Loop && mp_Songs.size() > 0)
-        return FIRST_SONG;
-    else
-        return UNDEFINED_SONG;
+    SongIt next = m_CurrentSong;
+    ++next;
+
+    if (m_Loop && next == mp_Songs.end())
+        next = FIRST_SONG;
+
+    return next;
 }
 
 // ==============================
@@ -218,12 +228,14 @@ void Player::setVolume(int volumeState)
 // ==============================
 // ==============================
 
-void Player::clearSongs()
+void Player::clearSongs(Constants::SongList_t list)
 {
-    for (int i = 0; i < mp_Songs.size(); i++)
-        delete mp_Songs[i];
+    auto songs = mp_Songs.getSubSets(list);
 
-    mp_Songs.clear();
+    for (auto it = songs.begin(); it != songs.end(); ++it)
+        delete *it;
+
+    mp_Songs.clear(list);
 }
 
 // ==============================
@@ -231,13 +243,12 @@ void Player::clearSongs()
 
 bool Player::containsSong(const QString& filePath) const
 {
-    for (int i = 0; i < mp_Songs.size(); i++)
+    auto songs = mp_Songs.getSubSets(Constants::LOCAL_SONGS);
+
+    for (auto it = songs.begin(); it != songs.end(); ++it)
     {
-        if (!mp_Songs.at(i)->isRemote())
-        {
-            if (mp_Songs.at(i)->getFile() == filePath)
-                return true;
-        }
+        if ((*it)->getFile() == filePath)
+            return true;
     }
 
     return false;
@@ -246,7 +257,7 @@ bool Player::containsSong(const QString& filePath) const
 // ==============================
 // ==============================
 
-SongListItem* Player::addNewSong(const QString& filePath, SongListItem *parentDir)
+SongListItem* Player::addNewSong(Constants::SongList_t list, const QString& filePath, SongListItem *parentDir)
 {
     QFileInfo fileInfo(filePath);
     QString absoluteFilePath = fileInfo.canonicalFilePath();
@@ -258,9 +269,10 @@ SongListItem* Player::addNewSong(const QString& filePath, SongListItem *parentDi
 
         try
         {
-            Song *song = new Song(absoluteFilePath, mp_Songs.size());
+            bool inFolder = (list == Constants::DIRECTORY_SONGS);
+            Song *song = new Song(absoluteFilePath, songsCount(), inFolder);
 
-            mp_Songs.append(song);
+            mp_Songs[list][song->getNum()] = song;
             item->setAttachedSong(song);
         }
         catch (FmodManager::StreamError_t error)
@@ -305,7 +317,7 @@ SongTreeRoot* Player::loadSongs(const QString& dirPath, SongTreeRoot *parentDir)
                 item->setParent(parentDir);
         }
         else
-            addNewSong(filePath, parentDir);
+            addNewSong(Constants::DIRECTORY_SONGS, filePath, parentDir);
     }
 
     return parentDir;
@@ -314,7 +326,7 @@ SongTreeRoot* Player::loadSongs(const QString& dirPath, SongTreeRoot *parentDir)
 // ==============================
 // ==============================
 
-void Player::addSongs(SongTreeRoot *songs)
+void Player::addSongs(Constants::SongList_t list, SongTreeRoot *songs)
 {
     QTreeWidget tree;
     tree.addTopLevelItem(songs);
@@ -325,8 +337,8 @@ void Player::addSongs(SongTreeRoot *songs)
         Song *song = (*it)->getAttachedSong();
         if (song)
         {
-            song->setNum(mp_Songs.size());
-            mp_Songs.append(song);
+            song->setNum(songsCount());
+            mp_Songs[list][song->getNum()] = song;
         }
 
         ++it;
@@ -338,34 +350,80 @@ void Player::addSongs(SongTreeRoot *songs)
 // ==============================
 // ==============================
 
-void Player::removeRemoteSongs()
+void Player::firstSong()
 {
-    int i = 0;
-
-    while (i < mp_Songs.size())
-    {
-        if (mp_Songs.at(i)->isRemote())
-            mp_Songs.remove(i);
-        else
-            i++;
-    }
-
-    clientFile.close();
+    changeSong(first());
 }
 
 // ==============================
 // ==============================
 
-void Player::changeSong(int song)
+void Player::previousSong()
 {
-    m_CurrentSong = song;
+    changeSong(prev());
+}
 
-    // Ouverture du fichier
-    getCurrentSong().open();
+// ==============================
+// ==============================
 
-    // Si le player n'est pas stoppé, on le joue
-    if (!isStopped())
-        getCurrentSong().play();
+void Player::nextSong()
+{
+    changeSong(next());
+}
+
+// ==============================
+// ==============================
+
+bool Player::changeSong(SongIt song)
+{
+    if (song != UNDEFINED_SONG)
+    {
+        m_CurrentSong = song;
+
+        try
+        {
+            // Ouverture du fichier
+            getCurrentSong()->open();
+
+            // Si le player n'est pas stoppé, on le joue
+            if (!isStopped())
+                getCurrentSong()->play();
+
+            emit songChanged();
+        }
+        catch(FmodManager::StreamError_t error)
+        {
+            emit streamError(getCurrentSong()->getFile());
+        }
+    }
+    else
+    {
+        stop();
+    }
+
+    return (m_CurrentSong != UNDEFINED_SONG);
+}
+
+// ==============================
+// ==============================
+
+bool Player::changeSong(int song)
+{
+    return changeSong(findSong(song));
+}
+
+// ==============================
+// ==============================
+
+void Player::update()
+{
+    if (isPlaying())
+    {
+        if (getCurrentSong()->isFinished())
+            nextSong();
+
+        FmodManager::getInstance()->update();
+    }
 }
 
 // ==============================
@@ -379,7 +437,9 @@ void Player::executeNetworkCommand(CommandRequest *command)
     switch (command->getCommandType())
     {
         case 'o':
-            clientFile.setFileName(mp_Songs.at(songNum)->getFile());
+        {
+            SongIt song = findSong(songNum);
+            clientFile.setFileName((*song)->getFile());
             if (!clientFile.open(QIODevice::ReadOnly))
                 reply = new OpenCommandReply(songNum, FMOD_ERR_FILE_NOTFOUND, -1);
             else
@@ -390,6 +450,7 @@ void Player::executeNetworkCommand(CommandRequest *command)
                 reply = new OpenCommandReply(songNum, FMOD_OK, fileSize);
             }
             break;
+        }
 
         case 'c':
             clientFile.close();

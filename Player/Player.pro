@@ -17,7 +17,7 @@ TEMPLATE = app
 QMAKE_CXXFLAGS += -std=c++14
 
 SOURCES += main.cpp \
-    Tools.cpp \
+    Util/Tools.cpp \
     Gui/AboutDialog.cpp \
     Gui/ClickableLabel.cpp \
     Gui/PlayerButton.cpp \
@@ -44,7 +44,7 @@ SOURCES += main.cpp \
     Gui/SongListIterator.cpp
 
 HEADERS  += Constants.h \
-    Tools.h \
+    Util/Tools.h \
     Gui/AboutDialog.h \
     Gui/ClickableLabel.h \
     Gui/PlayerButton.h \
@@ -73,7 +73,8 @@ HEADERS  += Constants.h \
     Gui/NetworkLoadBar.h \
     Gui/MenuBar.h \
     Gui/SongListItem.h \
-    Gui/SongListIterator.h
+    Gui/SongListIterator.h \
+    Util/composedmap.h
 
 RC_FILE = Player.rc
 

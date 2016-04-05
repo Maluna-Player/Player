@@ -75,11 +75,6 @@ class PlayerWindow : public QMainWindow
         virtual void setState(Constants::PlayerState_t state);
 
         /**
-         * @brief Met à jour la liste des musiques du répertoire.
-         */
-        virtual void refreshSongsList();
-
-        /**
          * @brief Modifie le volume de l'application avec celui passé en paramètre.
          * @param volume Nouveau volume à appliquer
          */
@@ -88,10 +83,14 @@ class PlayerWindow : public QMainWindow
     private slots:
 
         /**
-         * @brief Lance le son song du player et actualise l'interface graphique (titre, durée...)
-         * @param song Indice de la musique
+         * @brief Actualise l'interface graphique (titre, durée...) à partir du son courant.
          */
-        virtual void changeSong(int song);
+        virtual void updateCurrentSong();
+
+        /**
+         * @brief Met à jour la liste des musiques du répertoire.
+         */
+        virtual void refreshSongsList();
 
         /**
          * @brief Applique l'état play.

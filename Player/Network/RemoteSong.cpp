@@ -12,7 +12,7 @@
 
 
 RemoteSong::RemoteSong(const QString& file, int num, int remoteNum, SoundPos_t length, const QString& artist, SoundSettings *settings)
-    : Song(file, num, false), m_RemoteNum(remoteNum), m_Settings(settings)
+    : Song(file, num, false, false), m_RemoteNum(remoteNum), m_Settings(settings)
 {
     m_Length = length;
     m_File = QString::number(num);

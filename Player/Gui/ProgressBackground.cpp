@@ -9,7 +9,7 @@
 
 #include "ProgressBackground.h"
 #include "Constants.h"
-#include "Tools.h"
+#include "../Util/Tools.h"
 
 
 ProgressBackground::ProgressBackground(QWidget *parent) : QWidget(parent)

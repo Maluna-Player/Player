@@ -45,6 +45,11 @@ class Spectrum : public QWidget
         virtual ~Spectrum();
 
         /**
+         * @brief Remet à 0 les valeurs du spectre.
+         */
+        virtual void clear();
+
+        /**
          * Récupère les fréquences du son joué
          * et met à jour les valeurs des vertices.
          * @param id Identifiant du canal à tester

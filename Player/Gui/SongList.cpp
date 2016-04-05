@@ -12,8 +12,7 @@
 #include "../Audio/Song.h"
 #include "../Exceptions/FileLoadingException.h"
 #include "../Exceptions/ArrayAccessException.h"
-#include "Tools.h"
-#include "SongListIterator.h"
+#include "../Util/Tools.h"
 #include <QScrollBar>
 #include <QMouseEvent>
 
@@ -52,10 +51,59 @@ SongList::~SongList()
 // ==============================
 // ==============================
 
+SongListItem* SongList::getRootNode(Constants::SongList_t list) const
+{
+    if (list & Constants::LOCAL_SONGS)
+        return static_cast<SongListItem*>(topLevelItem(0));
+    else
+        return static_cast<SongListItem*>(topLevelItem(1));
+}
+
+// ==============================
+// ==============================
+
+void SongList::removeSong(const SongListIterator& it)
+{
+    SongListItem *parent = (*it)->parent();
+    parent->removeChild(*it);
+
+    while (!parent->isRoot() && parent->parent() && parent->childCount() == 0)
+    {
+        SongListItem *dirToRemove = parent;
+        parent = parent->parent();
+        parent->removeChild(dirToRemove);
+        delete dirToRemove;
+    }
+}
+
+// ==============================
+// ==============================
+
 void SongList::clearList(Constants::SongList_t list)
 {
+    SongListItem *root = getRootNode(list);
+
     if (list == Constants::LOCAL_SONGS || list == Constants::REMOTE_SONGS)
-        topLevelItem(list)->takeChildren();
+        root->takeChildren();
+    else if (list == Constants::DIRECTORY_SONGS || list == Constants::IMPORTED_SONGS)
+    {
+        SongListIterator it(root);
+
+        while (!it.isNull())
+        {
+            if ((*it)->isSong())
+            {
+                Song *song = (*it)->getAttachedSong();
+                if (song && ((list == Constants::DIRECTORY_SONGS && song->isInFolder())
+                              || (list == Constants::IMPORTED_SONGS && !song->isInFolder())))
+                    removeSong(it);
+                else
+                    ++it;
+            }
+            else
+                ++it;
+        }
+    }
 }
 
 // ==============================
@@ -111,7 +159,7 @@ void SongList::mousePressEvent(QMouseEvent *event)
 
 SongTreeRoot* SongList::getSongHierarchy(Constants::SongList_t list) const
 {
-    return static_cast<SongListItem*>(topLevelItem(list));
+    return static_cast<SongListItem*>(getRootNode(list));
 }
 
 // ==============================
@@ -119,7 +167,7 @@ SongTreeRoot* SongList::getSongHierarchy(Constants::SongList_t list) const
 
 void SongList::addSong(Constants::SongList_t list, SongListItem *item)
 {
-    QTreeWidgetItem *root = topLevelItem(list);
+    QTreeWidgetItem *root = getRootNode(list);
     if (root)
     {
         root->addChild(item);
@@ -138,7 +186,7 @@ void SongList::addSong(Constants::SongList_t list, SongListItem *item)
 
 void SongList::addTree(Constants::SongList_t list, SongTreeRoot *songs)
 {
-    QTreeWidgetItem *root = topLevelItem(list);
+    QTreeWidgetItem *root = getRootNode(list);
     if (root)
     {
         root->addChildren(songs->takeChildren());

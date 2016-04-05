@@ -12,7 +12,7 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QPushButton>
-#include "Tools.h"
+#include "../Util//Tools.h"
 #include "Constants.h"
 
 
@@ -22,7 +22,7 @@ AboutDialog::AboutDialog(QWidget *parent) : QDialog(parent)
     QGridLayout *informationLayout = new QGridLayout;
 
     QLabel *iconLabel = new QLabel;
-    iconLabel->setPixmap(Tools::loadImage(Constants::IMAGES_SUBDIR + "icone.ico"));
+    iconLabel->setPixmap(Tools::loadImage(Constants::IMAGES_SUBDIR + "icon.ico"));
 
     QLabel *qtLabel = new QLabel;
     qtLabel->setPixmap(Tools::loadImage(Constants::IMAGES_SUBDIR + "qt.png").scaled(80, 80, Qt::KeepAspectRatio));

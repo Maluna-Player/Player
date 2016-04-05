@@ -9,7 +9,7 @@
 
 #include "ProgressBar.h"
 #include "Constants.h"
-#include "Tools.h"
+#include "../Util/Tools.h"
 
 
 ProgressBar::ProgressBar(QWidget *parent) : QProgressBar(parent), m_Press(false)

@@ -84,7 +84,16 @@ const unsigned int VOLUME_VIEWER_H              = VOLUME_SPRITE_H;
 enum PlayerState_t { PLAY_STATE, PAUSE_STATE, STOP_STATE };
 
 // Listes de musiques
-enum SongList_t { LOCAL_SONGS, REMOTE_SONGS, DIRECTORY_SONGS };
+enum SongList_t { DIRECTORY_SONGS = 1,
+                  IMPORTED_SONGS = 2,
+                  LOCAL_SONGS = DIRECTORY_SONGS | IMPORTED_SONGS,
+                  REMOTE_SONGS = 4,
+                  ALL_SONGS = LOCAL_SONGS | REMOTE_SONGS };
+
+inline SongList_t operator|(SongList_t l1, SongList_t l2)
+{
+    return static_cast<SongList_t>(static_cast<int>(l1) | static_cast<int>(l2));
+}
 
 }
 

@@ -9,7 +9,7 @@
 
 #include "VolumeViewer.h"
 #include "Constants.h"
-#include "Tools.h"
+#include "../Util/Tools.h"
 
 
 VolumeViewer::VolumeViewer(QWidget *parent) : QLabel(parent)

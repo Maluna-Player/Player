@@ -20,7 +20,10 @@ class Song
     private:
 
         int m_Num;
+
         QString m_Title;
+
+        bool m_InFolder;
 
     protected:
 
@@ -34,7 +37,7 @@ class Song
 
     public:
 
-        Song(const QString& file = "", int num = -1, bool openable = true);
+        Song(const QString& file = "", int num = -1, bool inFolder = true, bool openable = true);
         virtual ~Song();
 
         virtual SoundID_t getSoundID() const;
@@ -47,6 +50,12 @@ class Song
          * @param num Nouveau numéro
          */
         virtual void setNum(int num);
+
+        /**
+         * @brief Détermine si la musique est dans le dossier de lecture ou non.
+         * @return true si musique du dossier
+         */
+        virtual bool isInFolder() const;
 
         /**
          * @brief Détermine si la musique est distante ou non.

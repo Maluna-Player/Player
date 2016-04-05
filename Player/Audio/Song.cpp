@@ -11,8 +11,8 @@
 #include <QFileInfo>
 
 
-Song::Song(const QString& file, int num, bool openable)
-    : m_Num(num), m_File(file), m_SoundID(0), m_Artist("")
+Song::Song(const QString& file, int num, bool inFolder, bool openable)
+    : m_Num(num), m_InFolder(inFolder), m_File(file), m_SoundID(0), m_Artist("")
 {
     if (openable)
     {
@@ -85,6 +85,14 @@ SoundPos_t Song::getLength() const
 void Song::setNum(int num)
 {
     m_Num = num;
+}
+
+// ==============================
+// ==============================
+
+bool Song::isInFolder() const
+{
+    return m_InFolder;
 }
 
 // ==============================

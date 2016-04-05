@@ -47,7 +47,7 @@ void Spectrum::draw(QPainter *painter) const
 
     for (i = 0; i < m_Width; i++)
     {
-        painter->fillRect(i, m_Lines[i].bottom(), 1, height() - m_Lines[i].bottom(), gradient);
+        painter->fillRect(i, m_Lines[i].top(), 1, height() - m_Lines[i].top(), gradient);
     }
 }
 
@@ -73,6 +73,17 @@ void Spectrum::paintEvent(QPaintEvent * /*event*/)
 // ==============================
 // ==============================
 
+void Spectrum::clear()
+{
+    for (int i = 0; i < m_Width; i++)
+        m_Lines[i].setTop(height());
+
+    update();
+}
+
+// ==============================
+// ==============================
+
 void Spectrum::updateValues(SoundID_t id)
 {
     int i;
@@ -93,7 +104,7 @@ void Spectrum::updateValues(SoundID_t id)
         int yPos = height() - lineHeight;
 
         /* Calcul de la position de la colonne */
-        m_Lines[i].setBottom(yPos);
+        m_Lines[i].setTop(yPos);
     }
 
     delete[] spectrumValues;

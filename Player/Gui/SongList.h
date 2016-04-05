@@ -17,6 +17,7 @@
 #include <QPair>
 #include <QString>
 #include "SongListItem.h"
+#include "SongListIterator.h"
 #include "Constants.h"
 
 class SongList : public QTreeWidget
@@ -26,6 +27,20 @@ class SongList : public QTreeWidget
     private:
 
         int m_CurrentSong;
+
+
+        /**
+         * @brief Récupère la racine correspondant à la liste passée en paramètre.
+         * @param list Liste dont on veut récupérer la racine
+         * @return Noeud racine
+         */
+        virtual SongListItem* getRootNode(Constants::SongList_t list) const;
+
+        /**
+         * @brief Supprime de la liste l'élément passé en paramètre (avec ses parents récursivement s'il s'agit du seul fils).
+         * @param it Itérateur sur l'élément à supprimer
+         */
+        virtual void removeSong(const SongListIterator& it);
 
     protected:
 

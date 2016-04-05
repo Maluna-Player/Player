@@ -9,7 +9,7 @@
 
 #include "PlayerWindow.h"
 #include "../Audio/FmodManager.h"
-#include "Tools.h"
+#include "../Util/Tools.h"
 #include "AboutDialog.h"
 
 #include <QGridLayout>
@@ -31,6 +31,10 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setSpacing(0);
     layout->setContentsMargins(0, 0, 0, 0);
+
+    connect(&m_Player, SIGNAL(songChanged()), this, SLOT(updateCurrentSong()));
+    connect(&m_Player, SIGNAL(stopped()), this, SLOT(stop()));
+    connect(&m_Player, SIGNAL(streamError(QString)), this, SLOT(refreshSongsList()));
 
     /** Menu **/
 
@@ -64,7 +68,7 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     mp_SongPicture = new QLabel;
     mp_SongList = new SongList;
 
-    connect(mp_SongList, SIGNAL(songPressed(int)), this, SLOT(changeSong(int)));
+    connect(mp_SongList, SIGNAL(songPressed(int)), &m_Player, SLOT(changeSong(int)));
 
     topLayout->setColumnStretch(0, 1);
     topLayout->addWidget(mp_SongTitle, 0, 0, 1, 2, Qt::AlignTop);
@@ -176,10 +180,10 @@ void PlayerWindow::setState(Constants::PlayerState_t state)
     else if (state == Constants::STOP_STATE)
     {
         m_Player.stop();
-        mp_Spectrum->updateValues(m_Player.getCurrentSong().getSoundID());
+        mp_Spectrum->clear();
         mp_NetworkLoadBar->setValue(0);
         mp_NetworkLoadBar->setStartPos(0);
-        mp_ProgressBar->setValue(m_Player.getCurrentSong().getPosition());
+        mp_ProgressBar->setValue(0);
         mp_SongPos->setText(Tools::msToString(0));
     }
 
@@ -190,46 +194,32 @@ void PlayerWindow::setState(Constants::PlayerState_t state)
 // ==============================
 // ==============================
 
-void PlayerWindow::changeSong(int song)
+void PlayerWindow::updateCurrentSong()
 {
-    if (song != UNDEFINED_SONG)
+    if (m_Player.getCurrentSong())
     {
-        try
-        {
-            m_Player.changeSong(song);
+        mp_SongTitle->setText(m_Player.getCurrentSong()->getTitle());
+        mp_SongArtist->setText(m_Player.getCurrentSong()->getArtist());
+        mp_SongPicture->setPixmap(m_Player.getCurrentSong()->buildPicture());
 
-            mp_SongTitle->setText(m_Player.getCurrentSong().getTitle());
-            mp_SongArtist->setText(m_Player.getCurrentSong().getArtist());
-            mp_SongPicture->setPixmap(m_Player.getCurrentSong().buildPicture());
+        if (!mp_SongPicture->pixmap()->isNull() && mp_SongPicture->pixmap()->width() > 400)
+            mp_SongPicture->setPixmap(mp_SongPicture->pixmap()->scaledToWidth(400));
 
-            if (!mp_SongPicture->pixmap()->isNull() && mp_SongPicture->pixmap()->width() > 400)
-                mp_SongPicture->setPixmap(mp_SongPicture->pixmap()->scaledToWidth(400));
+        mp_SongLength->setText(Tools::msToString(m_Player.getCurrentSong()->getLength()));
 
-            mp_SongLength->setText(Tools::msToString(m_Player.getCurrentSong().getLength()));
+        mp_ProgressBar->setValue(0);
+        mp_ProgressBar->setMaximum(m_Player.getCurrentSong()->getLength());
+        mp_NetworkLoadBar->setValue(0);
+        mp_NetworkLoadBar->setStartPos(0);
 
-            mp_ProgressBar->setValue(0);
-            mp_ProgressBar->setMaximum(m_Player.getCurrentSong().getLength());
-            mp_NetworkLoadBar->setValue(0);
-            mp_NetworkLoadBar->setStartPos(0);
+        if (m_Player.getCurrentSong()->isRemote())
+            mp_NetworkLoadBar->setMaximum(mp_Socket->getTotalCurrentSongData());
 
-            if (m_Player.getCurrentSong().isRemote())
-                mp_NetworkLoadBar->setMaximum(mp_Socket->getTotalCurrentSongData());
-
-            mp_SongList->setCurrentSong(song);
-
-            if (m_Player.isPaused())
-                setState(Constants::STOP_STATE);
-        }
-        catch(FmodManager::StreamError_t error)
-        {
-            refreshSongsList();
-        }
+        mp_SongList->setCurrentSong(m_Player.getCurrentSong()->getNum());
     }
-    else
-    {
-        if (!m_Player.isStopped())
-            setState(Constants::STOP_STATE);
-    }
+
+    if (m_Player.isPaused())
+        setState(Constants::STOP_STATE);
 }
 
 // ==============================
@@ -243,7 +233,7 @@ void PlayerWindow::refreshSongsList()
     SongTreeRoot *songTree = m_Player.loadSongs(Constants::SONGS_SUBDIR);
     mp_SongList->addTree(Constants::LOCAL_SONGS, songTree);
 
-    changeSong(m_Player.first());
+    m_Player.firstSong();
 
     if (!m_Player.isStopped())
       setState(Constants::STOP_STATE);
@@ -272,8 +262,7 @@ void PlayerWindow::pause()
 
 void PlayerWindow::stop()
 {
-    if (!m_Player.isStopped())
-        setState(Constants::STOP_STATE);
+    setState(Constants::STOP_STATE);
 }
 
 // ==============================
@@ -281,7 +270,7 @@ void PlayerWindow::stop()
 
 void PlayerWindow::previousSong()
 {
-    changeSong(m_Player.prev());
+    m_Player.previousSong();
 }
 
 // ==============================
@@ -289,7 +278,7 @@ void PlayerWindow::previousSong()
 
 void PlayerWindow::nextSong()
 {
-    changeSong(m_Player.next());
+    m_Player.nextSong();
 }
 
 // ==============================
@@ -330,14 +319,14 @@ void PlayerWindow::decreaseVolume()
 
 void PlayerWindow::setSongPosition(int value)
 {
-    if (!m_Player.isStopped())
+    if (!m_Player.isStopped() && m_Player.getCurrentSong())
     {
-        SoundPos_t pos = value * m_Player.getCurrentSong().getLength() / 100;
+        SoundPos_t pos = value * m_Player.getCurrentSong()->getLength() / 100;
 
-        m_Player.getCurrentSong().setPosition(pos);
+        m_Player.getCurrentSong()->setPosition(pos);
         mp_ProgressBar->setValue(pos);
 
-        if (m_Player.getCurrentSong().isRemote())
+        if (m_Player.getCurrentSong()->isRemote())
         {
             mp_NetworkLoadBar->setValue(0);
             mp_NetworkLoadBar->setStartPos(value);
@@ -367,7 +356,7 @@ void PlayerWindow::importSong()
 
     if (!filePath.isNull())
     {
-        SongListItem *songItem = m_Player.addNewSong(filePath);
+        SongListItem *songItem = m_Player.addNewSong(Constants::IMPORTED_SONGS, filePath);
 
         if (songItem)
             mp_SongList->addSong(Constants::LOCAL_SONGS, songItem);
@@ -422,7 +411,7 @@ void PlayerWindow::connectToHost(const QString& host)
 void PlayerWindow::startConnection()
 {
     SongTreeRoot *songList = mp_Socket->exchangeSongList(mp_SongList->getSongHierarchy(), m_Player.songsCount());
-    m_Player.addSongs(songList);
+    m_Player.addSongs(Constants::REMOTE_SONGS, songList);
     mp_SongList->addTree(Constants::REMOTE_SONGS, songList);
 
     mp_ConnectionBox->connected();
@@ -442,15 +431,15 @@ void PlayerWindow::closeConnection()
             mp_Socket->disconnection();
         else
         {
-            if (m_Player.getCurrentSong().isRemote())
+            if (!m_Player.getCurrentSong())
             {
                 if (!m_Player.isStopped())
                     setState(Constants::STOP_STATE);
-
-                changeSong(m_Player.first());
             }
+            else if (m_Player.getCurrentSong()->isRemote())
+                m_Player.firstSong();
 
-            m_Player.removeRemoteSongs();
+            m_Player.clearSongs(Constants::REMOTE_SONGS);
             mp_SongList->clearList(Constants::REMOTE_SONGS);
 
             delete mp_Socket;
@@ -470,16 +459,14 @@ void PlayerWindow::timerEvent(QTimerEvent *event)
     {
         if (m_Player.isPlaying())
         {
-            FmodManager::getInstance()->update();
-            mp_Spectrum->updateValues(m_Player.getCurrentSong().getSoundID());
-            mp_ProgressBar->setValue(m_Player.getCurrentSong().getPosition());
-            mp_SongPos->setText(Tools::msToString(m_Player.getCurrentSong().getPosition()));
+            m_Player.update();
 
-            if (m_Player.getCurrentSong().isRemote())
+            mp_Spectrum->updateValues(m_Player.getCurrentSong()->getSoundID());
+            mp_ProgressBar->setValue(m_Player.getCurrentSong()->getPosition());
+            mp_SongPos->setText(Tools::msToString(m_Player.getCurrentSong()->getPosition()));
+
+            if (m_Player.getCurrentSong()->isRemote())
                 mp_NetworkLoadBar->setValue(mp_Socket->getSongDataReceived());
-
-            if (m_Player.getCurrentSong().isFinished())
-                changeSong(m_Player.next());
         }
 
         if (mp_Socket && mp_Socket->isConnected())
