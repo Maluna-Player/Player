@@ -11,7 +11,7 @@
 #include <QDataStream>
 
 
-Command::Command(int songNum) : m_SongNum(songNum)
+Command::Command(Player::SongId songNum) : m_SongNum(songNum)
 {
 
 }
@@ -19,7 +19,7 @@ Command::Command(int songNum) : m_SongNum(songNum)
 // ==============================
 // ==============================
 
-int Command::getSongNum() const
+Player::SongId Command::getSongNum() const
 {
     return m_SongNum;
 }

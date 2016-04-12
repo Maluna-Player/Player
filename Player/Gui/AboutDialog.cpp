@@ -12,7 +12,7 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QPushButton>
-#include "../Util//Tools.h"
+#include "../Util/Tools.h"
 #include "Constants.h"
 
 

@@ -12,26 +12,35 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 
+#include <QFile>
+
+#include "FmodManager.h"
 #include "../Util/composedmap.h"
 #include "../Constants.h"
 #include "../Gui/SongListItem.h"
-#include <QFile>
-#include "Song.h"
-#include "../Network/PlayerSocket.h"
-#include "../Network/Commands/Command.h"
-#include "../Network/Commands/CommandRequest.h"
-#include "../Network/Commands/CommandReply.h"
 
 #define FIRST_SONG      mp_Songs.begin()
 #define UNDEFINED_SONG  mp_Songs.end()
+
+class Song;
+class RemoteSong;
+
+class CommandRequest;
+class CommandReply;
 
 class Player : public QObject
 {
     Q_OBJECT
 
+    public:
+
+        using SongId = unsigned int;
+
     private:
 
         using SongIt = ComposedMap<Constants::SongList_t, std::map<int, Song*>>::const_iterator;
+
+        unsigned int m_Cpt;
 
         ComposedMap<Constants::SongList_t, std::map<int, Song*>> mp_Songs;
         SongIt m_CurrentSong;
@@ -49,18 +58,31 @@ class Player : public QObject
 
 
         /**
+         * @brief Génère un nouvel identifiant pour une musique.
+         * @return Numéro généré
+         */
+        virtual SongId getNewSongNum();
+
+        /**
          * @brief Détermine si le fichier passé en paramètre est déjà dans la liste.
          * @param filePath Chemin du fichier à tester
          * @return true si le fichier est déjà enregistré
          */
-        virtual bool containsSong(const QString& filePath) const;
+        virtual bool containsLocalSong(const QString& filePath) const;
+
+        /**
+         * @brief Détermine si le numéro de la musique distante passé en paramètre est déjà dans la liste.
+         * @param num Numéro de la musique distante
+         * @return true si la musique est déjà enregistrée
+         */
+        virtual bool containsRemoteSong(const SongId num) const;
 
         /**
          * @brief Recherche une musique à partir de son identifiant.
          * @param song Identifiant de la musique
          * @return Itérateur sur le son correspondant au numéro passé en paramètre (end si pas trouvé)
          */
-        virtual SongIt findSong(int song) const;
+        virtual SongIt findSong(SongId song) const;
 
         /**
          * @brief Retourne la première musique de la liste.
@@ -203,6 +225,25 @@ class Player : public QObject
         virtual void clearSongs(Constants::SongList_t list = Constants::ALL_SONGS);
 
         /**
+         * @brief Créé un nouveau son local s'il n'existe pas encore à partir du chemin passé en paramètre.
+         * @param filepath Chemin du son à créer
+         * @param inFolder Présence du son dans le dossier ou non
+         * @return Objet son créé, nullptr sinon
+         */
+        virtual Song* createLocalSong(const QString& filepath, bool inFolder);
+
+        /**
+         * @brief Créé un nouveau son distant s'il n'existe pas encore à partir des infos passées en paramètre.
+         * @param file Chemin du fichier
+         * @param remoteNum Identifiant distant du son
+         * @param length Longueur du son
+         * @param artist Artiste du son
+         * @param settings Paramètres de lecture du son distant
+         * @return Objet son créé, nullptr sinon
+         */
+        virtual RemoteSong* createRemoteSong(const QString& file, SongId remoteNum, SoundPos_t length, const QString& artist, SoundSettings *settings);
+
+        /**
          * @brief Ajoute une nouvelle musique dans la liste du player.
          * @param list Liste à laquelle on veut ajouter la musique
          * @param filePath Chemin du fichier à ajouter
@@ -219,13 +260,6 @@ class Player : public QObject
          * @return Arborescence des fichiers lus
          */
         virtual SongTreeRoot* loadSongs(const QString& dirPath, SongTreeRoot *parentDir = 0);
-
-        /**
-         * @brief Ajoute les sons de l'arborescence passée en paramètre à la liste du player.
-         * @param list Liste à laquelle on veut ajouter les musiques
-         * @param songs Arborescence de musiques à ajouter
-         */
-        virtual void addSongs(Constants::SongList_t list, SongTreeRoot *songs);
 
         /**
          * @brief Lance la première musique du player.
@@ -254,7 +288,7 @@ class Player : public QObject
          * @param song Indice de la musique
          * @return true si la musique a bien été modifiée
          */
-        virtual bool changeSong(int song);
+        virtual bool changeSong(Player::SongId song);
 
         /**
          * @brief Traite la commande passée en paramètre et émet la réponse une fois terminée.

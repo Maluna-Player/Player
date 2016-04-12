@@ -122,6 +122,7 @@ QByteArray SongListItem::toPacket() const
         Song *song = getAttachedSong();
         if (song)
         {
+            out << static_cast<quint16>(song->getNum());    // Id de la musique
             out << static_cast<quint32>(song->getLength()); // Durée de la musique
             out << song->getArtist();                       // Artiste de la musique
         }

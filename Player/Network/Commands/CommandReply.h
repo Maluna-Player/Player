@@ -22,7 +22,7 @@ class CommandReply : public Command
 
     public:
 
-        CommandReply(int songNum, FMOD_RESULT result);
+        CommandReply(Player::SongId songNum, FMOD_RESULT result);
         virtual ~CommandReply() {}
 
         virtual FMOD_RESULT getResult() const;
@@ -42,7 +42,7 @@ class OpenCommandReply : public CommandReply
 
     public:
 
-        OpenCommandReply(int songNum, FMOD_RESULT result, int fileSize);
+        OpenCommandReply(Player::SongId songNum, FMOD_RESULT result, int fileSize);
         virtual ~OpenCommandReply() {}
 
         virtual char getCommandType() const;
@@ -56,7 +56,7 @@ class CloseCommandReply : public CommandReply
 {
     public:
 
-        CloseCommandReply(int songNum, FMOD_RESULT result);
+        CloseCommandReply(Player::SongId songNum, FMOD_RESULT result);
         virtual ~CloseCommandReply() {}
 
         virtual char getCommandType() const;
@@ -72,7 +72,7 @@ class ReadCommandReply : public CommandReply
 
     public:
 
-        ReadCommandReply(int songNum, FMOD_RESULT result, void *buffer, unsigned int bytes);
+        ReadCommandReply(Player::SongId songNum, FMOD_RESULT result, void *buffer, unsigned int bytes);
         virtual ~ReadCommandReply();
 
         virtual char getCommandType() const;
@@ -88,7 +88,7 @@ class SeekCommandReply : public CommandReply
 {
     public:
 
-        SeekCommandReply(int songNum, FMOD_RESULT result);
+        SeekCommandReply(Player::SongId songNum, FMOD_RESULT result);
         virtual ~SeekCommandReply() {}
 
         virtual char getCommandType() const;

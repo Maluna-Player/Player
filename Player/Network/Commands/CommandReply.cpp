@@ -11,7 +11,7 @@
 #include <QDataStream>
 
 
-CommandReply::CommandReply(int songNum, FMOD_RESULT result) : Command(songNum), m_Result(result)
+CommandReply::CommandReply(Player::SongId songNum, FMOD_RESULT result) : Command(songNum), m_Result(result)
 {
 
 }
@@ -44,7 +44,7 @@ QByteArray CommandReply::toPacket() const
 // ==============================
 // ==============================
 
-OpenCommandReply::OpenCommandReply(int songNum, FMOD_RESULT result, int fileSize)
+OpenCommandReply::OpenCommandReply(Player::SongId songNum, FMOD_RESULT result, int fileSize)
     : CommandReply(songNum, result), m_FileSize(fileSize)
 {
 
@@ -73,7 +73,7 @@ QByteArray OpenCommandReply::toPacket() const
 // ==============================
 // ==============================
 
-CloseCommandReply::CloseCommandReply(int songNum, FMOD_RESULT result)
+CloseCommandReply::CloseCommandReply(Player::SongId songNum, FMOD_RESULT result)
     : CommandReply(songNum, result)
 {
 
@@ -87,7 +87,7 @@ char CloseCommandReply::getCommandType() const
 // ==============================
 // ==============================
 
-ReadCommandReply::ReadCommandReply(int songNum, FMOD_RESULT result, void *buffer, unsigned int bytes)
+ReadCommandReply::ReadCommandReply(Player::SongId songNum, FMOD_RESULT result, void *buffer, unsigned int bytes)
     : CommandReply(songNum, result), m_Buffer(buffer), m_ReadBytes(bytes)
 {
 
@@ -127,7 +127,7 @@ QByteArray ReadCommandReply::toPacket() const
 // ==============================
 // ==============================
 
-SeekCommandReply::SeekCommandReply(int songNum, FMOD_RESULT result)
+SeekCommandReply::SeekCommandReply(Player::SongId songNum, FMOD_RESULT result)
     : CommandReply(songNum, result)
 {
 

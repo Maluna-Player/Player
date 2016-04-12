@@ -19,6 +19,7 @@
 #include "SongListItem.h"
 #include "SongListIterator.h"
 #include "Constants.h"
+#include "../Audio/Player.h"
 
 class SongList : public QTreeWidget
 {
@@ -52,7 +53,7 @@ class SongList : public QTreeWidget
          * @brief Signal émis lorsque l'utilisateur clique sur une musique locale de la liste.
          * @param song Musique sélectionnée
          */
-        void songPressed(int song);
+        void songPressed(Player::SongId song);
 
     public:
 

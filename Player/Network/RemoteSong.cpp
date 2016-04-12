@@ -11,8 +11,8 @@
 #include "PlayerSocket.h"
 
 
-RemoteSong::RemoteSong(const QString& file, int num, int remoteNum, SoundPos_t length, const QString& artist, SoundSettings *settings)
-    : Song(file, num, false, false), m_RemoteNum(remoteNum), m_Settings(settings)
+RemoteSong::RemoteSong(Player::SongId num, const QString& file, Player::SongId remoteNum, SoundPos_t length, const QString& artist, SoundSettings *settings)
+    : Song(num, file, false, false), m_RemoteNum(remoteNum), m_Settings(settings)
 {
     m_Length = length;
     m_File = QString::number(num);
@@ -33,6 +33,14 @@ RemoteSong::~RemoteSong()
 bool RemoteSong::isRemote() const
 {
     return true;
+}
+
+// ==============================
+// ==============================
+
+Player::SongId RemoteSong::getRemoteNum() const
+{
+    return m_RemoteNum;
 }
 
 // ==============================

@@ -12,19 +12,20 @@
 #define __COMMAND_H__
 
 #include "../Sendable.h"
+#include "../../Audio/Player.h"
 
 class Command : public Sendable
 {
     private:
 
-        int m_SongNum;
+        Player::SongId m_SongNum;
 
     public:
 
-        Command(int songNum);
+        Command(Player::SongId songNum);
         virtual ~Command() {}
 
-        virtual int getSongNum() const;
+        virtual Player::SongId getSongNum() const;
 
         virtual bool isRequest() const = 0;
 

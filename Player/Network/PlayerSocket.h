@@ -17,18 +17,20 @@
 #include <QHostAddress>
 #include <QThread>
 #include "../Gui/SongListItem.h"
-#include "RemoteSong.h"
 #include "PlayerMessage.h"
 #include "Commands/Command.h"
 #include "Commands/CommandRequest.h"
 #include "Commands/CommandReply.h"
 #include "../Audio/FmodManager.h"
+#include "../Audio/Player.h"
 
 class PlayerSocket : public QObject
 {
     Q_OBJECT
 
     private:
+
+        Player *mp_Player;
 
         bool m_Connected;
 
@@ -128,7 +130,7 @@ class PlayerSocket : public QObject
 
     public:
 
-        PlayerSocket();
+        PlayerSocket(Player *player);
         virtual ~PlayerSocket();
 
         /**
@@ -170,10 +172,9 @@ class PlayerSocket : public QObject
         /**
          * @brief Envoie au client la liste des musiques enregistrées et reçoit ses musiques.
          * @param songs Arborescence des musiques à envoyer
-         * @param nbSons Nombre de musiques à envoyer
          * @return Arborescence des musiques de l'autre client
          */
-        virtual SongTreeRoot* exchangeSongList(SongTreeRoot *songs, int songsNb);
+        virtual SongTreeRoot* exchangeSongList(SongTreeRoot *songs);
 
         /**
          * @brief Vérifie s'il existe une prochaine requête client et signale sa réception.

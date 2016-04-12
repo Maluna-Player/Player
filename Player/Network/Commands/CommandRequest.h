@@ -17,7 +17,7 @@ class CommandRequest : public Command
 {
     public:
 
-        CommandRequest(int songNum);
+        CommandRequest(Player::SongId songNum);
         virtual ~CommandRequest() {}
 
         virtual bool isRequest() const;
@@ -29,7 +29,7 @@ class OpenCommandRequest : public CommandRequest
 {
     public:
 
-        OpenCommandRequest(int songNum);
+        OpenCommandRequest(Player::SongId songNum);
         virtual ~OpenCommandRequest() {}
 
         virtual char getCommandType() const;
@@ -39,7 +39,7 @@ class CloseCommandRequest : public CommandRequest
 {
     public:
 
-        CloseCommandRequest(int songNum);
+        CloseCommandRequest(Player::SongId songNum);
         virtual ~CloseCommandRequest() {}
 
         virtual char getCommandType() const;
@@ -53,7 +53,7 @@ class ReadCommandRequest : public CommandRequest
 
     public:
 
-        ReadCommandRequest(int songNum, unsigned int bytes);
+        ReadCommandRequest(Player::SongId songNum, unsigned int bytes);
         virtual ~ReadCommandRequest() {}
 
         virtual char getCommandType() const;
@@ -71,7 +71,7 @@ class SeekCommandRequest : public CommandRequest
 
     public:
 
-        SeekCommandRequest(int songNum, unsigned int pos);
+        SeekCommandRequest(Player::SongId songNum, unsigned int pos);
         virtual ~SeekCommandRequest() {}
 
         virtual char getCommandType() const;

@@ -8,12 +8,13 @@
 */
 
 #include "PlayerSocket.h"
+#include "RemoteSong.h"
 #include "../Exceptions/LibException.h"
 #include "../Exceptions/ArrayAccessException.h"
 
 
-PlayerSocket::PlayerSocket()
-    : m_Connected(false), mp_Server(0), mp_Socket(0), m_NbSentListItems(0), m_NbReceivedSongs(0),
+PlayerSocket::PlayerSocket(Player *player)
+    : mp_Player(player), m_Connected(false), mp_Server(0), mp_Socket(0), m_NbSentListItems(0), m_NbReceivedSongs(0),
       mp_SendMessage(0), mp_ReceiveMessage(0), mp_SocketThread(0)
 {
     m_CallbackSettings.openCallback = openCallback;
@@ -242,15 +243,15 @@ SongTreeRoot* PlayerSocket::readRemoteSongList()
             item->setData(0, Qt::UserRole, num);
         else
         {
+            quint16 songNum;
             quint32 songLength;
             QString artist;
 
+            in >> songNum;
             in >> songLength;
             in >> artist;
 
-            int songNum = m_NbReceivedSongs;
-
-            RemoteSong *song = new RemoteSong(fileName, songNum, songNum, songLength, artist, &getCallbackSettings());
+            RemoteSong *song = mp_Player->createRemoteSong(fileName, songNum, songLength, artist, &getCallbackSettings());
             item->setAttachedSong(song);
 
             m_NbReceivedSongs++;
@@ -266,13 +267,13 @@ SongTreeRoot* PlayerSocket::readRemoteSongList()
 // ==============================
 // ==============================
 
-SongTreeRoot* PlayerSocket::exchangeSongList(SongTreeRoot *songs, int songsNb)
+SongTreeRoot* PlayerSocket::exchangeSongList(SongTreeRoot *songs)
 {
     QByteArray packet;
     QDataStream out(&packet, QIODevice::WriteOnly);
 
     // Envoi du nombre de musiques
-    out << static_cast<quint8>(songsNb);
+    out << static_cast<quint8>(mp_Player->songsCount());
 
     mp_SendMessage->add(packet);
 
@@ -432,7 +433,7 @@ FMOD_RESULT PlayerSocket::openRemoteFile(const char *fileName, unsigned int *fil
     {
         int *songNum = new int(atoi(fileName));
         if (*songNum >= m_NbReceivedSongs)
-            throw ArrayAccessException("PlayerSocket::openCallback", m_NbReceivedSongs, *songNum);
+            throw ArrayAccessException("PlayerSocket::openRemoteFile", m_NbReceivedSongs, *songNum);
 
         OpenCommandRequest request(*songNum);
         mp_SendMessage->add(&request);

@@ -9,6 +9,7 @@
 
 #include "PlayerWindow.h"
 #include "../Audio/FmodManager.h"
+#include "../Audio/Song.h"
 #include "../Util/Tools.h"
 #include "AboutDialog.h"
 
@@ -68,7 +69,7 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     mp_SongPicture = new QLabel;
     mp_SongList = new SongList;
 
-    connect(mp_SongList, SIGNAL(songPressed(int)), &m_Player, SLOT(changeSong(int)));
+    connect(mp_SongList, SIGNAL(songPressed(Player::SongId)), &m_Player, SLOT(changeSong(Player::SongId)));
 
     topLayout->setColumnStretch(0, 1);
     topLayout->addWidget(mp_SongTitle, 0, 0, 1, 2, Qt::AlignTop);
@@ -386,7 +387,7 @@ void PlayerWindow::openInformation()
 
 void PlayerWindow::listen()
 {
-    mp_Socket = new PlayerSocket;
+    mp_Socket = new PlayerSocket(&m_Player);
     connect(mp_Socket, SIGNAL(connected()), this, SLOT(startConnection()));
     connect(mp_Socket, SIGNAL(disconnected()), this, SLOT(closeConnection()));
 
@@ -398,7 +399,7 @@ void PlayerWindow::listen()
 
 void PlayerWindow::connectToHost(const QString& host)
 {
-    mp_Socket = new PlayerSocket;
+    mp_Socket = new PlayerSocket(&m_Player);
     connect(mp_Socket, SIGNAL(connected()), this, SLOT(startConnection()));
     connect(mp_Socket, SIGNAL(disconnected()), this, SLOT(closeConnection()));
 
@@ -410,9 +411,8 @@ void PlayerWindow::connectToHost(const QString& host)
 
 void PlayerWindow::startConnection()
 {
-    SongTreeRoot *songList = mp_Socket->exchangeSongList(mp_SongList->getSongHierarchy(), m_Player.songsCount());
-    m_Player.addSongs(Constants::REMOTE_SONGS, songList);
-    mp_SongList->addTree(Constants::REMOTE_SONGS, songList);
+    SongTreeRoot *remoteSongList = mp_Socket->exchangeSongList(mp_SongList->getSongHierarchy());
+    mp_SongList->addTree(Constants::REMOTE_SONGS, remoteSongList);
 
     mp_ConnectionBox->connected();
 

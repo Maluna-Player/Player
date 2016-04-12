@@ -13,8 +13,8 @@
 
 #include <QTreeWidgetItem>
 #include "../Network/Sendable.h"
-#include "../Audio/Song.h"
 
+class Song;
 class SongListItem;
 typedef SongListItem SongTreeRoot;
 

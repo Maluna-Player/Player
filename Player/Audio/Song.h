@@ -13,19 +13,22 @@
 
 #include <QString>
 #include "FmodManager.h"
+#include "Player.h"
 #include <QPixmap>
 
 class Song
 {
     private:
 
-        int m_Num;
+        Player::SongId m_Num;
 
         QString m_Title;
 
         bool m_InFolder;
 
     protected:
+
+        friend class Player;
 
         QString m_File;
 
@@ -35,21 +38,16 @@ class Song
 
         QString m_Artist;
 
+        Song(Player::SongId num, const QString& file = "", bool inFolder = true, bool openable = true);
+
     public:
 
-        Song(const QString& file = "", int num = -1, bool inFolder = true, bool openable = true);
         virtual ~Song();
 
         virtual SoundID_t getSoundID() const;
-        virtual int getNum() const;
+        virtual Player::SongId getNum() const;
         virtual const QString& getFile() const;
         virtual SoundPos_t getLength() const;
-
-        /**
-         * @brief Change le numéro du son.
-         * @param num Nouveau numéro
-         */
-        virtual void setNum(int num);
 
         /**
          * @brief Détermine si la musique est dans le dossier de lecture ou non.

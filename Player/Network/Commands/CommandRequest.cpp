@@ -11,7 +11,7 @@
 #include <QDataStream>
 
 
-CommandRequest::CommandRequest(int songNum) : Command(songNum)
+CommandRequest::CommandRequest(Player::SongId songNum) : Command(songNum)
 {
 
 }
@@ -29,7 +29,7 @@ bool CommandRequest::isReply() const
 // ==============================
 // ==============================
 
-OpenCommandRequest::OpenCommandRequest(int songNum)
+OpenCommandRequest::OpenCommandRequest(Player::SongId songNum)
     : CommandRequest(songNum)
 {
 
@@ -43,7 +43,7 @@ char OpenCommandRequest::getCommandType() const
 // ==============================
 // ==============================
 
-CloseCommandRequest::CloseCommandRequest(int songNum)
+CloseCommandRequest::CloseCommandRequest(Player::SongId songNum)
     : CommandRequest(songNum)
 {
 
@@ -57,7 +57,7 @@ char CloseCommandRequest::getCommandType() const
 // ==============================
 // ==============================
 
-ReadCommandRequest::ReadCommandRequest(int songNum, unsigned int bytes)
+ReadCommandRequest::ReadCommandRequest(Player::SongId songNum, unsigned int bytes)
     : CommandRequest(songNum), m_BytesToRead(bytes)
 {
 
@@ -86,7 +86,7 @@ QByteArray ReadCommandRequest::toPacket() const
 // ==============================
 // ==============================
 
-SeekCommandRequest::SeekCommandRequest(int songNum, unsigned int pos)
+SeekCommandRequest::SeekCommandRequest(Player::SongId songNum, unsigned int pos)
     : CommandRequest(songNum), m_Pos(pos)
 {
 

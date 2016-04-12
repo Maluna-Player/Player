@@ -8,8 +8,12 @@
 */
 
 #include "Player.h"
+#include "Song.h"
+#include "../Network/RemoteSong.h"
 #include "../Exceptions/LibException.h"
 #include "../Exceptions/FileLoadingException.h"
+#include "../Network/Commands/CommandRequest.h"
+#include "../Network/Commands/CommandReply.h"
 
 #include <QDir>
 #include <QFileInfo>
@@ -38,6 +42,16 @@ Player::~Player()
 // ==============================
 // ==============================
 
+Player::SongId Player::getNewSongNum()
+{
+    SongId res = m_Cpt;
+    m_Cpt++;
+    return res;
+}
+
+// ==============================
+// ==============================
+
 Song* Player::getCurrentSong()
 {
     if (m_CurrentSong == UNDEFINED_SONG)
@@ -49,7 +63,7 @@ Song* Player::getCurrentSong()
 // ==============================
 // ==============================
 
-Player::SongIt Player::findSong(int song) const
+Player::SongIt Player::findSong(SongId song) const
 {
     for (auto it = mp_Songs.begin(); it != mp_Songs.end(); ++it)
     {
@@ -241,11 +255,11 @@ void Player::clearSongs(Constants::SongList_t list)
 // ==============================
 // ==============================
 
-bool Player::containsSong(const QString& filePath) const
+bool Player::containsLocalSong(const QString& filePath) const
 {
-    auto songs = mp_Songs.getSubSets(Constants::LOCAL_SONGS);
+    auto localSongs = mp_Songs.getSubSets(Constants::LOCAL_SONGS);
 
-    for (auto it = songs.begin(); it != songs.end(); ++it)
+    for (auto it = localSongs.begin(); it != localSongs.end(); ++it)
     {
         if ((*it)->getFile() == filePath)
             return true;
@@ -257,23 +271,38 @@ bool Player::containsSong(const QString& filePath) const
 // ==============================
 // ==============================
 
-SongListItem* Player::addNewSong(Constants::SongList_t list, const QString& filePath, SongListItem *parentDir)
+bool Player::containsRemoteSong(const SongId num) const
 {
+    auto remoteSongs = mp_Songs.getSubSets(Constants::REMOTE_SONGS);
+
+    for (auto it = remoteSongs.begin(); it != remoteSongs.end(); ++it)
+    {
+        if (static_cast<RemoteSong*>(*it)->getRemoteNum() == num)
+            return true;
+    }
+
+    return false;
+}
+
+// ==============================
+// ==============================
+
+Song* Player::createLocalSong(const QString& filePath, bool inFolder)
+{
+    Song *song = nullptr;
+
     QFileInfo fileInfo(filePath);
     QString absoluteFilePath = fileInfo.canonicalFilePath();
-    SongListItem *item = 0;
 
-    if (!containsSong(absoluteFilePath))
+    if (!containsLocalSong(absoluteFilePath))
     {
-        item = new SongListItem(SongListItem::SONG, parentDir, fileInfo.completeBaseName());
-
         try
         {
-            bool inFolder = (list == Constants::DIRECTORY_SONGS);
-            Song *song = new Song(absoluteFilePath, songsCount(), inFolder);
+            SongId num = getNewSongNum();
+            song = new Song(num, absoluteFilePath, inFolder);
+            Constants::SongList_t list = inFolder ? Constants::DIRECTORY_SONGS : Constants::IMPORTED_SONGS;
 
-            mp_Songs[list][song->getNum()] = song;
-            item->setAttachedSong(song);
+            mp_Songs[list][num] = song;
         }
         catch (FmodManager::StreamError_t error)
         {
@@ -282,9 +311,50 @@ SongListItem* Player::addNewSong(Constants::SongList_t list, const QString& file
             else if (error == FmodManager::FORMAT_ERROR)
                 qWarning() << "Unsupported format for" << absoluteFilePath;
 
-            delete item;
-            item = 0;
+            if (song)
+            {
+                delete song;
+                song = nullptr;
+            }
         }
+    }
+
+    return song;
+}
+
+// ==============================
+// ==============================
+
+RemoteSong* Player::createRemoteSong(const QString& file, SongId remoteNum, SoundPos_t length, const QString& artist, SoundSettings *settings)
+{
+    RemoteSong *song = nullptr;
+
+    if (!containsRemoteSong(remoteNum))
+    {
+        SongId num = getNewSongNum();
+        song = new RemoteSong(num, file, remoteNum, length, artist, settings);
+
+        mp_Songs[Constants::REMOTE_SONGS][num] = song;
+    }
+
+    return song;
+}
+
+// ==============================
+// ==============================
+
+SongListItem* Player::addNewSong(Constants::SongList_t list, const QString& filePath, SongListItem *parentDir)
+{
+    SongListItem *item = nullptr;
+
+    bool inFolder = (list == Constants::DIRECTORY_SONGS);
+    Song *song = createLocalSong(filePath, inFolder);
+
+    if (song)
+    {
+        QFileInfo fileInfo(filePath);
+        item = new SongListItem(SongListItem::SONG, parentDir, fileInfo.completeBaseName());
+        item->setAttachedSong(song);
     }
 
     return item;
@@ -321,30 +391,6 @@ SongTreeRoot* Player::loadSongs(const QString& dirPath, SongTreeRoot *parentDir)
     }
 
     return parentDir;
-}
-
-// ==============================
-// ==============================
-
-void Player::addSongs(Constants::SongList_t list, SongTreeRoot *songs)
-{
-    QTreeWidget tree;
-    tree.addTopLevelItem(songs);
-
-    SongListIterator it(&tree, QTreeWidgetItemIterator::Selectable);
-    while (!it.isNull())
-    {
-        Song *song = (*it)->getAttachedSong();
-        if (song)
-        {
-            song->setNum(songsCount());
-            mp_Songs[list][song->getNum()] = song;
-        }
-
-        ++it;
-    }
-
-    tree.takeTopLevelItem(0);
 }
 
 // ==============================
@@ -407,7 +453,7 @@ bool Player::changeSong(SongIt song)
 // ==============================
 // ==============================
 
-bool Player::changeSong(int song)
+bool Player::changeSong(SongId song)
 {
     return changeSong(findSong(song));
 }
@@ -431,7 +477,7 @@ void Player::update()
 
 void Player::executeNetworkCommand(CommandRequest *command)
 {
-    int songNum = command->getSongNum();
+    SongId songNum = command->getSongNum();
     CommandReply *reply = 0;
 
     switch (command->getCommandType())
