@@ -15,7 +15,7 @@ RemoteSong::RemoteSong(Player::SongId num, const QString& file, Player::SongId r
     : Song(num, file, false, false), m_RemoteNum(remoteNum), m_Settings(settings)
 {
     m_Length = length;
-    m_File = QString::number(num);
+    m_File = QString::number(remoteNum);
     m_Artist = artist;
 }
 

@@ -22,7 +22,7 @@
 
 
 Player::Player()
-    : mp_Songs({Constants::DIRECTORY_SONGS, Constants::IMPORTED_SONGS, Constants::REMOTE_SONGS}),
+    : m_Cpt(0), mp_Songs({Constants::DIRECTORY_SONGS, Constants::IMPORTED_SONGS, Constants::REMOTE_SONGS}),
       m_CurrentSong(UNDEFINED_SONG), m_Playlist(true), m_Loop(false),
       m_Pause(false), m_Stop(true), m_Mute(false),
       m_VolumeState(Constants::NB_VOLUME_STATES - 1)
