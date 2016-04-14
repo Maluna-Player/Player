@@ -33,7 +33,7 @@ class ComposedMap : public std::map<Key, Value>
                 };
 
                 template <class First, class Second>
-                struct Extract <std::pair<First,Second> >
+                struct Extract <std::pair<First,Second>>
                 {
                     typedef Second type;
                 };
