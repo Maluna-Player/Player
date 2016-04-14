@@ -35,7 +35,7 @@ class PlayerButton : public ClickableLabel
 
     public:
 
-        PlayerButton(const QString& name, QWidget *parent = 0);
+        PlayerButton(const QString& name, QWidget *parent = nullptr);
         virtual ~PlayerButton();
 };
 

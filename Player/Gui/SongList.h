@@ -57,7 +57,7 @@ class SongList : public QTreeWidget
 
     public:
 
-        SongList(QWidget *parent = 0);
+        SongList(QWidget *parent = nullptr);
         virtual ~SongList();
 
         /**

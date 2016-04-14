@@ -99,7 +99,7 @@ class FmodManager
          * @param settings Options de chargement de la musique (callbacks utilisés)
          * @return identifiant du canal associé
         */
-        virtual SoundID_t openFromFile(const std::string& soundFile, bool mainCanal = true, SoundSettings *settings = 0) throw (StreamError_t);
+        virtual SoundID_t openFromFile(const std::string& soundFile, bool mainCanal = true, SoundSettings *settings = nullptr) throw (StreamError_t);
 
         /**
          * Libère la mémoire du son chargé.
@@ -199,7 +199,7 @@ class FmodManager
          * @param dataLength Pointeur vers la longueur du tag
          * @return Données de l'image
          */
-        virtual char* getSongPictureData(SoundID_t id, unsigned int *dataLength = 0) const;
+        virtual char* getSongPictureData(SoundID_t id, unsigned int *dataLength = nullptr) const;
 };
 
 #endif  // __FMODMANAGER_H__

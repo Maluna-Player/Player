@@ -17,9 +17,9 @@ class PlayerLabel : public QLabel
 {
     public:
 
-        PlayerLabel(QWidget *parent = 0);
-        PlayerLabel(const QColor& color, int size = -1, QWidget *parent = 0);
-        PlayerLabel(const QColor& color, const QFont& font, QWidget *parent = 0);
+        PlayerLabel(QWidget *parent = nullptr);
+        PlayerLabel(const QColor& color, int size = -1, QWidget *parent = nullptr);
+        PlayerLabel(const QColor& color, const QFont& font, QWidget *parent = nullptr);
 
         virtual ~PlayerLabel();
 

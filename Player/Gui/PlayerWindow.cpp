@@ -23,7 +23,7 @@
 
 
 PlayerWindow::PlayerWindow(QWidget *parent)
-    : QMainWindow(parent), m_TimerId(0), mp_Socket(0)
+    : QMainWindow(parent), m_TimerId(0), mp_Socket(nullptr)
 {
     setWindowTitle(tr(Constants::WINDOW_TITLE.c_str()));
     resize(Constants::WINDOW_WIDTH, Constants::WINDOW_HEIGHT);
@@ -439,11 +439,13 @@ void PlayerWindow::closeConnection()
             else if (m_Player.getCurrentSong()->isRemote())
                 m_Player.firstSong();
 
+            // close clientFile (if current song is remote only ? do we close file after remote song playing ?)
+
             m_Player.clearSongs(Constants::REMOTE_SONGS);
             mp_SongList->clearList(Constants::REMOTE_SONGS);
 
             delete mp_Socket;
-            mp_Socket = 0;
+            mp_Socket = nullptr;
 
             mp_ConnectionBox->disconnect();
         }

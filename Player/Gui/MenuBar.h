@@ -28,7 +28,7 @@ class MenuBar : public QMenuBar
 
     public:
 
-        MenuBar(QWidget *parent = 0);
+        MenuBar(QWidget *parent = nullptr);
         virtual ~MenuBar();
 
         /**

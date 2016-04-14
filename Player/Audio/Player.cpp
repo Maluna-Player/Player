@@ -380,7 +380,7 @@ SongTreeRoot* Player::loadSongs(const QString& dirPath, SongTreeRoot *parentDir)
 
         if (files.at(i).isDir())
         {
-            SongListItem *item = new SongListItem(SongListItem::DIRECTORY, 0, files.at(i).completeBaseName());
+            SongListItem *item = new SongListItem(SongListItem::DIRECTORY, nullptr, files.at(i).completeBaseName());
             loadSongs(filePath, item);
 
             if (item->childCount() > 0)
@@ -478,7 +478,7 @@ void Player::update()
 void Player::executeNetworkCommand(CommandRequest *command)
 {
     SongId songNum = command->getSongNum();
-    CommandReply *reply = 0;
+    CommandReply *reply = nullptr;
 
     switch (command->getCommandType())
     {

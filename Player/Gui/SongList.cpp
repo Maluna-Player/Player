@@ -33,8 +33,8 @@ SongList::SongList(QWidget *parent) : QTreeWidget(parent), m_CurrentSong(-1)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setFixedWidth(260);
 
-    SongListItem *localSongsItem = new SongListItem(SongListItem::ROOT, 0, "Mes musiques");
-    SongListItem *remoteSongsItem = new SongListItem(SongListItem::ROOT, 0, "Musiques distantes");
+    SongListItem *localSongsItem = new SongListItem(SongListItem::ROOT, nullptr, "Mes musiques");
+    SongListItem *remoteSongsItem = new SongListItem(SongListItem::ROOT, nullptr, "Musiques distantes");
 
     addTopLevelItem(localSongsItem);
     addTopLevelItem(remoteSongsItem);

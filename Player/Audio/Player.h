@@ -250,7 +250,7 @@ class Player : public QObject
          * @param parentDir Parent dans l'arborescence
          * @return Elément de l'arborescence contenant la nouvelle musique
          */
-        virtual SongListItem* addNewSong(Constants::SongList_t list, const QString& filePath, SongListItem *parentDir = 0);
+        virtual SongListItem* addNewSong(Constants::SongList_t list, const QString& filePath, SongListItem *parentDir = nullptr);
 
         /**
          * @brief Remplit le vecteur Musiques à partir des fichiers
@@ -259,7 +259,7 @@ class Player : public QObject
          * @param parentDir Parent dans l'arborescence
          * @return Arborescence des fichiers lus
          */
-        virtual SongTreeRoot* loadSongs(const QString& dirPath, SongTreeRoot *parentDir = 0);
+        virtual SongTreeRoot* loadSongs(const QString& dirPath, SongTreeRoot *parentDir = nullptr);
 
         /**
          * @brief Lance la première musique du player.

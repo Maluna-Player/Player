@@ -189,7 +189,7 @@ class PlayerWindow : public QMainWindow
 
     public:
 
-        PlayerWindow(QWidget *parent = 0);
+        PlayerWindow(QWidget *parent = nullptr);
         virtual ~PlayerWindow();
 };
 

@@ -24,7 +24,7 @@ class ProgressBackground : public QWidget
 
     public:
 
-        ProgressBackground(QWidget *parent = 0);
+        ProgressBackground(QWidget *parent = nullptr);
         virtual ~ProgressBackground();
 };
 

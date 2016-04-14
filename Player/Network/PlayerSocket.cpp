@@ -14,8 +14,8 @@
 
 
 PlayerSocket::PlayerSocket(Player *player)
-    : mp_Player(player), m_Connected(false), mp_Server(0), mp_Socket(0), m_NbSentListItems(0), m_NbReceivedSongs(0),
-      mp_SendMessage(0), mp_ReceiveMessage(0), mp_SocketThread(0)
+    : mp_Player(player), m_Connected(false), mp_Server(nullptr), mp_Socket(nullptr), m_NbSentListItems(0), m_NbReceivedSongs(0),
+      mp_SendMessage(nullptr), mp_ReceiveMessage(nullptr), mp_SocketThread(nullptr)
 {
     m_CallbackSettings.openCallback = openCallback;
     m_CallbackSettings.closeCallback = closeCallback;
@@ -108,7 +108,7 @@ void PlayerSocket::clientConnexion()
     startConnection();
 
     mp_Server->deleteLater();
-    mp_Server = 0;
+    mp_Server = nullptr;
 }
 
 // ==============================
@@ -119,7 +119,7 @@ void PlayerSocket::startConnection()
     mp_SocketThread = new QThread(this);
     mp_SocketThread->start();
 
-    mp_Socket->setParent(0);
+    mp_Socket->setParent(nullptr);
     mp_Socket->moveToThread(mp_SocketThread);
 
     mp_SendMessage = new PlayerMessage(mp_Socket);
@@ -139,7 +139,7 @@ void PlayerSocket::startConnection()
 void PlayerSocket::disconnection()
 {
     mp_Socket->deleteLater();
-    mp_Socket = 0;
+    mp_Socket = nullptr;
 
     if (mp_SocketThread)
     {
@@ -208,7 +208,7 @@ SongListItem* PlayerSocket::getItem(int num, SongTreeRoot *parent) const
             return item;
     }
 
-    return 0;
+    return nullptr;
 }
 
 // ==============================
@@ -291,7 +291,7 @@ SongTreeRoot* PlayerSocket::exchangeSongList(SongTreeRoot *songs)
 Command* PlayerSocket::buildCommand(QByteArray message) const
 {
     QDataStream in(&message, QIODevice::ReadOnly);
-    Command *command = 0;
+    Command *command = nullptr;
 
     quint8 messageType;
     quint8 commandType;
@@ -383,13 +383,13 @@ CommandRequest* PlayerSocket::getCommandRequest()
         return mp_ReceivedRequests.takeAt(0);
     else
     {
-        Command *command = 0;
+        Command *command = nullptr;
 
         do
         {
             QByteArray message = mp_ReceiveMessage->getNextMessage();
             if (message.isEmpty())
-                return 0;
+                return nullptr;
 
             command = buildCommand(message);
             if (command && command->isReply())
@@ -410,7 +410,7 @@ CommandReply* PlayerSocket::getCommandReply()
         return mp_ReceivedReplies.takeAt(0);
     else
     {
-        Command *command = 0;
+        Command *command = nullptr;
 
         do
         {

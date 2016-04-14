@@ -14,7 +14,7 @@
 unsigned int SongListItem::cpt = 0;
 
 SongListItem::SongListItem(ElementType_t type, SongListItem *parent, const QString& name)
-    : QTreeWidgetItem(), m_Type(type), mp_AttachedSong(0)
+    : QTreeWidgetItem(), m_Type(type), mp_AttachedSong(nullptr)
 {
     Qt::ItemFlags flags = Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled;
     if (type == SONG)

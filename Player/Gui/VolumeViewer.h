@@ -40,7 +40,7 @@ class VolumeViewer : public QLabel
 
     public:
 
-        VolumeViewer(QWidget *parent = 0);
+        VolumeViewer(QWidget *parent = nullptr);
         virtual ~VolumeViewer();
 
         /**

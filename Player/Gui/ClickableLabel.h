@@ -30,7 +30,7 @@ class ClickableLabel : public QLabel
 
     public:
 
-        ClickableLabel(QWidget *parent = 0);
+        ClickableLabel(QWidget *parent = nullptr);
         virtual ~ClickableLabel();
 };
 

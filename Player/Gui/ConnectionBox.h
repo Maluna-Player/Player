@@ -49,7 +49,7 @@ class ConnectionBox : public QWidget
 
     public:
 
-        ConnectionBox(QWidget *parent = 0);
+        ConnectionBox(QWidget *parent = nullptr);
         virtual ~ConnectionBox();
 
         virtual void connected();

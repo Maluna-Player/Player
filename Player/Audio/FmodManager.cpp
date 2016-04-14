@@ -11,13 +11,13 @@
 #include "../Exceptions/LibException.h"
 
 
-FmodManager* FmodManager::mp_Instance = 0;
+FmodManager* FmodManager::mp_Instance = nullptr;
 
 // ==============================
 // ==============================
 
 FmodManager::FmodManager(int maxChannels)
-    : mp_System(0), mp_Channels(maxChannels), mp_Sounds(maxChannels), mp_ChannelGroup(0), mp_Dsp(0)
+    : mp_System(nullptr), mp_Channels(maxChannels), mp_Sounds(maxChannels), mp_ChannelGroup(nullptr), mp_Dsp(nullptr)
 {
     FMOD_RESULT res;
 
@@ -79,7 +79,7 @@ void FmodManager::deleteInstance()
     if (mp_Instance)
     {
         delete mp_Instance;
-        mp_Instance = 0;
+        mp_Instance = nullptr;
     }
 }
 
@@ -162,7 +162,7 @@ void FmodManager::releaseSound(SoundID_t id)
         if ((res = FMOD_Sound_Release(mp_Sounds.at(id))) != FMOD_OK)
             throw LibException("FmodManager::releaseSound", "FMOD_Sound_Release", FMOD_ErrorString(res));
 
-        mp_Sounds.at(id) = 0;
+        mp_Sounds.at(id) = nullptr;
     }
 }
 
@@ -182,7 +182,7 @@ void FmodManager::playSound(SoundID_t id)
 
 bool FmodManager::isChannelUsed(SoundID_t id) const
 {
-    return (mp_Channels.at(id) != 0);
+    return (mp_Channels.at(id) != nullptr);
 }
 
 // ==============================
@@ -195,7 +195,7 @@ void FmodManager::stopSound(SoundID_t id)
     if ((res = FMOD_Channel_Stop(mp_Channels.at(id))) != FMOD_OK)
         throw LibException("FmodManager::stopSound", "FMOD_Channel_Stop", FMOD_ErrorString(res));
 
-    mp_Channels.at(id) = 0;
+    mp_Channels.at(id) = nullptr;
 }
 
 // ==============================

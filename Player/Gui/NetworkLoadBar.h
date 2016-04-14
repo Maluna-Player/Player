@@ -27,7 +27,7 @@ class NetworkLoadBar : public QProgressBar
 
     public:
 
-        NetworkLoadBar(QWidget *parent = 0);
+        NetworkLoadBar(QWidget *parent = nullptr);
         virtual ~NetworkLoadBar();
 
         /**
