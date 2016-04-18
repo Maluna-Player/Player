@@ -154,11 +154,11 @@ class FmodManager
         /**
          * Récupère le spectre du son joué dans le canal.
          * @param id Identifiant du canal à tester
-         * @param values Tableau dans lequel sont stockées
+         * @param values Vecteur dans lequel sont stockées
          *               les valeurs.
-         * @return Tableau dans lequel sont stockées les valeurs.
+         * @return Vecteur dans lequel sont stockées les valeurs.
         */
-        virtual float* getChannelSpectrum(SoundID_t id, float *values) const;
+        virtual std::vector<float>& getChannelSpectrum(SoundID_t id, std::vector<float>& values) const;
 
         /**
          * Récupère le volume du canal.

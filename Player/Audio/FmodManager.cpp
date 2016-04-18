@@ -9,6 +9,7 @@
 
 #include "FmodManager.h"
 #include "../Exceptions/LibException.h"
+#include <vector>
 
 
 FmodManager* FmodManager::mp_Instance = nullptr;
@@ -279,7 +280,7 @@ bool FmodManager::isPlaying(SoundID_t id) const
 // ==============================
 // ==============================
 
-float* FmodManager::getChannelSpectrum(SoundID_t id, float *values) const
+std::vector<float>& FmodManager::getChannelSpectrum(SoundID_t id, std::vector<float>& values) const
 {
     if (isChannelUsed(id))
     {
