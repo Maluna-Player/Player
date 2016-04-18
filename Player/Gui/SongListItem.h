@@ -16,7 +16,8 @@
 
 class Song;
 class SongListItem;
-typedef SongListItem SongTreeRoot;
+
+using SongTreeRoot = SongListItem;
 
 class SongListItem : public QTreeWidgetItem, public Sendable
 {

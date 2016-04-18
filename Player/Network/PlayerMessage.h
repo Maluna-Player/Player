@@ -23,7 +23,7 @@ class PlayerMessage : public QObject
 
     private:
 
-        typedef quint32 MessageSize_t;
+        using MessageSize_t = quint32;
 
         QTcpSocket *mp_Socket;
         MessageSize_t m_MessageSize;

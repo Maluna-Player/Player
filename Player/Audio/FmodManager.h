@@ -22,8 +22,8 @@
 #define VOLUME_MIN    0.0
 #define VOLUME_MAX    1.0
 
-typedef unsigned int  SoundID_t;
-typedef unsigned int  SoundPos_t;   // Position en ms
+using SoundID_t = unsigned int;
+using SoundPos_t = unsigned int;    // Position en ms
 
 typedef struct
 {
