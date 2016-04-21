@@ -89,7 +89,7 @@ class SongListItem : public QTreeWidgetItem, public Sendable
          */
         virtual void setAttachedSong(Song *song);
 
-        virtual QByteArray toPacket() const;
+        virtual QByteArray toPacket() const override;
 };
 
 #endif  // __SONGLISTITEM__

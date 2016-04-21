@@ -27,11 +27,11 @@ class CommandReply : public Command
 
         virtual FMOD_RESULT getResult() const;
 
-        virtual bool isRequest() const;
+        virtual bool isRequest() const override;
 
-        virtual bool isReply() const;
+        virtual bool isReply() const override;
 
-        virtual QByteArray toPacket() const;
+        virtual QByteArray toPacket() const override;
 };
 
 class OpenCommandReply : public CommandReply
@@ -45,11 +45,11 @@ class OpenCommandReply : public CommandReply
         OpenCommandReply(Player::SongId songNum, FMOD_RESULT result, int fileSize);
         virtual ~OpenCommandReply() {}
 
-        virtual char getCommandType() const;
+        virtual char getCommandType() const override;
 
         virtual int getFileSize() const;
 
-        virtual QByteArray toPacket() const;
+        virtual QByteArray toPacket() const override;
 };
 
 class CloseCommandReply : public CommandReply
@@ -59,7 +59,7 @@ class CloseCommandReply : public CommandReply
         CloseCommandReply(Player::SongId songNum, FMOD_RESULT result);
         virtual ~CloseCommandReply() {}
 
-        virtual char getCommandType() const;
+        virtual char getCommandType() const override;
 };
 
 class ReadCommandReply : public CommandReply
@@ -75,13 +75,13 @@ class ReadCommandReply : public CommandReply
         ReadCommandReply(Player::SongId songNum, FMOD_RESULT result, void *buffer, unsigned int bytes);
         virtual ~ReadCommandReply();
 
-        virtual char getCommandType() const;
+        virtual char getCommandType() const override;
 
         virtual void* getBuffer() const;
 
         virtual unsigned int getReadBytes() const;
 
-        virtual QByteArray toPacket() const;
+        virtual QByteArray toPacket() const override;
 };
 
 class SeekCommandReply : public CommandReply
@@ -91,7 +91,7 @@ class SeekCommandReply : public CommandReply
         SeekCommandReply(Player::SongId songNum, FMOD_RESULT result);
         virtual ~SeekCommandReply() {}
 
-        virtual char getCommandType() const;
+        virtual char getCommandType() const override;
 };
 
 #endif  // __COMMANDREPLY_H__

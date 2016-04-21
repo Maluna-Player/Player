@@ -21,7 +21,7 @@ class FileLoadingException : public BaseException
 
   protected:
 
-    virtual void buildMessage()
+    virtual void buildMessage() override
     {
       m_Error = "Cannot open '" + m_File + "'";
       BaseException::buildMessage();

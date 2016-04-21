@@ -21,9 +21,9 @@ class NetworkLoadBar : public QProgressBar
 
     protected:
 
-        virtual void paintEvent(QPaintEvent * event);
+        virtual void paintEvent(QPaintEvent * event) override;
 
-        virtual void resizeEvent(QResizeEvent *event);
+        virtual void resizeEvent(QResizeEvent *event) override;
 
     public:
 

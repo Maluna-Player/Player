@@ -31,7 +31,7 @@ class RemoteSong : public Song
 
         virtual ~RemoteSong();
 
-        virtual bool isRemote() const;
+        virtual bool isRemote() const override;
 
         /**
          * @brief getRemoteNum
@@ -42,7 +42,7 @@ class RemoteSong : public Song
         /**
          * @brief Ouvre le fichier avec FMOD pour stream du fichier distant.
          */
-        virtual void open();
+        virtual void open() override;
 };
 
 #endif  // __REMOTESONG_H__

@@ -20,9 +20,9 @@ class CommandRequest : public Command
         CommandRequest(Player::SongId songNum);
         virtual ~CommandRequest() {}
 
-        virtual bool isRequest() const;
+        virtual bool isRequest() const override;
 
-        virtual bool isReply() const;
+        virtual bool isReply() const override;
 };
 
 class OpenCommandRequest : public CommandRequest
@@ -32,7 +32,7 @@ class OpenCommandRequest : public CommandRequest
         OpenCommandRequest(Player::SongId songNum);
         virtual ~OpenCommandRequest() {}
 
-        virtual char getCommandType() const;
+        virtual char getCommandType() const override;
 };
 
 class CloseCommandRequest : public CommandRequest
@@ -42,7 +42,7 @@ class CloseCommandRequest : public CommandRequest
         CloseCommandRequest(Player::SongId songNum);
         virtual ~CloseCommandRequest() {}
 
-        virtual char getCommandType() const;
+        virtual char getCommandType() const override;
 };
 
 class ReadCommandRequest : public CommandRequest
@@ -56,11 +56,11 @@ class ReadCommandRequest : public CommandRequest
         ReadCommandRequest(Player::SongId songNum, unsigned int bytes);
         virtual ~ReadCommandRequest() {}
 
-        virtual char getCommandType() const;
+        virtual char getCommandType() const override;
 
         virtual unsigned int getBytesToRead() const;
 
-        virtual QByteArray toPacket() const;
+        virtual QByteArray toPacket() const override;
 };
 
 class SeekCommandRequest : public CommandRequest
@@ -74,11 +74,11 @@ class SeekCommandRequest : public CommandRequest
         SeekCommandRequest(Player::SongId songNum, unsigned int pos);
         virtual ~SeekCommandRequest() {}
 
-        virtual char getCommandType() const;
+        virtual char getCommandType() const override;
 
         virtual unsigned int getPos() const;
 
-        virtual QByteArray toPacket() const;
+        virtual QByteArray toPacket() const override;
 };
 
 #endif  // __COMMANDREQUEST_H__

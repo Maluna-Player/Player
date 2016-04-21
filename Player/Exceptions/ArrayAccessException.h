@@ -25,7 +25,7 @@ class ArrayAccessException : public BaseException
 
   protected:
 
-    virtual void buildMessage()
+    virtual void buildMessage() override
     {
       std::ostringstream error;
       error << "Warning ! Out of range : Try to access to pos " << m_Pos << " of an array [0-" << m_ArraySize << "[";

@@ -20,7 +20,7 @@ class ProgressBackground : public QWidget
 {
     protected:
 
-        virtual void paintEvent(QPaintEvent *event);
+        virtual void paintEvent(QPaintEvent *event) override;
 
     public:
 

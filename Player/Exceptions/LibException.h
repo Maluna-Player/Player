@@ -23,7 +23,7 @@ class LibException : public BaseException
 
   protected:
 
-    virtual void buildMessage()
+    virtual void buildMessage() override
     {
       m_Error = "'" + m_LibFunc + "' function produced the following error : " + m_LibError;
       BaseException::buildMessage();

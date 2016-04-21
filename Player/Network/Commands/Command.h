@@ -33,7 +33,7 @@ class Command : public Sendable
 
         virtual char getCommandType() const = 0;
 
-        virtual QByteArray toPacket() const;
+        virtual QByteArray toPacket() const override;
 };
 
 #endif  // __COMMAND_H__

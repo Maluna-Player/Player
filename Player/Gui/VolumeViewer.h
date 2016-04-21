@@ -27,9 +27,9 @@ class VolumeViewer : public QLabel
 
     protected:
 
-        virtual void paintEvent(QPaintEvent *event);
+        virtual void paintEvent(QPaintEvent *event) override;
 
-        virtual void mousePressEvent(QMouseEvent *event);
+        virtual void mousePressEvent(QMouseEvent *event) override;
 
     signals:
 

@@ -29,9 +29,9 @@ class PlayerButton : public ClickableLabel
 
     protected:
 
-        virtual void mousePressEvent(QMouseEvent *event);
+        virtual void mousePressEvent(QMouseEvent *event) override;
 
-        virtual void mouseReleaseEvent(QMouseEvent *event);
+        virtual void mouseReleaseEvent(QMouseEvent *event) override;
 
     public:
 

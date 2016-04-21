@@ -183,15 +183,15 @@ class PlayerWindow : public QMainWindow
 
     protected:
 
-        virtual void timerEvent(QTimerEvent *event);
+        virtual void timerEvent(QTimerEvent *event) override;
 
-        virtual void showEvent(QShowEvent *event);
+        virtual void showEvent(QShowEvent *event) override;
 
-        virtual void hideEvent(QHideEvent *event);
+        virtual void hideEvent(QHideEvent *event) override;
 
-        virtual void resizeEvent(QResizeEvent *event);
+        virtual void resizeEvent(QResizeEvent *event) override;
 
-        virtual void paintEvent(QPaintEvent *event);
+        virtual void paintEvent(QPaintEvent *event) override;
 
     public:
 

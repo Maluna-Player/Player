@@ -45,7 +45,7 @@ class SongList : public QTreeWidget
 
     protected:
 
-        virtual void mousePressEvent(QMouseEvent *event);
+        virtual void mousePressEvent(QMouseEvent *event) override;
 
     signals:
 
