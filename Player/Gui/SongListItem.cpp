@@ -13,11 +13,11 @@
 
 unsigned int SongListItem::cpt = 0;
 
-SongListItem::SongListItem(ElementType_t type, SongListItem *parent, const QString& name)
+SongListItem::SongListItem(ElementType type, SongListItem *parent, const QString& name)
     : QTreeWidgetItem(), m_Type(type), mp_AttachedSong(nullptr)
 {
     Qt::ItemFlags flags = Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled;
-    if (type == SONG)
+    if (type == ElementType::SONG)
         flags |= Qt::ItemIsSelectable;
 
     setFlags(flags);
@@ -41,7 +41,7 @@ SongListItem::~SongListItem()
 
 bool SongListItem::isRoot() const
 {
-    return (m_Type == ROOT);
+    return (m_Type == ElementType::ROOT);
 }
 
 // ==============================
@@ -49,7 +49,7 @@ bool SongListItem::isRoot() const
 
 bool SongListItem::isSong() const
 {
-    return (m_Type == SONG);
+    return (m_Type == ElementType::SONG);
 }
 
 // ==============================

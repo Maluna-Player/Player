@@ -77,7 +77,7 @@ Player::SongIt Player::findSong(SongId song) const
 // ==============================
 // ==============================
 
-int Player::songsCount(Constants::SongList_t list) const
+int Player::songsCount(Constants::SongList list) const
 {
     return mp_Songs.getSubSets(list).elementsCount();
 }
@@ -242,7 +242,7 @@ void Player::setVolume(int volumeState)
 // ==============================
 // ==============================
 
-void Player::clearSongs(Constants::SongList_t list)
+void Player::clearSongs(Constants::SongList list)
 {
     auto songs = mp_Songs.getSubSets(list);
 
@@ -300,15 +300,15 @@ Song* Player::createLocalSong(const QString& filePath, bool inFolder)
         {
             SongId num = getNewSongNum();
             song = new Song(num, absoluteFilePath, inFolder);
-            Constants::SongList_t list = inFolder ? Constants::DIRECTORY_SONGS : Constants::IMPORTED_SONGS;
+            Constants::SongList list = inFolder ? Constants::DIRECTORY_SONGS : Constants::IMPORTED_SONGS;
 
             mp_Songs[list][num] = song;
         }
-        catch (FmodManager::StreamError_t error)
+        catch (FmodManager::StreamError error)
         {
-            if (error == FmodManager::FILE_ERROR)
+            if (error == FmodManager::StreamError::FILE_ERROR)
                 qWarning() << "Error loading" << absoluteFilePath;
-            else if (error == FmodManager::FORMAT_ERROR)
+            else if (error == FmodManager::StreamError::FORMAT_ERROR)
                 qWarning() << "Unsupported format for" << absoluteFilePath;
 
             if (song)
@@ -343,7 +343,7 @@ RemoteSong* Player::createRemoteSong(const QString& file, SongId remoteNum, Soun
 // ==============================
 // ==============================
 
-SongListItem* Player::addNewSong(Constants::SongList_t list, const QString& filePath, SongListItem *parentDir)
+SongListItem* Player::addNewSong(Constants::SongList list, const QString& filePath, SongListItem *parentDir)
 {
     SongListItem *item = nullptr;
 
@@ -353,7 +353,7 @@ SongListItem* Player::addNewSong(Constants::SongList_t list, const QString& file
     if (song)
     {
         QFileInfo fileInfo(filePath);
-        item = new SongListItem(SongListItem::SONG, parentDir, fileInfo.completeBaseName());
+        item = new SongListItem(SongListItem::ElementType::SONG, parentDir, fileInfo.completeBaseName());
         item->setAttachedSong(song);
     }
 
@@ -366,7 +366,7 @@ SongListItem* Player::addNewSong(Constants::SongList_t list, const QString& file
 SongTreeRoot* Player::loadSongs(const QString& dirPath, SongTreeRoot *parentDir)
 {
     if (!parentDir)
-        parentDir = new SongTreeRoot(SongListItem::ROOT);
+        parentDir = new SongTreeRoot(SongListItem::ElementType::ROOT);
 
     QDir dir(dirPath);
     if (!dir.exists())
@@ -380,7 +380,7 @@ SongTreeRoot* Player::loadSongs(const QString& dirPath, SongTreeRoot *parentDir)
 
         if (files.at(i).isDir())
         {
-            SongListItem *item = new SongListItem(SongListItem::DIRECTORY, nullptr, files.at(i).completeBaseName());
+            SongListItem *item = new SongListItem(SongListItem::ElementType::DIRECTORY, nullptr, files.at(i).completeBaseName());
             loadSongs(filePath, item);
 
             if (item->childCount() > 0)
@@ -437,7 +437,7 @@ bool Player::changeSong(SongIt song)
 
             emit songChanged();
         }
-        catch(FmodManager::StreamError_t error)
+        catch(FmodManager::StreamError error)
         {
             emit streamError(getCurrentSong()->getFile());
         }

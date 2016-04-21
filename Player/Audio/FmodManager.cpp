@@ -114,7 +114,7 @@ void FmodManager::update() const
 // ==============================
 // ==============================
 
-SoundID_t FmodManager::openFromFile(const std::string& soundFile, bool mainCanal, SoundSettings *settings) throw (StreamError_t)
+SoundID_t FmodManager::openFromFile(const std::string& soundFile, bool mainCanal, SoundSettings *settings) throw (StreamError)
 {
     SoundID_t id = getSoundID(mainCanal);
 
@@ -141,9 +141,9 @@ SoundID_t FmodManager::openFromFile(const std::string& soundFile, bool mainCanal
     }
 
     if (res == FMOD_ERR_FORMAT)
-        throw FORMAT_ERROR;
+        throw StreamError::FORMAT_ERROR;
     else if (res != FMOD_OK)
-        throw FILE_ERROR;
+        throw StreamError::FILE_ERROR;
 
     return id;
 }

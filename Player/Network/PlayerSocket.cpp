@@ -216,7 +216,7 @@ SongListItem* PlayerSocket::getItem(int num, SongTreeRoot *parent) const
 
 SongTreeRoot* PlayerSocket::readRemoteSongList()
 {
-    SongListItem *receivedSongs = new SongListItem(SongListItem::ROOT);
+    SongListItem *receivedSongs = new SongListItem(SongListItem::ElementType::ROOT);
     QByteArray message = mp_ReceiveMessage->waitNextMessage();
 
     QDataStream in(&message, QIODevice::ReadOnly);
@@ -236,7 +236,7 @@ SongTreeRoot* PlayerSocket::readRemoteSongList()
 
         in >> num >> parentNum >> fileName >> itemType;
 
-        SongListItem::ElementType_t type = (itemType == 0) ? SongListItem::DIRECTORY : SongListItem::SONG;
+        SongListItem::ElementType type = (itemType == 0) ? SongListItem::ElementType::DIRECTORY : SongListItem::ElementType::SONG;
         SongListItem *item = new SongListItem(type, getItem(parentNum, receivedSongs), fileName);
 
         if (!item->isSong())

@@ -73,7 +73,7 @@ class FmodManager
 
     public:
 
-        enum StreamError_t { FILE_ERROR, FORMAT_ERROR };
+        enum class StreamError { FILE_ERROR, FORMAT_ERROR };
 
         /**
          * Créé le singleton s'il n'existe pas
@@ -99,7 +99,7 @@ class FmodManager
          * @param settings Options de chargement de la musique (callbacks utilisés)
          * @return identifiant du canal associé
         */
-        virtual SoundID_t openFromFile(const std::string& soundFile, bool mainCanal = true, SoundSettings *settings = nullptr) throw (StreamError_t);
+        virtual SoundID_t openFromFile(const std::string& soundFile, bool mainCanal = true, SoundSettings *settings = nullptr) throw (StreamError);
 
         /**
          * Libère la mémoire du son chargé.

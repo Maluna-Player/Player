@@ -107,15 +107,15 @@ PlayerWindow::PlayerWindow(QWidget *parent)
                 << new PlayerButton("prev") << new PlayerButton("next") << new PlayerButton("volumem")
                 << new PlayerButton("volumel");
 
-    mp_Buttons.at(PAUSE_BUTTON)->hide();
+    getButton(ButtonId::PAUSE)->hide();
 
-    connect(mp_Buttons.at(PLAY_BUTTON), SIGNAL(clicked()), this, SLOT(play()));
-    connect(mp_Buttons.at(PAUSE_BUTTON), SIGNAL(clicked()), this, SLOT(pause()));
-    connect(mp_Buttons.at(STOP_BUTTON), SIGNAL(clicked()), this, SLOT(stop()));
-    connect(mp_Buttons.at(PREV_BUTTON), SIGNAL(clicked()), this, SLOT(previousSong()));
-    connect(mp_Buttons.at(NEXT_BUTTON), SIGNAL(clicked()), this, SLOT(nextSong()));
-    connect(mp_Buttons.at(VOLUME_MORE_BUTTON), SIGNAL(clicked()), this, SLOT(increaseVolume()));
-    connect(mp_Buttons.at(VOLUME_LESS_BUTTON), SIGNAL(clicked()), this, SLOT(decreaseVolume()));
+    connect(getButton(ButtonId::PLAY), SIGNAL(clicked()), this, SLOT(play()));
+    connect(getButton(ButtonId::PAUSE), SIGNAL(clicked()), this, SLOT(pause()));
+    connect(getButton(ButtonId::STOP), SIGNAL(clicked()), this, SLOT(stop()));
+    connect(getButton(ButtonId::PREV), SIGNAL(clicked()), this, SLOT(previousSong()));
+    connect(getButton(ButtonId::NEXT), SIGNAL(clicked()), this, SLOT(nextSong()));
+    connect(getButton(ButtonId::VOLUME_MORE), SIGNAL(clicked()), this, SLOT(increaseVolume()));
+    connect(getButton(ButtonId::VOLUME_LESS), SIGNAL(clicked()), this, SLOT(decreaseVolume()));
 
     mp_SoundVolume = new VolumeViewer;
     mp_SoundVolume->setImage(m_Player.getVolumeState());
@@ -132,13 +132,13 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     bottomLayout->addWidget(mp_SongPos, 0, 0);
     bottomLayout->addWidget(mp_SongLength, 0, 9, Qt::AlignRight);
 
-    bottomLayout->addWidget(mp_Buttons.at(PLAY_BUTTON), 0, 5, 2, 1);
-    bottomLayout->addWidget(mp_Buttons.at(PAUSE_BUTTON), 0, 5, 2, 1);
-    bottomLayout->addWidget(mp_Buttons.at(STOP_BUTTON), 2, 5, 2, 1);
-    bottomLayout->addWidget(mp_Buttons.at(PREV_BUTTON), 1, 4, 2, 1);
-    bottomLayout->addWidget(mp_Buttons.at(NEXT_BUTTON), 1, 6, 2, 1);
-    bottomLayout->addWidget(mp_Buttons.at(VOLUME_MORE_BUTTON), 0, 3, 2, 1);
-    bottomLayout->addWidget(mp_Buttons.at(VOLUME_LESS_BUTTON), 2, 3, 2, 1);
+    bottomLayout->addWidget(getButton(ButtonId::PLAY), 0, 5, 2, 1);
+    bottomLayout->addWidget(getButton(ButtonId::PAUSE), 0, 5, 2, 1);
+    bottomLayout->addWidget(getButton(ButtonId::STOP), 2, 5, 2, 1);
+    bottomLayout->addWidget(getButton(ButtonId::PREV), 1, 4, 2, 1);
+    bottomLayout->addWidget(getButton(ButtonId::NEXT), 1, 6, 2, 1);
+    bottomLayout->addWidget(getButton(ButtonId::VOLUME_MORE), 0, 3, 2, 1);
+    bottomLayout->addWidget(getButton(ButtonId::VOLUME_LESS), 2, 3, 2, 1);
 
     bottomLayout->addWidget(mp_SoundVolume, 1, 1, 2, 2);
     bottomLayout->addWidget(mp_ConnectionBox, 3, 8, 1, 2);
@@ -158,7 +158,7 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     /** Démarrage du player **/
 
     refreshSongsList();
-    setState(Constants::PLAY_STATE);
+    setState(Constants::PlayerState::PLAY);
 }
 
 // ==============================
@@ -172,13 +172,21 @@ PlayerWindow::~PlayerWindow()
 // ==============================
 // ==============================
 
-void PlayerWindow::setState(Constants::PlayerState_t state)
+PlayerButton* PlayerWindow::getButton(ButtonId id) const
 {
-    if (state == Constants::PLAY_STATE)
+    return mp_Buttons.at(static_cast<int>(id));
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::setState(Constants::PlayerState state)
+{
+    if (state == Constants::PlayerState::PLAY)
         m_Player.play();
-    else if (state == Constants::PAUSE_STATE)
+    else if (state == Constants::PlayerState::PAUSE)
         m_Player.pause();
-    else if (state == Constants::STOP_STATE)
+    else if (state == Constants::PlayerState::STOP)
     {
         m_Player.stop();
         mp_Spectrum->clear();
@@ -188,8 +196,8 @@ void PlayerWindow::setState(Constants::PlayerState_t state)
         mp_SongPos->setText(Tools::msToString(0));
     }
 
-    mp_Buttons.at(PLAY_BUTTON)->setHidden(m_Player.isPlaying());
-    mp_Buttons.at(PAUSE_BUTTON)->setHidden(!m_Player.isPlaying());
+    getButton(ButtonId::PLAY)->setHidden(m_Player.isPlaying());
+    getButton(ButtonId::PAUSE)->setHidden(!m_Player.isPlaying());
 }
 
 // ==============================
@@ -220,7 +228,7 @@ void PlayerWindow::updateCurrentSong()
     }
 
     if (m_Player.isPaused())
-        setState(Constants::STOP_STATE);
+        setState(Constants::PlayerState::STOP);
 }
 
 // ==============================
@@ -237,7 +245,7 @@ void PlayerWindow::refreshSongsList()
     m_Player.firstSong();
 
     if (!m_Player.isStopped())
-      setState(Constants::STOP_STATE);
+      setState(Constants::PlayerState::STOP);
 }
 
 // ==============================
@@ -246,7 +254,7 @@ void PlayerWindow::refreshSongsList()
 void PlayerWindow::play()
 {
     if (!m_Player.isPlaying())
-        setState(Constants::PLAY_STATE);
+        setState(Constants::PlayerState::PLAY);
 }
 
 // ==============================
@@ -255,7 +263,7 @@ void PlayerWindow::play()
 void PlayerWindow::pause()
 {
     if (!m_Player.isPaused())
-        setState(Constants::PAUSE_STATE);
+        setState(Constants::PlayerState::PAUSE);
 }
 
 // ==============================
@@ -263,7 +271,7 @@ void PlayerWindow::pause()
 
 void PlayerWindow::stop()
 {
-    setState(Constants::STOP_STATE);
+    setState(Constants::PlayerState::STOP);
 }
 
 // ==============================
@@ -434,7 +442,7 @@ void PlayerWindow::closeConnection()
             if (!m_Player.getCurrentSong())
             {
                 if (!m_Player.isStopped())
-                    setState(Constants::STOP_STATE);
+                    setState(Constants::PlayerState::STOP);
             }
             else if (m_Player.getCurrentSong()->isRemote())
                 m_Player.firstSong();

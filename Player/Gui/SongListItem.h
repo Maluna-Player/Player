@@ -23,7 +23,7 @@ class SongListItem : public QTreeWidgetItem, public Sendable
 {
     public:
 
-        enum ElementType_t { ROOT, SONG, DIRECTORY };
+        enum class ElementType { ROOT, SONG, DIRECTORY };
 
     private:
 
@@ -31,7 +31,7 @@ class SongListItem : public QTreeWidgetItem, public Sendable
 
         unsigned int m_Num;
 
-        ElementType_t m_Type;
+        ElementType m_Type;
 
         Song *mp_AttachedSong;
 
@@ -44,7 +44,7 @@ class SongListItem : public QTreeWidgetItem, public Sendable
 
     public:
 
-        SongListItem(ElementType_t type, SongListItem *parent = nullptr, const QString& name = "");
+        SongListItem(ElementType type, SongListItem *parent = nullptr, const QString& name = "");
         virtual ~SongListItem();
 
         /**

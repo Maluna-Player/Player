@@ -33,8 +33,8 @@ SongList::SongList(QWidget *parent) : QTreeWidget(parent), m_CurrentSong(-1)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setFixedWidth(260);
 
-    SongListItem *localSongsItem = new SongListItem(SongListItem::ROOT, nullptr, "Mes musiques");
-    SongListItem *remoteSongsItem = new SongListItem(SongListItem::ROOT, nullptr, "Musiques distantes");
+    SongListItem *localSongsItem = new SongListItem(SongListItem::ElementType::ROOT, nullptr, "Mes musiques");
+    SongListItem *remoteSongsItem = new SongListItem(SongListItem::ElementType::ROOT, nullptr, "Musiques distantes");
 
     addTopLevelItem(localSongsItem);
     addTopLevelItem(remoteSongsItem);
@@ -51,7 +51,7 @@ SongList::~SongList()
 // ==============================
 // ==============================
 
-SongListItem* SongList::getRootNode(Constants::SongList_t list) const
+SongListItem* SongList::getRootNode(Constants::SongList list) const
 {
     if (list & Constants::LOCAL_SONGS)
         return static_cast<SongListItem*>(topLevelItem(0));
@@ -79,7 +79,7 @@ void SongList::removeSong(const SongListIterator& it)
 // ==============================
 // ==============================
 
-void SongList::clearList(Constants::SongList_t list)
+void SongList::clearList(Constants::SongList list)
 {
     SongListItem *root = getRootNode(list);
 
@@ -157,7 +157,7 @@ void SongList::mousePressEvent(QMouseEvent *event)
 // ==============================
 // ==============================
 
-SongTreeRoot* SongList::getSongHierarchy(Constants::SongList_t list) const
+SongTreeRoot* SongList::getSongHierarchy(Constants::SongList list) const
 {
     return static_cast<SongListItem*>(getRootNode(list));
 }
@@ -165,7 +165,7 @@ SongTreeRoot* SongList::getSongHierarchy(Constants::SongList_t list) const
 // ==============================
 // ==============================
 
-void SongList::addSong(Constants::SongList_t list, SongListItem *item)
+void SongList::addSong(Constants::SongList list, SongListItem *item)
 {
     QTreeWidgetItem *root = getRootNode(list);
     if (root)
@@ -184,7 +184,7 @@ void SongList::addSong(Constants::SongList_t list, SongListItem *item)
 // ==============================
 // ==============================
 
-void SongList::addTree(Constants::SongList_t list, SongTreeRoot *songs)
+void SongList::addTree(Constants::SongList list, SongTreeRoot *songs)
 {
     QTreeWidgetItem *root = getRootNode(list);
     if (root)

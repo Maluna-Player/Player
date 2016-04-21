@@ -81,18 +81,18 @@ const unsigned int VOLUME_VIEWER_H              = VOLUME_SPRITE_H;
 
 
 // Etats du player
-enum PlayerState_t { PLAY_STATE, PAUSE_STATE, STOP_STATE };
+enum class PlayerState { PLAY, PAUSE, STOP };
 
 // Listes de musiques
-enum SongList_t { DIRECTORY_SONGS = 1,
+enum SongList { DIRECTORY_SONGS = 1,
                   IMPORTED_SONGS = 2,
                   LOCAL_SONGS = DIRECTORY_SONGS | IMPORTED_SONGS,
                   REMOTE_SONGS = 4,
                   ALL_SONGS = LOCAL_SONGS | REMOTE_SONGS };
 
-inline SongList_t operator|(SongList_t l1, SongList_t l2)
+inline SongList operator|(SongList l1, SongList l2)
 {
-    return static_cast<SongList_t>(static_cast<int>(l1) | static_cast<int>(l2));
+    return static_cast<SongList>(static_cast<int>(l1) | static_cast<int>(l2));
 }
 
 }

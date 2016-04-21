@@ -58,8 +58,7 @@ class PlayerWindow : public QMainWindow
 
         VolumeViewer *mp_SoundVolume;
 
-        enum ButtonId_t { PLAY_BUTTON, PAUSE_BUTTON, STOP_BUTTON, PREV_BUTTON, NEXT_BUTTON,
-                          VOLUME_MORE_BUTTON, VOLUME_LESS_BUTTON };
+        enum class ButtonId { PLAY, PAUSE, STOP, PREV, NEXT, VOLUME_MORE, VOLUME_LESS };
 
         QVector<PlayerButton*> mp_Buttons;
 
@@ -69,10 +68,17 @@ class PlayerWindow : public QMainWindow
 
 
         /**
+         * @brief Récupère le boutton associé à la valeur de l'énumération passée en paramètre.
+         * @param id Identifiant du bouton
+         * @return Bouton associé à l'identifiant
+         */
+        PlayerButton* getButton(ButtonId id) const;
+
+        /**
          * @brief Change l'état du player et modifie l'affichage.
          * @param state Nouvel état du player
          */
-        virtual void setState(Constants::PlayerState_t state);
+        virtual void setState(Constants::PlayerState state);
 
         /**
          * @brief Modifie le volume de l'application avec celui passé en paramètre.
