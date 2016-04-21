@@ -29,11 +29,11 @@ PlayerSocket::PlayerSocket(Player *player)
 
 PlayerSocket::~PlayerSocket()
 {
-    for (int i = 0; i < mp_ReceivedRequests.size(); i++)
-        delete mp_ReceivedRequests[i];
+    for (CommandRequest *request : mp_ReceivedRequests)
+        delete request;
 
-    for (int i = 0; i < mp_ReceivedReplies.size(); i++)
-        delete mp_ReceivedReplies[i];
+    for (CommandReply *reply : mp_ReceivedReplies)
+        delete reply;
 
     if (mp_SendMessage)
         delete mp_SendMessage;

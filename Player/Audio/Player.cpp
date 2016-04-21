@@ -246,8 +246,8 @@ void Player::clearSongs(Constants::SongList list)
 {
     auto songs = mp_Songs.getSubSets(list);
 
-    for (auto it = songs.begin(); it != songs.end(); ++it)
-        delete *it;
+    for (Song *song : songs)
+        delete song;
 
     mp_Songs.clear(list);
 }
@@ -259,9 +259,9 @@ bool Player::containsLocalSong(const QString& filePath) const
 {
     auto localSongs = mp_Songs.getSubSets(Constants::LOCAL_SONGS);
 
-    for (auto it = localSongs.begin(); it != localSongs.end(); ++it)
+    for (auto song : localSongs)
     {
-        if ((*it)->getFile() == filePath)
+        if (song->getFile() == filePath)
             return true;
     }
 
@@ -275,9 +275,9 @@ bool Player::containsRemoteSong(const SongId num) const
 {
     auto remoteSongs = mp_Songs.getSubSets(Constants::REMOTE_SONGS);
 
-    for (auto it = remoteSongs.begin(); it != remoteSongs.end(); ++it)
+    for (auto song : remoteSongs)
     {
-        if (static_cast<RemoteSong*>(*it)->getRemoteNum() == num)
+        if (static_cast<RemoteSong*>(song)->getRemoteNum() == num)
             return true;
     }
 
@@ -374,13 +374,13 @@ SongTreeRoot* Player::loadSongs(const QString& dirPath, SongTreeRoot *parentDir)
 
     QFileInfoList files = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
 
-    for (int i = 0; i < files.size(); i++)
+    for (const QFileInfo& fileInfo : files)
     {
-        QString filePath = files.at(i).filePath();
+        QString filePath = fileInfo.filePath();
 
-        if (files.at(i).isDir())
+        if (fileInfo.isDir())
         {
-            SongListItem *item = new SongListItem(SongListItem::ElementType::DIRECTORY, nullptr, files.at(i).completeBaseName());
+            SongListItem *item = new SongListItem(SongListItem::ElementType::DIRECTORY, nullptr, fileInfo.completeBaseName());
             loadSongs(filePath, item);
 
             if (item->childCount() > 0)

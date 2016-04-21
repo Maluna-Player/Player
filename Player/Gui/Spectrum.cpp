@@ -75,8 +75,8 @@ void Spectrum::paintEvent(QPaintEvent * /*event*/)
 
 void Spectrum::clear()
 {
-    for (int i = 0; i < m_Width; i++)
-        m_Lines[i].setTop(height());
+    for (QRect& rect : m_Lines)
+        rect.setTop(height());
 
     update();
 }
