@@ -13,6 +13,9 @@
 #include <QPixmap>
 
 
+namespace gui {
+
+
 PlayerButton::PlayerButton(const QString& name, QWidget *parent)
     : ClickableLabel(parent), m_Name(name)
 {
@@ -32,7 +35,7 @@ PlayerButton::~PlayerButton()
 
 void PlayerButton::loadImage(const QString& fileName)
 {
-    QPixmap image = Tools::loadImage(Constants::BUTTONS_SUBDIR + fileName);
+    QPixmap image = util::Tools::loadImage(Constants::BUTTONS_SUBDIR + fileName);
 
     setPixmap(image.scaled(70, 70, Qt::KeepAspectRatio));
 }
@@ -56,3 +59,6 @@ void PlayerButton::mouseReleaseEvent(QMouseEvent *event)
 
     ClickableLabel::mouseReleaseEvent(event);
 }
+
+
+} // gui

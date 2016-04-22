@@ -16,6 +16,10 @@
 #include <QPainter>
 #include <QPaintEvent>
 
+
+namespace gui {
+
+
 class ProgressBar : public QProgressBar
 {
     Q_OBJECT
@@ -49,5 +53,8 @@ class ProgressBar : public QProgressBar
         ProgressBar(QWidget *parent = nullptr);
         virtual ~ProgressBar();
 };
+
+
+} // gui
 
 #endif  // __PROGRESSBAR_H__

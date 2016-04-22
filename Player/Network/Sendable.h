@@ -14,6 +14,10 @@
 
 #include <QByteArray>
 
+
+namespace network {
+
+
 class Sendable
 {
     public:
@@ -25,5 +29,7 @@ class Sendable
         virtual QByteArray toPacket() const = 0;
 };
 
-#endif  // __SENDABLE_H__
 
+} // network
+
+#endif  // __SENDABLE_H__

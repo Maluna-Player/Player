@@ -19,8 +19,12 @@
 
 #include "Constants.h"
 
-#define VOLUME_MIN    0.0
-#define VOLUME_MAX    1.0
+
+namespace audio {
+
+
+constexpr float VOLUME_MIN = 0.0;
+constexpr float VOLUME_MAX = 1.0;
 
 using SoundID_t = unsigned int;
 using SoundPos_t = unsigned int;    // Position en ms
@@ -201,5 +205,8 @@ class FmodManager
          */
         virtual char* getSongPictureData(SoundID_t id, unsigned int *dataLength = nullptr) const;
 };
+
+
+} // audio
 
 #endif  // __FMODMANAGER_H__

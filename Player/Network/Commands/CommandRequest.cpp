@@ -11,7 +11,10 @@
 #include <QDataStream>
 
 
-CommandRequest::CommandRequest(Player::SongId songNum) : Command(songNum)
+namespace network { namespace commands {
+
+
+CommandRequest::CommandRequest(audio::Player::SongId songNum) : Command(songNum)
 {
 
 }
@@ -29,7 +32,7 @@ bool CommandRequest::isReply() const
 // ==============================
 // ==============================
 
-OpenCommandRequest::OpenCommandRequest(Player::SongId songNum)
+OpenCommandRequest::OpenCommandRequest(audio::Player::SongId songNum)
     : CommandRequest(songNum)
 {
 
@@ -43,7 +46,7 @@ char OpenCommandRequest::getCommandType() const
 // ==============================
 // ==============================
 
-CloseCommandRequest::CloseCommandRequest(Player::SongId songNum)
+CloseCommandRequest::CloseCommandRequest(audio::Player::SongId songNum)
     : CommandRequest(songNum)
 {
 
@@ -57,7 +60,7 @@ char CloseCommandRequest::getCommandType() const
 // ==============================
 // ==============================
 
-ReadCommandRequest::ReadCommandRequest(Player::SongId songNum, unsigned int bytes)
+ReadCommandRequest::ReadCommandRequest(audio::Player::SongId songNum, unsigned int bytes)
     : CommandRequest(songNum), m_BytesToRead(bytes)
 {
 
@@ -86,7 +89,7 @@ QByteArray ReadCommandRequest::toPacket() const
 // ==============================
 // ==============================
 
-SeekCommandRequest::SeekCommandRequest(Player::SongId songNum, unsigned int pos)
+SeekCommandRequest::SeekCommandRequest(audio::Player::SongId songNum, unsigned int pos)
     : CommandRequest(songNum), m_Pos(pos)
 {
 
@@ -112,3 +115,6 @@ QByteArray SeekCommandRequest::toPacket() const
     return packet;
 }
 
+
+} // commands
+} // network

@@ -13,19 +13,23 @@
 
 #include "../Audio/Song.h"
 
-class RemoteSong : public Song
+
+namespace network {
+
+
+class RemoteSong : public audio::Song
 {
     private:
 
-        Player::SongId m_RemoteNum;
+        audio::Player::SongId m_RemoteNum;
 
-        SoundSettings *m_Settings;
+        audio::SoundSettings *m_Settings;
 
     protected:
 
-        friend class Player;
+        friend class audio::Player;
 
-        RemoteSong(Player::SongId num, const QString& file, Player::SongId remoteNum, SoundPos_t length, const QString& artist, SoundSettings *settings);
+        RemoteSong(audio::Player::SongId num, const QString& file, audio::Player::SongId remoteNum, audio::SoundPos_t length, const QString& artist, audio::SoundSettings *settings);
 
     public:
 
@@ -37,13 +41,16 @@ class RemoteSong : public Song
          * @brief getRemoteNum
          * @return Identifiant de la musique chez le pair.
          */
-        virtual Player::SongId getRemoteNum() const;
+        virtual audio::Player::SongId getRemoteNum() const;
 
         /**
          * @brief Ouvre le fichier avec FMOD pour stream du fichier distant.
          */
         virtual void open() override;
 };
+
+
+} // network
 
 #endif  // __REMOTESONG_H__
 

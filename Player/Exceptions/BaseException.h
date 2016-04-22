@@ -14,6 +14,10 @@
 #include <string>
 #include <exception>
 
+
+namespace exceptions {
+
+
 class BaseException : public std::exception
 {
   private:
@@ -55,5 +59,8 @@ class BaseException : public std::exception
       return m_Message.c_str();
     }
 };
+
+
+} // exceptions
 
 #endif  // __BASEEXCEPTION_H__

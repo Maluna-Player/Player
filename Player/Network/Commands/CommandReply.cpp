@@ -11,7 +11,10 @@
 #include <QDataStream>
 
 
-CommandReply::CommandReply(Player::SongId songNum, FMOD_RESULT result) : Command(songNum), m_Result(result)
+namespace network { namespace commands {
+
+
+CommandReply::CommandReply(audio::Player::SongId songNum, FMOD_RESULT result) : Command(songNum), m_Result(result)
 {
 
 }
@@ -44,7 +47,7 @@ QByteArray CommandReply::toPacket() const
 // ==============================
 // ==============================
 
-OpenCommandReply::OpenCommandReply(Player::SongId songNum, FMOD_RESULT result, int fileSize)
+OpenCommandReply::OpenCommandReply(audio::Player::SongId songNum, FMOD_RESULT result, int fileSize)
     : CommandReply(songNum, result), m_FileSize(fileSize)
 {
 
@@ -73,7 +76,7 @@ QByteArray OpenCommandReply::toPacket() const
 // ==============================
 // ==============================
 
-CloseCommandReply::CloseCommandReply(Player::SongId songNum, FMOD_RESULT result)
+CloseCommandReply::CloseCommandReply(audio::Player::SongId songNum, FMOD_RESULT result)
     : CommandReply(songNum, result)
 {
 
@@ -87,7 +90,7 @@ char CloseCommandReply::getCommandType() const
 // ==============================
 // ==============================
 
-ReadCommandReply::ReadCommandReply(Player::SongId songNum, FMOD_RESULT result, void *buffer, unsigned int bytes)
+ReadCommandReply::ReadCommandReply(audio::Player::SongId songNum, FMOD_RESULT result, void *buffer, unsigned int bytes)
     : CommandReply(songNum, result), m_Buffer(buffer), m_ReadBytes(bytes)
 {
 
@@ -127,7 +130,7 @@ QByteArray ReadCommandReply::toPacket() const
 // ==============================
 // ==============================
 
-SeekCommandReply::SeekCommandReply(Player::SongId songNum, FMOD_RESULT result)
+SeekCommandReply::SeekCommandReply(audio::Player::SongId songNum, FMOD_RESULT result)
     : CommandReply(songNum, result)
 {
 
@@ -137,3 +140,7 @@ char SeekCommandReply::getCommandType() const
 {
     return 's';
 }
+
+
+} // commands
+} // network

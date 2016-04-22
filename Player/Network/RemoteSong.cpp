@@ -11,7 +11,10 @@
 #include "PlayerSocket.h"
 
 
-RemoteSong::RemoteSong(Player::SongId num, const QString& file, Player::SongId remoteNum, SoundPos_t length, const QString& artist, SoundSettings *settings)
+namespace network {
+
+
+RemoteSong::RemoteSong(audio::Player::SongId num, const QString& file, audio::Player::SongId remoteNum, audio::SoundPos_t length, const QString& artist, audio::SoundSettings *settings)
     : Song(num, file, false, false), m_RemoteNum(remoteNum), m_Settings(settings)
 {
     m_Length = length;
@@ -38,7 +41,7 @@ bool RemoteSong::isRemote() const
 // ==============================
 // ==============================
 
-Player::SongId RemoteSong::getRemoteNum() const
+audio::Player::SongId RemoteSong::getRemoteNum() const
 {
     return m_RemoteNum;
 }
@@ -48,5 +51,8 @@ Player::SongId RemoteSong::getRemoteNum() const
 
 void RemoteSong::open()
 {
-    m_SoundID = FmodManager::getInstance()->openFromFile(m_File.toStdString(), true, m_Settings);
+    m_SoundID = audio::FmodManager::getInstance()->openFromFile(m_File.toStdString(), true, m_Settings);
 }
+
+
+} // network

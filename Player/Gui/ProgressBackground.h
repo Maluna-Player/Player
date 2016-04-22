@@ -16,6 +16,10 @@
 #include <QPainter>
 #include <QPaintEvent>
 
+
+namespace gui {
+
+
 class ProgressBackground : public QWidget
 {
     protected:
@@ -27,5 +31,8 @@ class ProgressBackground : public QWidget
         ProgressBackground(QWidget *parent = nullptr);
         virtual ~ProgressBackground();
 };
+
+
+} // gui
 
 #endif  // __PROGRESSBACKGROUND_H__

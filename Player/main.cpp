@@ -18,12 +18,12 @@ int main(int argc, char *argv[])
     try
     {
         QApplication qapp(argc, argv);
-        PlayerWindow window;
+        gui::PlayerWindow window;
         window.show();
 
         return qapp.exec();
     }
-    catch (BaseException& e)
+    catch (exceptions::BaseException& e)
     {
         qDebug() << e.what();
         return EXIT_FAILURE;

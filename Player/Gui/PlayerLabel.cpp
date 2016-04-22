@@ -10,6 +10,9 @@
 #include "PlayerLabel.h"
 
 
+namespace gui {
+
+
 PlayerLabel::PlayerLabel(QWidget *parent)
     : QLabel(parent)
 {
@@ -76,3 +79,6 @@ void PlayerLabel::setItalic(bool enable)
     f.setItalic(enable);
     setFont(f);
 }
+
+
+} // gui

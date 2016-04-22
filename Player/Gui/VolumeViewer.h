@@ -16,6 +16,10 @@
 #include <QPainter>
 #include <QPaintEvent>
 
+
+namespace gui {
+
+
 class VolumeViewer : public QLabel
 {
     Q_OBJECT
@@ -49,5 +53,8 @@ class VolumeViewer : public QLabel
          */
         virtual void setImage(int volumeState);
 };
+
+
+} // gui
 
 #endif  // __VOLUMEVIEWER_H__

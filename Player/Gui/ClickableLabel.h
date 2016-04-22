@@ -14,6 +14,10 @@
 #include <QLabel>
 #include <QMouseEvent>
 
+
+namespace gui {
+
+
 class ClickableLabel : public QLabel
 {
     Q_OBJECT
@@ -33,6 +37,9 @@ class ClickableLabel : public QLabel
         ClickableLabel(QWidget *parent = nullptr);
         virtual ~ClickableLabel();
 };
+
+
+} // gui
 
 #endif // __CLICKABLELABEL_H__
 

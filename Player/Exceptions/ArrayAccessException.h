@@ -15,6 +15,10 @@
 #include "BaseException.h"
 #include <sstream>
 
+
+namespace exceptions {
+
+
 class ArrayAccessException : public BaseException
 {
   private:
@@ -47,5 +51,8 @@ class ArrayAccessException : public BaseException
 
     }
 };
+
+
+} // exceptions
 
 #endif  // __ARRAYACCESSEXCEPTION_H__

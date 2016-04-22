@@ -12,6 +12,9 @@
 #include "../Util/Tools.h"
 
 
+namespace gui {
+
+
 VolumeViewer::VolumeViewer(QWidget *parent) : QLabel(parent)
 {
     setFixedSize(Constants::VOLUME_VIEWER_W, Constants::VOLUME_VIEWER_H);
@@ -32,13 +35,13 @@ void VolumeViewer::setImage(int volumeState)
 {
     if (volumeState == Constants::MUTE_STATE)
     {
-        m_VolumeImage = Tools::loadImage(Constants::IMAGES_SUBDIR + "volumeMute.png");
+        m_VolumeImage = util::Tools::loadImage(Constants::IMAGES_SUBDIR + "volumeMute.png");
         m_VolumeValueImage = QPixmap();
     }
     else
     {
-        m_VolumeImage = Tools::loadImage(Constants::IMAGES_SUBDIR + "volume.png");
-        QPixmap volumeValueImage = Tools::loadImage(Constants::IMAGES_SUBDIR + "volumeValue.png");
+        m_VolumeImage = util::Tools::loadImage(Constants::IMAGES_SUBDIR + "volume.png");
+        QPixmap volumeValueImage = util::Tools::loadImage(Constants::IMAGES_SUBDIR + "volumeValue.png");
 
         QRect rect(volumeState * Constants::VOLUME_VALUE_W, 0, Constants::VOLUME_VALUE_W, Constants::VOLUME_VALUE_H);
         m_VolumeValueImage = volumeValueImage.copy(rect).scaledToHeight(Constants::VOLUME_VIEWER_H);
@@ -67,3 +70,6 @@ void VolumeViewer::mousePressEvent(QMouseEvent *event)
     if (event->x() <= Constants::VOLUME_SPRITE_W)
         emit stateChanged();
 }
+
+
+} // gui

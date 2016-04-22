@@ -14,18 +14,22 @@
 #include "../Sendable.h"
 #include "../../Audio/Player.h"
 
+
+namespace network { namespace commands {
+
+
 class Command : public Sendable
 {
     private:
 
-        Player::SongId m_SongNum;
+        audio::Player::SongId m_SongNum;
 
     public:
 
-        Command(Player::SongId songNum);
+        Command(audio::Player::SongId songNum);
         virtual ~Command() {}
 
-        virtual Player::SongId getSongNum() const;
+        virtual audio::Player::SongId getSongNum() const;
 
         virtual bool isRequest() const = 0;
 
@@ -35,6 +39,10 @@ class Command : public Sendable
 
         virtual QByteArray toPacket() const override;
 };
+
+
+} // commands
+} // network
 
 #endif  // __COMMAND_H__
 

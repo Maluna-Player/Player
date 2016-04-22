@@ -16,6 +16,10 @@
 #include "Player.h"
 #include <QPixmap>
 
+
+namespace audio {
+
+
 class Song
 {
     private:
@@ -118,5 +122,8 @@ class Song
          */
         virtual bool isFinished() const;
 };
+
+
+} // audio
 
 #endif  // __SONG_H__

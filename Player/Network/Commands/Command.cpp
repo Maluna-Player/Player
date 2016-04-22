@@ -11,7 +11,10 @@
 #include <QDataStream>
 
 
-Command::Command(Player::SongId songNum) : m_SongNum(songNum)
+namespace network { namespace commands {
+
+
+Command::Command(audio::Player::SongId songNum) : m_SongNum(songNum)
 {
 
 }
@@ -19,7 +22,7 @@ Command::Command(Player::SongId songNum) : m_SongNum(songNum)
 // ==============================
 // ==============================
 
-Player::SongId Command::getSongNum() const
+audio::Player::SongId Command::getSongNum() const
 {
     return m_SongNum;
 }
@@ -41,3 +44,7 @@ QByteArray Command::toPacket() const
 
     return packet;
 }
+
+
+} // commands
+} // network

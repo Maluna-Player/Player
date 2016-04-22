@@ -17,6 +17,9 @@
 #include <QMouseEvent>
 
 
+namespace gui {
+
+
 SongList::SongList(QWidget *parent) : QTreeWidget(parent), m_CurrentSong(-1)
 {
     QPalette p(palette());
@@ -93,7 +96,7 @@ void SongList::clearList(Constants::SongList list)
         {
             if ((*it)->isSong())
             {
-                Song *song = (*it)->getAttachedSong();
+                audio::Song *song = (*it)->getAttachedSong();
                 if (song && ((list == Constants::DIRECTORY_SONGS && song->isInFolder())
                               || (list == Constants::IMPORTED_SONGS && !song->isInFolder())))
                     removeSong(it);
@@ -115,7 +118,7 @@ void SongList::setCurrentSong(int songNum)
 
     while (!it.isNull())
     {
-        Song *song = (*it)->getAttachedSong();
+        audio::Song *song = (*it)->getAttachedSong();
         if (song)
         {
             if (song->getNum() == m_CurrentSong)
@@ -146,7 +149,7 @@ void SongList::mousePressEvent(QMouseEvent *event)
 
     if (selectedItem && static_cast<SongListItem*>(selectedItem)->isSong())
     {
-        Song *song = static_cast<SongListItem*>(selectedItem)->getAttachedSong();
+        audio::Song *song = static_cast<SongListItem*>(selectedItem)->getAttachedSong();
         if (song)
             emit songPressed(song->getNum());
     }
@@ -172,11 +175,11 @@ void SongList::addSong(Constants::SongList list, SongListItem *item)
     {
         root->addChild(item);
 
-        Song *song = item->getAttachedSong();
+        audio::Song *song = item->getAttachedSong();
         if (song)
         {
             item->setText(0, song->getTitle());
-            item->setText(1, Tools::msToString(song->getLength()));
+            item->setText(1, util::Tools::msToString(song->getLength()));
         }
     }
 }
@@ -197,11 +200,11 @@ void SongList::addTree(Constants::SongList list, SongTreeRoot *songs)
         {
             if ((*it)->isSong())
             {
-                Song *song = (*it)->getAttachedSong();
+                audio::Song *song = (*it)->getAttachedSong();
                 if (song)
                 {
                     (*it)->setText(0, song->getTitle());
-                    (*it)->setText(1, Tools::msToString(song->getLength()));
+                    (*it)->setText(1, util::Tools::msToString(song->getLength()));
                 }
             }
 
@@ -213,3 +216,6 @@ void SongList::addTree(Constants::SongList list, SongTreeRoot *songs)
 
     delete songs;
 }
+
+
+} // gui

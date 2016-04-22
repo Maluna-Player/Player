@@ -11,6 +11,9 @@
 #include <QTreeWidgetItem>
 
 
+namespace gui {
+
+
 SongListIterator::SongListIterator(QTreeWidget *widget, IteratorFlags flags)
     : QTreeWidgetItemIterator(widget, flags), m_NodesCpt(0), m_NodesCount(0)
 {
@@ -76,3 +79,6 @@ SongListIterator& SongListIterator::operator++()
 
     return *this;
 }
+
+
+} // gui

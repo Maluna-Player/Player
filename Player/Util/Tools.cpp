@@ -12,6 +12,9 @@
 #include "Exceptions/FileLoadingException.h"
 
 
+namespace util {
+
+
 QString Tools::msToString(int ms)
 {
     QTime baseTime(0, 0, 0);
@@ -33,7 +36,10 @@ QPixmap Tools::loadImage(const QString &fileName)
 {
     QPixmap image(fileName);
     if (image.isNull())
-        throw FileLoadingException("Tools::loadImage", fileName.toStdString());
+        throw exceptions::FileLoadingException("Tools::loadImage", fileName.toStdString());
 
     return image;
 }
+
+
+} // util

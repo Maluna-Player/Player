@@ -29,6 +29,10 @@
 #include "./Network/PlayerSocket.h"
 #include "ConnectionBox.h"
 
+
+namespace gui {
+
+
 class PlayerWindow : public QMainWindow
 {
     Q_OBJECT
@@ -37,7 +41,7 @@ class PlayerWindow : public QMainWindow
 
         int m_TimerId;
 
-        Player m_Player;
+        audio::Player m_Player;
 
         QWidget *mp_TopPart;
         QWidget *mp_BottomPart;
@@ -62,7 +66,7 @@ class PlayerWindow : public QMainWindow
 
         QVector<PlayerButton*> mp_Buttons;
 
-        PlayerSocket *mp_Socket;
+        network::PlayerSocket *mp_Socket;
 
         ConnectionBox *mp_ConnectionBox;
 
@@ -198,5 +202,8 @@ class PlayerWindow : public QMainWindow
         PlayerWindow(QWidget *parent = nullptr);
         virtual ~PlayerWindow();
 };
+
+
+} // gui
 
 #endif // __PLAYERWINDOW_H__

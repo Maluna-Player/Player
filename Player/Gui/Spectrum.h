@@ -20,6 +20,9 @@
 #include <QPaintEvent>
 
 
+namespace gui {
+
+
 class Spectrum : public QWidget
 {
     private:
@@ -54,7 +57,10 @@ class Spectrum : public QWidget
          * et met à jour les valeurs des vertices.
          * @param id Identifiant du canal à tester
         */
-        virtual void updateValues(SoundID_t id);
+        virtual void updateValues(audio::SoundID_t id);
 };
+
+
+} // gui
 
 #endif  // __SPECTRUM_H__

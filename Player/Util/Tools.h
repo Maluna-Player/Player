@@ -14,6 +14,10 @@
 #include <QString>
 #include <QPixmap>
 
+
+namespace util {
+
+
 class Tools
 {
     public:
@@ -31,5 +35,8 @@ class Tools
          */
         static QPixmap loadImage(const QString& fileName);
 };
+
+
+} // util
 
 #endif  // __TOOLS_H__

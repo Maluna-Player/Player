@@ -13,6 +13,10 @@
 
 #include <QProgressBar>
 
+
+namespace gui {
+
+
 class NetworkLoadBar : public QProgressBar
 {
     private:
@@ -36,6 +40,9 @@ class NetworkLoadBar : public QProgressBar
          */
         virtual void setStartPos(unsigned int pos);
 };
+
+
+} // gui
 
 #endif  // __NETWORKLOADBAR_H__
 

@@ -12,6 +12,9 @@
 #include "../Util/Tools.h"
 
 
+namespace gui {
+
+
 ProgressBar::ProgressBar(QWidget *parent) : QProgressBar(parent), m_Press(false)
 {
     setFixedHeight(Constants::PROGRESSBAR_HEIGHT);
@@ -33,7 +36,7 @@ void ProgressBar::paintEvent(QPaintEvent * /*event*/)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
 
-    QPixmap bar = Tools::loadImage(Constants::IMAGES_SUBDIR + "progressBar.png");
+    QPixmap bar = util::Tools::loadImage(Constants::IMAGES_SUBDIR + "progressBar.png");
 
     int barWidth = 0;
     if (maximum())
@@ -41,7 +44,7 @@ void ProgressBar::paintEvent(QPaintEvent * /*event*/)
 
     painter.fillRect(0, 0, barWidth, bar.height(), QBrush(bar));
 
-    QPixmap marker = Tools::loadImage(Constants::IMAGES_SUBDIR + "marker.png");
+    QPixmap marker = util::Tools::loadImage(Constants::IMAGES_SUBDIR + "marker.png");
 
     painter.drawPixmap(barWidth - 2, 0, marker);
 }
@@ -83,3 +86,6 @@ void ProgressBar::mouseReleaseEvent(QMouseEvent * /*event*/)
 {
     m_Press = false;
 }
+
+
+} // gui

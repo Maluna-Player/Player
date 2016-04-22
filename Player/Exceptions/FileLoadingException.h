@@ -13,6 +13,10 @@
 
 #include "BaseException.h"
 
+
+namespace exceptions {
+
+
 class FileLoadingException : public BaseException
 {
   private:
@@ -40,5 +44,8 @@ class FileLoadingException : public BaseException
 
     }
 };
+
+
+} // exceptions
 
 #endif  // __FILELOADINGEXCEPTION_H__

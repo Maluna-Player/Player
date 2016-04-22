@@ -22,6 +22,9 @@
 #include <QDesktopServices>
 
 
+namespace gui {
+
+
 PlayerWindow::PlayerWindow(QWidget *parent)
     : QMainWindow(parent), m_TimerId(0), mp_Socket(nullptr)
 {
@@ -69,7 +72,7 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     mp_SongPicture = new QLabel;
     mp_SongList = new SongList;
 
-    connect(mp_SongList, SIGNAL(songPressed(Player::SongId)), &m_Player, SLOT(changeSong(Player::SongId)));
+    connect(mp_SongList, SIGNAL(songPressed(audio::Player::SongId)), &m_Player, SLOT(changeSong(audio::Player::SongId)));
 
     topLayout->setColumnStretch(0, 1);
     topLayout->addWidget(mp_SongTitle, 0, 0, 1, 2, Qt::AlignTop);
@@ -166,7 +169,7 @@ PlayerWindow::PlayerWindow(QWidget *parent)
 
 PlayerWindow::~PlayerWindow()
 {
-    FmodManager::deleteInstance();
+    audio::FmodManager::deleteInstance();
 }
 
 // ==============================
@@ -193,7 +196,7 @@ void PlayerWindow::setState(Constants::PlayerState state)
         mp_NetworkLoadBar->setValue(0);
         mp_NetworkLoadBar->setStartPos(0);
         mp_ProgressBar->setValue(0);
-        mp_SongPos->setText(Tools::msToString(0));
+        mp_SongPos->setText(util::Tools::msToString(0));
     }
 
     getButton(ButtonId::PLAY)->setHidden(m_Player.isPlaying());
@@ -214,7 +217,7 @@ void PlayerWindow::updateCurrentSong()
         if (!mp_SongPicture->pixmap()->isNull() && mp_SongPicture->pixmap()->width() > 400)
             mp_SongPicture->setPixmap(mp_SongPicture->pixmap()->scaledToWidth(400));
 
-        mp_SongLength->setText(Tools::msToString(m_Player.getCurrentSong()->getLength()));
+        mp_SongLength->setText(util::Tools::msToString(m_Player.getCurrentSong()->getLength()));
 
         mp_ProgressBar->setValue(0);
         mp_ProgressBar->setMaximum(m_Player.getCurrentSong()->getLength());
@@ -330,7 +333,7 @@ void PlayerWindow::setSongPosition(int value)
 {
     if (!m_Player.isStopped() && m_Player.getCurrentSong())
     {
-        SoundPos_t pos = value * m_Player.getCurrentSong()->getLength() / 100;
+        audio::SoundPos_t pos = value * m_Player.getCurrentSong()->getLength() / 100;
 
         m_Player.getCurrentSong()->setPosition(pos);
         mp_ProgressBar->setValue(pos);
@@ -395,7 +398,7 @@ void PlayerWindow::openInformation()
 
 void PlayerWindow::listen()
 {
-    mp_Socket = new PlayerSocket(&m_Player);
+    mp_Socket = new network::PlayerSocket(&m_Player);
     connect(mp_Socket, SIGNAL(connected()), this, SLOT(startConnection()));
     connect(mp_Socket, SIGNAL(disconnected()), this, SLOT(closeConnection()));
 
@@ -407,7 +410,7 @@ void PlayerWindow::listen()
 
 void PlayerWindow::connectToHost(const QString& host)
 {
-    mp_Socket = new PlayerSocket(&m_Player);
+    mp_Socket = new network::PlayerSocket(&m_Player);
     connect(mp_Socket, SIGNAL(connected()), this, SLOT(startConnection()));
     connect(mp_Socket, SIGNAL(disconnected()), this, SLOT(closeConnection()));
 
@@ -424,8 +427,8 @@ void PlayerWindow::startConnection()
 
     mp_ConnectionBox->connected();
 
-    connect(mp_Socket, SIGNAL(commandReceived(CommandRequest*)), &m_Player, SLOT(executeNetworkCommand(CommandRequest*)));
-    connect(&m_Player, SIGNAL(commandExecuted(CommandReply*)), mp_Socket, SLOT(sendCommandReply(CommandReply*)));
+    connect(mp_Socket, SIGNAL(commandReceived(network::commands::CommandRequest*)), &m_Player, SLOT(executeNetworkCommand(network::commands::CommandRequest*)));
+    connect(&m_Player, SIGNAL(commandExecuted(network::commands::CommandReply*)), mp_Socket, SLOT(sendCommandReply(network::commands::CommandReply*)));
 }
 
 // ==============================
@@ -473,7 +476,7 @@ void PlayerWindow::timerEvent(QTimerEvent *event)
 
             mp_Spectrum->updateValues(m_Player.getCurrentSong()->getSoundID());
             mp_ProgressBar->setValue(m_Player.getCurrentSong()->getPosition());
-            mp_SongPos->setText(Tools::msToString(m_Player.getCurrentSong()->getPosition()));
+            mp_SongPos->setText(util::Tools::msToString(m_Player.getCurrentSong()->getPosition()));
 
             if (m_Player.getCurrentSong()->isRemote())
                 mp_NetworkLoadBar->setValue(mp_Socket->getSongDataReceived());
@@ -533,3 +536,6 @@ void PlayerWindow::paintEvent(QPaintEvent *event)
     pal.setBrush(QPalette::Window, gradient);
     mp_BottomPart->setPalette(pal);
 }
+
+
+} // gui

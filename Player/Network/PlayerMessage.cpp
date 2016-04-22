@@ -12,6 +12,9 @@
 #include <QEventLoop>
 
 
+namespace network {
+
+
 PlayerMessage::PlayerMessage(QTcpSocket *socket) : mp_Socket(socket), m_MessageSize(0), m_IsSending(false)
 {
     connect(this, SIGNAL(newMessageToSend()), this, SLOT(sendMessages()));
@@ -172,3 +175,6 @@ void PlayerMessage::receive()
         m_MessageSize = 0;
     }
 }
+
+
+} // network

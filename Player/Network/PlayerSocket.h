@@ -24,13 +24,17 @@
 #include "../Audio/FmodManager.h"
 #include "../Audio/Player.h"
 
+
+namespace network {
+
+
 class PlayerSocket : public QObject
 {
     Q_OBJECT
 
     private:
 
-        Player *mp_Player;
+        audio::Player *mp_Player;
 
         bool m_Connected;
 
@@ -45,10 +49,10 @@ class PlayerSocket : public QObject
 
         QThread *mp_SocketThread;
 
-        QVector<CommandRequest*> mp_ReceivedRequests;
-        QVector<CommandReply*> mp_ReceivedReplies;
+        QVector<commands::CommandRequest*> mp_ReceivedRequests;
+        QVector<commands::CommandReply*> mp_ReceivedReplies;
 
-        SoundSettings m_CallbackSettings;
+        audio::SoundSettings m_CallbackSettings;
 
         quint32 m_SongDataReceived;
         quint32 m_TotalCurrentSongData;
@@ -60,38 +64,38 @@ class PlayerSocket : public QObject
          * @param parent Racine de l'arborescence dans laquelle chercher
          * @return Item correspondant au numéro indiqué
          */
-        virtual SongListItem* getItem(int num, SongTreeRoot *parent) const;
+        virtual gui::SongListItem* getItem(int num, gui::SongTreeRoot *parent) const;
 
         /**
          * @brief Envoie la liste des éléments récursivement à partir de item.
          * @param item Element racine à partir duquel envoyer la liste
          */
-        virtual void sendSongs(SongTreeRoot *item);
+        virtual void sendSongs(gui::SongTreeRoot *item);
 
         /**
          * @brief Lit les données des musiques distantes reçues sur le socket.
          * @return Liste des musiques reçues
          */
-        virtual SongTreeRoot* readRemoteSongList();
+        virtual gui::SongTreeRoot* readRemoteSongList();
 
         /**
          * @brief Construit l'objet Command à partir du message passé en paramètre.
          * @param message Message contenant la commande
          * @return Commande construite
          */
-        virtual Command* buildCommand(QByteArray message) const;
+        virtual commands::Command* buildCommand(QByteArray message) const;
 
         /**
          * @brief Récupère la prochaine requête parmi la liste des messages traités ou récupérés.
          * @return Prochaine requête du client
          */
-        virtual CommandRequest* getCommandRequest();
+        virtual commands::CommandRequest* getCommandRequest();
 
         /**
          * @brief Récupère la prochaine réponse parmi la liste des messages traités ou récupérés.
          * @return Prochaine réponse du client
          */
-        virtual CommandReply* getCommandReply();
+        virtual commands::CommandReply* getCommandReply();
 
     private slots:
 
@@ -126,18 +130,18 @@ class PlayerSocket : public QObject
          * @brief Signal émis lorsqu'une commande est reçue.
          * @param Commande reçue
          */
-        void commandReceived(CommandRequest*);
+        void commandReceived(network::commands::CommandRequest*);
 
     public:
 
-        PlayerSocket(Player *player);
+        PlayerSocket(audio::Player *player);
         virtual ~PlayerSocket();
 
         /**
          * @brief getCallbackSettings
          * @return Options fmod pour la lecture réseau
          */
-        virtual SoundSettings& getCallbackSettings();
+        virtual audio::SoundSettings& getCallbackSettings();
 
         /**
          * @brief getSongDataReceived
@@ -174,7 +178,7 @@ class PlayerSocket : public QObject
          * @param songs Arborescence des musiques à envoyer
          * @return Arborescence des musiques de l'autre client
          */
-        virtual SongTreeRoot* exchangeSongList(SongTreeRoot *songs);
+        virtual gui::SongTreeRoot* exchangeSongList(gui::SongTreeRoot *songs);
 
         /**
          * @brief Vérifie s'il existe une prochaine requête client et signale sa réception.
@@ -200,15 +204,18 @@ class PlayerSocket : public QObject
          * @brief Ajoute la réponse reçue en paramètre dans la liste des messages à envoyer.
          * @param reply Réponse à envoyer
          */
-        virtual void sendCommandReply(CommandReply *reply);
+        virtual void sendCommandReply(network::commands::CommandReply *reply);
 };
 
-/** Callbacks FMOD pour le stream de musique distantes **/
+/** Callbacks FMOD pour le stream de musiques distantes **/
 
 FMOD_RESULT F_CALLBACK openCallback(const char *fileName, unsigned int *filesize, void **handle, void *userdata);
 FMOD_RESULT F_CALLBACK closeCallback(void *handle, void *userdata);
 FMOD_RESULT F_CALLBACK readCallback(void *handle, void *buffer, unsigned int sizebytes, unsigned int *bytesread, void *userdata);
 FMOD_RESULT F_CALLBACK seekCallback(void *handle, unsigned int pos, void *userdata);
+
+
+} // network
 
 #endif  // __PLAYERSOCKET_H__
 

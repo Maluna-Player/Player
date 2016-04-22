@@ -13,6 +13,9 @@
 #include <QResizeEvent>
 
 
+namespace gui {
+
+
 NetworkLoadBar::NetworkLoadBar(QWidget *parent)
     : QProgressBar(parent), m_StartPos(0)
 {
@@ -58,3 +61,6 @@ void NetworkLoadBar::resizeEvent(QResizeEvent *event)
 {
     resize(event->size());
 }
+
+
+} // gui

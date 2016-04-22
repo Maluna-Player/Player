@@ -14,6 +14,10 @@
 #include "ClickableLabel.h"
 #include <QString>
 
+
+namespace gui {
+
+
 class PlayerButton : public ClickableLabel
 {
     private:
@@ -38,6 +42,9 @@ class PlayerButton : public ClickableLabel
         PlayerButton(const QString& name, QWidget *parent = nullptr);
         virtual ~PlayerButton();
 };
+
+
+} // gui
 
 #endif // __PLAYERBUTTON_H__
 

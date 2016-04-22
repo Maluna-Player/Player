@@ -16,6 +16,10 @@
 #include <QLineEdit>
 #include <QPushButton>
 
+
+namespace gui {
+
+
 class ConnectionBox : public QWidget
 {
     Q_OBJECT
@@ -58,6 +62,9 @@ class ConnectionBox : public QWidget
 
         virtual void disconnect();
 };
+
+
+} // gui
 
 #endif  // __CONNECTIONBOX_H__
 

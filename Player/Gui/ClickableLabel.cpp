@@ -10,6 +10,9 @@
 #include "ClickableLabel.h"
 
 
+namespace gui {
+
+
 ClickableLabel::ClickableLabel(QWidget *parent) : QLabel(parent)
 {
 
@@ -39,3 +42,6 @@ void ClickableLabel::mouseReleaseEvent(QMouseEvent *event)
     if (event->x() >= 0 && event->x() <= width() && event->y() >= 0 && event->y() <= height())
         emit clicked();
 }
+
+
+} // gui

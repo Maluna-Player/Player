@@ -13,6 +13,10 @@
 #include <QImage>
 #include <QLinearGradient>
 
+
+namespace gui {
+
+
 Spectrum::Spectrum(int width, QWidget *parent)
     : QWidget(parent), m_Width(width), m_Lines(m_Width)
 {
@@ -84,13 +88,13 @@ void Spectrum::clear()
 // ==============================
 // ==============================
 
-void Spectrum::updateValues(SoundID_t id)
+void Spectrum::updateValues(audio::SoundID_t id)
 {
     int i;
     std::vector<float> spectrumValues(m_Width);
 
     /* Récupération des valeurs spectrales de FMOD */
-    FmodManager::getInstance()->getChannelSpectrum(id, spectrumValues);
+    audio::FmodManager::getInstance()->getChannelSpectrum(id, spectrumValues);
 
     for (i = 0; i < m_Width; i++)
     {
@@ -109,3 +113,6 @@ void Spectrum::updateValues(SoundID_t id)
 
     update();
 }
+
+
+} // gui

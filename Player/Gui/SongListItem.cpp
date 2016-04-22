@@ -11,6 +11,9 @@
 #include "../Audio/Song.h"
 
 
+namespace gui {
+
+
 unsigned int SongListItem::cpt = 0;
 
 SongListItem::SongListItem(ElementType type, SongListItem *parent, const QString& name)
@@ -79,7 +82,7 @@ unsigned int SongListItem::getParentNum() const
 // ==============================
 // ==============================
 
-Song* SongListItem::getAttachedSong() const
+audio::Song* SongListItem::getAttachedSong() const
 {
     return mp_AttachedSong;
 }
@@ -96,7 +99,7 @@ void SongListItem::setParent(SongListItem *parent)
 // ==============================
 // ==============================
 
-void SongListItem::setAttachedSong(Song *song)
+void SongListItem::setAttachedSong(audio::Song *song)
 {
     mp_AttachedSong = song;
 }
@@ -119,7 +122,7 @@ QByteArray SongListItem::toPacket() const
     {
         out << static_cast<quint8>(1);
 
-        Song *song = getAttachedSong();
+        audio::Song *song = getAttachedSong();
         if (song)
         {
             out << static_cast<quint16>(song->getNum());    // Id de la musique
@@ -130,3 +133,6 @@ QByteArray SongListItem::toPacket() const
 
     return packet;
 }
+
+
+} // gui

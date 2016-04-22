@@ -13,6 +13,10 @@
 
 #include <QLabel>
 
+
+namespace gui {
+
+
 class PlayerLabel : public QLabel
 {
     public:
@@ -42,6 +46,9 @@ class PlayerLabel : public QLabel
          */
         virtual void setItalic(bool enable);
 };
+
+
+} // gui
 
 #endif // __PLAYERLABEL_H__
 

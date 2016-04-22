@@ -6,6 +6,10 @@
 #include <initializer_list>
 #include <algorithm>
 
+
+namespace util {
+
+
 template<typename Key, typename Value>
 class ComposedMap : public std::map<Key, Value>
 {
@@ -658,5 +662,8 @@ Value& ComposedMap<Key, Value>::operator[](const Key& key)
 
     return std::map<Key, Value>::operator[](key);
 }
+
+
+} // util
 
 #endif  // COMPOSEDMAP_H

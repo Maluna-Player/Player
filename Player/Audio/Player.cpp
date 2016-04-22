@@ -21,6 +21,9 @@
 #include "../Gui/SongListIterator.h"
 
 
+namespace audio {
+
+
 Player::Player()
     : m_Cpt(0), mp_Songs({Constants::DIRECTORY_SONGS, Constants::IMPORTED_SONGS, Constants::REMOTE_SONGS}),
       m_CurrentSong(UNDEFINED_SONG), m_Playlist(true), m_Loop(false),
@@ -277,7 +280,7 @@ bool Player::containsRemoteSong(const SongId num) const
 
     for (auto song : remoteSongs)
     {
-        if (static_cast<RemoteSong*>(song)->getRemoteNum() == num)
+        if (static_cast<network::RemoteSong*>(song)->getRemoteNum() == num)
             return true;
     }
 
@@ -325,14 +328,14 @@ Song* Player::createLocalSong(const QString& filePath, bool inFolder)
 // ==============================
 // ==============================
 
-RemoteSong* Player::createRemoteSong(const QString& file, SongId remoteNum, SoundPos_t length, const QString& artist, SoundSettings *settings)
+network::RemoteSong* Player::createRemoteSong(const QString& file, SongId remoteNum, SoundPos_t length, const QString& artist, SoundSettings *settings)
 {
-    RemoteSong *song = nullptr;
+    network::RemoteSong *song = nullptr;
 
     if (!containsRemoteSong(remoteNum))
     {
         SongId num = getNewSongNum();
-        song = new RemoteSong(num, file, remoteNum, length, artist, settings);
+        song = new network::RemoteSong(num, file, remoteNum, length, artist, settings);
 
         mp_Songs[Constants::REMOTE_SONGS][num] = song;
     }
@@ -343,9 +346,9 @@ RemoteSong* Player::createRemoteSong(const QString& file, SongId remoteNum, Soun
 // ==============================
 // ==============================
 
-SongListItem* Player::addNewSong(Constants::SongList list, const QString& filePath, SongListItem *parentDir)
+gui::SongListItem* Player::addNewSong(Constants::SongList list, const QString& filePath, gui::SongListItem *parentDir)
 {
-    SongListItem *item = nullptr;
+    gui::SongListItem *item = nullptr;
 
     bool inFolder = (list == Constants::DIRECTORY_SONGS);
     Song *song = createLocalSong(filePath, inFolder);
@@ -353,7 +356,7 @@ SongListItem* Player::addNewSong(Constants::SongList list, const QString& filePa
     if (song)
     {
         QFileInfo fileInfo(filePath);
-        item = new SongListItem(SongListItem::ElementType::SONG, parentDir, fileInfo.completeBaseName());
+        item = new gui::SongListItem(gui::SongListItem::ElementType::SONG, parentDir, fileInfo.completeBaseName());
         item->setAttachedSong(song);
     }
 
@@ -363,14 +366,14 @@ SongListItem* Player::addNewSong(Constants::SongList list, const QString& filePa
 // ==============================
 // ==============================
 
-SongTreeRoot* Player::loadSongs(const QString& dirPath, SongTreeRoot *parentDir)
+gui::SongTreeRoot* Player::loadSongs(const QString& dirPath, gui::SongTreeRoot *parentDir)
 {
     if (!parentDir)
-        parentDir = new SongTreeRoot(SongListItem::ElementType::ROOT);
+        parentDir = new gui::SongTreeRoot(gui::SongListItem::ElementType::ROOT);
 
     QDir dir(dirPath);
     if (!dir.exists())
-        throw FileLoadingException("Player::loadSongs", dirPath.toStdString());
+        throw exceptions::FileLoadingException("Player::loadSongs", dirPath.toStdString());
 
     QFileInfoList files = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
 
@@ -380,7 +383,7 @@ SongTreeRoot* Player::loadSongs(const QString& dirPath, SongTreeRoot *parentDir)
 
         if (fileInfo.isDir())
         {
-            SongListItem *item = new SongListItem(SongListItem::ElementType::DIRECTORY, nullptr, fileInfo.completeBaseName());
+            gui::SongListItem *item = new gui::SongListItem(gui::SongListItem::ElementType::DIRECTORY, nullptr, fileInfo.completeBaseName());
             loadSongs(filePath, item);
 
             if (item->childCount() > 0)
@@ -475,10 +478,10 @@ void Player::update()
 // ==============================
 // ==============================
 
-void Player::executeNetworkCommand(CommandRequest *command)
+void Player::executeNetworkCommand(network::commands::CommandRequest *command)
 {
     SongId songNum = command->getSongNum();
-    CommandReply *reply = nullptr;
+    network::commands::CommandReply *reply = nullptr;
 
     switch (command->getCommandType())
     {
@@ -487,37 +490,37 @@ void Player::executeNetworkCommand(CommandRequest *command)
             SongIt song = findSong(songNum);
             clientFile.setFileName((*song)->getFile());
             if (!clientFile.open(QIODevice::ReadOnly))
-                reply = new OpenCommandReply(songNum, FMOD_ERR_FILE_NOTFOUND, -1);
+                reply = new network::commands::OpenCommandReply(songNum, FMOD_ERR_FILE_NOTFOUND, -1);
             else
             {
                 unsigned int fileSize = clientFile.size();
                 clientFile.seek(0);
 
-                reply = new OpenCommandReply(songNum, FMOD_OK, fileSize);
+                reply = new network::commands::OpenCommandReply(songNum, FMOD_OK, fileSize);
             }
             break;
         }
 
         case 'c':
             clientFile.close();
-            reply = new CloseCommandReply(songNum, FMOD_OK);
+            reply = new network::commands::CloseCommandReply(songNum, FMOD_OK);
             break;
 
         case 'r':
         {
-            unsigned int bytesToRead = static_cast<ReadCommandRequest*>(command)->getBytesToRead();
+            unsigned int bytesToRead = static_cast<network::commands::ReadCommandRequest*>(command)->getBytesToRead();
             char *buffer = new char[bytesToRead];
             unsigned int readBytes = clientFile.read(buffer, bytesToRead);
 
-            reply = new ReadCommandReply(songNum, FMOD_OK, buffer, readBytes);
+            reply = new network::commands::ReadCommandReply(songNum, FMOD_OK, buffer, readBytes);
             break;
         }
 
         case 's':
-            if (clientFile.seek(static_cast<SeekCommandRequest*>(command)->getPos()))
-                reply = new SeekCommandReply(songNum, FMOD_OK);
+            if (clientFile.seek(static_cast<network::commands::SeekCommandRequest*>(command)->getPos()))
+                reply = new network::commands::SeekCommandReply(songNum, FMOD_OK);
             else
-                reply = new SeekCommandReply(songNum, FMOD_ERR_FILE_COULDNOTSEEK);
+                reply = new network::commands::SeekCommandReply(songNum, FMOD_ERR_FILE_COULDNOTSEEK);
             break;
 
         default:
@@ -530,3 +533,5 @@ void Player::executeNetworkCommand(CommandRequest *command)
         emit commandExecuted(reply);
 }
 
+
+} // audio

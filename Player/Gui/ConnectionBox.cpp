@@ -11,6 +11,9 @@
 #include <QHBoxLayout>
 
 
+namespace gui {
+
+
 ConnectionBox::ConnectionBox(QWidget *parent) : QWidget(parent)
 {
     QHBoxLayout *layout = new QHBoxLayout;
@@ -126,3 +129,6 @@ void ConnectionBox::disconnect()
 
     emit disconnected();
 }
+
+
+} // gui

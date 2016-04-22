@@ -14,6 +14,10 @@
 #include <QTreeWidgetItemIterator>
 #include "SongListItem.h"
 
+
+namespace gui {
+
+
 class SongListIterator : public QTreeWidgetItemIterator
 {
     private:
@@ -45,6 +49,9 @@ class SongListIterator : public QTreeWidgetItemIterator
 
         virtual SongListIterator& operator++();
 };
+
+
+} // gui
 
 #endif  // __SONGLISTITERATOR__
 

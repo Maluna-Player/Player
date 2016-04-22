@@ -17,6 +17,10 @@
 #include <QMutex>
 #include "Sendable.h"
 
+
+namespace network {
+
+
 class PlayerMessage : public QObject
 {
     Q_OBJECT
@@ -89,6 +93,9 @@ class PlayerMessage : public QObject
          */
         virtual void add(Sendable *objectToSend);
 };
+
+
+} // network
 
 #endif  // __PLAYERMESSAGE_H__
 

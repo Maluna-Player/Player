@@ -13,6 +13,10 @@
 
 #include <QDialog>
 
+
+namespace gui {
+
+
 class AboutDialog : public QDialog
 {
     public:
@@ -20,6 +24,9 @@ class AboutDialog : public QDialog
         AboutDialog(QWidget *parent = nullptr);
         virtual ~AboutDialog();
 };
+
+
+} // gui
 
 #endif  // __ABOUTDIALOG_H__
 

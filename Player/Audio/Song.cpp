@@ -11,6 +11,9 @@
 #include <QFileInfo>
 
 
+namespace audio {
+
+
 Song::Song(Player::SongId num, const QString& file, bool inFolder, bool openable)
     : m_Num(num), m_InFolder(inFolder), m_File(file), m_SoundID(0), m_Artist("")
 {
@@ -186,3 +189,5 @@ bool Song::isFinished() const
     return !(getPosition() < getLength());
 }
 
+
+} // audio

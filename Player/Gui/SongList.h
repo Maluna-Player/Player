@@ -21,6 +21,10 @@
 #include "Constants.h"
 #include "../Audio/Player.h"
 
+
+namespace gui {
+
+
 class SongList : public QTreeWidget
 {
     Q_OBJECT
@@ -53,7 +57,7 @@ class SongList : public QTreeWidget
          * @brief Signal émis lorsque l'utilisateur clique sur une musique locale de la liste.
          * @param song Musique sélectionnée
          */
-        void songPressed(Player::SongId song);
+        void songPressed(audio::Player::SongId song);
 
     public:
 
@@ -93,5 +97,8 @@ class SongList : public QTreeWidget
         */
         virtual void addTree(Constants::SongList list, SongTreeRoot *songs);
 };
+
+
+} // gui
 
 #endif  // __SONGLIST_H__

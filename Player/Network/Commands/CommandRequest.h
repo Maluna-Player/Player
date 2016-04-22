@@ -13,11 +13,15 @@
 
 #include "Command.h"
 
+
+namespace network { namespace commands {
+
+
 class CommandRequest : public Command
 {
     public:
 
-        CommandRequest(Player::SongId songNum);
+        CommandRequest(audio::Player::SongId songNum);
         virtual ~CommandRequest() {}
 
         virtual bool isRequest() const override;
@@ -29,7 +33,7 @@ class OpenCommandRequest : public CommandRequest
 {
     public:
 
-        OpenCommandRequest(Player::SongId songNum);
+        OpenCommandRequest(audio::Player::SongId songNum);
         virtual ~OpenCommandRequest() {}
 
         virtual char getCommandType() const override;
@@ -39,7 +43,7 @@ class CloseCommandRequest : public CommandRequest
 {
     public:
 
-        CloseCommandRequest(Player::SongId songNum);
+        CloseCommandRequest(audio::Player::SongId songNum);
         virtual ~CloseCommandRequest() {}
 
         virtual char getCommandType() const override;
@@ -53,7 +57,7 @@ class ReadCommandRequest : public CommandRequest
 
     public:
 
-        ReadCommandRequest(Player::SongId songNum, unsigned int bytes);
+        ReadCommandRequest(audio::Player::SongId songNum, unsigned int bytes);
         virtual ~ReadCommandRequest() {}
 
         virtual char getCommandType() const override;
@@ -71,7 +75,7 @@ class SeekCommandRequest : public CommandRequest
 
     public:
 
-        SeekCommandRequest(Player::SongId songNum, unsigned int pos);
+        SeekCommandRequest(audio::Player::SongId songNum, unsigned int pos);
         virtual ~SeekCommandRequest() {}
 
         virtual char getCommandType() const override;
@@ -80,6 +84,10 @@ class SeekCommandRequest : public CommandRequest
 
         virtual QByteArray toPacket() const override;
 };
+
+
+} // commands
+} // network
 
 #endif  // __COMMANDREQUEST_H__
 

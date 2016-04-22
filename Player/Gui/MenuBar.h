@@ -14,6 +14,10 @@
 #include <QMenuBar>
 #include <QAction>
 
+
+namespace gui {
+
+
 class MenuBar : public QMenuBar
 {
     private:
@@ -55,6 +59,9 @@ class MenuBar : public QMenuBar
          */
         virtual QAction* getAboutAction() const;
 };
+
+
+} // gui
 
 #endif  // __MENUBAR_H__
 

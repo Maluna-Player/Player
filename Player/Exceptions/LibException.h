@@ -13,6 +13,10 @@
 
 #include "BaseException.h"
 
+
+namespace exceptions {
+
+
 class LibException : public BaseException
 {
   private:
@@ -42,5 +46,8 @@ class LibException : public BaseException
 
     }
 };
+
+
+} // exceptions
 
 #endif  // __LIBEXCEPTION_H__

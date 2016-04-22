@@ -19,14 +19,28 @@
 #include "../Constants.h"
 #include "../Gui/SongListItem.h"
 
+
+namespace network
+{
+    class RemoteSong;
+
+    namespace commands
+    {
+        class CommandRequest;
+        class CommandReply;
+    }
+}
+
+
+namespace audio {
+
+
 #define FIRST_SONG      mp_Songs.begin()
 #define UNDEFINED_SONG  mp_Songs.end()
 
 class Song;
-class RemoteSong;
 
-class CommandRequest;
-class CommandReply;
+
 
 class Player : public QObject
 {
@@ -38,11 +52,11 @@ class Player : public QObject
 
     private:
 
-        using SongIt = ComposedMap<Constants::SongList, std::map<int, Song*>>::const_iterator;
+        using SongIt = util::ComposedMap<Constants::SongList, std::map<int, Song*>>::const_iterator;
 
         unsigned int m_Cpt;
 
-        ComposedMap<Constants::SongList, std::map<int, Song*>> mp_Songs;
+        util::ComposedMap<Constants::SongList, std::map<int, Song*>> mp_Songs;
         SongIt m_CurrentSong;
 
         bool m_Playlist;
@@ -129,7 +143,7 @@ class Player : public QObject
         /**
          * @brief Signal émis lorsque la commande reçue a été traitée et que la réponse est créée.
          */
-        void commandExecuted(CommandReply*);
+        void commandExecuted(network::commands::CommandReply*);
 
     public:
 
@@ -241,7 +255,7 @@ class Player : public QObject
          * @param settings Paramètres de lecture du son distant
          * @return Objet son créé, nullptr sinon
          */
-        virtual RemoteSong* createRemoteSong(const QString& file, SongId remoteNum, SoundPos_t length, const QString& artist, SoundSettings *settings);
+        virtual network::RemoteSong* createRemoteSong(const QString& file, SongId remoteNum, SoundPos_t length, const QString& artist, SoundSettings *settings);
 
         /**
          * @brief Ajoute une nouvelle musique dans la liste du player.
@@ -250,7 +264,7 @@ class Player : public QObject
          * @param parentDir Parent dans l'arborescence
          * @return Elément de l'arborescence contenant la nouvelle musique
          */
-        virtual SongListItem* addNewSong(Constants::SongList list, const QString& filePath, SongListItem *parentDir = nullptr);
+        virtual gui::SongListItem* addNewSong(Constants::SongList list, const QString& filePath, gui::SongListItem *parentDir = nullptr);
 
         /**
          * @brief Remplit le vecteur Musiques à partir des fichiers
@@ -259,7 +273,7 @@ class Player : public QObject
          * @param parentDir Parent dans l'arborescence
          * @return Arborescence des fichiers lus
          */
-        virtual SongTreeRoot* loadSongs(const QString& dirPath, SongTreeRoot *parentDir = nullptr);
+        virtual gui::SongTreeRoot* loadSongs(const QString& dirPath, gui::SongTreeRoot *parentDir = nullptr);
 
         /**
          * @brief Lance la première musique du player.
@@ -288,13 +302,16 @@ class Player : public QObject
          * @param song Indice de la musique
          * @return true si la musique a bien été modifiée
          */
-        virtual bool changeSong(Player::SongId song);
+        virtual bool changeSong(audio::Player::SongId song);
 
         /**
          * @brief Traite la commande passée en paramètre et émet la réponse une fois terminée.
          * @param command Commande à traiter
          */
-        virtual void executeNetworkCommand(CommandRequest *command);
+        virtual void executeNetworkCommand(network::commands::CommandRequest *command);
 };
+
+
+} // audio
 
 #endif  // __PLAYER_H__
