@@ -52,11 +52,11 @@ class Player : public QObject
 
     private:
 
-        using SongIt = util::ComposedMap<Constants::SongList, std::map<int, Song*>>::const_iterator;
+        using SongIt = util::ComposedMap<SongList_t, std::map<int, Song*>>::const_iterator;
 
         unsigned int m_Cpt;
 
-        util::ComposedMap<Constants::SongList, std::map<int, Song*>> mp_Songs;
+        util::ComposedMap<SongList_t, std::map<int, Song*>> mp_Songs;
         SongIt m_CurrentSong;
 
         bool m_Playlist;
@@ -161,7 +161,7 @@ class Player : public QObject
          * @param list Liste dont on veut le nombre d'éléments
          * @return Nombre de musiques enregistrées.
          */
-        virtual int songsCount(Constants::SongList list = Constants::ALL_SONGS) const;
+        virtual int songsCount(SongList_t list = SongList_t::ALL_SONGS) const;
 
         /**
          * @brief Active la lecture.
@@ -236,7 +236,7 @@ class Player : public QObject
          * @brief Vide la liste des musiques du player à partir de l'indice de la listte passé en paramètre.
          * @param list Liste dont on veut supprimer les éléments
          */
-        virtual void clearSongs(Constants::SongList list = Constants::ALL_SONGS);
+        virtual void clearSongs(SongList_t list = SongList_t::ALL_SONGS);
 
         /**
          * @brief Créé un nouveau son local s'il n'existe pas encore à partir du chemin passé en paramètre.
@@ -264,7 +264,7 @@ class Player : public QObject
          * @param parentDir Parent dans l'arborescence
          * @return Elément de l'arborescence contenant la nouvelle musique
          */
-        virtual gui::SongListItem* addNewSong(Constants::SongList list, const QString& filePath, gui::SongListItem *parentDir = nullptr);
+        virtual gui::SongListItem* addNewSong(SongList_t list, const QString& filePath, gui::SongListItem *parentDir = nullptr);
 
         /**
          * @brief Remplit le vecteur Musiques à partir des fichiers

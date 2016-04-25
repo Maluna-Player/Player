@@ -39,7 +39,7 @@ class SongList : public QTreeWidget
          * @param list Liste dont on veut récupérer la racine
          * @return Noeud racine
          */
-        virtual SongListItem* getRootNode(Constants::SongList list) const;
+        virtual SongListItem* getRootNode(SongList_t list) const;
 
         /**
          * @brief Supprime de la liste l'élément passé en paramètre (avec ses parents récursivement s'il s'agit du seul fils).
@@ -68,7 +68,7 @@ class SongList : public QTreeWidget
          * @brief Vide la liste du noeud passé en paramètre.
          * @param list Liste à nettoyer (locale/distante)
          */
-        virtual void clearList(Constants::SongList list = Constants::LOCAL_SONGS);
+        virtual void clearList(SongList_t list = SongList_t::LOCAL_SONGS);
 
         /**
          * @brief Change le son marqué comme son courant dans la liste.
@@ -81,21 +81,21 @@ class SongList : public QTreeWidget
          * @param list Liste à retourner
          * @return Arborescence de musiques de la liste.
          */
-        virtual SongTreeRoot* getSongHierarchy(Constants::SongList list = Constants::LOCAL_SONGS) const;
+        virtual SongTreeRoot* getSongHierarchy(SongList_t list = SongList_t::LOCAL_SONGS) const;
 
         /**
          * @brief Ajoute le son passé en paramètre dans la liste.
          * @param list Type de liste dans laquelle ajouter la musique
          * @param item Elément à ajouter
          */
-        virtual void addSong(Constants::SongList list, SongListItem *item);
+        virtual void addSong(SongList_t list, SongListItem *item);
 
         /**
          * @brief Ajoute les titres et durées de la liste passée en paramètre.
          * @param list Type de liste dans laquelle ajouter les musiques (locales, distantes)
          * @param songs Liste de sons à ajouter
         */
-        virtual void addTree(Constants::SongList list, SongTreeRoot *songs);
+        virtual void addTree(SongList_t list, SongTreeRoot *songs);
 };
 
 

@@ -22,10 +22,10 @@ MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent)
     QMenu *fileMenu = addMenu("Fichier");
     QMenu *helpMenu = addMenu("Aide");
 
-    mp_AddingSongAction = fileMenu->addAction(QIcon(util::Tools::loadImage(Constants::MENU_SUBDIR + "adding.png")), "Ajouter un son");
-    mp_OpenAction = fileMenu->addAction(QIcon(util::Tools::loadImage(Constants::MENU_SUBDIR + "open.png")), "Ouvrir");
-    mp_QuitAction = fileMenu->addAction(QIcon(util::Tools::loadImage(Constants::MENU_SUBDIR + "quit.png")), "Quitter");
-    mp_AboutAction = helpMenu->addAction(QIcon(util::Tools::loadImage(Constants::MENU_SUBDIR + "about.png")), "A propos");
+    mp_AddingSongAction = fileMenu->addAction(QIcon(util::Tools::loadImage(QString(MENU_SUBDIR) + "adding.png")), "Ajouter un son");
+    mp_OpenAction = fileMenu->addAction(QIcon(util::Tools::loadImage(QString(MENU_SUBDIR) + "open.png")), "Ouvrir");
+    mp_QuitAction = fileMenu->addAction(QIcon(util::Tools::loadImage(QString(MENU_SUBDIR) + "quit.png")), "Quitter");
+    mp_AboutAction = helpMenu->addAction(QIcon(util::Tools::loadImage(QString(MENU_SUBDIR) + "about.png")), "A propos");
 
     mp_AddingSongAction->setShortcut(QKeySequence("Ctrl+N"));
     mp_OpenAction->setShortcut(QKeySequence("Ctrl+O"));

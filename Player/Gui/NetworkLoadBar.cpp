@@ -19,7 +19,7 @@ namespace gui {
 NetworkLoadBar::NetworkLoadBar(QWidget *parent)
     : QProgressBar(parent), m_StartPos(0)
 {
-    setFixedHeight(Constants::LOADBAR_HEIGHT);
+    setFixedHeight(LOADBAR_HEIGHT);
 }
 
 // ==============================

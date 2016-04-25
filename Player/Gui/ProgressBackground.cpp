@@ -17,7 +17,7 @@ namespace gui {
 
 ProgressBackground::ProgressBackground(QWidget *parent) : QWidget(parent)
 {
-    setFixedHeight(Constants::PROGRESS_BACKGROUND_HEIGHT);
+    setFixedHeight(PROGRESS_BACKGROUND_HEIGHT);
 }
 
 // ==============================
@@ -36,7 +36,7 @@ void ProgressBackground::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
 
-    QPixmap background = util::Tools::loadImage(Constants::IMAGES_SUBDIR + "progressBackground.png");
+    QPixmap background = util::Tools::loadImage(QString(IMAGES_SUBDIR) + "progressBackground.png");
 
     painter.fillRect(event->rect(), QBrush(background));
 }

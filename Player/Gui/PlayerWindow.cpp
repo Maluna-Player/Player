@@ -28,8 +28,8 @@ namespace gui {
 PlayerWindow::PlayerWindow(QWidget *parent)
     : QMainWindow(parent), m_TimerId(0), mp_Socket(nullptr)
 {
-    setWindowTitle(tr(Constants::WINDOW_TITLE.c_str()));
-    resize(Constants::WINDOW_WIDTH, Constants::WINDOW_HEIGHT);
+    setWindowTitle(tr(WINDOW_TITLE));
+    resize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
     QWidget *centralArea = new QWidget;
     QVBoxLayout *layout = new QVBoxLayout;
@@ -68,7 +68,7 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     mp_SongTitle->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
     mp_SongArtist->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
 
-    mp_Spectrum = new Spectrum(Constants::SPECTRUM_WIDTH);
+    mp_Spectrum = new Spectrum(SPECTRUM_WIDTH);
     mp_SongPicture = new QLabel;
     mp_SongList = new SongList;
 
@@ -89,9 +89,9 @@ PlayerWindow::PlayerWindow(QWidget *parent)
 
     mp_ProgressBackground = new ProgressBackground;
     mp_NetworkLoadBar = new NetworkLoadBar(mp_ProgressBackground);
-    mp_NetworkLoadBar->setGeometry(0, (Constants::PROGRESS_BACKGROUND_HEIGHT - Constants::LOADBAR_HEIGHT) / 2, mp_ProgressBackground->width(), 0);
+    mp_NetworkLoadBar->setGeometry(0, (PROGRESS_BACKGROUND_HEIGHT - LOADBAR_HEIGHT) / 2, mp_ProgressBackground->width(), 0);
     mp_ProgressBar = new ProgressBar(mp_ProgressBackground);
-    mp_ProgressBar->setGeometry(0, (Constants::PROGRESS_BACKGROUND_HEIGHT - Constants::PROGRESSBAR_HEIGHT) / 2, mp_ProgressBackground->width(), 0);
+    mp_ProgressBar->setGeometry(0, (PROGRESS_BACKGROUND_HEIGHT - PROGRESSBAR_HEIGHT) / 2, mp_ProgressBackground->width(), 0);
 
     connect(mp_ProgressBar, SIGNAL(posChanged(int)), this, SLOT(setSongPosition(int)));
 
@@ -161,7 +161,7 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     /** Démarrage du player **/
 
     refreshSongsList();
-    setState(Constants::PlayerState::PLAY);
+    setState(PlayerState::PLAY);
 }
 
 // ==============================
@@ -183,13 +183,13 @@ PlayerButton* PlayerWindow::getButton(ButtonId id) const
 // ==============================
 // ==============================
 
-void PlayerWindow::setState(Constants::PlayerState state)
+void PlayerWindow::setState(PlayerState state)
 {
-    if (state == Constants::PlayerState::PLAY)
+    if (state == PlayerState::PLAY)
         m_Player.play();
-    else if (state == Constants::PlayerState::PAUSE)
+    else if (state == PlayerState::PAUSE)
         m_Player.pause();
-    else if (state == Constants::PlayerState::STOP)
+    else if (state == PlayerState::STOP)
     {
         m_Player.stop();
         mp_Spectrum->clear();
@@ -231,7 +231,7 @@ void PlayerWindow::updateCurrentSong()
     }
 
     if (m_Player.isPaused())
-        setState(Constants::PlayerState::STOP);
+        setState(PlayerState::STOP);
 }
 
 // ==============================
@@ -242,13 +242,13 @@ void PlayerWindow::refreshSongsList()
     m_Player.clearSongs();
     mp_SongList->clearList();
 
-    SongTreeRoot *songTree = m_Player.loadSongs(Constants::SONGS_SUBDIR);
-    mp_SongList->addTree(Constants::LOCAL_SONGS, songTree);
+    SongTreeRoot *songTree = m_Player.loadSongs(SONGS_SUBDIR);
+    mp_SongList->addTree(LOCAL_SONGS, songTree);
 
     m_Player.firstSong();
 
     if (!m_Player.isStopped())
-      setState(Constants::PlayerState::STOP);
+      setState(PlayerState::STOP);
 }
 
 // ==============================
@@ -257,7 +257,7 @@ void PlayerWindow::refreshSongsList()
 void PlayerWindow::play()
 {
     if (!m_Player.isPlaying())
-        setState(Constants::PlayerState::PLAY);
+        setState(PlayerState::PLAY);
 }
 
 // ==============================
@@ -266,7 +266,7 @@ void PlayerWindow::play()
 void PlayerWindow::pause()
 {
     if (!m_Player.isPaused())
-        setState(Constants::PlayerState::PAUSE);
+        setState(PlayerState::PAUSE);
 }
 
 // ==============================
@@ -274,7 +274,7 @@ void PlayerWindow::pause()
 
 void PlayerWindow::stop()
 {
-    setState(Constants::PlayerState::STOP);
+    setState(PlayerState::STOP);
 }
 
 // ==============================
@@ -311,7 +311,7 @@ void PlayerWindow::increaseVolume()
 {
     int previousVolume = m_Player.getVolumeState();
 
-    if (previousVolume < (Constants::NB_VOLUME_STATES - 1))
+    if (previousVolume < (NB_VOLUME_STATES - 1))
         setVolume(previousVolume + 1);
 }
 
@@ -354,7 +354,7 @@ void PlayerWindow::setMute()
     m_Player.mute(!m_Player.isMuted());
 
     if (m_Player.isMuted())
-        mp_SoundVolume->setImage(Constants::MUTE_STATE);
+        mp_SoundVolume->setImage(MUTE_STATE);
     else
         mp_SoundVolume->setImage(m_Player.getVolumeState());
 }
@@ -368,10 +368,10 @@ void PlayerWindow::importSong()
 
     if (!filePath.isNull())
     {
-        SongListItem *songItem = m_Player.addNewSong(Constants::IMPORTED_SONGS, filePath);
+        SongListItem *songItem = m_Player.addNewSong(IMPORTED_SONGS, filePath);
 
         if (songItem)
-            mp_SongList->addSong(Constants::LOCAL_SONGS, songItem);
+            mp_SongList->addSong(LOCAL_SONGS, songItem);
     }
 }
 
@@ -380,7 +380,7 @@ void PlayerWindow::importSong()
 
 void PlayerWindow::openSongsDir() const
 {
-    QDesktopServices::openUrl(QUrl::fromLocalFile(QFileInfo(Constants::SONGS_SUBDIR).absoluteFilePath()));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(QFileInfo(SONGS_SUBDIR).absoluteFilePath()));
 }
 
 // ==============================
@@ -423,7 +423,7 @@ void PlayerWindow::connectToHost(const QString& host)
 void PlayerWindow::startConnection()
 {
     SongTreeRoot *remoteSongList = mp_Socket->exchangeSongList(mp_SongList->getSongHierarchy());
-    mp_SongList->addTree(Constants::REMOTE_SONGS, remoteSongList);
+    mp_SongList->addTree(SongList_t::REMOTE_SONGS, remoteSongList);
 
     mp_ConnectionBox->connected();
 
@@ -445,15 +445,15 @@ void PlayerWindow::closeConnection()
             if (!m_Player.getCurrentSong())
             {
                 if (!m_Player.isStopped())
-                    setState(Constants::PlayerState::STOP);
+                    setState(PlayerState::STOP);
             }
             else if (m_Player.getCurrentSong()->isRemote())
                 m_Player.firstSong();
 
             // close clientFile (if current song is remote only ? do we close file after remote song playing ?)
 
-            m_Player.clearSongs(Constants::REMOTE_SONGS);
-            mp_SongList->clearList(Constants::REMOTE_SONGS);
+            m_Player.clearSongs(SongList_t::REMOTE_SONGS);
+            mp_SongList->clearList(SongList_t::REMOTE_SONGS);
 
             delete mp_Socket;
             mp_Socket = nullptr;
@@ -496,7 +496,7 @@ void PlayerWindow::timerEvent(QTimerEvent *event)
 
 void PlayerWindow::showEvent(QShowEvent* /*event*/)
 {
-    m_TimerId = startTimer(Constants::REFRESH_TIME_MS);
+    m_TimerId = startTimer(REFRESH_TIME_MS);
 }
 
 // ==============================

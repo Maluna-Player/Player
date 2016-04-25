@@ -41,7 +41,7 @@ FmodManager::FmodManager(int maxChannels)
     if ((res = FMOD_System_CreateDSPByType(mp_System, FMOD_DSP_TYPE_FFT, &mp_Dsp)) != FMOD_OK)
         throw exceptions::LibException("FmodManager::FmodManager", "FMOD_System_CreateDSPByType", FMOD_ErrorString(res));
 
-    if ((res = FMOD_DSP_SetParameterInt(mp_Dsp, FMOD_DSP_FFT_WINDOWSIZE, Constants::SPECTRUM_WIDTH)) != FMOD_OK)
+    if ((res = FMOD_DSP_SetParameterInt(mp_Dsp, FMOD_DSP_FFT_WINDOWSIZE, SPECTRUM_WIDTH)) != FMOD_OK)
         throw exceptions::LibException("FmodManager::FmodManager", "FMOD_DSP_SetParameterInt", FMOD_ErrorString(res));
 
     if ((res = FMOD_ChannelGroup_AddDSP(mp_ChannelGroup, 0, mp_Dsp)) != FMOD_OK)

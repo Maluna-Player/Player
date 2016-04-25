@@ -25,10 +25,10 @@ AboutDialog::AboutDialog(QWidget *parent) : QDialog(parent)
     QGridLayout *informationLayout = new QGridLayout;
 
     QLabel *iconLabel = new QLabel;
-    iconLabel->setPixmap(util::Tools::loadImage(Constants::IMAGES_SUBDIR + "icon.ico"));
+    iconLabel->setPixmap(util::Tools::loadImage(QString(IMAGES_SUBDIR) + "icon.ico"));
 
     QLabel *qtLabel = new QLabel;
-    qtLabel->setPixmap(util::Tools::loadImage(Constants::IMAGES_SUBDIR + "qt.png").scaled(80, 80, Qt::KeepAspectRatio));
+    qtLabel->setPixmap(util::Tools::loadImage(QString(IMAGES_SUBDIR) + "qt.png").scaled(80, 80, Qt::KeepAspectRatio));
 
     QLabel *mainLabel = new QLabel("<b>Maluna's Player</b><br/>"
                                "Logiciel libre créé par Maluna");

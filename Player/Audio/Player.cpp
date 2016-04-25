@@ -25,10 +25,10 @@ namespace audio {
 
 
 Player::Player()
-    : m_Cpt(0), mp_Songs({Constants::DIRECTORY_SONGS, Constants::IMPORTED_SONGS, Constants::REMOTE_SONGS}),
+    : m_Cpt(0), mp_Songs({SongList_t::DIRECTORY_SONGS, SongList_t::IMPORTED_SONGS, SongList_t::REMOTE_SONGS}),
       m_CurrentSong(UNDEFINED_SONG), m_Playlist(true), m_Loop(false),
       m_Pause(false), m_Stop(true), m_Mute(false),
-      m_VolumeState(Constants::NB_VOLUME_STATES - 1)
+      m_VolumeState(NB_VOLUME_STATES - 1)
 {
 
 }
@@ -80,7 +80,7 @@ Player::SongIt Player::findSong(SongId song) const
 // ==============================
 // ==============================
 
-int Player::songsCount(Constants::SongList list) const
+int Player::songsCount(SongList_t list) const
 {
     return mp_Songs.getSubSets(list).elementsCount();
 }
@@ -238,14 +238,14 @@ void Player::setVolume(int volumeState)
 {
     m_VolumeState = volumeState;
 
-    float volume = static_cast<float>(volumeState) / (Constants::NB_VOLUME_STATES - 1);
+    float volume = static_cast<float>(volumeState) / (NB_VOLUME_STATES - 1);
     FmodManager::getInstance()->setVolume(volume);
 }
 
 // ==============================
 // ==============================
 
-void Player::clearSongs(Constants::SongList list)
+void Player::clearSongs(SongList_t list)
 {
     auto songs = mp_Songs.getSubSets(list);
 
@@ -260,7 +260,7 @@ void Player::clearSongs(Constants::SongList list)
 
 bool Player::containsLocalSong(const QString& filePath) const
 {
-    auto localSongs = mp_Songs.getSubSets(Constants::LOCAL_SONGS);
+    auto localSongs = mp_Songs.getSubSets(SongList_t::LOCAL_SONGS);
 
     for (auto song : localSongs)
     {
@@ -276,7 +276,7 @@ bool Player::containsLocalSong(const QString& filePath) const
 
 bool Player::containsRemoteSong(const SongId num) const
 {
-    auto remoteSongs = mp_Songs.getSubSets(Constants::REMOTE_SONGS);
+    auto remoteSongs = mp_Songs.getSubSets(SongList_t::REMOTE_SONGS);
 
     for (auto song : remoteSongs)
     {
@@ -303,7 +303,7 @@ Song* Player::createLocalSong(const QString& filePath, bool inFolder)
         {
             SongId num = getNewSongNum();
             song = new Song(num, absoluteFilePath, inFolder);
-            Constants::SongList list = inFolder ? Constants::DIRECTORY_SONGS : Constants::IMPORTED_SONGS;
+            SongList_t list = inFolder ? SongList_t::DIRECTORY_SONGS : SongList_t::IMPORTED_SONGS;
 
             mp_Songs[list][num] = song;
         }
@@ -337,7 +337,7 @@ network::RemoteSong* Player::createRemoteSong(const QString& file, SongId remote
         SongId num = getNewSongNum();
         song = new network::RemoteSong(num, file, remoteNum, length, artist, settings);
 
-        mp_Songs[Constants::REMOTE_SONGS][num] = song;
+        mp_Songs[SongList_t::REMOTE_SONGS][num] = song;
     }
 
     return song;
@@ -346,11 +346,11 @@ network::RemoteSong* Player::createRemoteSong(const QString& file, SongId remote
 // ==============================
 // ==============================
 
-gui::SongListItem* Player::addNewSong(Constants::SongList list, const QString& filePath, gui::SongListItem *parentDir)
+gui::SongListItem* Player::addNewSong(SongList_t list, const QString& filePath, gui::SongListItem *parentDir)
 {
     gui::SongListItem *item = nullptr;
 
-    bool inFolder = (list == Constants::DIRECTORY_SONGS);
+    bool inFolder = (list == SongList_t::DIRECTORY_SONGS);
     Song *song = createLocalSong(filePath, inFolder);
 
     if (song)
@@ -390,7 +390,7 @@ gui::SongTreeRoot* Player::loadSongs(const QString& dirPath, gui::SongTreeRoot *
                 item->setParent(parentDir);
         }
         else
-            addNewSong(Constants::DIRECTORY_SONGS, filePath, parentDir);
+            addNewSong(SongList_t::DIRECTORY_SONGS, filePath, parentDir);
     }
 
     return parentDir;
