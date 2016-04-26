@@ -337,6 +337,7 @@ void PlayerWindow::setSongPosition(int value)
 
         m_Player.getCurrentSong()->setPosition(pos);
         mp_ProgressBar->setValue(pos);
+        mp_SongPos->setText(util::Tools::msToString(pos));
 
         if (m_Player.getCurrentSong()->isRemote())
         {
