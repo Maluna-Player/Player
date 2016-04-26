@@ -470,9 +470,9 @@ void Player::update()
     {
         if (getCurrentSong()->isFinished())
             nextSong();
-
-        FmodManager::getInstance()->update();
     }
+
+    FmodManager::getInstance()->update();
 }
 
 // ==============================
