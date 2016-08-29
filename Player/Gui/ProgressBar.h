@@ -26,6 +26,10 @@ class ProgressBar : public QProgressBar
 
     private:
 
+        QPixmap m_BarTexture;
+
+        QPixmap m_MarkerTexture;
+
         bool m_Press;
 
     protected:

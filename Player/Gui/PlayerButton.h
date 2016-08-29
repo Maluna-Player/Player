@@ -13,6 +13,7 @@
 
 #include "ClickableLabel.h"
 #include <QString>
+#include <QPixmap>
 
 
 namespace gui {
@@ -24,12 +25,16 @@ class PlayerButton : public ClickableLabel
 
         QString m_Name;
 
+        QPixmap m_ButtonTexture;
+
+        QPixmap m_PressedButtonTexture;
+
 
         /**
          * @brief Modifie l'image du bouton par celle passée en paramètre
-         * @param fileName Image à charger
+         * @param image Image à charger
          */
-        virtual void loadImage(const QString& fileName);
+        virtual void loadImage(const QPixmap& image);
 
     protected:
 

@@ -22,6 +22,10 @@ namespace gui {
 
 class ProgressBackground : public QWidget
 {
+    private:
+
+        QPixmap m_BackgroundTexture;
+
     protected:
 
         virtual void paintEvent(QPaintEvent *event) override;

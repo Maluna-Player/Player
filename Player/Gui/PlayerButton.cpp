@@ -10,7 +10,6 @@
 #include "PlayerButton.h"
 #include "Constants.h"
 #include "../Util/Tools.h"
-#include <QPixmap>
 
 
 namespace gui {
@@ -19,7 +18,10 @@ namespace gui {
 PlayerButton::PlayerButton(const QString& name, QWidget *parent)
     : ClickableLabel(parent), m_Name(name)
 {
-    loadImage(m_Name + ".png");
+    m_ButtonTexture = util::Tools::loadImage(BUTTONS_SUBDIR + m_Name + ".png");
+    m_PressedButtonTexture = util::Tools::loadImage(BUTTONS_SUBDIR + m_Name + "p.png");
+
+    loadImage(m_ButtonTexture);
 }
 
 // ==============================
@@ -33,10 +35,8 @@ PlayerButton::~PlayerButton()
 // ==============================
 // ==============================
 
-void PlayerButton::loadImage(const QString& fileName)
+void PlayerButton::loadImage(const QPixmap& image)
 {
-    QPixmap image = util::Tools::loadImage(BUTTONS_SUBDIR + fileName);
-
     setPixmap(image.scaled(70, 70, Qt::KeepAspectRatio));
 }
 
@@ -45,7 +45,7 @@ void PlayerButton::loadImage(const QString& fileName)
 
 void PlayerButton::mousePressEvent(QMouseEvent *event)
 {
-    loadImage(m_Name + "p.png");
+    loadImage(m_PressedButtonTexture);
 
     ClickableLabel::mousePressEvent(event);
 }
@@ -55,7 +55,7 @@ void PlayerButton::mousePressEvent(QMouseEvent *event)
 
 void PlayerButton::mouseReleaseEvent(QMouseEvent *event)
 {
-    loadImage(m_Name + ".png");
+    loadImage(m_ButtonTexture);
 
     ClickableLabel::mouseReleaseEvent(event);
 }

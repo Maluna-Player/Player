@@ -35,7 +35,7 @@ class SongListItem : public QTreeWidgetItem, public network::Sendable
 
     private:
 
-        static unsigned int cpt;
+        static unsigned int m_Cpt;
 
         unsigned int m_Num;
 

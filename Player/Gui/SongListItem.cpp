@@ -15,7 +15,10 @@
 namespace gui {
 
 
-unsigned int SongListItem::cpt = 0;
+unsigned int SongListItem::m_Cpt = 0;
+
+// ==============================
+// ==============================
 
 SongListItem::SongListItem(ElementType type, SongListItem *parent, const QString& name)
     : QTreeWidgetItem(), m_Type(type), m_Length(0), mp_AttachedSong(nullptr)
@@ -38,8 +41,8 @@ SongListItem::SongListItem(ElementType type, SongListItem *parent, const QString
         setFont(1, lengthFont);
     }
 
-    cpt++;
-    m_Num = cpt;
+    m_Cpt++;
+    m_Num = m_Cpt;
 }
 
 // ==============================
