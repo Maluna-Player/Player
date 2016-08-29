@@ -11,9 +11,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = Player
 TEMPLATE = app
 
-!win32 {
-    QMAKE_CXX = g++-4.9
-}
 QMAKE_CXXFLAGS += -std=c++14
 
 SOURCES += main.cpp \
@@ -83,7 +80,7 @@ QMAKE_CXXFLAGS_WARN_ON += -Wno-comment
 QMAKE_CXXFLAGS_WARN_ON += -Wno-ignored-qualifiers
 
 
-# Add of fmodex library
+# Add of fmod library
 
 win32 {             # Window's paths
     INCLUDEPATH += "C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc"
@@ -91,5 +88,5 @@ win32 {             # Window's paths
     LIBS += -lfmod
 } else {            # Linux
     INCLUDEPATH += /usr/local/include/fmod
-    LIBS += -L/usr/local/lib/fmodex -lfmod64
+    LIBS += -L/usr/local/lib/fmod -lfmod
 }

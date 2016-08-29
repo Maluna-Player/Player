@@ -41,6 +41,8 @@ class SongListItem : public QTreeWidgetItem, public network::Sendable
 
         ElementType m_Type;
 
+        unsigned int m_Length;
+
         audio::Song *mp_AttachedSong;
 
 
@@ -96,6 +98,18 @@ class SongListItem : public QTreeWidgetItem, public network::Sendable
          * @param song Son à attacher
          */
         virtual void setAttachedSong(audio::Song *song);
+
+        /**
+         * @brief getLength
+         * @return Temps de l'élément.
+         */
+        virtual unsigned int getLength() const;
+
+        /**
+         * @brief Modifie de le temps de l'élément selon la valeur calculée dans l'arborescence.
+         * @param length Nouveau temps
+         */
+        virtual void setLength(unsigned int length);
 
         virtual QByteArray toPacket() const override;
 };

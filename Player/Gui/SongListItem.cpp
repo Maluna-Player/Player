@@ -9,6 +9,7 @@
 
 #include "SongListItem.h"
 #include "../Audio/Song.h"
+#include "../Util/Tools.h"
 
 
 namespace gui {
@@ -17,7 +18,7 @@ namespace gui {
 unsigned int SongListItem::cpt = 0;
 
 SongListItem::SongListItem(ElementType type, SongListItem *parent, const QString& name)
-    : QTreeWidgetItem(), m_Type(type), mp_AttachedSong(nullptr)
+    : QTreeWidgetItem(), m_Type(type), m_Length(0), mp_AttachedSong(nullptr)
 {
     Qt::ItemFlags flags = Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled;
     if (type == ElementType::SONG)
@@ -26,6 +27,16 @@ SongListItem::SongListItem(ElementType type, SongListItem *parent, const QString
     setFlags(flags);
     setParent(parent);
     setText(0, name);
+    setText(1, util::Tools::msToString(m_Length));
+
+    if (type == ElementType::ROOT || type == ElementType::DIRECTORY)
+    {
+        setIcon(0, QIcon(util::Tools::loadImage(QString(IMAGES_SUBDIR) + "folder.png")));
+
+        QFont lengthFont = font(1);
+        lengthFont.setBold(true);
+        setFont(1, lengthFont);
+    }
 
     cpt++;
     m_Num = cpt;
@@ -102,6 +113,23 @@ void SongListItem::setParent(SongListItem *parent)
 void SongListItem::setAttachedSong(audio::Song *song)
 {
     mp_AttachedSong = song;
+}
+
+// ==============================
+// ==============================
+
+unsigned int SongListItem::getLength() const
+{
+    return m_Length;
+}
+
+// ==============================
+// ==============================
+
+void SongListItem::setLength(unsigned int length)
+{
+    m_Length = length;
+    setText(1, util::Tools::msToString(m_Length));
 }
 
 // ==============================

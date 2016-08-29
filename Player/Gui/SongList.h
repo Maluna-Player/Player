@@ -42,10 +42,31 @@ class SongList : public QTreeWidget
         virtual SongListItem* getRootNode(SongList_t list) const;
 
         /**
+         * @brief Affiche le titre et le temps de l'élément passé en paramètre et de ses fils.
+         * @param item Elément parent contenant les informations à afficher
+         * @return Temps total de l'élément passé en paramètre
+         */
+        virtual unsigned int setSongDetails(SongListItem *item) const;
+
+        /**
+         * @brief Ajoute le décalage nécessaire pour le temps de l'élément passé en paramètre et pour ses fils.
+         * @param item Elément parent dont on ajoute le décalage
+         * @param depth Profondeur de l'élement dans l'arborescence
+         */
+        virtual void setDepth(SongListItem *item, int depth) const;
+
+        /**
+         * @brief Ajoute l'élément passé en paramètre comme fils du parent.
+         * @param item Elément à ajouter
+         * @param parent Parent du nouvel élément
+         */
+        virtual void addChildSong(SongListItem *item, SongListItem *parent) const;
+
+        /**
          * @brief Supprime de la liste l'élément passé en paramètre (avec ses parents récursivement s'il s'agit du seul fils).
          * @param it Itérateur sur l'élément à supprimer
          */
-        virtual void removeSong(const SongListIterator& it);
+        virtual void removeSong(const SongListIterator& it) const;
 
     protected:
 

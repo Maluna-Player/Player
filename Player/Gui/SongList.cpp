@@ -12,7 +12,6 @@
 #include "../Audio/Song.h"
 #include "../Exceptions/FileLoadingException.h"
 #include "../Exceptions/ArrayAccessException.h"
-#include "../Util/Tools.h"
 #include <QScrollBar>
 #include <QMouseEvent>
 
@@ -34,7 +33,7 @@ SongList::SongList(QWidget *parent) : QTreeWidget(parent), m_CurrentSong(-1)
     setColumnWidth(0, 180);
     resizeColumnToContents(1);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setFixedWidth(260);
+    setFixedWidth(280);
 
     SongListItem *localSongsItem = new SongListItem(SongListItem::ElementType::ROOT, nullptr, "Mes musiques");
     SongListItem *remoteSongsItem = new SongListItem(SongListItem::ElementType::ROOT, nullptr, "Musiques distantes");
@@ -65,7 +64,80 @@ SongListItem* SongList::getRootNode(SongList_t list) const
 // ==============================
 // ==============================
 
-void SongList::removeSong(const SongListIterator& it)
+unsigned int SongList::setSongDetails(SongListItem *item) const
+{
+    if (item->isSong())
+    {
+        audio::Song *song = item->getAttachedSong();
+        if (song)
+        {
+            item->setText(0, song->getTitle());
+            item->setLength(song->getLength());
+
+            return song->getLength();
+        }
+    }
+    else
+    {
+        unsigned int lengthSum = 0;
+
+        for (int i = 0; i < item->childCount(); ++i)
+            lengthSum += setSongDetails(static_cast<SongListItem*>(item->child(i)));
+
+        item->setLength(lengthSum);
+        return lengthSum;
+    }
+
+    return 0;
+}
+
+// ==============================
+// ==============================
+
+void SongList::setDepth(SongListItem *item, int depth) const
+{
+    QString shift{};
+
+    for (int i = 0; i < depth; ++i)
+        shift += "  ";
+
+    shift += "|- ";
+    item->setText(1, shift + item->text(1));
+
+    if (!item->isSong())
+    {
+        for (int i = 0; i < item->childCount(); ++i)
+            setDepth(static_cast<SongListItem*>(item->child(i)), depth + 1);
+    }
+}
+
+// ==============================
+// ==============================
+
+void SongList::addChildSong(SongListItem *item, SongListItem *parent) const
+{
+    parent->addChild(item);
+
+    const auto itemLength = setSongDetails(item);
+    parent->setLength(parent->getLength() + itemLength);
+
+    unsigned int depth = 1;
+
+    while (!parent->isRoot() && parent->parent())
+    {
+        parent = parent->parent();
+        parent->setLength(parent->getLength() + itemLength);
+
+        ++depth;
+    }
+
+    setDepth(item, depth);
+}
+
+// ==============================
+// ==============================
+
+void SongList::removeSong(const SongListIterator& it) const
 {
     SongListItem *parent = (*it)->parent();
     parent->removeChild(*it);
@@ -123,14 +195,14 @@ void SongList::setCurrentSong(int songNum)
         {
             if (song->getNum() == m_CurrentSong)
             {
-                (*it)->setTextColor(0, QColor(212, 255, 250));
-                (*it)->setTextColor(1, QColor(212, 255, 250));
+                (*it)->setForeground(0, QColor(212, 255, 250));
+                (*it)->setForeground(1, QColor(212, 255, 250));
             }
 
             if (song->getNum() == songNum)
             {
-                (*it)->setTextColor(0, QColor(21, 191, 221));
-                (*it)->setTextColor(1, QColor(21, 191, 221));
+                (*it)->setForeground(0, QColor(21, 191, 221));
+                (*it)->setForeground(1, QColor(21, 191, 221));
             }
         }
 
@@ -170,18 +242,10 @@ SongTreeRoot* SongList::getSongHierarchy(SongList_t list) const
 
 void SongList::addSong(SongList_t list, SongListItem *item)
 {
-    QTreeWidgetItem *root = getRootNode(list);
-    if (root)
-    {
-        root->addChild(item);
+    SongListItem *root = getRootNode(list);
 
-        audio::Song *song = item->getAttachedSong();
-        if (song)
-        {
-            item->setText(0, song->getTitle());
-            item->setText(1, util::Tools::msToString(song->getLength()));
-        }
-    }
+    if (root)
+        addChildSong(item, root);
 }
 
 // ==============================
@@ -189,27 +253,12 @@ void SongList::addSong(SongList_t list, SongListItem *item)
 
 void SongList::addTree(SongList_t list, SongTreeRoot *songs)
 {
-    QTreeWidgetItem *root = getRootNode(list);
+    SongListItem *root = getRootNode(list);
     if (root)
     {
-        root->addChildren(songs->takeChildren());
-
-        SongListIterator it(root);
-
-        while (!it.isNull())
-        {
-            if ((*it)->isSong())
-            {
-                audio::Song *song = (*it)->getAttachedSong();
-                if (song)
-                {
-                    (*it)->setText(0, song->getTitle());
-                    (*it)->setText(1, util::Tools::msToString(song->getLength()));
-                }
-            }
-
-            ++it;
-        }
+        QList<QTreeWidgetItem*> items = songs->takeChildren();
+        for (auto item : items)
+            addChildSong(static_cast<SongListItem*>(item), root);
 
         root->setExpanded(true);
     }

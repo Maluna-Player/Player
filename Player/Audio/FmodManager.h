@@ -5,7 +5,7 @@
  *
  * Déclarations de la classe Fmod
  * contenant l'ensemble de la gestion
- * des fonctions fmodex.
+ * des fonctions fmod.
  *************************************
 */
 
