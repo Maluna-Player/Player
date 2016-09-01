@@ -9,6 +9,7 @@
 
 #include "Tools.h"
 #include <QTime>
+#include <QMimeDatabase>
 #include "Exceptions/FileLoadingException.h"
 
 
@@ -30,7 +31,7 @@ QString Tools::msToString(int ms)
 }
 
 // ==============================
-// ==============================s
+// ==============================
 
 QPixmap Tools::loadImage(const QString &fileName)
 {
@@ -39,6 +40,15 @@ QPixmap Tools::loadImage(const QString &fileName)
         throw exceptions::FileLoadingException("Tools::loadImage", fileName.toStdString());
 
     return image;
+}
+
+// ==============================
+// ==============================
+
+QString Tools::getMimeType(const QString& filename)
+{
+    QMimeDatabase mimeDb;
+    return mimeDb.mimeTypeForFile(filename).name();
 }
 
 

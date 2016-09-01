@@ -34,6 +34,13 @@ class Tools
          * @return Image chargée
          */
         static QPixmap loadImage(const QString& fileName);
+
+        /**
+         * @brief Retourne le nom du type mime associé au fichier passé en paramètre.
+         * @param filename Chemin du fichier
+         * @return Nom du type mime
+         */
+        static QString getMimeType(const QString& filename);
 };
 
 

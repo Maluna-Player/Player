@@ -25,6 +25,8 @@
 #include <QTimerEvent>
 #include <QShowEvent>
 #include <QHideEvent>
+#include <QDragEnterEvent>
+#include <QDropEvent>
 #include <QVector>
 #include "./Network/PlayerSocket.h"
 #include "ConnectionBox.h"
@@ -196,6 +198,10 @@ class PlayerWindow : public QMainWindow
         virtual void resizeEvent(QResizeEvent *event) override;
 
         virtual void paintEvent(QPaintEvent *event) override;
+
+        virtual void dragEnterEvent(QDragEnterEvent *event) override;
+
+        virtual void dropEvent(QDropEvent *event) override;
 
     public:
 

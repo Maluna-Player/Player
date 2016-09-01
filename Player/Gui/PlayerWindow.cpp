@@ -20,6 +20,7 @@
 #include <QApplication>
 #include <QFileDialog>
 #include <QDesktopServices>
+#include <QMimeData>
 
 
 namespace gui {
@@ -30,6 +31,8 @@ PlayerWindow::PlayerWindow(QWidget *parent)
 {
     setWindowTitle(tr(WINDOW_TITLE));
     resize(WINDOW_WIDTH, WINDOW_HEIGHT);
+
+    setAcceptDrops(true);
 
     QWidget *centralArea = new QWidget;
     QVBoxLayout *layout = new QVBoxLayout;
@@ -477,6 +480,7 @@ void PlayerWindow::timerEvent(QTimerEvent *event)
         {
             mp_Spectrum->updateValues(m_Player.getCurrentSong()->getSoundID());
             mp_ProgressBar->setValue(m_Player.getCurrentSong()->getPosition());
+
             mp_SongPos->setText(util::Tools::msToString(m_Player.getCurrentSong()->getPosition()));
 
             if (m_Player.getCurrentSong()->isRemote())
@@ -536,6 +540,37 @@ void PlayerWindow::paintEvent(QPaintEvent *event)
 
     pal.setBrush(QPalette::Window, gradient);
     mp_BottomPart->setPalette(pal);
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->urls().size() == 1)
+    {
+        const QString& filepath = event->mimeData()->urls().first().toLocalFile();
+
+        if (util::Tools::getMimeType(filepath).startsWith("audio/"))
+            event->acceptProposedAction();
+    }
+
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::dropEvent(QDropEvent *event)
+{
+    for (const QUrl& url : event->mimeData()->urls())
+    {
+        SongListItem *songItem = m_Player.addNewSong(IMPORTED_SONGS, url.toLocalFile());
+
+        if (songItem)
+            mp_SongList->addSong(LOCAL_SONGS, songItem);
+    }
+
+    event->acceptProposedAction();
 }
 
 
