@@ -12,6 +12,7 @@
 #define __SONGLISTITEM__
 
 #include <QTreeWidgetItem>
+#include <memory>
 #include "../Network/Sendable.h"
 
 
@@ -43,7 +44,7 @@ class SongListItem : public QTreeWidgetItem, public network::Sendable
 
         unsigned int m_Length;
 
-        audio::Song *mp_AttachedSong;
+        std::shared_ptr<audio::Song> mp_AttachedSong;
 
 
         /**
@@ -85,7 +86,7 @@ class SongListItem : public QTreeWidgetItem, public network::Sendable
          * @brief getAttachedSong
          * @return Son attaché à l'élément de l'arborescence.
          */
-        virtual audio::Song* getAttachedSong() const;
+        virtual std::shared_ptr<audio::Song> getAttachedSong() const;
 
         /**
          * @brief Attache l'élément courant au parent passé en paramètre.
@@ -97,7 +98,7 @@ class SongListItem : public QTreeWidgetItem, public network::Sendable
          * @brief Attache le son passé en paramètre à l'élément courant.
          * @param song Son à attacher
          */
-        virtual void setAttachedSong(audio::Song *song);
+        virtual void setAttachedSong(std::shared_ptr<audio::Song> song);
 
         /**
          * @brief getLength

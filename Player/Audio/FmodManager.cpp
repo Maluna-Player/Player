@@ -10,6 +10,7 @@
 #include "FmodManager.h"
 #include "../Exceptions/LibException.h"
 #include <vector>
+#include <memory>
 
 
 namespace audio {
@@ -67,12 +68,12 @@ FmodManager::~FmodManager()
 // ==============================
 // ==============================
 
-FmodManager* FmodManager::getInstance()
+FmodManager& FmodManager::getInstance()
 {
     if (!mp_Instance)
         mp_Instance = new FmodManager;
 
-    return mp_Instance;
+    return *mp_Instance;
 }
 
 // ==============================
@@ -129,7 +130,7 @@ SoundID_t FmodManager::openFromFile(const std::string& soundFile, bool mainCanal
         res = FMOD_System_CreateStream(mp_System, soundFile.c_str(), FMOD_DEFAULT, 0, &mp_Sounds.at(id));
     else
     {
-        FMOD_CREATESOUNDEXINFO *soundSettings = new FMOD_CREATESOUNDEXINFO();
+        std::unique_ptr<FMOD_CREATESOUNDEXINFO> soundSettings = std::make_unique<FMOD_CREATESOUNDEXINFO>();
 
         soundSettings->cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
         soundSettings->fileuseropen = settings->openCallback;
@@ -138,9 +139,7 @@ SoundID_t FmodManager::openFromFile(const std::string& soundFile, bool mainCanal
         soundSettings->fileuserseek = settings->seekCallback;
         soundSettings->fileuserdata = settings->userdata;
 
-        res = FMOD_System_CreateStream(mp_System, soundFile.c_str(), FMOD_DEFAULT, soundSettings, &mp_Sounds.at(id));
-
-        delete soundSettings;
+        res = FMOD_System_CreateStream(mp_System, soundFile.c_str(), FMOD_DEFAULT, soundSettings.get(), &mp_Sounds.at(id));
     }
 
     if (res == FMOD_ERR_FORMAT)

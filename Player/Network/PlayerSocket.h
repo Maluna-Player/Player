@@ -44,13 +44,13 @@ class PlayerSocket : public QObject
         int m_NbSentListItems;
         int m_NbReceivedSongs;
 
-        PlayerMessage *mp_SendMessage;
-        PlayerMessage *mp_ReceiveMessage;
+        std::unique_ptr<PlayerMessage> mp_SendMessage;
+        std::unique_ptr<PlayerMessage> mp_ReceiveMessage;
 
         QThread *mp_SocketThread;
 
-        QVector<commands::CommandRequest*> mp_ReceivedRequests;
-        QVector<commands::CommandReply*> mp_ReceivedReplies;
+        QVector<std::shared_ptr<commands::CommandRequest>> mp_ReceivedRequests;
+        QVector<std::shared_ptr<commands::CommandReply>> mp_ReceivedReplies;
 
         audio::SoundSettings m_CallbackSettings;
 
@@ -83,19 +83,19 @@ class PlayerSocket : public QObject
          * @param message Message contenant la commande
          * @return Commande construite
          */
-        virtual commands::Command* buildCommand(QByteArray message) const;
+        virtual std::shared_ptr<commands::Command> buildCommand(QByteArray message) const;
 
         /**
          * @brief Récupère la prochaine requête parmi la liste des messages traités ou récupérés.
          * @return Prochaine requête du client
          */
-        virtual commands::CommandRequest* getCommandRequest();
+        virtual std::shared_ptr<commands::CommandRequest> getCommandRequest();
 
         /**
          * @brief Récupère la prochaine réponse parmi la liste des messages traités ou récupérés.
          * @return Prochaine réponse du client
          */
-        virtual commands::CommandReply* getCommandReply();
+        virtual std::shared_ptr<commands::CommandReply> getCommandReply();
 
     private slots:
 
@@ -130,7 +130,7 @@ class PlayerSocket : public QObject
          * @brief Signal émis lorsqu'une commande est reçue.
          * @param Commande reçue
          */
-        void commandReceived(network::commands::CommandRequest*);
+        void commandReceived(std::shared_ptr<network::commands::CommandRequest>);
 
     public:
 
@@ -204,7 +204,7 @@ class PlayerSocket : public QObject
          * @brief Ajoute la réponse reçue en paramètre dans la liste des messages à envoyer.
          * @param reply Réponse à envoyer
          */
-        virtual void sendCommandReply(network::commands::CommandReply *reply);
+        virtual void sendCommandReply(std::shared_ptr<network::commands::CommandReply> reply);
 };
 
 /** Callbacks FMOD pour le stream de musiques distantes **/

@@ -84,7 +84,7 @@ class FmodManager
          * et retourne l'instance correspondante.
          * @return instance du singleton
         */
-        static FmodManager* getInstance();
+        static FmodManager& getInstance();
 
         /**
          * Détruit le singleton alloué dynamiquement.

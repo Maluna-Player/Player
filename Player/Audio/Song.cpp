@@ -19,10 +19,10 @@ Song::Song(Player::SongId num, const QString& file, bool inFolder, bool openable
 {
     if (openable)
     {
-        SoundID_t id = FmodManager::getInstance()->openFromFile(m_File.toStdString(), false);
-        m_Length = FmodManager::getInstance()->getSoundLength(id);
+        SoundID_t id = FmodManager::getInstance().openFromFile(m_File.toStdString(), false);
+        m_Length = FmodManager::getInstance().getSoundLength(id);
 
-        QString title = QString::fromStdString(FmodManager::getInstance()->getSongTag(id, "TITLE"));
+        QString title = QString::fromStdString(FmodManager::getInstance().getSongTag(id, "TITLE"));
 
         if (title.isEmpty())
         {
@@ -32,11 +32,11 @@ Song::Song(Player::SongId num, const QString& file, bool inFolder, bool openable
         else
             m_Title = title;
 
-        m_Artist = QString::fromStdString(FmodManager::getInstance()->getSongTag(id, "ARTIST"));
+        m_Artist = QString::fromStdString(FmodManager::getInstance().getSongTag(id, "ARTIST"));
         if (m_Artist.isEmpty())
             m_Artist = "Artiste inconnu";
 
-        FmodManager::getInstance()->releaseSound(id);
+        FmodManager::getInstance().releaseSound(id);
     }
     else
         m_Title = m_File;
@@ -47,7 +47,7 @@ Song::Song(Player::SongId num, const QString& file, bool inFolder, bool openable
 
 Song::~Song()
 {
-    FmodManager::getInstance()->releaseSound(m_SoundID);
+    FmodManager::getInstance().releaseSound(m_SoundID);
 }
 
 // ==============================
@@ -120,7 +120,7 @@ const QString& Song::getArtist() const
 QPixmap Song::buildPicture() const
 {
     unsigned int pictureDataLength(0);
-    char *pictureData = FmodManager::getInstance()->getSongPictureData(m_SoundID, &pictureDataLength);
+    char *pictureData = FmodManager::getInstance().getSongPictureData(m_SoundID, &pictureDataLength);
 
     QPixmap pixmap;
 
@@ -135,7 +135,7 @@ QPixmap Song::buildPicture() const
 
 void Song::open()
 {
-    m_SoundID = FmodManager::getInstance()->openFromFile(m_File.toStdString());
+    m_SoundID = FmodManager::getInstance().openFromFile(m_File.toStdString());
 }
 
 // ==============================
@@ -143,7 +143,7 @@ void Song::open()
 
 void Song::play() const
 {
-    FmodManager::getInstance()->playSound(m_SoundID);
+    FmodManager::getInstance().playSound(m_SoundID);
 }
 
 // ==============================
@@ -151,7 +151,7 @@ void Song::play() const
 
 void Song::pause(bool paused) const
 {
-    FmodManager::getInstance()->pauseSound(m_SoundID, paused);
+    FmodManager::getInstance().pauseSound(m_SoundID, paused);
 }
 
 // ==============================
@@ -159,7 +159,7 @@ void Song::pause(bool paused) const
 
 void Song::stop() const
 {
-    FmodManager::getInstance()->stopSound(m_SoundID);
+    FmodManager::getInstance().stopSound(m_SoundID);
 }
 
 // ==============================
@@ -167,7 +167,7 @@ void Song::stop() const
 
 SoundPos_t Song::getPosition() const
 {
-    return FmodManager::getInstance()->getSoundPosition(m_SoundID);
+    return FmodManager::getInstance().getSoundPosition(m_SoundID);
 }
 
 // ==============================
@@ -178,7 +178,7 @@ void Song::setPosition(SoundPos_t pos) const
     if (pos >= m_Length)
         pos = m_Length - 1;
 
-    FmodManager::getInstance()->setSoundPosition(m_SoundID, pos);
+    FmodManager::getInstance().setSoundPosition(m_SoundID, pos);
 }
 
 // ==============================

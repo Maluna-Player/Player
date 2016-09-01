@@ -96,7 +96,7 @@ unsigned int SongListItem::getParentNum() const
 // ==============================
 // ==============================
 
-audio::Song* SongListItem::getAttachedSong() const
+std::shared_ptr<audio::Song> SongListItem::getAttachedSong() const
 {
     return mp_AttachedSong;
 }
@@ -113,7 +113,7 @@ void SongListItem::setParent(SongListItem *parent)
 // ==============================
 // ==============================
 
-void SongListItem::setAttachedSong(audio::Song *song)
+void SongListItem::setAttachedSong(std::shared_ptr<audio::Song> song)
 {
     mp_AttachedSong = song;
 }
@@ -153,7 +153,7 @@ QByteArray SongListItem::toPacket() const
     {
         out << static_cast<quint8>(1);
 
-        audio::Song *song = getAttachedSong();
+        std::shared_ptr<audio::Song> song = getAttachedSong();
         if (song)
         {
             out << static_cast<quint16>(song->getNum());    // Id de la musique

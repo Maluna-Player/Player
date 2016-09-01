@@ -32,18 +32,6 @@ PlayerSocket::PlayerSocket(audio::Player *player)
 
 PlayerSocket::~PlayerSocket()
 {
-    for (commands::CommandRequest *request : mp_ReceivedRequests)
-        delete request;
-
-    for (commands::CommandReply *reply : mp_ReceivedReplies)
-        delete reply;
-
-    if (mp_SendMessage)
-        delete mp_SendMessage;
-
-    if (mp_ReceiveMessage)
-        delete mp_ReceiveMessage;
-
     if (mp_Server)
         mp_Server->deleteLater();
 
@@ -51,7 +39,7 @@ PlayerSocket::~PlayerSocket()
         mp_Socket->deleteLater();
 
     if (mp_SocketThread)
-        delete mp_SocketThread;
+        mp_SocketThread->deleteLater();
 }
 
 // ==============================
@@ -125,10 +113,10 @@ void PlayerSocket::startConnection()
     mp_Socket->setParent(nullptr);
     mp_Socket->moveToThread(mp_SocketThread);
 
-    mp_SendMessage = new PlayerMessage(mp_Socket);
-    mp_ReceiveMessage = new PlayerMessage(mp_Socket);
+    mp_SendMessage = std::make_unique<PlayerMessage>(mp_Socket);
+    mp_ReceiveMessage = std::make_unique<PlayerMessage>(mp_Socket);
 
-    connect(mp_Socket, SIGNAL(readyRead()), mp_ReceiveMessage, SLOT(receive()));
+    connect(mp_Socket, SIGNAL(readyRead()), mp_ReceiveMessage.get(), SLOT(receive()));
 
     mp_SendMessage->moveToThread(mp_SocketThread);
     mp_ReceiveMessage->moveToThread(mp_SocketThread);
@@ -254,7 +242,7 @@ gui::SongTreeRoot* PlayerSocket::readRemoteSongList()
             in >> songLength;
             in >> artist;
 
-            network::RemoteSong *song = mp_Player->createRemoteSong(fileName, songNum, songLength, artist, &getCallbackSettings());
+            std::shared_ptr<network::RemoteSong> song = mp_Player->createRemoteSong(fileName, songNum, songLength, artist, &getCallbackSettings());
             item->setAttachedSong(song);
 
             m_NbReceivedSongs++;
@@ -291,10 +279,10 @@ gui::SongTreeRoot* PlayerSocket::exchangeSongList(gui::SongTreeRoot *songs)
 // ==============================
 // ==============================
 
-commands::Command* PlayerSocket::buildCommand(QByteArray message) const
+std::shared_ptr<commands::Command> PlayerSocket::buildCommand(QByteArray message) const
 {
     QDataStream in(&message, QIODevice::ReadOnly);
-    commands::Command *command = nullptr;
+    std::shared_ptr<commands::Command> command { nullptr };
 
     quint8 messageType;
     quint8 commandType;
@@ -307,11 +295,11 @@ commands::Command* PlayerSocket::buildCommand(QByteArray message) const
         switch (commandType)
         {
             case 'o':
-                command = new commands::OpenCommandRequest(songNum);
+                command = std::make_shared<commands::OpenCommandRequest>(songNum);
                 break;
 
             case 'c':
-                command = new commands::CloseCommandRequest(songNum);
+                command = std::make_shared<commands::CloseCommandRequest>(songNum);
                 break;
 
             case 'r':
@@ -319,7 +307,7 @@ commands::Command* PlayerSocket::buildCommand(QByteArray message) const
                 quint32 bytesToRead;
                 in >> bytesToRead;
 
-                command = new commands::ReadCommandRequest(songNum, bytesToRead);
+                command = std::make_shared<commands::ReadCommandRequest>(songNum, bytesToRead);
                 break;
             }
             case 's':
@@ -327,7 +315,7 @@ commands::Command* PlayerSocket::buildCommand(QByteArray message) const
                 quint32 pos;
                 in >> pos;
 
-                command = new commands::SeekCommandRequest(songNum, pos);
+                command = std::make_shared<commands::SeekCommandRequest>(songNum, pos);
                 break;
             }
 
@@ -347,11 +335,11 @@ commands::Command* PlayerSocket::buildCommand(QByteArray message) const
                 quint32 fileSize;
                 in >> fileSize;
 
-                command = new commands::OpenCommandReply(songNum, static_cast<FMOD_RESULT>(result), fileSize);
+                command = std::make_shared<commands::OpenCommandReply>(songNum, static_cast<FMOD_RESULT>(result), fileSize);
                 break;
             }
             case 'c':
-                command = new commands::CloseCommandReply(songNum, static_cast<FMOD_RESULT>(result));
+                command = std::make_shared<commands::CloseCommandReply>(songNum, static_cast<FMOD_RESULT>(result));
                 break;
 
             case 'r':
@@ -362,11 +350,11 @@ commands::Command* PlayerSocket::buildCommand(QByteArray message) const
                 char *buffer = new char[readBytes];
                 in.readRawData(buffer, readBytes);
 
-                command = new commands::ReadCommandReply(songNum, static_cast<FMOD_RESULT>(result), buffer, readBytes);
+                command = std::make_shared<commands::ReadCommandReply>(songNum, static_cast<FMOD_RESULT>(result), buffer, readBytes);
                 break;
             }
             case 's':
-                command = new commands::SeekCommandReply(songNum, static_cast<FMOD_RESULT>(result));
+                command = std::make_shared<commands::SeekCommandReply>(songNum, static_cast<FMOD_RESULT>(result));
                 break;
 
             default:
@@ -380,13 +368,13 @@ commands::Command* PlayerSocket::buildCommand(QByteArray message) const
 // ==============================
 // ==============================
 
-commands::CommandRequest* PlayerSocket::getCommandRequest()
+std::shared_ptr<commands::CommandRequest> PlayerSocket::getCommandRequest()
 {
     if (!mp_ReceivedRequests.isEmpty())
         return mp_ReceivedRequests.takeAt(0);
     else
     {
-        commands::Command *command = nullptr;
+        std::shared_ptr<commands::Command> command { nullptr };
 
         do
         {
@@ -396,34 +384,34 @@ commands::CommandRequest* PlayerSocket::getCommandRequest()
 
             command = buildCommand(message);
             if (command && command->isReply())
-                mp_ReceivedReplies.append(static_cast<commands::CommandReply*>(command));
+                mp_ReceivedReplies.append(std::static_pointer_cast<commands::CommandReply>(command));
 
         } while (!(command && command->isRequest()));
 
-        return static_cast<commands::CommandRequest*>(command);
+        return std::static_pointer_cast<commands::CommandRequest>(command);
     }
 }
 
 // ==============================
 // ==============================
 
-commands::CommandReply* PlayerSocket::getCommandReply()
+std::shared_ptr<commands::CommandReply> PlayerSocket::getCommandReply()
 {
     if (!mp_ReceivedReplies.isEmpty())
         return mp_ReceivedReplies.takeAt(0);
     else
     {
-        commands::Command *command = nullptr;
+        std::shared_ptr<commands::Command> command { nullptr };
 
         do
         {
             command = buildCommand(mp_ReceiveMessage->waitNextMessage());
             if (command && command->isRequest())
-                mp_ReceivedRequests.append(static_cast<commands::CommandRequest*>(command));
+                mp_ReceivedRequests.append(std::static_pointer_cast<commands::CommandRequest>(command));
 
         } while (!(command && command->isReply()));
 
-        return static_cast<commands::CommandReply*>(command);
+        return std::static_pointer_cast<commands::CommandReply>(command);
     }
 }
 
@@ -441,7 +429,7 @@ FMOD_RESULT PlayerSocket::openRemoteFile(const char *fileName, unsigned int *fil
         commands::OpenCommandRequest request(*songNum);
         mp_SendMessage->add(&request);
 
-        commands::OpenCommandReply *reply = static_cast<commands::OpenCommandReply*>(getCommandReply());
+        std::shared_ptr<commands::OpenCommandReply> reply = std::static_pointer_cast<commands::OpenCommandReply>(getCommandReply());
 
         if (reply)
         {
@@ -453,7 +441,6 @@ FMOD_RESULT PlayerSocket::openRemoteFile(const char *fileName, unsigned int *fil
             m_TotalCurrentSongData = *filesize;
             m_SongDataReceived = 0;
 
-            delete reply;
             return result;
         }
     }
@@ -474,14 +461,11 @@ FMOD_RESULT PlayerSocket::closeRemoteFile(void *handle)
     commands::CloseCommandRequest request(*songNum);
     mp_SendMessage->add(&request);
 
-    commands::CloseCommandReply *reply = static_cast<commands::CloseCommandReply*>(getCommandReply());
+    std::shared_ptr<commands::CloseCommandReply> reply = std::static_pointer_cast<commands::CloseCommandReply>(getCommandReply());
     FMOD_RESULT result = FMOD_OK;
 
     if (reply)
-    {
         result = reply->getResult();
-        delete reply;
-    }
 
     delete songNum;
 
@@ -503,7 +487,7 @@ FMOD_RESULT PlayerSocket::readRemoteFile(void *handle, void *buffer, unsigned in
         commands::ReadCommandRequest request(*songNum, sizebytes);
         mp_SendMessage->add(&request);
 
-        commands::ReadCommandReply *reply = static_cast<commands::ReadCommandReply*>(getCommandReply());
+        std::shared_ptr<commands::ReadCommandReply> reply = std::static_pointer_cast<commands::ReadCommandReply>(getCommandReply());
         if (reply)
         {
             FMOD_RESULT result = reply->getResult();
@@ -512,7 +496,6 @@ FMOD_RESULT PlayerSocket::readRemoteFile(void *handle, void *buffer, unsigned in
             memcpy(buffer, reply->getBuffer(), *bytesread);
 
             m_SongDataReceived += *bytesread;
-            delete reply;
 
             if (*bytesread < sizebytes)
                 return FMOD_ERR_FILE_EOF;
@@ -537,15 +520,13 @@ FMOD_RESULT PlayerSocket::seekRemoteFile(void *handle, unsigned int pos)
     commands::SeekCommandRequest request(*songNum, pos);
     mp_SendMessage->add(&request);
 
-    commands::SeekCommandReply *reply = static_cast<commands::SeekCommandReply*>(getCommandReply());
+    std::shared_ptr<commands::SeekCommandReply> reply = std::static_pointer_cast<commands::SeekCommandReply>(getCommandReply());
     FMOD_RESULT result = FMOD_OK;
 
     if (reply)
     {
         result = reply->getResult();
         m_SongDataReceived = 0;
-
-        delete reply;
     }
 
     return result;
@@ -556,7 +537,7 @@ FMOD_RESULT PlayerSocket::seekRemoteFile(void *handle, unsigned int pos)
 
 void PlayerSocket::processCommands()
 {
-    commands::CommandRequest *request = getCommandRequest();
+    std::shared_ptr<commands::CommandRequest> request = getCommandRequest();
 
     if (request)
         emit commandReceived(request);
@@ -565,10 +546,9 @@ void PlayerSocket::processCommands()
 // ==============================
 // ==============================
 
-void PlayerSocket::sendCommandReply(commands::CommandReply *reply)
+void PlayerSocket::sendCommandReply(std::shared_ptr<commands::CommandReply> reply)
 {
-    mp_SendMessage->add(reply);
-    delete reply;
+    mp_SendMessage->add(reply.get());
 }
 
 // ==============================

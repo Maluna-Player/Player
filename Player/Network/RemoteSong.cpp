@@ -51,7 +51,7 @@ audio::Player::SongId RemoteSong::getRemoteNum() const
 
 void RemoteSong::open()
 {
-    m_SoundID = audio::FmodManager::getInstance()->openFromFile(m_File.toStdString(), true, m_Settings);
+    m_SoundID = audio::FmodManager::getInstance().openFromFile(m_File.toStdString(), true, m_Settings);
 }
 
 

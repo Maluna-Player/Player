@@ -402,9 +402,9 @@ void PlayerWindow::openInformation()
 
 void PlayerWindow::listen()
 {
-    mp_Socket = new network::PlayerSocket(&m_Player);
-    connect(mp_Socket, SIGNAL(connected()), this, SLOT(startConnection()));
-    connect(mp_Socket, SIGNAL(disconnected()), this, SLOT(closeConnection()));
+    mp_Socket = std::make_unique<network::PlayerSocket>(&m_Player);
+    connect(mp_Socket.get(), SIGNAL(connected()), this, SLOT(startConnection()));
+    connect(mp_Socket.get(), SIGNAL(disconnected()), this, SLOT(closeConnection()));
 
     mp_Socket->listen(QHostAddress::Any);
 }
@@ -414,9 +414,9 @@ void PlayerWindow::listen()
 
 void PlayerWindow::connectToHost(const QString& host)
 {
-    mp_Socket = new network::PlayerSocket(&m_Player);
-    connect(mp_Socket, SIGNAL(connected()), this, SLOT(startConnection()));
-    connect(mp_Socket, SIGNAL(disconnected()), this, SLOT(closeConnection()));
+    mp_Socket = std::make_unique<network::PlayerSocket>(&m_Player);
+    connect(mp_Socket.get(), SIGNAL(connected()), this, SLOT(startConnection()));
+    connect(mp_Socket.get(), SIGNAL(disconnected()), this, SLOT(closeConnection()));
 
     mp_Socket->connectToHost(host);
 }
@@ -431,8 +431,8 @@ void PlayerWindow::startConnection()
 
     mp_ConnectionBox->connected();
 
-    connect(mp_Socket, SIGNAL(commandReceived(network::commands::CommandRequest*)), &m_Player, SLOT(executeNetworkCommand(network::commands::CommandRequest*)));
-    connect(&m_Player, SIGNAL(commandExecuted(network::commands::CommandReply*)), mp_Socket, SLOT(sendCommandReply(network::commands::CommandReply*)));
+    connect(mp_Socket.get(), SIGNAL(commandReceived(std::shared_ptr<network::commands::CommandRequest>)), &m_Player, SLOT(executeNetworkCommand(std::shared_ptr<network::commands::CommandRequest>)));
+    connect(&m_Player, SIGNAL(commandExecuted(std::shared_ptr<network::commands::CommandReply>)), mp_Socket.get(), SLOT(sendCommandReply(std::shared_ptr<network::commands::CommandReply>)));
 }
 
 // ==============================
@@ -459,9 +459,7 @@ void PlayerWindow::closeConnection()
             m_Player.clearSongs(SongList_t::REMOTE_SONGS);
             mp_SongList->clearList(SongList_t::REMOTE_SONGS);
 
-            delete mp_Socket;
-            mp_Socket = nullptr;
-
+            mp_Socket.reset(nullptr);
             mp_ConnectionBox->disconnect();
         }
     }

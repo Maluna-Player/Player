@@ -52,11 +52,11 @@ class Player : public QObject
 
     private:
 
-        using SongIt = util::ComposedMap<SongList_t, std::map<int, Song*>>::const_iterator;
+        using SongIt = util::ComposedMap<SongList_t, std::map<int, std::shared_ptr<Song>>>::const_iterator;
 
         unsigned int m_Cpt;
 
-        util::ComposedMap<SongList_t, std::map<int, Song*>> mp_Songs;
+        util::ComposedMap<SongList_t, std::map<int, std::shared_ptr<Song>>> mp_Songs;
         SongIt m_CurrentSong;
 
         bool m_Playlist;
@@ -143,7 +143,7 @@ class Player : public QObject
         /**
          * @brief Signal émis lorsque la commande reçue a été traitée et que la réponse est créée.
          */
-        void commandExecuted(network::commands::CommandReply*);
+        void commandExecuted(std::shared_ptr<network::commands::CommandReply>);
 
     public:
 
@@ -154,7 +154,7 @@ class Player : public QObject
          * @brief getCurrentSong
          * @return Pointeur vers le son actuel.
          */
-        virtual Song* getCurrentSong();
+        virtual std::shared_ptr<Song> getCurrentSong();
 
         /**
          * @brief Compte le nombre de musiques de la liste passée en paramètre.
@@ -244,7 +244,7 @@ class Player : public QObject
          * @param inFolder Présence du son dans le dossier ou non
          * @return Objet son créé, nullptr sinon
          */
-        virtual Song* createLocalSong(const QString& filepath, bool inFolder);
+        virtual std::shared_ptr<Song> createLocalSong(const QString& filepath, bool inFolder);
 
         /**
          * @brief Créé un nouveau son distant s'il n'existe pas encore à partir des infos passées en paramètre.
@@ -255,7 +255,7 @@ class Player : public QObject
          * @param settings Paramètres de lecture du son distant
          * @return Objet son créé, nullptr sinon
          */
-        virtual network::RemoteSong* createRemoteSong(const QString& file, SongId remoteNum, SoundPos_t length, const QString& artist, SoundSettings *settings);
+        virtual std::shared_ptr<network::RemoteSong> createRemoteSong(const QString& file, SongId remoteNum, SoundPos_t length, const QString& artist, SoundSettings *settings);
 
         /**
          * @brief Ajoute une nouvelle musique dans la liste du player.
@@ -308,7 +308,7 @@ class Player : public QObject
          * @brief Traite la commande passée en paramètre et émet la réponse une fois terminée.
          * @param command Commande à traiter
          */
-        virtual void executeNetworkCommand(network::commands::CommandRequest *command);
+        virtual void executeNetworkCommand(std::shared_ptr<network::commands::CommandRequest> command);
 };
 
 

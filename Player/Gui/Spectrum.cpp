@@ -94,7 +94,7 @@ void Spectrum::updateValues(audio::SoundID_t id)
     std::vector<float> spectrumValues(m_Width);
 
     /* Récupération des valeurs spectrales de FMOD */
-    audio::FmodManager::getInstance()->getChannelSpectrum(id, spectrumValues);
+    audio::FmodManager::getInstance().getChannelSpectrum(id, spectrumValues);
 
     for (i = 0; i < m_Width; i++)
     {

@@ -68,7 +68,7 @@ class PlayerWindow : public QMainWindow
 
         QVector<PlayerButton*> mp_Buttons;
 
-        network::PlayerSocket *mp_Socket;
+        std::unique_ptr<network::PlayerSocket> mp_Socket;
 
         ConnectionBox *mp_ConnectionBox;
 

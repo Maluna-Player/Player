@@ -68,7 +68,7 @@ unsigned int SongList::setSongDetails(SongListItem *item) const
 {
     if (item->isSong())
     {
-        audio::Song *song = item->getAttachedSong();
+        std::shared_ptr<audio::Song> song = item->getAttachedSong();
         if (song)
         {
             item->setText(0, song->getTitle());
@@ -168,7 +168,7 @@ void SongList::clearList(SongList_t list)
         {
             if ((*it)->isSong())
             {
-                audio::Song *song = (*it)->getAttachedSong();
+                std::shared_ptr<audio::Song> song = (*it)->getAttachedSong();
                 if (song && ((list == SongList_t::DIRECTORY_SONGS && song->isInFolder())
                               || (list == SongList_t::IMPORTED_SONGS && !song->isInFolder())))
                     removeSong(it);
@@ -190,7 +190,7 @@ void SongList::setCurrentSong(int songNum)
 
     while (!it.isNull())
     {
-        audio::Song *song = (*it)->getAttachedSong();
+        std::shared_ptr<audio::Song> song = (*it)->getAttachedSong();
         if (song)
         {
             if (song->getNum() == m_CurrentSong)
@@ -221,7 +221,7 @@ void SongList::mousePressEvent(QMouseEvent *event)
 
     if (selectedItem && static_cast<SongListItem*>(selectedItem)->isSong())
     {
-        audio::Song *song = static_cast<SongListItem*>(selectedItem)->getAttachedSong();
+        std::shared_ptr<audio::Song> song = static_cast<SongListItem*>(selectedItem)->getAttachedSong();
         if (song)
             emit songPressed(song->getNum());
     }

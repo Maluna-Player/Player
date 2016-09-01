@@ -11,7 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = Player
 TEMPLATE = app
 
-QMAKE_CXXFLAGS += -std=c++14
+CONFIG += c++14
 
 SOURCES += main.cpp \
     Util/Tools.cpp \
