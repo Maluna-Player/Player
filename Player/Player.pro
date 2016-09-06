@@ -38,7 +38,8 @@ SOURCES += main.cpp \
     Gui/NetworkLoadBar.cpp \
     Gui/MenuBar.cpp \
     Gui/SongListItem.cpp \
-    Gui/SongListIterator.cpp
+    Gui/SongListIterator.cpp \
+    Gui/ShadowWidget.cpp
 
 HEADERS  += Constants.h \
     Util/Tools.h \
@@ -71,7 +72,8 @@ HEADERS  += Constants.h \
     Gui/MenuBar.h \
     Gui/SongListItem.h \
     Gui/SongListIterator.h \
-    Util/composedmap.h
+    Util/composedmap.h \
+    Gui/ShadowWidget.h
 
 RC_FILE = Player.rc
 

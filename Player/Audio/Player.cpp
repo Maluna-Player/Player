@@ -28,7 +28,7 @@ Player::Player()
     : m_Cpt(0), mp_Songs({SongList_t::DIRECTORY_SONGS, SongList_t::IMPORTED_SONGS, SongList_t::REMOTE_SONGS}),
       m_CurrentSong(UNDEFINED_SONG), m_Playlist(true), m_Loop(false),
       m_Pause(false), m_Stop(true), m_Mute(false),
-      m_VolumeState(NB_VOLUME_STATES - 1)
+      m_VolumeState(NB_VOLUME_STATES - 1), mp_PreviewId(nullptr)
 {
 
 }
@@ -96,11 +96,15 @@ void Player::play()
         {
             m_Stop = false;
             getCurrentSong()->play();
+
+            emit stateChanged(PlayerState::PLAY);
         }
         else if (m_Pause)
         {
             m_Pause = false;
             getCurrentSong()->pause(false);
+
+            emit stateChanged(PlayerState::PLAY);
         }
     }
 }
@@ -118,7 +122,7 @@ void Player::stop()
         if (m_CurrentSong != UNDEFINED_SONG)
             getCurrentSong()->stop();
 
-        emit stopped();
+        emit stateChanged(PlayerState::STOP);
     }
 }
 
@@ -127,10 +131,15 @@ void Player::stop()
 
 void Player::pause()
 {
-    m_Pause = true;
+    if (isPlaying())
+    {
+        m_Pause = true;
 
-    if (m_CurrentSong != UNDEFINED_SONG)
-        getCurrentSong()->pause(true);
+        if (m_CurrentSong != UNDEFINED_SONG)
+            getCurrentSong()->pause(true);
+
+        emit stateChanged(PlayerState::PAUSE);
+    }
 }
 
 // ==============================
@@ -461,7 +470,68 @@ void Player::update()
             nextSong();
     }
 
+    if (mp_PreviewId != nullptr && getPreviewPosition() >= getPreviewLength())
+    {
+        stopPreview();
+        emit previewFinished();
+    }
+
     FmodManager::getInstance().update();
+}
+
+// ==============================
+// ==============================
+
+bool Player::isPreviewing() const
+{
+    return (mp_PreviewId != nullptr && FmodManager::getInstance().isPlaying(*mp_PreviewId));
+}
+
+// ==============================
+// ==============================
+
+SoundPos_t Player::getPreviewPosition() const
+{
+    if (!mp_PreviewId)
+        return 0;
+
+    return FmodManager::getInstance().getSoundPosition(*mp_PreviewId);
+}
+
+// ==============================
+// ==============================
+
+SoundPos_t Player::getPreviewLength() const
+{
+    if (!mp_PreviewId)
+        return 0;
+
+    return FmodManager::getInstance().getSoundLength(*mp_PreviewId);
+}
+
+// ==============================
+// ==============================
+
+void Player::startPreview(const QString& filePath)
+{
+    pause();
+
+    mp_PreviewId = std::make_unique<SoundID_t>(FmodManager::getInstance().openFromFile(filePath.toStdString(), false));
+    FmodManager::getInstance().playSound(*mp_PreviewId);
+}
+
+// ==============================
+// ==============================
+
+void Player::stopPreview()
+{
+    if (mp_PreviewId)
+    {
+        FmodManager::getInstance().stopSound(*mp_PreviewId);
+        mp_PreviewId.reset(nullptr);
+
+        play();
+    }
 }
 
 // ==============================

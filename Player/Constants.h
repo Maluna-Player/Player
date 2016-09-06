@@ -78,6 +78,12 @@ constexpr unsigned int VOLUME_VIEWER_W              = (VOLUME_SPRITE_W + (VOLUME
 constexpr unsigned int VOLUME_VIEWER_H              = VOLUME_SPRITE_H;
 
 
+// Preview (ms)
+constexpr unsigned int PREVIEW_DELAY                = 2000;
+constexpr unsigned int PREVIEW_LENGTH               = 30000;
+constexpr unsigned int PREVIEW_ANIMATION_LENGTH     = 1000;
+
+
 // Etats du player
 enum class PlayerState { PLAY, PAUSE, STOP };
 

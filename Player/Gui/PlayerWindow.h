@@ -21,6 +21,7 @@
 #include "ProgressBar.h"
 #include "VolumeViewer.h"
 #include "SongList.h"
+#include "ShadowWidget.h"
 
 #include <QTimerEvent>
 #include <QShowEvent>
@@ -28,6 +29,7 @@
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QVector>
+#include <QTimer>
 #include "./Network/PlayerSocket.h"
 #include "ConnectionBox.h"
 
@@ -42,6 +44,9 @@ class PlayerWindow : public QMainWindow
     private:
 
         int m_TimerId;
+
+        QString m_PreviewPath;
+        QTimer m_PreviewTimer;
 
         audio::Player m_Player;
 
@@ -64,6 +69,9 @@ class PlayerWindow : public QMainWindow
 
         VolumeViewer *mp_SoundVolume;
 
+        ShadowWidget *mp_ShadowWidget;
+        QProgressBar *mp_PreviewBar;
+
         enum class ButtonId { PLAY, PAUSE, STOP, PREV, NEXT, VOLUME_MORE, VOLUME_LESS };
 
         QVector<PlayerButton*> mp_Buttons;
@@ -74,17 +82,16 @@ class PlayerWindow : public QMainWindow
 
 
         /**
+         * @brief Créé le widget de previsualisation.
+         */
+        virtual void createPreviewWidget();
+
+        /**
          * @brief Récupère le boutton associé à la valeur de l'énumération passée en paramètre.
          * @param id Identifiant du bouton
          * @return Bouton associé à l'identifiant
          */
         PlayerButton* getButton(ButtonId id) const;
-
-        /**
-         * @brief Change l'état du player et modifie l'affichage.
-         * @param state Nouvel état du player
-         */
-        virtual void setState(PlayerState state);
 
         /**
          * @brief Modifie le volume de l'application avec celui passé en paramètre.
@@ -103,6 +110,12 @@ class PlayerWindow : public QMainWindow
          * @brief Met à jour la liste des musiques du répertoire.
          */
         virtual void refreshSongsList();
+
+        /**
+         * @brief Change l'état du player et modifie l'affichage.
+         * @param state Nouvel état du player
+         */
+        virtual void setState(PlayerState state);
 
         /**
          * @brief Applique l'état play.
@@ -187,6 +200,16 @@ class PlayerWindow : public QMainWindow
          */
         virtual void closeConnection();
 
+        /**
+         * @brief Démarre la preview de la chanson enregistrée.
+         */
+        virtual void startPreview();
+
+        /**
+         * @brief Arrête la preview.
+         */
+        virtual void stopPreview();
+
     protected:
 
         virtual void timerEvent(QTimerEvent *event) override;
@@ -200,6 +223,8 @@ class PlayerWindow : public QMainWindow
         virtual void paintEvent(QPaintEvent *event) override;
 
         virtual void dragEnterEvent(QDragEnterEvent *event) override;
+
+        virtual void dragLeaveEvent(QDragLeaveEvent *event) override;
 
         virtual void dropEvent(QDropEvent *event) override;
 

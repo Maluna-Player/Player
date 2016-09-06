@@ -159,7 +159,7 @@ void FmodManager::releaseSound(SoundID_t id)
     {
         FMOD_RESULT res;
 
-        if (mp_Channels.at(id))
+        if (isChannelUsed(id))
             stopSound(id);
 
         if ((res = FMOD_Sound_Release(mp_Sounds.at(id))) != FMOD_OK)
@@ -185,7 +185,7 @@ void FmodManager::playSound(SoundID_t id)
 
 bool FmodManager::isChannelUsed(SoundID_t id) const
 {
-    return (mp_Channels.at(id) != nullptr);
+    return (id < mp_Channels.size() && mp_Channels.at(id) != nullptr);
 }
 
 // ==============================
@@ -193,12 +193,15 @@ bool FmodManager::isChannelUsed(SoundID_t id) const
 
 void FmodManager::stopSound(SoundID_t id)
 {
-    FMOD_RESULT res;
+    if (isChannelUsed(id))
+    {
+        FMOD_RESULT res;
 
-    if ((res = FMOD_Channel_Stop(mp_Channels.at(id))) != FMOD_OK)
-        throw exceptions::LibException("FmodManager::stopSound", "FMOD_Channel_Stop", FMOD_ErrorString(res));
+        if ((res = FMOD_Channel_Stop(mp_Channels.at(id))) != FMOD_OK)
+            throw exceptions::LibException("FmodManager::stopSound", "FMOD_Channel_Stop", FMOD_ErrorString(res));
 
-    mp_Channels.at(id) = nullptr;
+        mp_Channels.at(id) = nullptr;
+    }
 }
 
 // ==============================

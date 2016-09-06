@@ -21,6 +21,8 @@
 #include <QFileDialog>
 #include <QDesktopServices>
 #include <QMimeData>
+#include <QStackedLayout>
+#include <QPropertyAnimation>
 
 
 namespace gui {
@@ -35,13 +37,17 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     setAcceptDrops(true);
 
     QWidget *centralArea = new QWidget;
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->setSpacing(0);
-    layout->setContentsMargins(0, 0, 0, 0);
+    QStackedLayout *mainStackedLayout = new QStackedLayout;
+
+    QWidget *playerWidget = new QWidget;
+    QVBoxLayout *playerLayout = new QVBoxLayout;
+    playerLayout->setSpacing(0);
+    playerLayout->setContentsMargins(0, 0, 0, 0);
 
     connect(&m_Player, SIGNAL(songChanged()), this, SLOT(updateCurrentSong()));
-    connect(&m_Player, SIGNAL(stopped()), this, SLOT(stop()));
+    connect(&m_Player, SIGNAL(stateChanged(PlayerState)), this, SLOT(setState(PlayerState)));
     connect(&m_Player, SIGNAL(streamError(QString)), this, SLOT(refreshSongsList()));
+    connect(&m_Player, SIGNAL(previewFinished()), this, SLOT(stopPreview()));
 
     /** Menu **/
 
@@ -153,13 +159,19 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     mp_BottomPart->setLayout(bottomLayout);
 
 
-    layout->addWidget(mp_TopPart);
-    layout->addWidget(mp_ProgressBackground);
-    layout->addWidget(mp_BottomPart);
-    centralArea->setLayout(layout);
+    playerLayout->addWidget(mp_TopPart);
+    playerLayout->addWidget(mp_ProgressBackground);
+    playerLayout->addWidget(mp_BottomPart);
 
+    playerWidget->setLayout(playerLayout);
+
+    createPreviewWidget();
+
+    mainStackedLayout->addWidget(playerWidget);
+    mainStackedLayout->addWidget(mp_ShadowWidget);
+
+    centralArea->setLayout(mainStackedLayout);
     setCentralWidget(centralArea);
-
 
     /** Démarrage du player **/
 
@@ -173,6 +185,29 @@ PlayerWindow::PlayerWindow(QWidget *parent)
 PlayerWindow::~PlayerWindow()
 {
     audio::FmodManager::deleteInstance();
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::createPreviewWidget()
+{
+    mp_ShadowWidget = new ShadowWidget;
+
+    mp_PreviewBar = new QProgressBar(mp_ShadowWidget);
+    mp_PreviewBar->setTextVisible(false);
+    mp_PreviewBar->setMaximumWidth(300);
+
+    QVBoxLayout *shadowLayout = new QVBoxLayout;
+    shadowLayout->setAlignment(Qt::AlignHCenter);
+    shadowLayout->addWidget(mp_PreviewBar);
+
+    mp_ShadowWidget->setLayout(shadowLayout);
+    mp_ShadowWidget->hide();
+
+    m_PreviewTimer.setSingleShot(true);
+    m_PreviewTimer.setInterval(PREVIEW_DELAY);
+    connect(&m_PreviewTimer, SIGNAL(timeout()), this, SLOT(startPreview()));
 }
 
 // ==============================
@@ -259,8 +294,7 @@ void PlayerWindow::refreshSongsList()
 
 void PlayerWindow::play()
 {
-    if (!m_Player.isPlaying())
-        setState(PlayerState::PLAY);
+    setState(PlayerState::PLAY);
 }
 
 // ==============================
@@ -268,8 +302,7 @@ void PlayerWindow::play()
 
 void PlayerWindow::pause()
 {
-    if (!m_Player.isPaused())
-        setState(PlayerState::PAUSE);
+    setState(PlayerState::PAUSE);
 }
 
 // ==============================
@@ -487,6 +520,14 @@ void PlayerWindow::timerEvent(QTimerEvent *event)
 
         if (mp_Socket && mp_Socket->isConnected())
             mp_Socket->processCommands();
+
+        if (m_Player.isPreviewing())
+        {
+            if (m_Player.getPreviewPosition() < PREVIEW_LENGTH)
+                mp_PreviewBar->setValue(m_Player.getPreviewPosition());
+            else
+                stopPreview();
+        }
     }
     else
     {
@@ -543,6 +584,41 @@ void PlayerWindow::paintEvent(QPaintEvent *event)
 // ==============================
 // ==============================
 
+void PlayerWindow::startPreview()
+{
+    if (m_Player.isPreviewing())
+        return;
+
+    m_Player.startPreview(m_PreviewPath);
+
+    mp_PreviewBar->setValue(0);
+    mp_PreviewBar->setMaximum(std::min(m_Player.getPreviewLength(), PREVIEW_LENGTH));
+    mp_ShadowWidget->show();
+    mp_ShadowWidget->setGeometry(QRect(0, 0, centralWidget()->width(), centralWidget()->height()));
+
+    QPropertyAnimation *shadowAnimation = new QPropertyAnimation(mp_ShadowWidget, "opacity");
+    shadowAnimation->setDuration(PREVIEW_ANIMATION_LENGTH);
+    shadowAnimation->setStartValue(0);
+    shadowAnimation->setEndValue(200);
+    shadowAnimation->start();
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::stopPreview()
+{
+    m_PreviewTimer.stop();
+
+    if (m_Player.isPreviewing())
+        m_Player.stopPreview();
+
+    mp_ShadowWidget->hide();
+}
+
+// ==============================
+// ==============================
+
 void PlayerWindow::dragEnterEvent(QDragEnterEvent *event)
 {
     if (event->mimeData()->urls().size() == 1)
@@ -550,9 +626,21 @@ void PlayerWindow::dragEnterEvent(QDragEnterEvent *event)
         const QString& filepath = event->mimeData()->urls().first().toLocalFile();
 
         if (util::Tools::getMimeType(filepath).startsWith("audio/"))
+        {
             event->acceptProposedAction();
-    }
 
+            m_PreviewTimer.start();
+            m_PreviewPath = filepath;
+        }
+    }
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::dragLeaveEvent(QDragLeaveEvent* /*event*/)
+{
+    stopPreview();
 }
 
 // ==============================
@@ -569,6 +657,7 @@ void PlayerWindow::dropEvent(QDropEvent *event)
     }
 
     event->acceptProposedAction();
+    stopPreview();
 }
 
 

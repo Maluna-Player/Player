@@ -70,6 +70,8 @@ class Player : public QObject
 
         QFile clientFile;
 
+        std::unique_ptr<SoundID_t> mp_PreviewId;
+
 
         /**
          * @brief Génère un nouvel identifiant pour une musique.
@@ -131,14 +133,19 @@ class Player : public QObject
         void songChanged();
 
         /**
-         * @brief Signal émis lorsque le player est stoppé.
+         * @brief Signal émis lorsque le player change d'état.
          */
-        void stopped();
+        void stateChanged(PlayerState state);
 
         /**
          * @brief Signal émis lorsqu'une musique n'a pas pu être ouverte.
          */
         void streamError(QString);
+
+        /**
+         * @brief Signal émis lorsque la preview est terminée.
+         */
+        void previewFinished();
 
         /**
          * @brief Signal émis lorsque la commande reçue a été traitée et que la réponse est créée.
@@ -240,11 +247,11 @@ class Player : public QObject
 
         /**
          * @brief Créé un nouveau son local s'il n'existe pas encore à partir du chemin passé en paramètre.
-         * @param filepath Chemin du son à créer
+         * @param filePath Chemin du son à créer
          * @param inFolder Présence du son dans le dossier ou non
          * @return Objet son créé, nullptr sinon
          */
-        virtual std::shared_ptr<Song> createLocalSong(const QString& filepath, bool inFolder);
+        virtual std::shared_ptr<Song> createLocalSong(const QString& filePath, bool inFolder);
 
         /**
          * @brief Créé un nouveau son distant s'il n'existe pas encore à partir des infos passées en paramètre.
@@ -294,6 +301,35 @@ class Player : public QObject
          * @brief Met à jour Fmod et la lecture de musique en changeant si besoin.
          */
         virtual void update();
+
+        /**
+         * @brief Vérifie si le lecteur prévisualise une musique.
+         * @return true si une prévisualisation a lieu
+         */
+        virtual bool isPreviewing() const;
+
+        /**
+         * @brief Retourne la position de la chanson prévisualisée.
+         * @return Position courante de la prévisualisation
+         */
+        virtual SoundPos_t getPreviewPosition() const;
+
+        /**
+         * @brief Retourne la longueur de la chanson prévisualisée.
+         * @return Longueur de la chanson prévisualisée
+         */
+        virtual SoundPos_t getPreviewLength() const;
+
+        /**
+         * @brief Démarre la preview de la chanson passée en paramètre.
+         * @param filePath Chemin de la chanson à lancer
+         */
+        virtual void startPreview(const QString& filePath);
+
+        /**
+         * @brief Arrête la preview et poursuit la lecture mise en pause.
+         */
+        virtual void stopPreview();
 
     public slots:
 

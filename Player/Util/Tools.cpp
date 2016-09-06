@@ -45,10 +45,10 @@ QPixmap Tools::loadImage(const QString &fileName)
 // ==============================
 // ==============================
 
-QString Tools::getMimeType(const QString& filename)
+QString Tools::getMimeType(const QString& fileName)
 {
     QMimeDatabase mimeDb;
-    return mimeDb.mimeTypeForFile(filename).name();
+    return mimeDb.mimeTypeForFile(fileName).name();
 }
 
 
