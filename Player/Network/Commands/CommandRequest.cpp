@@ -14,7 +14,7 @@
 namespace network { namespace commands {
 
 
-CommandRequest::CommandRequest(audio::Player::SongId songNum) : Command(songNum)
+CommandRequest::CommandRequest(audio::Player::SongId songId) : Command(songId)
 {
 
 }
@@ -32,8 +32,8 @@ bool CommandRequest::isReply() const
 // ==============================
 // ==============================
 
-OpenCommandRequest::OpenCommandRequest(audio::Player::SongId songNum)
-    : CommandRequest(songNum)
+OpenCommandRequest::OpenCommandRequest(audio::Player::SongId songId)
+    : CommandRequest(songId)
 {
 
 }
@@ -46,8 +46,8 @@ char OpenCommandRequest::getCommandType() const
 // ==============================
 // ==============================
 
-CloseCommandRequest::CloseCommandRequest(audio::Player::SongId songNum)
-    : CommandRequest(songNum)
+CloseCommandRequest::CloseCommandRequest(audio::Player::SongId songId)
+    : CommandRequest(songId)
 {
 
 }
@@ -60,8 +60,8 @@ char CloseCommandRequest::getCommandType() const
 // ==============================
 // ==============================
 
-ReadCommandRequest::ReadCommandRequest(audio::Player::SongId songNum, unsigned int bytes)
-    : CommandRequest(songNum), m_BytesToRead(bytes)
+ReadCommandRequest::ReadCommandRequest(audio::Player::SongId songId, unsigned int bytes)
+    : CommandRequest(songId), m_BytesToRead(bytes)
 {
 
 }
@@ -89,8 +89,8 @@ QByteArray ReadCommandRequest::toPacket() const
 // ==============================
 // ==============================
 
-SeekCommandRequest::SeekCommandRequest(audio::Player::SongId songNum, unsigned int pos)
-    : CommandRequest(songNum), m_Pos(pos)
+SeekCommandRequest::SeekCommandRequest(audio::Player::SongId songId, unsigned int pos)
+    : CommandRequest(songId), m_Pos(pos)
 {
 
 }

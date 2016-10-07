@@ -234,15 +234,15 @@ gui::SongTreeRoot* PlayerSocket::readRemoteSongList()
             item->setData(0, Qt::UserRole, num);
         else
         {
-            quint16 songNum;
+            quint16 songId;
             quint32 songLength;
             QString artist;
 
-            in >> songNum;
+            in >> songId;
             in >> songLength;
             in >> artist;
 
-            std::shared_ptr<network::RemoteSong> song = mp_Player->createRemoteSong(fileName, songNum, songLength, artist, &getCallbackSettings());
+            std::shared_ptr<network::RemoteSong> song = mp_Player->createRemoteSong(fileName, songId, songLength, artist, &getCallbackSettings());
             item->setAttachedSong(song);
 
             m_NbReceivedSongs++;
@@ -286,20 +286,20 @@ std::shared_ptr<commands::Command> PlayerSocket::buildCommand(QByteArray message
 
     quint8 messageType;
     quint8 commandType;
-    quint16 songNum;
+    quint16 songId;
 
-    in >> messageType >> commandType >> songNum;
+    in >> messageType >> commandType >> songId;
 
     if (messageType == 'C')
     {
         switch (commandType)
         {
             case 'o':
-                command = std::make_shared<commands::OpenCommandRequest>(songNum);
+                command = std::make_shared<commands::OpenCommandRequest>(songId);
                 break;
 
             case 'c':
-                command = std::make_shared<commands::CloseCommandRequest>(songNum);
+                command = std::make_shared<commands::CloseCommandRequest>(songId);
                 break;
 
             case 'r':
@@ -307,7 +307,7 @@ std::shared_ptr<commands::Command> PlayerSocket::buildCommand(QByteArray message
                 quint32 bytesToRead;
                 in >> bytesToRead;
 
-                command = std::make_shared<commands::ReadCommandRequest>(songNum, bytesToRead);
+                command = std::make_shared<commands::ReadCommandRequest>(songId, bytesToRead);
                 break;
             }
             case 's':
@@ -315,7 +315,7 @@ std::shared_ptr<commands::Command> PlayerSocket::buildCommand(QByteArray message
                 quint32 pos;
                 in >> pos;
 
-                command = std::make_shared<commands::SeekCommandRequest>(songNum, pos);
+                command = std::make_shared<commands::SeekCommandRequest>(songId, pos);
                 break;
             }
 
@@ -335,11 +335,11 @@ std::shared_ptr<commands::Command> PlayerSocket::buildCommand(QByteArray message
                 quint32 fileSize;
                 in >> fileSize;
 
-                command = std::make_shared<commands::OpenCommandReply>(songNum, static_cast<FMOD_RESULT>(result), fileSize);
+                command = std::make_shared<commands::OpenCommandReply>(songId, static_cast<FMOD_RESULT>(result), fileSize);
                 break;
             }
             case 'c':
-                command = std::make_shared<commands::CloseCommandReply>(songNum, static_cast<FMOD_RESULT>(result));
+                command = std::make_shared<commands::CloseCommandReply>(songId, static_cast<FMOD_RESULT>(result));
                 break;
 
             case 'r':
@@ -350,11 +350,11 @@ std::shared_ptr<commands::Command> PlayerSocket::buildCommand(QByteArray message
                 char *buffer = new char[readBytes];
                 in.readRawData(buffer, readBytes);
 
-                command = std::make_shared<commands::ReadCommandReply>(songNum, static_cast<FMOD_RESULT>(result), buffer, readBytes);
+                command = std::make_shared<commands::ReadCommandReply>(songId, static_cast<FMOD_RESULT>(result), buffer, readBytes);
                 break;
             }
             case 's':
-                command = std::make_shared<commands::SeekCommandReply>(songNum, static_cast<FMOD_RESULT>(result));
+                command = std::make_shared<commands::SeekCommandReply>(songId, static_cast<FMOD_RESULT>(result));
                 break;
 
             default:
@@ -422,11 +422,11 @@ FMOD_RESULT PlayerSocket::openRemoteFile(const char *fileName, unsigned int *fil
 {
     if (fileName)
     {
-        int *songNum = new int(atoi(fileName));
-        if (*songNum >= m_NbReceivedSongs)
-            throw exceptions::ArrayAccessException("PlayerSocket::openRemoteFile", m_NbReceivedSongs, *songNum);
+        int *songId = new int(atoi(fileName));
+        if (*songId >= m_NbReceivedSongs)
+            throw exceptions::ArrayAccessException("PlayerSocket::openRemoteFile", m_NbReceivedSongs, *songId);
 
-        commands::OpenCommandRequest request(*songNum);
+        commands::OpenCommandRequest request(*songId);
         mp_SendMessage->add(&request);
 
         std::shared_ptr<commands::OpenCommandReply> reply = std::static_pointer_cast<commands::OpenCommandReply>(getCommandReply());
@@ -436,7 +436,7 @@ FMOD_RESULT PlayerSocket::openRemoteFile(const char *fileName, unsigned int *fil
             FMOD_RESULT result = reply->getResult();
 
             *filesize = static_cast<unsigned int>(reply->getFileSize());
-            *handle = songNum;
+            *handle = songId;
 
             m_TotalCurrentSongData = *filesize;
             m_SongDataReceived = 0;
@@ -456,9 +456,9 @@ FMOD_RESULT PlayerSocket::closeRemoteFile(void *handle)
     if (!handle)
         return FMOD_ERR_INVALID_PARAM;
 
-    int *songNum = static_cast<int*>(handle);
+    int *songId = static_cast<int*>(handle);
 
-    commands::CloseCommandRequest request(*songNum);
+    commands::CloseCommandRequest request(*songId);
     mp_SendMessage->add(&request);
 
     std::shared_ptr<commands::CloseCommandReply> reply = std::static_pointer_cast<commands::CloseCommandReply>(getCommandReply());
@@ -467,7 +467,7 @@ FMOD_RESULT PlayerSocket::closeRemoteFile(void *handle)
     if (reply)
         result = reply->getResult();
 
-    delete songNum;
+    delete songId;
 
     return result;
 }
@@ -482,9 +482,9 @@ FMOD_RESULT PlayerSocket::readRemoteFile(void *handle, void *buffer, unsigned in
 
     if (bytesread)
     {
-        int *songNum = static_cast<int*>(handle);
+        int *songId = static_cast<int*>(handle);
 
-        commands::ReadCommandRequest request(*songNum, sizebytes);
+        commands::ReadCommandRequest request(*songId, sizebytes);
         mp_SendMessage->add(&request);
 
         std::shared_ptr<commands::ReadCommandReply> reply = std::static_pointer_cast<commands::ReadCommandReply>(getCommandReply());
@@ -515,9 +515,9 @@ FMOD_RESULT PlayerSocket::seekRemoteFile(void *handle, unsigned int pos)
     if (!handle)
         return FMOD_ERR_INVALID_PARAM;
 
-    int *songNum = static_cast<int*>(handle);
+    int *songId = static_cast<int*>(handle);
 
-    commands::SeekCommandRequest request(*songNum, pos);
+    commands::SeekCommandRequest request(*songId, pos);
     mp_SendMessage->add(&request);
 
     std::shared_ptr<commands::SeekCommandReply> reply = std::static_pointer_cast<commands::SeekCommandReply>(getCommandReply());

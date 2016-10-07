@@ -22,14 +22,14 @@ class Command : public Sendable
 {
     private:
 
-        audio::Player::SongId m_SongNum;
+        audio::Player::SongId m_SongId;
 
     public:
 
-        Command(audio::Player::SongId songNum);
+        Command(audio::Player::SongId songId);
         virtual ~Command() {}
 
-        virtual audio::Player::SongId getSongNum() const;
+        virtual audio::Player::SongId getSongId() const;
 
         virtual bool isRequest() const = 0;
 

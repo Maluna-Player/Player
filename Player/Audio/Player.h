@@ -52,11 +52,11 @@ class Player : public QObject
 
     private:
 
-        using SongIt = util::ComposedMap<SongList_t, std::map<int, std::shared_ptr<Song>>>::const_iterator;
+        using SongIt = util::ComposedMap<SongList_t, std::map<SongId, std::shared_ptr<Song>>>::const_iterator;
 
         unsigned int m_Cpt;
 
-        util::ComposedMap<SongList_t, std::map<int, std::shared_ptr<Song>>> mp_Songs;
+        util::ComposedMap<SongList_t, std::map<SongId, std::shared_ptr<Song>>> mp_Songs;
         SongIt m_CurrentSong;
 
         bool m_Playlist;
@@ -75,9 +75,9 @@ class Player : public QObject
 
         /**
          * @brief Génère un nouvel identifiant pour une musique.
-         * @return Numéro généré
+         * @return Identifiant généré
          */
-        virtual SongId getNewSongNum();
+        virtual SongId getNewSongId();
 
         /**
          * @brief Détermine si le fichier passé en paramètre est déjà dans la liste.
@@ -87,18 +87,18 @@ class Player : public QObject
         virtual bool containsLocalSong(const QString& filePath) const;
 
         /**
-         * @brief Détermine si le numéro de la musique distante passé en paramètre est déjà dans la liste.
-         * @param num Numéro de la musique distante
+         * @brief Détermine si l'identifiant de la musique distante passé en paramètre est déjà dans la liste.
+         * @param id Identifiant de la musique distante
          * @return true si la musique est déjà enregistrée
          */
-        virtual bool containsRemoteSong(const SongId num) const;
+        virtual bool containsRemoteSong(const SongId id) const;
 
         /**
          * @brief Recherche une musique à partir de son identifiant.
-         * @param song Identifiant de la musique
-         * @return Itérateur sur le son correspondant au numéro passé en paramètre (end si pas trouvé)
+         * @param songId Identifiant de la musique
+         * @return Itérateur sur le son correspondant à l'identifiant passé en paramètre (end si pas trouvé)
          */
-        virtual SongIt findSong(SongId song) const;
+        virtual SongIt findSong(SongId songId) const;
 
         /**
          * @brief Retourne la première musique de la liste.
@@ -134,13 +134,15 @@ class Player : public QObject
 
         /**
          * @brief Signal émis lorsque le player change d'état.
+         * @param state Nouvel état du player
          */
         void stateChanged(PlayerState state);
 
         /**
          * @brief Signal émis lorsqu'une musique n'a pas pu être ouverte.
+         * @param songId Identifiant de la musique
          */
-        void streamError(QString);
+        void streamError(audio::Player::SongId songId);
 
         /**
          * @brief Signal émis lorsque la preview est terminée.
@@ -149,8 +151,9 @@ class Player : public QObject
 
         /**
          * @brief Signal émis lorsque la commande reçue a été traitée et que la réponse est créée.
+         * @param reply Réponse à la requête exécutée
          */
-        void commandExecuted(std::shared_ptr<network::commands::CommandReply>);
+        void commandExecuted(std::shared_ptr<network::commands::CommandReply> reply);
 
     public:
 
@@ -256,13 +259,13 @@ class Player : public QObject
         /**
          * @brief Créé un nouveau son distant s'il n'existe pas encore à partir des infos passées en paramètre.
          * @param file Chemin du fichier
-         * @param remoteNum Identifiant distant du son
+         * @param remoteId Identifiant distant du son
          * @param length Longueur du son
          * @param artist Artiste du son
          * @param settings Paramètres de lecture du son distant
          * @return Objet son créé, nullptr sinon
          */
-        virtual std::shared_ptr<network::RemoteSong> createRemoteSong(const QString& file, SongId remoteNum, SoundPos_t length, const QString& artist, SoundSettings *settings);
+        virtual std::shared_ptr<network::RemoteSong> createRemoteSong(const QString& file, SongId remoteId, SoundPos_t length, const QString& artist, SoundSettings *settings);
 
         /**
          * @brief Ajoute une nouvelle musique dans la liste du player.
@@ -335,10 +338,10 @@ class Player : public QObject
 
         /**
          * @brief Lance la musique d'indice song.
-         * @param song Indice de la musique
+         * @param songId Indice de la musique
          * @return true si la musique a bien été modifiée
          */
-        virtual bool changeSong(audio::Player::SongId song);
+        virtual bool changeSong(audio::Player::SongId songId);
 
         /**
          * @brief Traite la commande passée en paramètre et émet la réponse une fois terminée.

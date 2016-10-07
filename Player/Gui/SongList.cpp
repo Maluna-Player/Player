@@ -10,6 +10,7 @@
 #include "SongList.h"
 #include "Constants.h"
 #include "../Audio/Song.h"
+#include "../Util/Tools.h"
 #include "../Exceptions/FileLoadingException.h"
 #include "../Exceptions/ArrayAccessException.h"
 #include <QScrollBar>
@@ -19,7 +20,9 @@
 namespace gui {
 
 
-SongList::SongList(QWidget *parent) : QTreeWidget(parent), m_CurrentSong(-1)
+SongList::SongList(QWidget *parent)
+    : QTreeWidget(parent), m_CurrentSong(-1),
+      m_BrokenIcon(util::Tools::loadImage(QString(IMAGES_SUBDIR) + "brokenFile.png"))
 {
     QPalette p(palette());
     p.setColor(QPalette::Base, QColor(24, 0, 96));
@@ -184,22 +187,22 @@ void SongList::clearList(SongList_t list)
 // ==============================
 // ==============================
 
-void SongList::setCurrentSong(int songNum)
+void SongList::setCurrentSong(audio::Player::SongId songId)
 {
     SongListIterator it(this, QTreeWidgetItemIterator::Selectable);
 
     while (!it.isNull())
     {
         std::shared_ptr<audio::Song> song = (*it)->getAttachedSong();
-        if (song)
+        if (song && song->isAvailable())
         {
-            if (song->getNum() == m_CurrentSong)
+            if (song->getId() == m_CurrentSong)
             {
                 (*it)->setForeground(0, QColor(212, 255, 250));
                 (*it)->setForeground(1, QColor(212, 255, 250));
             }
 
-            if (song->getNum() == songNum)
+            if (song->getId() == songId)
             {
                 (*it)->setForeground(0, QColor(21, 191, 221));
                 (*it)->setForeground(1, QColor(21, 191, 221));
@@ -209,7 +212,7 @@ void SongList::setCurrentSong(int songNum)
         ++it;
     }
 
-    m_CurrentSong = songNum;
+    m_CurrentSong = songId;
 }
 
 // ==============================
@@ -223,7 +226,7 @@ void SongList::mousePressEvent(QMouseEvent *event)
     {
         std::shared_ptr<audio::Song> song = static_cast<SongListItem*>(selectedItem)->getAttachedSong();
         if (song)
-            emit songPressed(song->getNum());
+            emit songPressed(song->getId());
     }
 
     QTreeWidget::mousePressEvent(event);
@@ -264,6 +267,29 @@ void SongList::addTree(SongList_t list, SongTreeRoot *songs)
     }
 
     delete songs;
+}
+
+// ==============================
+// ==============================
+
+void SongList::disableSong(audio::Player::SongId songId)
+{
+    SongListIterator it(this, QTreeWidgetItemIterator::Selectable);
+
+    while (!it.isNull())
+    {
+        std::shared_ptr<audio::Song> song = (*it)->getAttachedSong();
+        if (song && song->getId() == songId)
+        {
+            (*it)->setForeground(0, QColor(255, 0, 0));
+            (*it)->setForeground(1, QColor(255, 0, 0));
+            (*it)->setIcon(0, QIcon(m_BrokenIcon));
+
+            return;
+        }
+
+        ++it;
+    }
 }
 
 

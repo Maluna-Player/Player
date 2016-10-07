@@ -14,15 +14,15 @@
 namespace audio {
 
 
-Song::Song(Player::SongId num, const QString& file, bool inFolder, bool openable)
-    : m_Num(num), m_InFolder(inFolder), m_File(file), m_SoundID(0), m_Artist("")
+Song::Song(Player::SongId id, const QString& file, bool inFolder, bool openable)
+    : m_Id(id), m_InFolder(inFolder), m_Available(true), m_File(file), m_SoundID(0), m_Artist("")
 {
     if (openable)
     {
-        SoundID_t id = FmodManager::getInstance().openFromFile(m_File.toStdString(), false);
-        m_Length = FmodManager::getInstance().getSoundLength(id);
+        SoundID_t fmodId = FmodManager::getInstance().openFromFile(m_File.toStdString(), false);
+        m_Length = FmodManager::getInstance().getSoundLength(fmodId);
 
-        QString title = QString::fromStdString(FmodManager::getInstance().getSongTag(id, "TITLE"));
+        QString title = QString::fromStdString(FmodManager::getInstance().getSongTag(fmodId, "TITLE"));
 
         if (title.isEmpty())
         {
@@ -32,11 +32,11 @@ Song::Song(Player::SongId num, const QString& file, bool inFolder, bool openable
         else
             m_Title = title;
 
-        m_Artist = QString::fromStdString(FmodManager::getInstance().getSongTag(id, "ARTIST"));
+        m_Artist = QString::fromStdString(FmodManager::getInstance().getSongTag(fmodId, "ARTIST"));
         if (m_Artist.isEmpty())
             m_Artist = "Artiste inconnu";
 
-        FmodManager::getInstance().releaseSound(id);
+        FmodManager::getInstance().releaseSound(fmodId);
     }
     else
         m_Title = m_File;
@@ -61,9 +61,9 @@ SoundID_t Song::getSoundID() const
 // ==============================
 // ==============================
 
-Player::SongId Song::getNum() const
+Player::SongId Song::getId() const
 {
-    return m_Num;
+    return m_Id;
 }
 
 // ==============================
@@ -96,6 +96,22 @@ bool Song::isInFolder() const
 bool Song::isRemote() const
 {
     return false;
+}
+
+// ==============================
+// ==============================
+
+bool Song::isAvailable() const
+{
+    return m_Available;
+}
+
+// ==============================
+// ==============================
+
+void Song::setAvailable(bool value)
+{
+    m_Available = value;
 }
 
 // ==============================

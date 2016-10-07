@@ -45,7 +45,7 @@ Player::~Player()
 // ==============================
 // ==============================
 
-Player::SongId Player::getNewSongNum()
+Player::SongId Player::getNewSongId()
 {
     SongId res = m_Cpt;
     m_Cpt++;
@@ -66,11 +66,11 @@ std::shared_ptr<Song> Player::getCurrentSong()
 // ==============================
 // ==============================
 
-Player::SongIt Player::findSong(SongId song) const
+Player::SongIt Player::findSong(SongId songId) const
 {
     for (auto it = mp_Songs.begin(); it != mp_Songs.end(); ++it)
     {
-        if ((*it)->getNum() == song)
+        if ((*it)->getId() == songId)
             return it;
     }
 
@@ -90,7 +90,7 @@ int Player::songsCount(SongList_t list) const
 
 void Player::play()
 {
-    if (m_CurrentSong != UNDEFINED_SONG)
+    if (m_CurrentSong != UNDEFINED_SONG && getCurrentSong()->isAvailable())
     {
         if (m_Stop)
         {
@@ -278,13 +278,13 @@ bool Player::containsLocalSong(const QString& filePath) const
 // ==============================
 // ==============================
 
-bool Player::containsRemoteSong(const SongId num) const
+bool Player::containsRemoteSong(const SongId id) const
 {
     auto remoteSongs = mp_Songs.getSubSets(SongList_t::REMOTE_SONGS);
 
     for (auto song : remoteSongs)
     {
-        if (std::static_pointer_cast<network::RemoteSong>(song)->getRemoteNum() == num)
+        if (std::static_pointer_cast<network::RemoteSong>(song)->getRemoteId() == id)
             return true;
     }
 
@@ -305,11 +305,11 @@ std::shared_ptr<Song> Player::createLocalSong(const QString& filePath, bool inFo
     {
         try
         {
-            SongId num = getNewSongNum();
-            song.reset(new Song(num, absoluteFilePath, inFolder));
+            SongId id = getNewSongId();
+            song.reset(new Song(id, absoluteFilePath, inFolder));
             SongList_t list = inFolder ? SongList_t::DIRECTORY_SONGS : SongList_t::IMPORTED_SONGS;
 
-            mp_Songs[list][num] = song;
+            mp_Songs[list][id] = song;
         }
         catch (FmodManager::StreamError error)
         {
@@ -326,16 +326,16 @@ std::shared_ptr<Song> Player::createLocalSong(const QString& filePath, bool inFo
 // ==============================
 // ==============================
 
-std::shared_ptr<network::RemoteSong> Player::createRemoteSong(const QString& file, SongId remoteNum, SoundPos_t length, const QString& artist, SoundSettings *settings)
+std::shared_ptr<network::RemoteSong> Player::createRemoteSong(const QString& file, SongId remoteId, SoundPos_t length, const QString& artist, SoundSettings *settings)
 {
     std::shared_ptr<network::RemoteSong> song { nullptr };
 
-    if (!containsRemoteSong(remoteNum))
+    if (!containsRemoteSong(remoteId))
     {
-        SongId num = getNewSongNum();
-        song.reset(new network::RemoteSong(num, file, remoteNum, length, artist, settings));
+        SongId id = getNewSongId();
+        song.reset(new network::RemoteSong(id, file, remoteId, length, artist, settings));
 
-        mp_Songs[SongList_t::REMOTE_SONGS][num] = song;
+        mp_Songs[SongList_t::REMOTE_SONGS][id] = song;
     }
 
     return song;
@@ -407,7 +407,11 @@ void Player::firstSong()
 
 void Player::previousSong()
 {
-    changeSong(prev());
+    do
+    {
+        changeSong(prev());
+    }
+    while (isPlaying() && !getCurrentSong()->isAvailable());
 }
 
 // ==============================
@@ -415,7 +419,11 @@ void Player::previousSong()
 
 void Player::nextSong()
 {
-    changeSong(next());
+    do
+    {
+        changeSong(next());
+    }
+    while (isPlaying() && !getCurrentSong()->isAvailable());
 }
 
 // ==============================
@@ -426,6 +434,12 @@ bool Player::changeSong(SongIt song)
     if (song != UNDEFINED_SONG)
     {
         m_CurrentSong = song;
+
+        if (!getCurrentSong()->isAvailable())
+        {
+            emit songChanged();
+            return false;
+        }
 
         try
         {
@@ -438,9 +452,13 @@ bool Player::changeSong(SongIt song)
 
             emit songChanged();
         }
-        catch(FmodManager::StreamError error)
+        catch (FmodManager::StreamError error)
         {
-            emit streamError(getCurrentSong()->getFile());
+            getCurrentSong()->setAvailable(false);
+            emit streamError(getCurrentSong()->getId());
+            emit songChanged();
+
+            return false;
         }
     }
     else
@@ -454,9 +472,17 @@ bool Player::changeSong(SongIt song)
 // ==============================
 // ==============================
 
-bool Player::changeSong(SongId song)
+bool Player::changeSong(SongId songId)
 {
-    return changeSong(findSong(song));
+    if (!changeSong(findSong(songId)))
+    {
+        if (m_CurrentSong != UNDEFINED_SONG && !getCurrentSong()->isAvailable())
+            stop();
+
+        return false;
+    }
+
+    return true;
 }
 
 // ==============================
@@ -539,30 +565,30 @@ void Player::stopPreview()
 
 void Player::executeNetworkCommand(std::shared_ptr<network::commands::CommandRequest> command)
 {
-    SongId songNum = command->getSongNum();
+    SongId songId = command->getSongId();
     std::shared_ptr<network::commands::CommandReply> reply { nullptr };
 
     switch (command->getCommandType())
     {
         case 'o':
         {
-            SongIt song = findSong(songNum);
+            SongIt song = findSong(songId);
             clientFile.setFileName((*song)->getFile());
             if (!clientFile.open(QIODevice::ReadOnly))
-                reply = std::make_shared<network::commands::OpenCommandReply>(songNum, FMOD_ERR_FILE_NOTFOUND, -1);
+                reply = std::make_shared<network::commands::OpenCommandReply>(songId, FMOD_ERR_FILE_NOTFOUND, -1);
             else
             {
                 unsigned int fileSize = clientFile.size();
                 clientFile.seek(0);
 
-                reply = std::make_shared<network::commands::OpenCommandReply>(songNum, FMOD_OK, fileSize);
+                reply = std::make_shared<network::commands::OpenCommandReply>(songId, FMOD_OK, fileSize);
             }
             break;
         }
 
         case 'c':
             clientFile.close();
-            reply = std::make_shared<network::commands::CloseCommandReply>(songNum, FMOD_OK);
+            reply = std::make_shared<network::commands::CloseCommandReply>(songId, FMOD_OK);
             break;
 
         case 'r':
@@ -571,15 +597,15 @@ void Player::executeNetworkCommand(std::shared_ptr<network::commands::CommandReq
             char *buffer = new char[bytesToRead];
             unsigned int readBytes = clientFile.read(buffer, bytesToRead);
 
-            reply = std::make_shared<network::commands::ReadCommandReply>(songNum, FMOD_OK, buffer, readBytes);
+            reply = std::make_shared<network::commands::ReadCommandReply>(songId, FMOD_OK, buffer, readBytes);
             break;
         }
 
         case 's':
             if (clientFile.seek(std::static_pointer_cast<network::commands::SeekCommandRequest>(command)->getPos()))
-                reply = std::make_shared<network::commands::SeekCommandReply>(songNum, FMOD_OK);
+                reply = std::make_shared<network::commands::SeekCommandReply>(songId, FMOD_OK);
             else
-                reply = std::make_shared<network::commands::SeekCommandReply>(songNum, FMOD_ERR_FILE_COULDNOTSEEK);
+                reply = std::make_shared<network::commands::SeekCommandReply>(songId, FMOD_ERR_FILE_COULDNOTSEEK);
             break;
 
         default:

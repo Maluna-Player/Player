@@ -33,6 +33,8 @@ class SongList : public QTreeWidget
 
         int m_CurrentSong;
 
+        QPixmap m_BrokenIcon;
+
 
         /**
          * @brief Récupère la racine correspondant à la liste passée en paramètre.
@@ -75,10 +77,10 @@ class SongList : public QTreeWidget
     signals:
 
         /**
-         * @brief Signal émis lorsque l'utilisateur clique sur une musique locale de la liste.
-         * @param song Musique sélectionnée
+         * @brief Signal émis lorsque l'utilisateur clique sur une musique de la liste.
+         * @param songId Musique sélectionnée
          */
-        void songPressed(audio::Player::SongId song);
+        void songPressed(audio::Player::SongId songId);
 
     public:
 
@@ -93,9 +95,9 @@ class SongList : public QTreeWidget
 
         /**
          * @brief Change le son marqué comme son courant dans la liste.
-         * @param songNum Indice de la musique actuelle
+         * @param songId Indice de la musique actuelle
         */
-        virtual void setCurrentSong(int songNum);
+        virtual void setCurrentSong(audio::Player::SongId songId);
 
         /**
          * @brief getSongHierarchy
@@ -117,6 +119,14 @@ class SongList : public QTreeWidget
          * @param songs Liste de sons à ajouter
         */
         virtual void addTree(SongList_t list, SongTreeRoot *songs);
+
+    public slots:
+
+        /**
+         * @brief Affiche la musique passée en paramètre comme indisponible.
+         * @param songId Musique à désactiver
+         */
+        virtual void disableSong(audio::Player::SongId songId);
 };
 
 

@@ -46,7 +46,6 @@ PlayerWindow::PlayerWindow(QWidget *parent)
 
     connect(&m_Player, SIGNAL(songChanged()), this, SLOT(updateCurrentSong()));
     connect(&m_Player, SIGNAL(stateChanged(PlayerState)), this, SLOT(setState(PlayerState)));
-    connect(&m_Player, SIGNAL(streamError(QString)), this, SLOT(refreshSongsList()));
     connect(&m_Player, SIGNAL(previewFinished()), this, SLOT(stopPreview()));
 
     /** Menu **/
@@ -82,6 +81,8 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     mp_SongList = new SongList;
 
     connect(mp_SongList, SIGNAL(songPressed(audio::Player::SongId)), &m_Player, SLOT(changeSong(audio::Player::SongId)));
+    connect(&m_Player, SIGNAL(streamError(audio::Player::SongId)), mp_SongList, SLOT(disableSong(audio::Player::SongId)));
+
 
     topLayout->setColumnStretch(0, 1);
     topLayout->addWidget(mp_SongTitle, 0, 0, 1, 2, Qt::AlignTop);
@@ -250,10 +251,16 @@ void PlayerWindow::updateCurrentSong()
     {
         mp_SongTitle->setText(m_Player.getCurrentSong()->getTitle());
         mp_SongArtist->setText(m_Player.getCurrentSong()->getArtist());
-        mp_SongPicture->setPixmap(m_Player.getCurrentSong()->buildPicture());
 
-        if (!mp_SongPicture->pixmap()->isNull() && mp_SongPicture->pixmap()->width() > 400)
-            mp_SongPicture->setPixmap(mp_SongPicture->pixmap()->scaledToWidth(400));
+        if (m_Player.getCurrentSong()->isAvailable())
+        {
+            mp_SongPicture->setPixmap(m_Player.getCurrentSong()->buildPicture());
+
+            if (!mp_SongPicture->pixmap()->isNull() && mp_SongPicture->pixmap()->width() > 400)
+                mp_SongPicture->setPixmap(mp_SongPicture->pixmap()->scaledToWidth(400));
+        }
+        else
+            mp_SongPicture->clear();
 
         mp_SongLength->setText(util::Tools::msToString(m_Player.getCurrentSong()->getLength()));
 
@@ -265,7 +272,7 @@ void PlayerWindow::updateCurrentSong()
         if (m_Player.getCurrentSong()->isRemote())
             mp_NetworkLoadBar->setMaximum(mp_Socket->getTotalCurrentSongData());
 
-        mp_SongList->setCurrentSong(m_Player.getCurrentSong()->getNum());
+        mp_SongList->setCurrentSong(m_Player.getCurrentSong()->getId());
     }
 
     if (m_Player.isPaused())

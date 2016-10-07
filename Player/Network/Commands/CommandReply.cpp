@@ -14,7 +14,7 @@
 namespace network { namespace commands {
 
 
-CommandReply::CommandReply(audio::Player::SongId songNum, FMOD_RESULT result) : Command(songNum), m_Result(result)
+CommandReply::CommandReply(audio::Player::SongId songId, FMOD_RESULT result) : Command(songId), m_Result(result)
 {
 
 }
@@ -47,8 +47,8 @@ QByteArray CommandReply::toPacket() const
 // ==============================
 // ==============================
 
-OpenCommandReply::OpenCommandReply(audio::Player::SongId songNum, FMOD_RESULT result, int fileSize)
-    : CommandReply(songNum, result), m_FileSize(fileSize)
+OpenCommandReply::OpenCommandReply(audio::Player::SongId songId, FMOD_RESULT result, int fileSize)
+    : CommandReply(songId, result), m_FileSize(fileSize)
 {
 
 }
@@ -76,8 +76,8 @@ QByteArray OpenCommandReply::toPacket() const
 // ==============================
 // ==============================
 
-CloseCommandReply::CloseCommandReply(audio::Player::SongId songNum, FMOD_RESULT result)
-    : CommandReply(songNum, result)
+CloseCommandReply::CloseCommandReply(audio::Player::SongId songId, FMOD_RESULT result)
+    : CommandReply(songId, result)
 {
 
 }
@@ -90,8 +90,8 @@ char CloseCommandReply::getCommandType() const
 // ==============================
 // ==============================
 
-ReadCommandReply::ReadCommandReply(audio::Player::SongId songNum, FMOD_RESULT result, void *buffer, unsigned int bytes)
-    : CommandReply(songNum, result), m_Buffer(buffer), m_ReadBytes(bytes)
+ReadCommandReply::ReadCommandReply(audio::Player::SongId songId, FMOD_RESULT result, void *buffer, unsigned int bytes)
+    : CommandReply(songId, result), m_Buffer(buffer), m_ReadBytes(bytes)
 {
 
 }
@@ -130,8 +130,8 @@ QByteArray ReadCommandReply::toPacket() const
 // ==============================
 // ==============================
 
-SeekCommandReply::SeekCommandReply(audio::Player::SongId songNum, FMOD_RESULT result)
-    : CommandReply(songNum, result)
+SeekCommandReply::SeekCommandReply(audio::Player::SongId songId, FMOD_RESULT result)
+    : CommandReply(songId, result)
 {
 
 }

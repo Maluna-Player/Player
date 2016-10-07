@@ -21,7 +21,7 @@ class RemoteSong : public audio::Song
 {
     private:
 
-        audio::Player::SongId m_RemoteNum;
+        audio::Player::SongId m_RemoteId;
 
         audio::SoundSettings *m_Settings;
 
@@ -29,7 +29,7 @@ class RemoteSong : public audio::Song
 
         friend class audio::Player;
 
-        RemoteSong(audio::Player::SongId num, const QString& file, audio::Player::SongId remoteNum, audio::SoundPos_t length, const QString& artist, audio::SoundSettings *settings);
+        RemoteSong(audio::Player::SongId id, const QString& file, audio::Player::SongId remoteId, audio::SoundPos_t length, const QString& artist, audio::SoundSettings *settings);
 
     public:
 
@@ -38,10 +38,10 @@ class RemoteSong : public audio::Song
         virtual bool isRemote() const override;
 
         /**
-         * @brief getRemoteNum
+         * @brief getRemoteId
          * @return Identifiant de la musique chez le pair.
          */
-        virtual audio::Player::SongId getRemoteNum() const;
+        virtual audio::Player::SongId getRemoteId() const;
 
         /**
          * @brief Ouvre le fichier avec FMOD pour stream du fichier distant.

@@ -14,7 +14,7 @@
 namespace network { namespace commands {
 
 
-Command::Command(audio::Player::SongId songNum) : m_SongNum(songNum)
+Command::Command(audio::Player::SongId songId) : m_SongId(songId)
 {
 
 }
@@ -22,9 +22,9 @@ Command::Command(audio::Player::SongId songNum) : m_SongNum(songNum)
 // ==============================
 // ==============================
 
-audio::Player::SongId Command::getSongNum() const
+audio::Player::SongId Command::getSongId() const
 {
-    return m_SongNum;
+    return m_SongId;
 }
 
 // ==============================
@@ -40,7 +40,7 @@ QByteArray Command::toPacket() const
     out << static_cast<quint8>(command);    // Commande
 
     out << static_cast<quint8>(getCommandType());
-    out << static_cast<quint16>(getSongNum());
+    out << static_cast<quint16>(getSongId());
 
     return packet;
 }

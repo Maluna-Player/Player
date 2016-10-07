@@ -24,11 +24,20 @@ class Song
 {
     private:
 
-        Player::SongId m_Num;
+        Player::SongId m_Id;
 
         QString m_Title;
 
         bool m_InFolder;
+
+        bool m_Available;
+
+
+        /**
+         * @brief Modifie la disponibilité de la musique.
+         * @param value Nouvelle disponibilité
+         */
+        void setAvailable(bool value);
 
     protected:
 
@@ -42,14 +51,14 @@ class Song
 
         QString m_Artist;
 
-        Song(Player::SongId num, const QString& file = "", bool inFolder = true, bool openable = true);
+        Song(Player::SongId id, const QString& file = "", bool inFolder = true, bool openable = true);
 
     public:
 
         virtual ~Song();
 
         virtual SoundID_t getSoundID() const;
-        virtual Player::SongId getNum() const;
+        virtual Player::SongId getId() const;
         virtual const QString& getFile() const;
         virtual SoundPos_t getLength() const;
 
@@ -64,6 +73,12 @@ class Song
          * @return true si musique distante
          */
         virtual bool isRemote() const;
+
+        /**
+         * @brief Détermine si la musique est accessible.
+         * @return true si musique accessible
+         */
+        virtual bool isAvailable() const;
 
         /**
          * @brief getTitle

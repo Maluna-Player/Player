@@ -14,11 +14,11 @@
 namespace network {
 
 
-RemoteSong::RemoteSong(audio::Player::SongId num, const QString& file, audio::Player::SongId remoteNum, audio::SoundPos_t length, const QString& artist, audio::SoundSettings *settings)
-    : Song(num, file, false, false), m_RemoteNum(remoteNum), m_Settings(settings)
+RemoteSong::RemoteSong(audio::Player::SongId id, const QString& file, audio::Player::SongId remoteId, audio::SoundPos_t length, const QString& artist, audio::SoundSettings *settings)
+    : Song(id, file, false, false), m_RemoteId(remoteId), m_Settings(settings)
 {
     m_Length = length;
-    m_File = QString::number(remoteNum);
+    m_File = QString::number(remoteId);
     m_Artist = artist;
 }
 
@@ -41,9 +41,9 @@ bool RemoteSong::isRemote() const
 // ==============================
 // ==============================
 
-audio::Player::SongId RemoteSong::getRemoteNum() const
+audio::Player::SongId RemoteSong::getRemoteId() const
 {
-    return m_RemoteNum;
+    return m_RemoteId;
 }
 
 // ==============================
