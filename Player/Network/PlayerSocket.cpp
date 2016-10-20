@@ -423,8 +423,6 @@ FMOD_RESULT PlayerSocket::openRemoteFile(const char *fileName, unsigned int *fil
     if (fileName)
     {
         int *songId = new int(atoi(fileName));
-        if (*songId >= m_NbReceivedSongs)
-            throw exceptions::ArrayAccessException("PlayerSocket::openRemoteFile", m_NbReceivedSongs, *songId);
 
         commands::OpenCommandRequest request(*songId);
         mp_SendMessage->add(&request);
@@ -435,7 +433,7 @@ FMOD_RESULT PlayerSocket::openRemoteFile(const char *fileName, unsigned int *fil
         {
             FMOD_RESULT result = reply->getResult();
 
-            *filesize = static_cast<unsigned int>(reply->getFileSize());
+            *filesize = reply->getFileSize();
             *handle = songId;
 
             m_TotalCurrentSongData = *filesize;

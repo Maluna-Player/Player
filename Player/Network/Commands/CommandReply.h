@@ -42,16 +42,16 @@ class OpenCommandReply : public CommandReply
 {
     private:
 
-        int m_FileSize;
+        unsigned int m_FileSize;
 
     public:
 
-        OpenCommandReply(audio::Player::SongId songId, FMOD_RESULT result, int fileSize);
+        OpenCommandReply(audio::Player::SongId songId, FMOD_RESULT result, unsigned int fileSize);
         virtual ~OpenCommandReply() {}
 
         virtual char getCommandType() const override;
 
-        virtual int getFileSize() const;
+        virtual unsigned int getFileSize() const;
 
         virtual QByteArray toPacket() const override;
 };

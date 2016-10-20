@@ -80,18 +80,18 @@ class Player : public QObject
         virtual SongId getNewSongId();
 
         /**
-         * @brief Détermine si le fichier passé en paramètre est déjà dans la liste.
-         * @param filePath Chemin du fichier à tester
-         * @return true si le fichier est déjà enregistré
+         * @brief Récupère la musique du fichier passé en paramètre si elle est dans la liste.
+         * @param filePath Chemin du fichier à chercher
+         * @return Musique si elle existe, nullptr sinon
          */
-        virtual bool containsLocalSong(const QString& filePath) const;
+        virtual std::shared_ptr<Song> getLocalSong(const QString& filePath) const;
 
         /**
-         * @brief Détermine si l'identifiant de la musique distante passé en paramètre est déjà dans la liste.
+         * @brief Récupère la musique distante d'identifiant passé en paramètre si elle est dans la liste.
          * @param id Identifiant de la musique distante
-         * @return true si la musique est déjà enregistrée
+         * @return Musique si elle existe, nullptr sinon
          */
-        virtual bool containsRemoteSong(const SongId id) const;
+        virtual std::shared_ptr<network::RemoteSong> getRemoteSong(const SongId id) const;
 
         /**
          * @brief Recherche une musique à partir de son identifiant.
@@ -284,6 +284,13 @@ class Player : public QObject
          * @return Arborescence des fichiers lus
          */
         virtual gui::SongTreeRoot* loadSongs(const QString& dirPath, gui::SongTreeRoot *parentDir = nullptr);
+
+        /**
+         * @brief Recharge la liste des musiques locales avec le répertoire passé en paramètre.
+         * @param dirPath Répertoire à parcourir
+         * @return Arborescence des fichiers lus
+         */
+        virtual gui::SongTreeRoot* reloadSongs(const QString& dirPath);
 
         /**
          * @brief Lance la première musique du player.

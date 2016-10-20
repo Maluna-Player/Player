@@ -118,7 +118,7 @@ PlayerWindow::PlayerWindow(QWidget *parent)
 
     mp_Buttons << new PlayerButton("play") << new PlayerButton("pause") << new PlayerButton("stop")
                 << new PlayerButton("prev") << new PlayerButton("next") << new PlayerButton("volumem")
-                << new PlayerButton("volumel");
+                << new PlayerButton("volumel") << new PlayerButton("refresh");
 
     getButton(ButtonId::PAUSE)->hide();
 
@@ -129,6 +129,7 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     connect(getButton(ButtonId::NEXT), SIGNAL(clicked()), this, SLOT(nextSong()));
     connect(getButton(ButtonId::VOLUME_MORE), SIGNAL(clicked()), this, SLOT(increaseVolume()));
     connect(getButton(ButtonId::VOLUME_LESS), SIGNAL(clicked()), this, SLOT(decreaseVolume()));
+    connect(getButton(ButtonId::REFRESH), SIGNAL(clicked()), this, SLOT(refreshSongsList()));
 
     mp_SoundVolume = new VolumeViewer;
     mp_SoundVolume->setImage(m_Player.getVolumeState());
@@ -152,11 +153,12 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     bottomLayout->addWidget(getButton(ButtonId::NEXT), 1, 6, 2, 1);
     bottomLayout->addWidget(getButton(ButtonId::VOLUME_MORE), 0, 3, 2, 1);
     bottomLayout->addWidget(getButton(ButtonId::VOLUME_LESS), 2, 3, 2, 1);
+    bottomLayout->addWidget(getButton(ButtonId::REFRESH), 1, 9, 2, 1);
 
     bottomLayout->addWidget(mp_SoundVolume, 1, 1, 2, 2);
     bottomLayout->addWidget(mp_ConnectionBox, 3, 8, 1, 2);
 
-    bottomLayout->setColumnStretch(7, 1);
+    bottomLayout->setColumnStretch(8, 1);
     mp_BottomPart->setLayout(bottomLayout);
 
 
@@ -284,10 +286,9 @@ void PlayerWindow::updateCurrentSong()
 
 void PlayerWindow::refreshSongsList()
 {
-    m_Player.clearSongs();
-    mp_SongList->clearList();
+    mp_SongList->clearList(DIRECTORY_SONGS);
 
-    SongTreeRoot *songTree = m_Player.loadSongs(SONGS_SUBDIR);
+    SongTreeRoot *songTree = m_Player.reloadSongs(SONGS_SUBDIR);
     mp_SongList->addTree(LOCAL_SONGS, songTree);
 
     m_Player.firstSong();

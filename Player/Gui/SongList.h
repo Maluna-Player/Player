@@ -51,13 +51,6 @@ class SongList : public QTreeWidget
         virtual unsigned int setSongDetails(SongListItem *item) const;
 
         /**
-         * @brief Ajoute le décalage nécessaire pour le temps de l'élément passé en paramètre et pour ses fils.
-         * @param item Elément parent dont on ajoute le décalage
-         * @param depth Profondeur de l'élement dans l'arborescence
-         */
-        virtual void setDepth(SongListItem *item, int depth) const;
-
-        /**
          * @brief Ajoute l'élément passé en paramètre comme fils du parent.
          * @param item Elément à ajouter
          * @param parent Parent du nouvel élément

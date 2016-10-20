@@ -21,7 +21,7 @@ unsigned int SongListItem::m_Cpt = 0;
 // ==============================
 
 SongListItem::SongListItem(ElementType type, SongListItem *parent, const QString& name)
-    : QTreeWidgetItem(), m_Type(type), m_Length(0), mp_AttachedSong(nullptr)
+    : QTreeWidgetItem(), m_Type(type), m_Length(0), m_Depth(0), mp_AttachedSong(nullptr)
 {
     Qt::ItemFlags flags = Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled;
     if (type == ElementType::SONG)
@@ -121,6 +121,20 @@ void SongListItem::setAttachedSong(std::shared_ptr<audio::Song> song)
 // ==============================
 // ==============================
 
+void SongListItem::setLengthText()
+{
+    QString lengthText{};
+
+    for (unsigned int i = 0; i < m_Depth; ++i)
+        lengthText += "  ";
+
+    lengthText += "|- " + util::Tools::msToString(m_Length);
+    setText(1, lengthText);
+}
+
+// ==============================
+// ==============================
+
 unsigned int SongListItem::getLength() const
 {
     return m_Length;
@@ -132,7 +146,24 @@ unsigned int SongListItem::getLength() const
 void SongListItem::setLength(unsigned int length)
 {
     m_Length = length;
-    setText(1, util::Tools::msToString(m_Length));
+    setLengthText();
+}
+
+// ==============================
+// ==============================
+
+unsigned int SongListItem::getDepth() const
+{
+    return m_Depth;
+}
+
+// ==============================
+// ==============================
+
+void SongListItem::setDepth(unsigned int depth)
+{
+    m_Depth = depth;
+    setLengthText();
 }
 
 // ==============================

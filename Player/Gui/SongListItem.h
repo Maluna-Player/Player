@@ -44,6 +44,8 @@ class SongListItem : public QTreeWidgetItem, public network::Sendable
 
         unsigned int m_Length;
 
+        unsigned int m_Depth;
+
         std::shared_ptr<audio::Song> mp_AttachedSong;
 
 
@@ -52,6 +54,11 @@ class SongListItem : public QTreeWidgetItem, public network::Sendable
          * @return Numéro du parent de l'élément, 0 si pas de parent
          */
         virtual unsigned int getParentNum() const;
+
+        /**
+         * @brief Modifie le texte de la durée avec la valeur et profondeur courantes.
+         */
+        virtual void setLengthText();
 
     public:
 
@@ -107,10 +114,22 @@ class SongListItem : public QTreeWidgetItem, public network::Sendable
         virtual unsigned int getLength() const;
 
         /**
-         * @brief Modifie de le temps de l'élément selon la valeur calculée dans l'arborescence.
+         * @brief Modifie le temps de l'élément.
          * @param length Nouveau temps
          */
         virtual void setLength(unsigned int length);
+
+        /**
+         * @brief getDepth
+         * @return Profondeur de l'élément.
+         */
+        virtual unsigned int getDepth() const;
+
+        /**
+         * @brief Modifie la profondeur de l'élément.
+         * @param depth Nouvelle profondeur
+         */
+        virtual void setDepth(unsigned int depth);
 
         virtual QByteArray toPacket() const override;
 };

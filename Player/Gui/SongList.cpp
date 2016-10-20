@@ -69,6 +69,9 @@ SongListItem* SongList::getRootNode(SongList_t list) const
 
 unsigned int SongList::setSongDetails(SongListItem *item) const
 {
+    auto parentDepth = item->parent()->getDepth();
+    item->setDepth(parentDepth + 1);
+
     if (item->isSong())
     {
         std::shared_ptr<audio::Song> song = item->getAttachedSong();
@@ -97,26 +100,6 @@ unsigned int SongList::setSongDetails(SongListItem *item) const
 // ==============================
 // ==============================
 
-void SongList::setDepth(SongListItem *item, int depth) const
-{
-    QString shift{};
-
-    for (int i = 0; i < depth; ++i)
-        shift += "  ";
-
-    shift += "|- ";
-    item->setText(1, shift + item->text(1));
-
-    if (!item->isSong())
-    {
-        for (int i = 0; i < item->childCount(); ++i)
-            setDepth(static_cast<SongListItem*>(item->child(i)), depth + 1);
-    }
-}
-
-// ==============================
-// ==============================
-
 void SongList::addChildSong(SongListItem *item, SongListItem *parent) const
 {
     parent->addChild(item);
@@ -124,17 +107,11 @@ void SongList::addChildSong(SongListItem *item, SongListItem *parent) const
     const auto itemLength = setSongDetails(item);
     parent->setLength(parent->getLength() + itemLength);
 
-    unsigned int depth = 1;
-
     while (!parent->isRoot() && parent->parent())
     {
         parent = parent->parent();
         parent->setLength(parent->getLength() + itemLength);
-
-        ++depth;
     }
-
-    setDepth(item, depth);
 }
 
 // ==============================
@@ -142,15 +119,25 @@ void SongList::addChildSong(SongListItem *item, SongListItem *parent) const
 
 void SongList::removeSong(const SongListIterator& it) const
 {
-    SongListItem *parent = (*it)->parent();
-    parent->removeChild(*it);
+    SongListItem *currentItem = *it;
+    SongListItem *parent = currentItem->parent();
+    const auto itemLength = currentItem->getLength();
 
-    while (!parent->isRoot() && parent->parent() && parent->childCount() == 0)
+    parent->removeChild(currentItem);
+    parent->setLength(parent->getLength() - itemLength);
+    delete currentItem;
+
+    while (parent->parent())
     {
-        SongListItem *dirToRemove = parent;
+        currentItem = parent;
         parent = parent->parent();
-        parent->removeChild(dirToRemove);
-        delete dirToRemove;
+        parent->setLength(parent->getLength() - itemLength);
+
+        if (currentItem->childCount() == 0)
+        {
+            parent->removeChild(currentItem);
+            delete currentItem;
+        }
     }
 }
 
@@ -162,7 +149,10 @@ void SongList::clearList(SongList_t list)
     SongListItem *root = getRootNode(list);
 
     if (list == SongList_t::LOCAL_SONGS || list == SongList_t::REMOTE_SONGS)
+    {
         root->takeChildren();
+        root->setLength(0);
+    }
     else if (list == SongList_t::DIRECTORY_SONGS || list == SongList_t::IMPORTED_SONGS)
     {
         SongListIterator it(root);

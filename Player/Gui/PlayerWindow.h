@@ -72,7 +72,7 @@ class PlayerWindow : public QMainWindow
         ShadowWidget *mp_ShadowWidget;
         QProgressBar *mp_PreviewBar;
 
-        enum class ButtonId { PLAY, PAUSE, STOP, PREV, NEXT, VOLUME_MORE, VOLUME_LESS };
+        enum class ButtonId { PLAY, PAUSE, STOP, PREV, NEXT, VOLUME_MORE, VOLUME_LESS, REFRESH };
 
         QVector<PlayerButton*> mp_Buttons;
 

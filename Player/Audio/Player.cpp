@@ -262,33 +262,34 @@ void Player::clearSongs(SongList_t list)
 // ==============================
 // ==============================
 
-bool Player::containsLocalSong(const QString& filePath) const
+std::shared_ptr<Song> Player::getLocalSong(const QString& filePath) const
 {
     auto localSongs = mp_Songs.getSubSets(SongList_t::LOCAL_SONGS);
 
     for (auto song : localSongs)
     {
         if (song->getFile() == filePath)
-            return true;
+            return song;
     }
 
-    return false;
+    return nullptr;
 }
 
 // ==============================
 // ==============================
 
-bool Player::containsRemoteSong(const SongId id) const
+std::shared_ptr<network::RemoteSong> Player::getRemoteSong(const SongId id) const
 {
     auto remoteSongs = mp_Songs.getSubSets(SongList_t::REMOTE_SONGS);
 
     for (auto song : remoteSongs)
     {
-        if (std::static_pointer_cast<network::RemoteSong>(song)->getRemoteId() == id)
-            return true;
+        auto remoteSong = std::static_pointer_cast<network::RemoteSong>(song);
+        if (remoteSong->getRemoteId() == id)
+            return remoteSong;
     }
 
-    return false;
+    return nullptr;
 }
 
 // ==============================
@@ -296,12 +297,11 @@ bool Player::containsRemoteSong(const SongId id) const
 
 std::shared_ptr<Song> Player::createLocalSong(const QString& filePath, bool inFolder)
 {
-    std::shared_ptr<Song> song { nullptr };
-
     QFileInfo fileInfo(filePath);
     QString absoluteFilePath = fileInfo.canonicalFilePath();
 
-    if (!containsLocalSong(absoluteFilePath))
+    std::shared_ptr<Song> song = getLocalSong(absoluteFilePath);
+    if (!song)
     {
         try
         {
@@ -320,6 +320,8 @@ std::shared_ptr<Song> Player::createLocalSong(const QString& filePath, bool inFo
         }
     }
 
+    song->setAvailable(true);
+
     return song;
 }
 
@@ -328,17 +330,17 @@ std::shared_ptr<Song> Player::createLocalSong(const QString& filePath, bool inFo
 
 std::shared_ptr<network::RemoteSong> Player::createRemoteSong(const QString& file, SongId remoteId, SoundPos_t length, const QString& artist, SoundSettings *settings)
 {
-    std::shared_ptr<network::RemoteSong> song { nullptr };
+    std::shared_ptr<network::RemoteSong> remoteSong = getRemoteSong(remoteId);
 
-    if (!containsRemoteSong(remoteId))
+    if (!remoteSong)
     {
         SongId id = getNewSongId();
-        song.reset(new network::RemoteSong(id, file, remoteId, length, artist, settings));
+        remoteSong.reset(new network::RemoteSong(id, file, remoteId, length, artist, settings));
 
-        mp_Songs[SongList_t::REMOTE_SONGS][id] = song;
+        mp_Songs[SongList_t::REMOTE_SONGS][id] = remoteSong;
     }
 
-    return song;
+    return remoteSong;
 }
 
 // ==============================
@@ -392,6 +394,28 @@ gui::SongTreeRoot* Player::loadSongs(const QString& dirPath, gui::SongTreeRoot *
     }
 
     return parentDir;
+}
+
+// ==============================
+// ==============================
+
+gui::SongTreeRoot* Player::reloadSongs(const QString& dirPath)
+{
+    for (auto song : mp_Songs[SongList_t::DIRECTORY_SONGS])
+        song.second->setAvailable(false);
+
+    auto songTree = loadSongs(dirPath);
+
+    auto it = mp_Songs.begin();
+    while (it != mp_Songs.end())
+    {
+        if ((*it)->isInFolder() && !((*it)->isAvailable()))
+            it = mp_Songs.erase(it);
+        else
+            ++it;
+    }
+
+    return songTree;
 }
 
 // ==============================
@@ -572,10 +596,18 @@ void Player::executeNetworkCommand(std::shared_ptr<network::commands::CommandReq
     {
         case 'o':
         {
+            if (clientFile.isOpen())
+                clientFile.close();
+
             SongIt song = findSong(songId);
-            clientFile.setFileName((*song)->getFile());
-            if (!clientFile.open(QIODevice::ReadOnly))
-                reply = std::make_shared<network::commands::OpenCommandReply>(songId, FMOD_ERR_FILE_NOTFOUND, -1);
+            if (song != UNDEFINED_SONG)
+            {
+                clientFile.setFileName((*song)->getFile());
+                clientFile.open(QIODevice::ReadOnly);
+            }
+
+            if (!clientFile.isOpen())
+                reply = std::make_shared<network::commands::OpenCommandReply>(songId, FMOD_ERR_FILE_NOTFOUND, 0);
             else
             {
                 unsigned int fileSize = clientFile.size();

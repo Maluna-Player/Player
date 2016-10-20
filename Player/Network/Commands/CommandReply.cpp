@@ -47,7 +47,7 @@ QByteArray CommandReply::toPacket() const
 // ==============================
 // ==============================
 
-OpenCommandReply::OpenCommandReply(audio::Player::SongId songId, FMOD_RESULT result, int fileSize)
+OpenCommandReply::OpenCommandReply(audio::Player::SongId songId, FMOD_RESULT result, unsigned int fileSize)
     : CommandReply(songId, result), m_FileSize(fileSize)
 {
 
@@ -58,7 +58,7 @@ char OpenCommandReply::getCommandType() const
     return 'o';
 }
 
-int OpenCommandReply::getFileSize() const
+unsigned int OpenCommandReply::getFileSize() const
 {
     return m_FileSize;
 }
