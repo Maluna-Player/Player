@@ -41,7 +41,6 @@ namespace audio {
 class Song;
 
 
-
 class Player : public QObject
 {
     Q_OBJECT
@@ -52,11 +51,12 @@ class Player : public QObject
 
     private:
 
-        using SongIt = util::ComposedMap<SongList_t, std::map<SongId, std::shared_ptr<Song>>>::const_iterator;
+        using SongList = util::ComposedMap<SongList_t, std::map<SongId, std::shared_ptr<Song>>>;
+        using SongIt = SongList::const_iterator;
 
         unsigned int m_Cpt;
 
-        util::ComposedMap<SongList_t, std::map<SongId, std::shared_ptr<Song>>> mp_Songs;
+        SongList mp_Songs;
         SongIt m_CurrentSong;
 
         bool m_Playlist;
@@ -349,6 +349,12 @@ class Player : public QObject
          * @return true si la musique a bien été modifiée
          */
         virtual bool changeSong(audio::Player::SongId songId);
+
+        /**
+         * @brief Supprime la musique d'indice songId.
+         * @param songId Indice de la musique
+         */
+        virtual void removeSong(audio::Player::SongId songId);
 
         /**
          * @brief Traite la commande passée en paramètre et émet la réponse une fois terminée.

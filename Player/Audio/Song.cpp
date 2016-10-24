@@ -47,7 +47,7 @@ Song::Song(Player::SongId id, const QString& file, bool inFolder, bool openable)
 
 Song::~Song()
 {
-    FmodManager::getInstance().releaseSound(m_SoundID);
+
 }
 
 // ==============================

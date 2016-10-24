@@ -20,7 +20,7 @@ unsigned int SongListItem::m_Cpt = 0;
 // ==============================
 // ==============================
 
-SongListItem::SongListItem(ElementType type, SongListItem *parent, const QString& name)
+SongListItem::SongListItem(ElementType type, const QString& name, SongListItem *parent)
     : QTreeWidgetItem(), m_Type(type), m_Length(0), m_Depth(0), mp_AttachedSong(nullptr)
 {
     Qt::ItemFlags flags = Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled;
@@ -30,7 +30,7 @@ SongListItem::SongListItem(ElementType type, SongListItem *parent, const QString
     setFlags(flags);
     setParent(parent);
     setText(0, name);
-    setText(1, util::Tools::msToString(m_Length));
+    setLengthText();
 
     if (type == ElementType::ROOT || type == ElementType::DIRECTORY)
     {
@@ -128,7 +128,10 @@ void SongListItem::setLengthText()
     for (unsigned int i = 0; i < m_Depth; ++i)
         lengthText += "  ";
 
-    lengthText += "|- " + util::Tools::msToString(m_Length);
+    if (m_Depth > 0)
+        lengthText += "|- ";
+
+    lengthText += util::Tools::msToString(m_Length);
     setText(1, lengthText);
 }
 
@@ -164,6 +167,15 @@ void SongListItem::setDepth(unsigned int depth)
 {
     m_Depth = depth;
     setLengthText();
+}
+
+// ==============================
+// ==============================
+
+void SongListItem::setTextColor(const QColor& color)
+{
+    setForeground(0, color);
+    setForeground(1, color);
 }
 
 // ==============================

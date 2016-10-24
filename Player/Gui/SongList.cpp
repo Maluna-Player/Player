@@ -21,8 +21,10 @@ namespace gui {
 
 
 SongList::SongList(QWidget *parent)
-    : QTreeWidget(parent), m_CurrentSong(-1),
-      m_BrokenIcon(util::Tools::loadImage(QString(IMAGES_SUBDIR) + "brokenFile.png"))
+    : QTreeWidget(parent),
+      m_DeleteIcon(util::Tools::loadImage(QString(IMAGES_SUBDIR) + "delete.png").scaledToWidth(14)),
+      m_BrokenIcon(util::Tools::loadImage(QString(IMAGES_SUBDIR) + "brokenFile.png")),
+      mp_CurrentSong(nullptr), mp_PreviousHilightedItem(nullptr)
 {
     QPalette p(palette());
     p.setColor(QPalette::Base, QColor(24, 0, 96));
@@ -31,15 +33,17 @@ SongList::SongList(QWidget *parent)
     setStyleSheet("color: rgb(212, 255, 250); border: 3px solid rgb(25, 25, 25);");
     verticalScrollBar()->setStyleSheet("background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop: 0  rgb(200, 150, 130), stop: 0.5 rgb(150, 47, 130),  stop:1 rgb(200, 30, 150));");
 
-    setColumnCount(2);
+    setColumnCount(3);
     setHeaderHidden(true);
-    setColumnWidth(0, 180);
-    resizeColumnToContents(1);
+    setMouseTracking(true);
+    setColumnWidth(0, 170);
+    setColumnWidth(1, 90);
+    setColumnWidth(2, 15);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setFixedWidth(280);
+    setFixedWidth(290);
 
-    SongListItem *localSongsItem = new SongListItem(SongListItem::ElementType::ROOT, nullptr, "Mes musiques");
-    SongListItem *remoteSongsItem = new SongListItem(SongListItem::ElementType::ROOT, nullptr, "Musiques distantes");
+    SongListItem *localSongsItem = new SongListItem(SongListItem::ElementType::ROOT, "Mes musiques");
+    SongListItem *remoteSongsItem = new SongListItem(SongListItem::ElementType::ROOT, "Musiques distantes");
 
     addTopLevelItem(localSongsItem);
     addTopLevelItem(remoteSongsItem);
@@ -117,9 +121,15 @@ void SongList::addChildSong(SongListItem *item, SongListItem *parent) const
 // ==============================
 // ==============================
 
-void SongList::removeSong(const SongListIterator& it) const
+void SongList::removeSong(SongListItem *item)
 {
-    SongListItem *currentItem = *it;
+    if (mp_PreviousHilightedItem == item)
+        mp_PreviousHilightedItem = nullptr;
+
+    if (mp_CurrentSong == item)
+        mp_CurrentSong = nullptr;
+
+    SongListItem *currentItem = item;
     SongListItem *parent = currentItem->parent();
     const auto itemLength = currentItem->getLength();
 
@@ -139,6 +149,14 @@ void SongList::removeSong(const SongListIterator& it) const
             delete currentItem;
         }
     }
+}
+
+// ==============================
+// ==============================
+
+void SongList::removeSong(const SongListIterator& it)
+{
+    removeSong(*it);
 }
 
 // ==============================
@@ -179,6 +197,9 @@ void SongList::clearList(SongList_t list)
 
 void SongList::setCurrentSong(audio::Player::SongId songId)
 {
+    if (mp_CurrentSong != nullptr)
+        mp_CurrentSong->setTextColor(QColor(212, 255, 250));
+
     SongListIterator it(this, QTreeWidgetItemIterator::Selectable);
 
     while (!it.isNull())
@@ -186,23 +207,18 @@ void SongList::setCurrentSong(audio::Player::SongId songId)
         std::shared_ptr<audio::Song> song = (*it)->getAttachedSong();
         if (song && song->isAvailable())
         {
-            if (song->getId() == m_CurrentSong)
-            {
-                (*it)->setForeground(0, QColor(212, 255, 250));
-                (*it)->setForeground(1, QColor(212, 255, 250));
-            }
-
             if (song->getId() == songId)
             {
-                (*it)->setForeground(0, QColor(21, 191, 221));
-                (*it)->setForeground(1, QColor(21, 191, 221));
+                mp_CurrentSong = *it;
+                mp_CurrentSong->setTextColor(QColor(21, 191, 221));
+                return;
             }
         }
 
         ++it;
     }
 
-    m_CurrentSong = songId;
+    mp_CurrentSong = nullptr;
 }
 
 // ==============================
@@ -212,14 +228,52 @@ void SongList::mousePressEvent(QMouseEvent *event)
 {
     QTreeWidgetItem *selectedItem = itemAt(event->x(), event->y());
 
-    if (selectedItem && static_cast<SongListItem*>(selectedItem)->isSong())
+    if (selectedItem)
     {
-        std::shared_ptr<audio::Song> song = static_cast<SongListItem*>(selectedItem)->getAttachedSong();
-        if (song)
-            emit songPressed(song->getId());
+        SongListItem *item = static_cast<SongListItem*>(selectedItem);
+
+        if (item->isSong())
+        {
+            std::shared_ptr<audio::Song> song = item->getAttachedSong();
+
+            if (columnAt(event->x()) == 2)
+            {
+                removeSong(item);
+
+                if (song)
+                    emit songRemoved(song->getId());
+            }
+            else if (song)
+                emit songPressed(song->getId());
+        }
     }
 
     QTreeWidget::mousePressEvent(event);
+}
+
+// ==============================
+// ==============================
+
+void SongList::mouseMoveEvent(QMouseEvent *event)
+{
+    QTreeWidgetItem *flewItem = itemAt(event->x(), event->y());
+
+    if (mp_PreviousHilightedItem != nullptr)
+        mp_PreviousHilightedItem->setIcon(2, QIcon());
+
+    if (flewItem)
+    {
+        SongListItem *item = static_cast<SongListItem*>(flewItem);
+
+        if (item->isSong())
+        {
+            item->setIcon(2, m_DeleteIcon);
+            mp_PreviousHilightedItem = item;
+        }
+
+    }
+
+    QTreeWidget::mouseMoveEvent(event);
 }
 
 // ==============================
@@ -271,8 +325,7 @@ void SongList::disableSong(audio::Player::SongId songId)
         std::shared_ptr<audio::Song> song = (*it)->getAttachedSong();
         if (song && song->getId() == songId)
         {
-            (*it)->setForeground(0, QColor(255, 0, 0));
-            (*it)->setForeground(1, QColor(255, 0, 0));
+            (*it)->setTextColor(QColor(255, 0, 0));
             (*it)->setIcon(0, QIcon(m_BrokenIcon));
 
             return;

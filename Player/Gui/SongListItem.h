@@ -62,7 +62,7 @@ class SongListItem : public QTreeWidgetItem, public network::Sendable
 
     public:
 
-        SongListItem(ElementType type, SongListItem *parent = nullptr, const QString& name = "");
+        SongListItem(ElementType type, const QString& name = "", SongListItem *parent = nullptr);
         virtual ~SongListItem();
 
         /**
@@ -130,6 +130,12 @@ class SongListItem : public QTreeWidgetItem, public network::Sendable
          * @param depth Nouvelle profondeur
          */
         virtual void setDepth(unsigned int depth);
+
+        /**
+         * @brief Change la couleur du texte de l'élément.
+         * @param color Nouvelle couleur
+         */
+        virtual void setTextColor(const QColor& color);
 
         virtual QByteArray toPacket() const override;
 };

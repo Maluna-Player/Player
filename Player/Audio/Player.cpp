@@ -356,7 +356,7 @@ gui::SongListItem* Player::addNewSong(SongList_t list, const QString& filePath, 
     if (song)
     {
         QFileInfo fileInfo(filePath);
-        item = new gui::SongListItem(gui::SongListItem::ElementType::SONG, parentDir, fileInfo.completeBaseName());
+        item = new gui::SongListItem(gui::SongListItem::ElementType::SONG, fileInfo.completeBaseName(), parentDir);
         item->setAttachedSong(song);
     }
 
@@ -383,7 +383,7 @@ gui::SongTreeRoot* Player::loadSongs(const QString& dirPath, gui::SongTreeRoot *
 
         if (fileInfo.isDir())
         {
-            gui::SongListItem *item = new gui::SongListItem(gui::SongListItem::ElementType::DIRECTORY, nullptr, fileInfo.completeBaseName());
+            gui::SongListItem *item = new gui::SongListItem(gui::SongListItem::ElementType::DIRECTORY, fileInfo.completeBaseName());
             loadSongs(filePath, item);
 
             if (item->childCount() > 0)
@@ -490,7 +490,7 @@ bool Player::changeSong(SongIt song)
         stop();
     }
 
-    return (m_CurrentSong != UNDEFINED_SONG);
+    return (m_CurrentSong == song);
 }
 
 // ==============================
@@ -507,6 +507,29 @@ bool Player::changeSong(SongId songId)
     }
 
     return true;
+}
+
+// ==============================
+// ==============================
+
+void Player::removeSong(audio::Player::SongId songId)
+{
+    SongIt song = findSong(songId);
+    if (song != UNDEFINED_SONG)
+    {
+        if (song == m_CurrentSong)
+        {
+            getCurrentSong()->stop();
+            nextSong();
+            if (m_CurrentSong == song)
+            {
+                m_CurrentSong = UNDEFINED_SONG;
+                emit songChanged();
+            }
+        }
+
+        mp_Songs.erase(song);
+    }
 }
 
 // ==============================

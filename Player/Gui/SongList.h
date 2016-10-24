@@ -31,9 +31,13 @@ class SongList : public QTreeWidget
 
     private:
 
-        int m_CurrentSong;
+        QPixmap m_DeleteIcon;
 
         QPixmap m_BrokenIcon;
+
+        SongListItem *mp_CurrentSong;
+
+        SongListItem *mp_PreviousHilightedItem;
 
 
         /**
@@ -61,11 +65,13 @@ class SongList : public QTreeWidget
          * @brief Supprime de la liste l'élément passé en paramètre (avec ses parents récursivement s'il s'agit du seul fils).
          * @param it Itérateur sur l'élément à supprimer
          */
-        virtual void removeSong(const SongListIterator& it) const;
+        virtual void removeSong(const SongListIterator& it);
 
     protected:
 
         virtual void mousePressEvent(QMouseEvent *event) override;
+
+        virtual void mouseMoveEvent(QMouseEvent *event) override;
 
     signals:
 
@@ -74,6 +80,12 @@ class SongList : public QTreeWidget
          * @param songId Musique sélectionnée
          */
         void songPressed(audio::Player::SongId songId);
+
+        /**
+         * @brief Signal émis lorsque l'utilisateur supprime sur une musique de la liste.
+         * @param song Musique supprimée
+         */
+        void songRemoved(audio::Player::SongId song);
 
     public:
 
@@ -112,6 +124,12 @@ class SongList : public QTreeWidget
          * @param songs Liste de sons à ajouter
         */
         virtual void addTree(SongList_t list, SongTreeRoot *songs);
+
+        /**
+         * @brief Supprime de la liste l'élément passé en paramètre (avec ses parents récursivement s'il s'agit du seul fils).
+         * @param item Elément à supprimer
+         */
+        virtual void removeSong(SongListItem *item);
 
     public slots:
 

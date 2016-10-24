@@ -228,7 +228,7 @@ gui::SongTreeRoot* PlayerSocket::readRemoteSongList()
         in >> num >> parentNum >> fileName >> itemType;
 
         gui::SongListItem::ElementType type = (itemType == 0) ? gui::SongListItem::ElementType::DIRECTORY : gui::SongListItem::ElementType::SONG;
-        gui::SongListItem *item = new gui::SongListItem(type, getItem(parentNum, receivedSongs), fileName);
+        gui::SongListItem *item = new gui::SongListItem(type, fileName, getItem(parentNum, receivedSongs));
 
         if (!item->isSong())
             item->setData(0, Qt::UserRole, num);

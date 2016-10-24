@@ -81,6 +81,7 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     mp_SongList = new SongList;
 
     connect(mp_SongList, SIGNAL(songPressed(audio::Player::SongId)), &m_Player, SLOT(changeSong(audio::Player::SongId)));
+    connect(mp_SongList, SIGNAL(songRemoved(audio::Player::SongId)), &m_Player, SLOT(removeSong(audio::Player::SongId)));
     connect(&m_Player, SIGNAL(streamError(audio::Player::SongId)), mp_SongList, SLOT(disableSong(audio::Player::SongId)));
 
 
@@ -265,17 +266,25 @@ void PlayerWindow::updateCurrentSong()
             mp_SongPicture->clear();
 
         mp_SongLength->setText(util::Tools::msToString(m_Player.getCurrentSong()->getLength()));
-
-        mp_ProgressBar->setValue(0);
         mp_ProgressBar->setMaximum(m_Player.getCurrentSong()->getLength());
-        mp_NetworkLoadBar->setValue(0);
-        mp_NetworkLoadBar->setStartPos(0);
 
         if (m_Player.getCurrentSong()->isRemote())
             mp_NetworkLoadBar->setMaximum(mp_Socket->getTotalCurrentSongData());
 
         mp_SongList->setCurrentSong(m_Player.getCurrentSong()->getId());
     }
+    else
+    {
+        mp_SongTitle->clear();
+        mp_SongArtist->clear();
+        mp_SongPicture->clear();
+        mp_SongPos->setText(util::Tools::msToString(0));
+        mp_SongLength->setText(util::Tools::msToString(0));
+    }
+
+    mp_ProgressBar->setValue(0);
+    mp_NetworkLoadBar->setValue(0);
+    mp_NetworkLoadBar->setStartPos(0);
 
     if (m_Player.isPaused())
         setState(PlayerState::STOP);
