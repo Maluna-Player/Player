@@ -130,7 +130,7 @@ class PlayerSocket : public QObject
          * @brief Signal émis lorsqu'une commande est reçue.
          * @param Commande reçue
          */
-        void commandReceived(std::shared_ptr<network::commands::CommandRequest>);
+        void commandReceived(std::shared_ptr<commands::CommandRequest>);
 
     public:
 
@@ -204,7 +204,7 @@ class PlayerSocket : public QObject
          * @brief Ajoute la réponse reçue en paramètre dans la liste des messages à envoyer.
          * @param reply Réponse à envoyer
          */
-        virtual void sendCommandReply(std::shared_ptr<network::commands::CommandReply> reply);
+        virtual void sendCommandReply(std::shared_ptr<commands::CommandReply> reply);
 };
 
 /** Callbacks FMOD pour le stream de musiques distantes **/

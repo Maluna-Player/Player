@@ -348,13 +348,13 @@ class Player : public QObject
          * @param songId Indice de la musique
          * @return true si la musique a bien été modifiée
          */
-        virtual bool changeSong(audio::Player::SongId songId);
+        virtual bool changeSong(SongId songId);
 
         /**
          * @brief Supprime la musique d'indice songId.
          * @param songId Indice de la musique
          */
-        virtual void removeSong(audio::Player::SongId songId);
+        virtual void removeSong(SongId songId);
 
         /**
          * @brief Traite la commande passée en paramètre et émet la réponse une fois terminée.

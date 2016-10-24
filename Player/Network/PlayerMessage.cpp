@@ -17,7 +17,7 @@ namespace network {
 
 PlayerMessage::PlayerMessage(QTcpSocket *socket) : mp_Socket(socket), m_MessageSize(0), m_IsSending(false)
 {
-    connect(this, SIGNAL(newMessageToSend()), this, SLOT(sendMessages()));
+    connect(this, &PlayerMessage::newMessageToSend, this, &PlayerMessage::sendMessages);
 }
 
 // ==============================
@@ -72,7 +72,7 @@ QByteArray PlayerMessage::waitNextMessage()
     m_MessagesMutex.unlock();
 
     QEventLoop pause;
-    connect(this, SIGNAL(messageReceived()), &pause, SLOT(quit()));
+    connect(this, &PlayerMessage::messageReceived, &pause, &QEventLoop::quit);
     pause.exec();
 
     m_MessagesMutex.lock();

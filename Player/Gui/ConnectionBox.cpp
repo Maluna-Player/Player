@@ -37,10 +37,10 @@ ConnectionBox::ConnectionBox(QWidget *parent) : QWidget(parent)
 
     setLayout(layout);
 
-    connect(mp_ListenButton, SIGNAL(clicked()), this, SLOT(listen()));
-    connect(mp_ConnectButton, SIGNAL(clicked()), this, SLOT(connectToHost()));
-    connect(mp_CancelButton, SIGNAL(clicked()), this, SLOT(cancel()));
-    connect(mp_DisconnectButton, SIGNAL(clicked()), this, SLOT(disconnect()));
+    connect(mp_ListenButton, &QPushButton::clicked, this, &ConnectionBox::listen);
+    connect(mp_ConnectButton, &QPushButton::clicked, this, &ConnectionBox::connectToHost);
+    connect(mp_CancelButton, &QPushButton::clicked, this, &ConnectionBox::cancel);
+    connect(mp_DisconnectButton, &QPushButton::clicked, this, &ConnectionBox::disconnect);
 }
 
 // ==============================

@@ -512,7 +512,7 @@ bool Player::changeSong(SongId songId)
 // ==============================
 // ==============================
 
-void Player::removeSong(audio::Player::SongId songId)
+void Player::removeSong(SongId songId)
 {
     SongIt song = findSong(songId);
     if (song != UNDEFINED_SONG)

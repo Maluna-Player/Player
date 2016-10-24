@@ -84,7 +84,7 @@ void PlayerSocket::listen(QHostAddress address)
     if (!mp_Server->listen(address, 1200))
         throw exceptions::LibException("PlayerSocket::listen", "QTcpServer::listen", mp_Server->errorString().toStdString().c_str());
 
-    connect(mp_Server, SIGNAL(newConnection()), this, SLOT(clientConnexion()));
+    connect(mp_Server, &QTcpServer::newConnection, this, &PlayerSocket::clientConnexion);
 }
 
 // ==============================
@@ -94,7 +94,7 @@ void PlayerSocket::clientConnexion()
 {
     mp_Socket = mp_Server->nextPendingConnection();
 
-    connect(mp_Socket, SIGNAL(disconnected()), this, SLOT(disconnection()));
+    connect(mp_Socket, &QTcpSocket::disconnected, this, &PlayerSocket::disconnection);
 
     startConnection();
 
@@ -116,7 +116,7 @@ void PlayerSocket::startConnection()
     mp_SendMessage = std::make_unique<PlayerMessage>(mp_Socket);
     mp_ReceiveMessage = std::make_unique<PlayerMessage>(mp_Socket);
 
-    connect(mp_Socket, SIGNAL(readyRead()), mp_ReceiveMessage.get(), SLOT(receive()));
+    connect(mp_Socket, &QTcpSocket::readyRead, mp_ReceiveMessage.get(), &PlayerMessage::receive);
 
     mp_SendMessage->moveToThread(mp_SocketThread);
     mp_ReceiveMessage->moveToThread(mp_SocketThread);
@@ -154,9 +154,9 @@ void PlayerSocket::connectToHost(const QString& address)
     QString host = (address.isEmpty()) ? "localhost" : address;
     mp_Socket->connectToHost(host, 1200);
 
-    connect(mp_Socket, SIGNAL(connected()), this, SLOT(startConnection()));
-    connect(mp_Socket, SIGNAL(disconnected()), this, SLOT(disconnection()));
-    connect(mp_Socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(error()), Qt::DirectConnection);
+    connect(mp_Socket, &QTcpSocket::connected, this, &PlayerSocket::startConnection);
+    connect(mp_Socket, &QTcpSocket::disconnected, this, &PlayerSocket::disconnection);
+    connect(mp_Socket, qOverload<QAbstractSocket::SocketError>(&QTcpSocket::error), this, &PlayerSocket::error, Qt::DirectConnection);
 }
 
 // ==============================

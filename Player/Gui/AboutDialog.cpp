@@ -53,7 +53,7 @@ AboutDialog::AboutDialog(QWidget *parent) : QDialog(parent)
     buttonsLayout->addStretch(1);
     buttonsLayout->addWidget(closeButton);
 
-    connect(closeButton, SIGNAL(clicked(bool)), this, SLOT(close()));
+    connect(closeButton, &QPushButton::clicked, this, &AboutDialog::close);
 
     layout->addLayout(informationLayout);
     layout->addLayout(buttonsLayout);

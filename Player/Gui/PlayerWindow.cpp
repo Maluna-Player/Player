@@ -44,9 +44,9 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     playerLayout->setSpacing(0);
     playerLayout->setContentsMargins(0, 0, 0, 0);
 
-    connect(&m_Player, SIGNAL(songChanged()), this, SLOT(updateCurrentSong()));
-    connect(&m_Player, SIGNAL(stateChanged(PlayerState)), this, SLOT(setState(PlayerState)));
-    connect(&m_Player, SIGNAL(previewFinished()), this, SLOT(stopPreview()));
+    connect(&m_Player, &audio::Player::songChanged, this, &PlayerWindow::updateCurrentSong);
+    connect(&m_Player, &audio::Player::stateChanged, this, &PlayerWindow::setState);
+    connect(&m_Player, &audio::Player::previewFinished, this, &PlayerWindow::stopPreview);
 
     /** Menu **/
 
@@ -60,10 +60,10 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     toolbar->addAction(static_cast<MenuBar*>(menuBar())->getQuitAction());
     toolbar->addAction(static_cast<MenuBar*>(menuBar())->getAboutAction());
 
-    connect(static_cast<MenuBar*>(menuBar())->getAddingSongAction(), SIGNAL(triggered()), this, SLOT(importSong()));
-    connect(static_cast<MenuBar*>(menuBar())->getOpenAction(), SIGNAL(triggered()), this, SLOT(openSongsDir()));
-    connect(static_cast<MenuBar*>(menuBar())->getAboutAction(), SIGNAL(triggered()), this, SLOT(openInformation()));
-    connect(static_cast<MenuBar*>(menuBar())->getQuitAction(), SIGNAL(triggered()), qApp, SLOT(quit()));
+    connect(static_cast<MenuBar*>(menuBar())->getAddingSongAction(), &QAction::triggered, this, &PlayerWindow::importSong);
+    connect(static_cast<MenuBar*>(menuBar())->getOpenAction(), &QAction::triggered, this, &PlayerWindow::openSongsDir);
+    connect(static_cast<MenuBar*>(menuBar())->getAboutAction(), &QAction::triggered, this, &PlayerWindow::openInformation);
+    connect(static_cast<MenuBar*>(menuBar())->getQuitAction(), &QAction::triggered, qApp, &QApplication::quit);
 
 
     /** Partie du haut **/
@@ -80,9 +80,9 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     mp_SongPicture = new QLabel;
     mp_SongList = new SongList;
 
-    connect(mp_SongList, SIGNAL(songPressed(audio::Player::SongId)), &m_Player, SLOT(changeSong(audio::Player::SongId)));
-    connect(mp_SongList, SIGNAL(songRemoved(audio::Player::SongId)), &m_Player, SLOT(removeSong(audio::Player::SongId)));
-    connect(&m_Player, SIGNAL(streamError(audio::Player::SongId)), mp_SongList, SLOT(disableSong(audio::Player::SongId)));
+    connect(mp_SongList, &SongList::songPressed, &m_Player, qOverload<audio::Player::SongId>(&audio::Player::changeSong));
+    connect(mp_SongList, &SongList::songRemoved, &m_Player, &audio::Player::removeSong);
+    connect(&m_Player, &audio::Player::streamError, mp_SongList, &SongList::disableSong);
 
 
     topLayout->setColumnStretch(0, 1);
@@ -104,7 +104,7 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     mp_ProgressBar = new ProgressBar(mp_ProgressBackground);
     mp_ProgressBar->setGeometry(0, (PROGRESS_BACKGROUND_HEIGHT - PROGRESSBAR_HEIGHT) / 2, mp_ProgressBackground->width(), 0);
 
-    connect(mp_ProgressBar, SIGNAL(posChanged(int)), this, SLOT(setSongPosition(int)));
+    connect(mp_ProgressBar, &ProgressBar::posChanged, this, &PlayerWindow::setSongPosition);
 
 
     /** Partie du bas **/
@@ -123,24 +123,24 @@ PlayerWindow::PlayerWindow(QWidget *parent)
 
     getButton(ButtonId::PAUSE)->hide();
 
-    connect(getButton(ButtonId::PLAY), SIGNAL(clicked()), this, SLOT(play()));
-    connect(getButton(ButtonId::PAUSE), SIGNAL(clicked()), this, SLOT(pause()));
-    connect(getButton(ButtonId::STOP), SIGNAL(clicked()), this, SLOT(stop()));
-    connect(getButton(ButtonId::PREV), SIGNAL(clicked()), this, SLOT(previousSong()));
-    connect(getButton(ButtonId::NEXT), SIGNAL(clicked()), this, SLOT(nextSong()));
-    connect(getButton(ButtonId::VOLUME_MORE), SIGNAL(clicked()), this, SLOT(increaseVolume()));
-    connect(getButton(ButtonId::VOLUME_LESS), SIGNAL(clicked()), this, SLOT(decreaseVolume()));
-    connect(getButton(ButtonId::REFRESH), SIGNAL(clicked()), this, SLOT(refreshSongsList()));
+    connect(getButton(ButtonId::PLAY), &PlayerButton::clicked, this, &PlayerWindow::play);
+    connect(getButton(ButtonId::PAUSE), &PlayerButton::clicked, this, &PlayerWindow::pause);
+    connect(getButton(ButtonId::STOP), &PlayerButton::clicked, this, &PlayerWindow::stop);
+    connect(getButton(ButtonId::PREV), &PlayerButton::clicked, this, &PlayerWindow::previousSong);
+    connect(getButton(ButtonId::NEXT), &PlayerButton::clicked, this, &PlayerWindow::nextSong);
+    connect(getButton(ButtonId::VOLUME_MORE), &PlayerButton::clicked, this, &PlayerWindow::increaseVolume);
+    connect(getButton(ButtonId::VOLUME_LESS), &PlayerButton::clicked, this, &PlayerWindow::decreaseVolume);
+    connect(getButton(ButtonId::REFRESH), &PlayerButton::clicked, this, &PlayerWindow::refreshSongsList);
 
     mp_SoundVolume = new VolumeViewer;
     mp_SoundVolume->setImage(m_Player.getVolumeState());
-    connect(mp_SoundVolume, SIGNAL(stateChanged()), this, SLOT(setMute()));
+    connect(mp_SoundVolume, &VolumeViewer::stateChanged, this, &PlayerWindow::setMute);
 
     mp_ConnectionBox = new ConnectionBox;
-    connect(mp_ConnectionBox, SIGNAL(listened()), this, SLOT(listen()));
-    connect(mp_ConnectionBox, SIGNAL(connectedToHost(QString)), this, SLOT(connectToHost(QString)));
-    connect(mp_ConnectionBox, SIGNAL(canceled()), this, SLOT(closeConnection()));
-    connect(mp_ConnectionBox, SIGNAL(disconnected()), this, SLOT(closeConnection()));
+    connect(mp_ConnectionBox, &ConnectionBox::listened, this, &PlayerWindow::listen);
+    connect(mp_ConnectionBox, &ConnectionBox::connectedToHost, this, &PlayerWindow::connectToHost);
+    connect(mp_ConnectionBox, &ConnectionBox::canceled, this, &PlayerWindow::closeConnection);
+    connect(mp_ConnectionBox, &ConnectionBox::disconnected, this, &PlayerWindow::closeConnection);
 
 
     bottomLayout->setColumnStretch(3, 1);
@@ -211,7 +211,7 @@ void PlayerWindow::createPreviewWidget()
 
     m_PreviewTimer.setSingleShot(true);
     m_PreviewTimer.setInterval(PREVIEW_DELAY);
-    connect(&m_PreviewTimer, SIGNAL(timeout()), this, SLOT(startPreview()));
+    connect(&m_PreviewTimer, &QTimer::timeout, this, &PlayerWindow::startPreview);
 }
 
 // ==============================
@@ -453,8 +453,8 @@ void PlayerWindow::openInformation()
 void PlayerWindow::listen()
 {
     mp_Socket = std::make_unique<network::PlayerSocket>(&m_Player);
-    connect(mp_Socket.get(), SIGNAL(connected()), this, SLOT(startConnection()));
-    connect(mp_Socket.get(), SIGNAL(disconnected()), this, SLOT(closeConnection()));
+    connect(mp_Socket.get(), &network::PlayerSocket::connected, this, &PlayerWindow::startConnection);
+    connect(mp_Socket.get(), &network::PlayerSocket::disconnected, this, &PlayerWindow::closeConnection);
 
     mp_Socket->listen(QHostAddress::Any);
 }
@@ -465,8 +465,8 @@ void PlayerWindow::listen()
 void PlayerWindow::connectToHost(const QString& host)
 {
     mp_Socket = std::make_unique<network::PlayerSocket>(&m_Player);
-    connect(mp_Socket.get(), SIGNAL(connected()), this, SLOT(startConnection()));
-    connect(mp_Socket.get(), SIGNAL(disconnected()), this, SLOT(closeConnection()));
+    connect(mp_Socket.get(), &network::PlayerSocket::connected, this, &PlayerWindow::startConnection);
+    connect(mp_Socket.get(), &network::PlayerSocket::disconnected, this, &PlayerWindow::closeConnection);
 
     mp_Socket->connectToHost(host);
 }
@@ -481,8 +481,8 @@ void PlayerWindow::startConnection()
 
     mp_ConnectionBox->connected();
 
-    connect(mp_Socket.get(), SIGNAL(commandReceived(std::shared_ptr<network::commands::CommandRequest>)), &m_Player, SLOT(executeNetworkCommand(std::shared_ptr<network::commands::CommandRequest>)));
-    connect(&m_Player, SIGNAL(commandExecuted(std::shared_ptr<network::commands::CommandReply>)), mp_Socket.get(), SLOT(sendCommandReply(std::shared_ptr<network::commands::CommandReply>)));
+    connect(mp_Socket.get(), &network::PlayerSocket::commandReceived, &m_Player, &audio::Player::executeNetworkCommand);
+    connect(&m_Player, &audio::Player::commandExecuted, mp_Socket.get(), &network::PlayerSocket::sendCommandReply);
 }
 
 // ==============================
