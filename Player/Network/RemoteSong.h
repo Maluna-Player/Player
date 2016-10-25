@@ -41,7 +41,7 @@ class RemoteSong : public audio::Song
          * @brief getRemoteId
          * @return Identifiant de la musique chez le pair.
          */
-        virtual audio::Player::SongId getRemoteId() const;
+        audio::Player::SongId getRemoteId() const;
 
         /**
          * @brief Ouvre le fichier avec FMOD pour stream du fichier distant.

@@ -29,7 +29,7 @@ class Command : public Sendable
         Command(audio::Player::SongId songId);
         virtual ~Command() {}
 
-        virtual audio::Player::SongId getSongId() const;
+        audio::Player::SongId getSongId() const;
 
         virtual bool isRequest() const = 0;
 

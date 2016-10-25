@@ -34,7 +34,7 @@ class PlayerButton : public ClickableLabel
          * @brief Modifie l'image du bouton par celle passée en paramètre
          * @param image Image à charger
          */
-        virtual void loadImage(const QPixmap& image);
+        void loadImage(const QPixmap& image);
 
     protected:
 

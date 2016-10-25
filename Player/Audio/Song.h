@@ -57,16 +57,16 @@ class Song
 
         virtual ~Song();
 
-        virtual SoundID_t getSoundID() const;
-        virtual Player::SongId getId() const;
-        virtual const QString& getFile() const;
-        virtual SoundPos_t getLength() const;
+        SoundID_t getSoundID() const;
+        Player::SongId getId() const;
+        const QString& getFile() const;
+        SoundPos_t getLength() const;
 
         /**
          * @brief Détermine si la musique est dans le dossier de lecture ou non.
          * @return true si musique du dossier
          */
-        virtual bool isInFolder() const;
+        bool isInFolder() const;
 
         /**
          * @brief Détermine si la musique est distante ou non.
@@ -78,25 +78,25 @@ class Song
          * @brief Détermine si la musique est accessible.
          * @return true si musique accessible
          */
-        virtual bool isAvailable() const;
+        bool isAvailable() const;
 
         /**
          * @brief getTitle
          * @return Titre du son (tag) si le son en possède ou le nom du fichier.
          */
-        virtual const QString& getTitle() const;
+        const QString& getTitle() const;
 
         /**
          * @brief getArtist
          * @return Artiste du son (tag) si le son en possède, sinon "Artiste inconnu".
          */
-        virtual const QString& getArtist() const;
+        const QString& getArtist() const;
 
         /**
          * @brief Construit l'image de la pochette du son depuis le fichier.
          * @return Image associée au fichier, image vide sinon
          */
-        virtual QPixmap buildPicture() const;
+        QPixmap buildPicture() const;
 
         /**
          * @brief Ouvre le fichier avec FMOD pour stream.
@@ -106,36 +106,36 @@ class Song
         /**
          * @brief Joue le son ouvert avec FMOD.
          */
-        virtual void play() const;
+        void play() const;
 
         /**
          * @brief Met le son en pause ou le redémarre.
          * @param paused Etat pause à mettre
          */
-        virtual void pause(bool paused) const;
+        void pause(bool paused) const;
 
         /**
          * @brief Stoppe le son.
          */
-        virtual void stop() const;
+        void stop() const;
 
         /**
          * @brief getPosition
          * @return Position de la musique (ms)
          */
-        virtual SoundPos_t getPosition() const;
+        SoundPos_t getPosition() const;
 
         /**
          * @brief Modifie la position de la musique.
          * @param pos Nouvelle position en ms
          */
-        virtual void setPosition(SoundPos_t pos) const;
+        void setPosition(SoundPos_t pos) const;
 
         /**
          * @brief isFinished
          * @return true si la musique est terminée.
          */
-        virtual bool isFinished() const;
+        bool isFinished() const;
 };
 
 

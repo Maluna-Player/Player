@@ -39,25 +39,25 @@ class MenuBar : public QMenuBar
          * @brief getAddingSongAction
          * @return Retourne le bouton d'ajout de musiques.
          */
-        virtual QAction* getAddingSongAction() const;
+        QAction* getAddingSongAction() const;
 
         /**
          * @brief getOpenAction
          * @return Retourne le bouton d'ouverture de dossier.
          */
-        virtual QAction* getOpenAction() const;
+        QAction* getOpenAction() const;
 
         /**
          * @brief getQuitAction
          * @return Retourne le bouton de fermeture de l'application.
          */
-        virtual QAction* getQuitAction() const;
+        QAction* getQuitAction() const;
 
         /**
          * @brief getAboutAction
          * @return Retourne le bouton "A propos".
          */
-        virtual QAction* getAboutAction() const;
+        QAction* getAboutAction() const;
 };
 
 

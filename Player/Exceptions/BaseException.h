@@ -20,44 +20,44 @@ namespace exceptions {
 
 class BaseException : public std::exception
 {
-  private:
+    private:
 
-    std::string m_Message;
+        std::string m_Message;
 
-    std::string m_Method;
+        std::string m_Method;
 
-  protected:
+    protected:
 
-    std::string m_Error;
+        std::string m_Error;
 
-    virtual void buildMessage()
-    {
-      m_Message = "[From " + m_Method + "] " + m_Error;
-    }
+        virtual void buildMessage()
+        {
+            m_Message = "[From " + m_Method + "] " + m_Error;
+        }
 
-  public:
+    public:
 
-    BaseException(const std::string& method)
-        : m_Method(method), m_Error("")
-    {
+        BaseException(const std::string& method)
+            : m_Method(method), m_Error("")
+        {
 
-    }
+        }
 
-    BaseException(const std::string& method, const std::string& error)
-        : m_Method(method), m_Error(error)
-    {
-      buildMessage();
-    }
+        BaseException(const std::string& method, const std::string& error)
+            : m_Method(method), m_Error(error)
+        {
+            buildMessage();
+        }
 
-    virtual ~BaseException() throw()
-    {
+        virtual ~BaseException() throw()
+        {
 
-    }
+        }
 
-    virtual const char* what() const throw()
-    {
-      return m_Message.c_str();
-    }
+        virtual const char* what() const throw()
+        {
+            return m_Message.c_str();
+        }
 };
 
 

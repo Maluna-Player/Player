@@ -82,9 +82,24 @@ class PlayerWindow : public QMainWindow
 
 
         /**
+         * @brief Créé le menu de la fenêtre.
+         */
+        void createMenuBar();
+
+        /**
+         * @brief Créé la partie haute de la fenêtre.
+         */
+        void createTopWindowPart();
+
+        /**
+         * @brief Créé la partie basse de la fenêtre.
+         */
+        void createBottomWindowPart();
+
+        /**
          * @brief Créé le widget de previsualisation.
          */
-        virtual void createPreviewWidget();
+        void createPreviewWidget();
 
         /**
          * @brief Récupère le boutton associé à la valeur de l'énumération passée en paramètre.
@@ -97,118 +112,118 @@ class PlayerWindow : public QMainWindow
          * @brief Modifie le volume de l'application avec celui passé en paramètre.
          * @param volume Nouveau volume à appliquer
          */
-        virtual void setVolume(int volume);
+        void setVolume(int volume);
 
     private slots:
 
         /**
          * @brief Actualise l'interface graphique (titre, durée...) à partir du son courant.
          */
-        virtual void updateCurrentSong();
+        void updateCurrentSong();
 
         /**
          * @brief Met à jour la liste des musiques du répertoire.
          */
-        virtual void refreshSongsList();
+        void refreshSongsList();
 
         /**
          * @brief Change l'état du player et modifie l'affichage.
          * @param state Nouvel état du player
          */
-        virtual void setState(PlayerState state);
+        void setState(PlayerState state);
 
         /**
          * @brief Applique l'état play.
          */
-        virtual void play();
+        void play();
 
         /**
          * @brief Applique l'état pause.
          */
-        virtual void pause();
+        void pause();
 
         /**
          * @brief Applique l'état stop.
          */
-        virtual void stop();
+        void stop();
 
         /**
          * @brief Lance la musique précédente si elle existe.
          */
-        virtual void previousSong();
+        void previousSong();
 
         /**
          * @brief Lance la musique suivante si elle existe.
          */
-        virtual void nextSong();
+        void nextSong();
 
         /**
          * @brief Augmente le volume de l'application.
          */
-        virtual void increaseVolume();
+        void increaseVolume();
 
         /**
          * @brief Diminue le volume de l'application.
          */
-        virtual void decreaseVolume();
+        void decreaseVolume();
 
         /**
          * @brief Modifie la position du son et met à jour la barre de progression.
          * @param value Nouvelle position de la barre
          */
-        virtual void setSongPosition(int value);
+        void setSongPosition(int value);
 
         /**
          * @brief Applique ou retire l'état mute à l'application.
          */
-        virtual void setMute();
+        void setMute();
 
         /**
          * @brief Ouvre le dossier des musiques lues par l'application.
          */
-        virtual void openSongsDir() const;
+        void openSongsDir() const;
 
         /**
          * @brief Propose à l'utilisateur d'ajouter une nouvelle musique
          *        et l'enregistre si un fichier a été sélectionné.
          */
-        virtual void importSong();
+        void importSong();
 
         /**
          * @brief Ouvre la fenêtre contenant les informations sur l'application.
          */
-        virtual void openInformation();
+        void openInformation();
 
         /**
          * @brief Met l'application en écoute de clients.
          */
-        virtual void listen();
+        void listen();
 
         /**
          * @brief Se connecte à l'hôte défini.
          * @param host Hôte auquel on essaie de se connecter
          */
-        virtual void connectToHost(const QString& host);
+        void connectToHost(const QString& host);
 
         /**
          * @brief Commence la connexion entre les deux hôtes (envoi des musiques).
          */
-        virtual void startConnection();
+        void startConnection();
 
         /**
          * @brief Termine la connexion.
          */
-        virtual void closeConnection();
+        void closeConnection();
 
         /**
          * @brief Démarre la preview de la chanson enregistrée.
          */
-        virtual void startPreview();
+        void startPreview();
 
         /**
          * @brief Arrête la preview.
          */
-        virtual void stopPreview();
+        void stopPreview();
 
     protected:
 
@@ -231,7 +246,7 @@ class PlayerWindow : public QMainWindow
     public:
 
         PlayerWindow(QWidget *parent = nullptr);
-        virtual ~PlayerWindow();
+        ~PlayerWindow();
 };
 
 

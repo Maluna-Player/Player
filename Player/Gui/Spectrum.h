@@ -36,7 +36,7 @@ class Spectrum : public QWidget
          * @brief Dessine le contenu du spectre dans le painter passé en paramètre.
          * @param painter Cible du dessin
          */
-        virtual void draw(QPainter *painter) const;
+        void draw(QPainter *painter) const;
 
     protected:
 
@@ -50,13 +50,13 @@ class Spectrum : public QWidget
         /**
          * @brief Remet à 0 les valeurs du spectre.
          */
-        virtual void clear();
+        void clear();
 
         /**
          * @brief Récupère les fréquences du son joué et met à jour les valeurs des vertices.
          * @param id Identifiant du canal à tester
         */
-        virtual void updateValues(audio::SoundID_t id);
+        void updateValues(audio::SoundID_t id);
 };
 
 

@@ -45,27 +45,27 @@ class SongList : public QTreeWidget
          * @param list Liste dont on veut récupérer la racine
          * @return Noeud racine
          */
-        virtual SongListItem* getRootNode(SongList_t list) const;
+        SongListItem* getRootNode(SongList_t list) const;
 
         /**
          * @brief Affiche le titre et le temps de l'élément passé en paramètre et de ses fils.
          * @param item Elément parent contenant les informations à afficher
          * @return Temps total de l'élément passé en paramètre
          */
-        virtual unsigned int setSongDetails(SongListItem *item) const;
+        unsigned int setSongDetails(SongListItem *item) const;
 
         /**
          * @brief Ajoute l'élément passé en paramètre comme fils du parent.
          * @param item Elément à ajouter
          * @param parent Parent du nouvel élément
          */
-        virtual void addChildSong(SongListItem *item, SongListItem *parent) const;
+        void addChildSong(SongListItem *item, SongListItem *parent) const;
 
         /**
          * @brief Supprime de la liste l'élément passé en paramètre (avec ses parents récursivement s'il s'agit du seul fils).
          * @param it Itérateur sur l'élément à supprimer
          */
-        virtual void removeSong(const SongListIterator& it);
+        void removeSong(const SongListIterator& it);
 
     protected:
 
@@ -96,40 +96,40 @@ class SongList : public QTreeWidget
          * @brief Vide la liste du noeud passé en paramètre.
          * @param list Liste à nettoyer (locale/distante)
          */
-        virtual void clearList(SongList_t list = SongList_t::LOCAL_SONGS);
+        void clearList(SongList_t list = SongList_t::LOCAL_SONGS);
 
         /**
          * @brief Change le son marqué comme son courant dans la liste.
          * @param songId Indice de la musique actuelle
         */
-        virtual void setCurrentSong(audio::Player::SongId songId);
+        void setCurrentSong(audio::Player::SongId songId);
 
         /**
          * @brief getSongHierarchy
          * @param list Liste à retourner
          * @return Arborescence de musiques de la liste.
          */
-        virtual SongTreeRoot* getSongHierarchy(SongList_t list = SongList_t::LOCAL_SONGS) const;
+        SongTreeRoot* getSongHierarchy(SongList_t list = SongList_t::LOCAL_SONGS) const;
 
         /**
          * @brief Ajoute le son passé en paramètre dans la liste.
          * @param list Type de liste dans laquelle ajouter la musique
          * @param item Elément à ajouter
          */
-        virtual void addSong(SongList_t list, SongListItem *item);
+        void addSong(SongList_t list, SongListItem *item);
 
         /**
          * @brief Ajoute les titres et durées de la liste passée en paramètre.
          * @param list Type de liste dans laquelle ajouter les musiques (locales, distantes)
          * @param songs Liste de sons à ajouter
         */
-        virtual void addTree(SongList_t list, SongTreeRoot *songs);
+        void addTree(SongList_t list, SongTreeRoot *songs);
 
         /**
          * @brief Supprime de la liste l'élément passé en paramètre (avec ses parents récursivement s'il s'agit du seul fils).
          * @param item Elément à supprimer
          */
-        virtual void removeSong(SongListItem *item);
+        void removeSong(SongListItem *item);
 
     public slots:
 
@@ -137,7 +137,7 @@ class SongList : public QTreeWidget
          * @brief Affiche la musique passée en paramètre comme indisponible.
          * @param songId Musique à désactiver
          */
-        virtual void disableSong(audio::Player::SongId songId);
+        void disableSong(audio::Player::SongId songId);
 };
 
 

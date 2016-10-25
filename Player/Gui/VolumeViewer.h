@@ -51,7 +51,7 @@ class VolumeViewer : public QLabel
          * @brief Change l'image du viewer de son
          * @param volumeState Volume du player
          */
-        virtual void setImage(int volumeState);
+        void setImage(int volumeState);
 };
 
 

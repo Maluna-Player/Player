@@ -35,11 +35,11 @@ class ConnectionBox : public QWidget
 
     private slots:
 
-        virtual void listen();
+        void listen();
 
-        virtual void connectToHost();
+        void connectToHost();
 
-        virtual void cancel();
+        void cancel();
 
     signals:
 
@@ -56,11 +56,11 @@ class ConnectionBox : public QWidget
         ConnectionBox(QWidget *parent = nullptr);
         virtual ~ConnectionBox();
 
-        virtual void connected();
+        void connected();
 
     public slots:
 
-        virtual void disconnect();
+        void disconnect();
 };
 
 

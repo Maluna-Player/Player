@@ -38,7 +38,7 @@ class NetworkLoadBar : public QProgressBar
          * @brief Modifie la valeur de position de départ de la barre.
          * @param pos Position de départ en pourcentage
          */
-        virtual void setStartPos(unsigned int pos);
+        void setStartPos(unsigned int pos);
 };
 
 

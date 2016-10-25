@@ -42,9 +42,9 @@ class ShadowWidget : public QWidget
 
         virtual ~ShadowWidget();
 
-        virtual int getOpacity() const;
+        int getOpacity() const;
 
-        virtual void setOpacity(int alpha);
+        void setOpacity(int alpha);
 };
 
 

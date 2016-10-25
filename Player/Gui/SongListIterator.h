@@ -31,7 +31,7 @@ class SongListIterator : public QTreeWidgetItemIterator
          * @brief Détermine si le parcours actuel se fait sur l'ensemble de l'arbre ou sur un sous-arbre.
          * @return true si la visite se fait sur un sous-arbre
          */
-        virtual bool isVisitingNodesTree() const;
+        bool isVisitingNodesTree() const;
 
     public:
 
@@ -43,11 +43,11 @@ class SongListIterator : public QTreeWidgetItemIterator
          * @brief Détermine s'il existe un prochain élément, et si le parcours effectué est terminé ou non.
          * @return true s'il n'y a plus d'élément courant
          */
-        virtual bool isNull() const;
+        bool isNull() const;
 
-        virtual SongListItem* operator*() const;
+        SongListItem* operator*() const;
 
-        virtual SongListIterator& operator++();
+        SongListIterator& operator++();
 };
 
 

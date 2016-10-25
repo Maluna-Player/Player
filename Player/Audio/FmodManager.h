@@ -59,21 +59,21 @@ class FmodManager
 
 
         FmodManager(int maxChannels = MAX_CHANNELS_NB);
-        virtual ~FmodManager();
+        ~FmodManager();
 
         /**
          * Attribue un SoundID libre.
          * @param mainCanal true si la musique est ouverte sur le canal principal
          * @return id attribué
         */
-        virtual SoundID_t getSoundID(bool mainCanal) const;
+        SoundID_t getSoundID(bool mainCanal) const;
 
         /**
          * Vérifie si le canal associé à l'id est utilisé ou non.
          * @param id Identifiant du canal à vérifier
          * @return true si le canal est utilisé, false sinon.
          */
-        virtual bool isChannelUsed(SoundID_t id) const;
+        bool isChannelUsed(SoundID_t id) const;
 
     public:
 
@@ -94,7 +94,7 @@ class FmodManager
         /**
          * Met à jour FMOD.
          */
-        virtual void update() const;
+        void update() const;
 
         /**
          * Ouvre le fichier son passé en paramètre.
@@ -103,57 +103,57 @@ class FmodManager
          * @param settings Options de chargement de la musique (callbacks utilisés)
          * @return identifiant du canal associé
         */
-        virtual SoundID_t openFromFile(const std::string& soundFile, bool mainCanal = true, SoundSettings *settings = nullptr) throw (StreamError);
+        SoundID_t openFromFile(const std::string& soundFile, bool mainCanal = true, SoundSettings *settings = nullptr) throw (StreamError);
 
         /**
          * Libère la mémoire du son chargé.
          * @param id Identifiant du son à libérer.
         */
-        virtual void releaseSound(SoundID_t id);
+        void releaseSound(SoundID_t id);
 
         /**
          * Joue le son chargé.
          * @param id Identifiant du son à jouer
         */
-        virtual void playSound(SoundID_t id);
+        void playSound(SoundID_t id);
 
         /**
          * Arrête le son joué sur le canal id.
          * @param id Identifiant du canal à stopper
         */
-        virtual void stopSound(SoundID_t id);
+        void stopSound(SoundID_t id);
 
         /**
          * Met ou retire la pause du canal id.
          * @param id Identifiant du canal à modifier.
          * @param paused Etat pause à mettre.
         */
-        virtual void pauseSound(SoundID_t id, bool paused) const;
+        void pauseSound(SoundID_t id, bool paused) const;
 
         /**
          * @param id Identifiant du son à mesurer
          * @return durée de la musique (ms).
         */
-        virtual SoundPos_t getSoundLength(SoundID_t id) const;
+        SoundPos_t getSoundLength(SoundID_t id) const;
 
         /**
          * @param id Identifiant du canal à tester
          * @return position courante de la musique jouée (ms).
         */
-        virtual SoundPos_t getSoundPosition(SoundID_t id) const;
+        SoundPos_t getSoundPosition(SoundID_t id) const;
 
         /**
          * Change la position de la musique.
          * @param id Identifiant du canal à modifier
          * @param pos Position à appliquer
         */
-        virtual void setSoundPosition(SoundID_t id, SoundPos_t pos);
+        void setSoundPosition(SoundID_t id, SoundPos_t pos);
 
         /**
          * @param id Identifiant du canal à tester
          * @return true si le canal id est en train de jouer.
         */
-        virtual bool isPlaying(SoundID_t id) const;
+        bool isPlaying(SoundID_t id) const;
 
         /**
          * Récupère le spectre du son joué dans le canal.
@@ -162,40 +162,40 @@ class FmodManager
          *               les valeurs.
          * @return Vecteur dans lequel sont stockées les valeurs.
         */
-        virtual std::vector<float>& getChannelSpectrum(SoundID_t id, std::vector<float>& values) const;
+        std::vector<float>& getChannelSpectrum(SoundID_t id, std::vector<float>& values) const;
 
         /**
          * Récupère le volume du canal.
          * @param id Identifiant du canal
          * @return Volume du canal
         */
-        virtual float getVolume(SoundID_t id) const;
+        float getVolume(SoundID_t id) const;
 
         /**
          * Modifie le volume du canal.
          * @param id Identifiant du canal à modifier
          * @param volume Volume à appliquer
         */
-        virtual void setVolume(SoundID_t id, float volume) const;
+        void setVolume(SoundID_t id, float volume) const;
 
         /**
          * Modifie le volume de l'ensemble des canaux.
          * @param volume Volume à appliquer
         */
-        virtual void setVolume(float volume) const;
+        void setVolume(float volume) const;
 
         /**
          * Change l'état mute de l'ensemble des canaux.
          * @param mute Etat à appliquer
         */
-        virtual void setMute(bool mute) const;
+        void setMute(bool mute) const;
 
         /**
          * @param id Identifiant du canal dont on veut le tag
          * @param tagName Tag que l'on cherche
          * @return Tag du son, "" si pas de tag.
          */
-        virtual std::string getSongTag(SoundID_t id, const std::string& tagName) const;
+        std::string getSongTag(SoundID_t id, const std::string& tagName) const;
 
         /**
          * @brief Récupère les données de la pochette du mp3 dans les tags.
@@ -203,7 +203,7 @@ class FmodManager
          * @param dataLength Pointeur vers la longueur du tag
          * @return Données de l'image
          */
-        virtual char* getSongPictureData(SoundID_t id, unsigned int *dataLength = nullptr) const;
+        char* getSongPictureData(SoundID_t id, unsigned int *dataLength = nullptr) const;
 };
 
 

@@ -53,12 +53,12 @@ class SongListItem : public QTreeWidgetItem, public network::Sendable
          * @brief getParentNum
          * @return Numéro du parent de l'élément, 0 si pas de parent
          */
-        virtual unsigned int getParentNum() const;
+        unsigned int getParentNum() const;
 
         /**
          * @brief Modifie le texte de la durée avec la valeur et profondeur courantes.
          */
-        virtual void setLengthText();
+        void setLengthText();
 
     public:
 
@@ -69,73 +69,73 @@ class SongListItem : public QTreeWidgetItem, public network::Sendable
          * @brief isRoot
          * @return true si l'élément est une racine.
          */
-        virtual bool isRoot() const;
+        bool isRoot() const;
 
         /**
          * @brief isSong
          * @return true si l'élément est une musique.
          */
-        virtual bool isSong() const;
+        bool isSong() const;
 
         /**
          * @brief getNum
          * @return Numéro de l'élément.
          */
-        virtual unsigned int getNum() const;
+        unsigned int getNum() const;
 
         /**
          * @brief parent
          * @return Parent de l'élément.
          */
-        virtual SongListItem* parent() const;
+        SongListItem* parent() const;
 
         /**
          * @brief getAttachedSong
          * @return Son attaché à l'élément de l'arborescence.
          */
-        virtual std::shared_ptr<audio::Song> getAttachedSong() const;
+        std::shared_ptr<audio::Song> getAttachedSong() const;
 
         /**
          * @brief Attache l'élément courant au parent passé en paramètre.
          * @param parent Nouveau parent de l'élément courant
          */
-        virtual void setParent(SongListItem *parent);
+        void setParent(SongListItem *parent);
 
         /**
          * @brief Attache le son passé en paramètre à l'élément courant.
          * @param song Son à attacher
          */
-        virtual void setAttachedSong(std::shared_ptr<audio::Song> song);
+        void setAttachedSong(std::shared_ptr<audio::Song> song);
 
         /**
          * @brief getLength
          * @return Temps de l'élément.
          */
-        virtual unsigned int getLength() const;
+        unsigned int getLength() const;
 
         /**
          * @brief Modifie le temps de l'élément.
          * @param length Nouveau temps
          */
-        virtual void setLength(unsigned int length);
+        void setLength(unsigned int length);
 
         /**
          * @brief getDepth
          * @return Profondeur de l'élément.
          */
-        virtual unsigned int getDepth() const;
+        unsigned int getDepth() const;
 
         /**
          * @brief Modifie la profondeur de l'élément.
          * @param depth Nouvelle profondeur
          */
-        virtual void setDepth(unsigned int depth);
+        void setDepth(unsigned int depth);
 
         /**
          * @brief Change la couleur du texte de l'élément.
          * @param color Nouvelle couleur
          */
-        virtual void setTextColor(const QColor& color);
+        void setTextColor(const QColor& color);
 
         virtual QByteArray toPacket() const override;
 };

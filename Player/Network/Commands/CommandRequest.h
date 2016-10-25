@@ -62,7 +62,7 @@ class ReadCommandRequest : public CommandRequest
 
         virtual char getCommandType() const override;
 
-        virtual unsigned int getBytesToRead() const;
+        unsigned int getBytesToRead() const;
 
         virtual QByteArray toPacket() const override;
 };
@@ -80,7 +80,7 @@ class SeekCommandRequest : public CommandRequest
 
         virtual char getCommandType() const override;
 
-        virtual unsigned int getPos() const;
+        unsigned int getPos() const;
 
         virtual QByteArray toPacket() const override;
 };

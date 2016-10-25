@@ -29,7 +29,7 @@ class CommandReply : public Command
         CommandReply(audio::Player::SongId songId, FMOD_RESULT result);
         virtual ~CommandReply() {}
 
-        virtual FMOD_RESULT getResult() const;
+        FMOD_RESULT getResult() const;
 
         virtual bool isRequest() const override;
 
@@ -51,7 +51,7 @@ class OpenCommandReply : public CommandReply
 
         virtual char getCommandType() const override;
 
-        virtual unsigned int getFileSize() const;
+        unsigned int getFileSize() const;
 
         virtual QByteArray toPacket() const override;
 };
@@ -81,9 +81,9 @@ class ReadCommandReply : public CommandReply
 
         virtual char getCommandType() const override;
 
-        virtual void* getBuffer() const;
+        void* getBuffer() const;
 
-        virtual unsigned int getReadBytes() const;
+        unsigned int getReadBytes() const;
 
         virtual QByteArray toPacket() const override;
 };

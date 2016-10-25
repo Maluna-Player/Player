@@ -19,32 +19,32 @@ namespace exceptions {
 
 class LibException : public BaseException
 {
-  private:
+    private:
 
-    std::string m_LibFunc;
+        std::string m_LibFunc;
 
-    std::string m_LibError;
+        std::string m_LibError;
 
-  protected:
+    protected:
 
-    virtual void buildMessage() override
-    {
-      m_Error = "'" + m_LibFunc + "' function produced the following error : " + m_LibError;
-      BaseException::buildMessage();
-    }
+        virtual void buildMessage() override
+        {
+            m_Error = "'" + m_LibFunc + "' function produced the following error : " + m_LibError;
+            BaseException::buildMessage();
+        }
 
-  public:
+    public:
 
-    LibException(const std::string& method, const std::string& libFunc, const char *error)
-      : BaseException(method), m_LibFunc(libFunc), m_LibError(error)
-    {
-      buildMessage();
-    }
+        LibException(const std::string& method, const std::string& libFunc, const char *error)
+            : BaseException(method), m_LibFunc(libFunc), m_LibError(error)
+        {
+            buildMessage();
+        }
 
-    virtual ~LibException() throw()
-    {
+        virtual ~LibException() throw()
+        {
 
-    }
+        }
 };
 
 

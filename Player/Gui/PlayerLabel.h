@@ -32,19 +32,19 @@ class PlayerLabel : public QLabel
          * @brief Change la couleur du texte du label
          * @param color Couleur à affecter au texte
          */
-        virtual void setColor(const QColor& color);
+        void setColor(const QColor& color);
 
         /**
          * @brief Met ou retire l'effet gras sur le texte du label.
          * @param enable true si l'effet doit être activé
          */
-        virtual void setBold(bool enable);
+        void setBold(bool enable);
 
         /**
          * @brief Met ou retire l'effet italique sur le texte du label.
          * @param enable true si l'effet doit être activé
          */
-        virtual void setItalic(bool enable);
+        void setItalic(bool enable);
 };
 
 

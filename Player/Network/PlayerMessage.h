@@ -43,14 +43,14 @@ class PlayerMessage : public QObject
         /**
          * @brief Envoie l'ensemble des messages de la liste.
          */
-        virtual void sendMessages();
+        void sendMessages();
 
     public slots:
 
         /**
          * @brief Lit les messages reçus.
          */
-        virtual void receive();
+        void receive();
 
     signals:
 
@@ -73,25 +73,25 @@ class PlayerMessage : public QObject
          * @brief Retourne le prochain message de la liste.
          * @return Message ou chaine vide si pas de messages
          */
-        virtual QByteArray getNextMessage();
+        QByteArray getNextMessage();
 
         /**
          * @brief Attend le prochain message de la liste s'il n'est pas arrivé et le retourne.
          * @return Message suivant
          */
-        virtual QByteArray waitNextMessage();
+        QByteArray waitNextMessage();
 
         /**
          * @brief Ajoute le message passé en paramètre à la liste des messages à envoyer.
          * @param message Message à ajouter
          */
-        virtual void add(const QByteArray& message);
+        void add(const QByteArray& message);
 
         /**
          * @brief Ajoute le contenu de l'objet passé en paramètre à la liste des messages à envoyer.
          * @param objectToSend Objet dont le contenu est à envoyer
          */
-        virtual void add(Sendable *objectToSend);
+        void add(Sendable *objectToSend);
 };
 
 

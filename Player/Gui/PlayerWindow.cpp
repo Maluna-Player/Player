@@ -48,26 +48,75 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     connect(&m_Player, &audio::Player::stateChanged, this, &PlayerWindow::setState);
     connect(&m_Player, &audio::Player::previewFinished, this, &PlayerWindow::stopPreview);
 
-    /** Menu **/
+    createMenuBar();
+    createTopWindowPart();
 
-    setMenuBar(new MenuBar());
+    mp_ProgressBackground = new ProgressBackground;
+    mp_NetworkLoadBar = new NetworkLoadBar(mp_ProgressBackground);
+    mp_NetworkLoadBar->setGeometry(0, (PROGRESS_BACKGROUND_HEIGHT - LOADBAR_HEIGHT) / 2, mp_ProgressBackground->width(), 0);
+    mp_ProgressBar = new ProgressBar(mp_ProgressBackground);
+    mp_ProgressBar->setGeometry(0, (PROGRESS_BACKGROUND_HEIGHT - PROGRESSBAR_HEIGHT) / 2, mp_ProgressBackground->width(), 0);
+
+    connect(mp_ProgressBar, &ProgressBar::posChanged, this, &PlayerWindow::setSongPosition);
+
+    createBottomWindowPart();
+
+    playerLayout->addWidget(mp_TopPart);
+    playerLayout->addWidget(mp_ProgressBackground);
+    playerLayout->addWidget(mp_BottomPart);
+
+    playerWidget->setLayout(playerLayout);
+
+    createPreviewWidget();
+
+    mainStackedLayout->addWidget(playerWidget);
+    mainStackedLayout->addWidget(mp_ShadowWidget);
+
+    centralArea->setLayout(mainStackedLayout);
+    setCentralWidget(centralArea);
+
+    /** Démarrage du player **/
+
+    refreshSongsList();
+    setState(PlayerState::PLAY);
+}
+
+// ==============================
+// ==============================
+
+PlayerWindow::~PlayerWindow()
+{
+    audio::FmodManager::deleteInstance();
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::createMenuBar()
+{
+    MenuBar *menuBar = new MenuBar;
 
     QToolBar *toolbar = addToolBar("toolbar");
     toolbar->setStyleSheet("background-color: grey;");
 
-    toolbar->addAction(static_cast<MenuBar*>(menuBar())->getAddingSongAction());
-    toolbar->addAction(static_cast<MenuBar*>(menuBar())->getOpenAction());
-    toolbar->addAction(static_cast<MenuBar*>(menuBar())->getQuitAction());
-    toolbar->addAction(static_cast<MenuBar*>(menuBar())->getAboutAction());
+    toolbar->addAction(menuBar->getAddingSongAction());
+    toolbar->addAction(menuBar->getOpenAction());
+    toolbar->addAction(menuBar->getQuitAction());
+    toolbar->addAction(menuBar->getAboutAction());
 
-    connect(static_cast<MenuBar*>(menuBar())->getAddingSongAction(), &QAction::triggered, this, &PlayerWindow::importSong);
-    connect(static_cast<MenuBar*>(menuBar())->getOpenAction(), &QAction::triggered, this, &PlayerWindow::openSongsDir);
-    connect(static_cast<MenuBar*>(menuBar())->getAboutAction(), &QAction::triggered, this, &PlayerWindow::openInformation);
-    connect(static_cast<MenuBar*>(menuBar())->getQuitAction(), &QAction::triggered, qApp, &QApplication::quit);
+    connect(menuBar->getAddingSongAction(), &QAction::triggered, this, &PlayerWindow::importSong);
+    connect(menuBar->getOpenAction(), &QAction::triggered, this, &PlayerWindow::openSongsDir);
+    connect(menuBar->getAboutAction(), &QAction::triggered, this, &PlayerWindow::openInformation);
+    connect(menuBar->getQuitAction(), &QAction::triggered, qApp, &QApplication::quit);
 
+    setMenuBar(menuBar);
+}
 
-    /** Partie du haut **/
+// ==============================
+// ==============================
 
+void PlayerWindow::createTopWindowPart()
+{
     mp_TopPart = new QWidget;
     QGridLayout *topLayout = new QGridLayout;
 
@@ -78,12 +127,11 @@ PlayerWindow::PlayerWindow(QWidget *parent)
 
     mp_Spectrum = new Spectrum(SPECTRUM_WIDTH);
     mp_SongPicture = new QLabel;
-    mp_SongList = new SongList;
 
+    mp_SongList = new SongList;
     connect(mp_SongList, &SongList::songPressed, &m_Player, qOverload<audio::Player::SongId>(&audio::Player::changeSong));
     connect(mp_SongList, &SongList::songRemoved, &m_Player, &audio::Player::removeSong);
     connect(&m_Player, &audio::Player::streamError, mp_SongList, &SongList::disableSong);
-
 
     topLayout->setColumnStretch(0, 1);
     topLayout->addWidget(mp_SongTitle, 0, 0, 1, 2, Qt::AlignTop);
@@ -92,23 +140,17 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     topLayout->addWidget(mp_Spectrum, 0, 1, 10, 1);
     topLayout->addWidget(mp_SongList, 0, 2, 10, 1);
 
-    mp_TopPart->setLayout(topLayout);
-
     mp_SongTitle->raise();
     mp_SongArtist->raise();
 
+    mp_TopPart->setLayout(topLayout);
+}
 
-    mp_ProgressBackground = new ProgressBackground;
-    mp_NetworkLoadBar = new NetworkLoadBar(mp_ProgressBackground);
-    mp_NetworkLoadBar->setGeometry(0, (PROGRESS_BACKGROUND_HEIGHT - LOADBAR_HEIGHT) / 2, mp_ProgressBackground->width(), 0);
-    mp_ProgressBar = new ProgressBar(mp_ProgressBackground);
-    mp_ProgressBar->setGeometry(0, (PROGRESS_BACKGROUND_HEIGHT - PROGRESSBAR_HEIGHT) / 2, mp_ProgressBackground->width(), 0);
+// ==============================
+// ==============================
 
-    connect(mp_ProgressBar, &ProgressBar::posChanged, this, &PlayerWindow::setSongPosition);
-
-
-    /** Partie du bas **/
-
+void PlayerWindow::createBottomWindowPart()
+{
     mp_BottomPart = new QWidget;
     mp_BottomPart->setAutoFillBackground(true);
 
@@ -161,34 +203,6 @@ PlayerWindow::PlayerWindow(QWidget *parent)
 
     bottomLayout->setColumnStretch(8, 1);
     mp_BottomPart->setLayout(bottomLayout);
-
-
-    playerLayout->addWidget(mp_TopPart);
-    playerLayout->addWidget(mp_ProgressBackground);
-    playerLayout->addWidget(mp_BottomPart);
-
-    playerWidget->setLayout(playerLayout);
-
-    createPreviewWidget();
-
-    mainStackedLayout->addWidget(playerWidget);
-    mainStackedLayout->addWidget(mp_ShadowWidget);
-
-    centralArea->setLayout(mainStackedLayout);
-    setCentralWidget(centralArea);
-
-    /** Démarrage du player **/
-
-    refreshSongsList();
-    setState(PlayerState::PLAY);
-}
-
-// ==============================
-// ==============================
-
-PlayerWindow::~PlayerWindow()
-{
-    audio::FmodManager::deleteInstance();
 }
 
 // ==============================

@@ -64,55 +64,55 @@ class PlayerSocket : public QObject
          * @param parent Racine de l'arborescence dans laquelle chercher
          * @return Item correspondant au numéro indiqué
          */
-        virtual gui::SongListItem* getItem(int num, gui::SongTreeRoot *parent) const;
+        gui::SongListItem* getItem(int num, gui::SongTreeRoot *parent) const;
 
         /**
          * @brief Envoie la liste des éléments récursivement à partir de item.
          * @param item Element racine à partir duquel envoyer la liste
          */
-        virtual void sendSongs(gui::SongTreeRoot *item);
+        void sendSongs(gui::SongTreeRoot *item);
 
         /**
          * @brief Lit les données des musiques distantes reçues sur le socket.
          * @return Liste des musiques reçues
          */
-        virtual gui::SongTreeRoot* readRemoteSongList();
+        gui::SongTreeRoot* readRemoteSongList();
 
         /**
          * @brief Construit l'objet Command à partir du message passé en paramètre.
          * @param message Message contenant la commande
          * @return Commande construite
          */
-        virtual std::shared_ptr<commands::Command> buildCommand(QByteArray message) const;
+        std::shared_ptr<commands::Command> buildCommand(QByteArray message) const;
 
         /**
          * @brief Récupère la prochaine requête parmi la liste des messages traités ou récupérés.
          * @return Prochaine requête du client
          */
-        virtual std::shared_ptr<commands::CommandRequest> getCommandRequest();
+        std::shared_ptr<commands::CommandRequest> getCommandRequest();
 
         /**
          * @brief Récupère la prochaine réponse parmi la liste des messages traités ou récupérés.
          * @return Prochaine réponse du client
          */
-        virtual std::shared_ptr<commands::CommandReply> getCommandReply();
+        std::shared_ptr<commands::CommandReply> getCommandReply();
 
     private slots:
 
         /**
          * @brief Se connecte avec le client demandé.
          */
-        virtual void clientConnexion();
+        void clientConnexion();
 
         /**
          * @brief Envoie la liste des musiques.
          */
-        virtual void startConnection();
+        void startConnection();
 
         /**
          * @brief Affiche l'erreur de connexion.
          */
-        virtual void error();
+        void error();
 
     signals:
 
@@ -141,49 +141,49 @@ class PlayerSocket : public QObject
          * @brief getCallbackSettings
          * @return Options fmod pour la lecture réseau
          */
-        virtual audio::SoundSettings& getCallbackSettings();
+        audio::SoundSettings& getCallbackSettings();
 
         /**
          * @brief getSongDataReceived
          * @return Taille des données du son distant reçues
          */
-        virtual quint32 getSongDataReceived() const;
+        quint32 getSongDataReceived() const;
 
         /**
          * @brief getTotalCurrentSongData
          * @return Taille totale des données du son distant
          */
-        virtual quint32 getTotalCurrentSongData() const;
+        quint32 getTotalCurrentSongData() const;
 
         /**
          * @brief isConnected
          * @return true si la connexion entre les deux clients est établie et les listes échangées.
          */
-        virtual bool isConnected() const;
+        bool isConnected() const;
 
         /**
          * @brief Met le socket serveur en écoute de clients.
          * @param address Adresse sur laquelle écouter les connexions entrantes
          */
-        virtual void listen(QHostAddress address);
+        void listen(QHostAddress address);
 
         /**
          * @brief Se connecte à l'hôte passé en paramètre par le port défini par l'application.
          * @param address Adresse de l'hôte
          */
-        virtual void connectToHost(const QString& address);
+        void connectToHost(const QString& address);
 
         /**
          * @brief Envoie au client la liste des musiques enregistrées et reçoit ses musiques.
          * @param songs Arborescence des musiques à envoyer
          * @return Arborescence des musiques de l'autre client
          */
-        virtual gui::SongTreeRoot* exchangeSongList(gui::SongTreeRoot *songs);
+        gui::SongTreeRoot* exchangeSongList(gui::SongTreeRoot *songs);
 
         /**
          * @brief Vérifie s'il existe une prochaine requête client et signale sa réception.
          */
-        virtual void processCommands();
+        void processCommands();
 
 
         /** Méthodes de callback appelées par les fonctions pour le stream de musique distantes **/
@@ -198,13 +198,13 @@ class PlayerSocket : public QObject
         /**
          * @brief Ferme le socket et signale à l'application la fin de la communication.
          */
-        virtual void disconnection();
+        void disconnection();
 
         /**
          * @brief Ajoute la réponse reçue en paramètre dans la liste des messages à envoyer.
          * @param reply Réponse à envoyer
          */
-        virtual void sendCommandReply(std::shared_ptr<commands::CommandReply> reply);
+        void sendCommandReply(std::shared_ptr<commands::CommandReply> reply);
 };
 
 /** Callbacks FMOD pour le stream de musiques distantes **/

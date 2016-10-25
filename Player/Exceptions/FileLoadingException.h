@@ -19,30 +19,30 @@ namespace exceptions {
 
 class FileLoadingException : public BaseException
 {
-  private:
+    private:
 
-    std::string m_File;
+        std::string m_File;
 
-  protected:
+    protected:
 
-    virtual void buildMessage() override
-    {
-      m_Error = "Cannot open '" + m_File + "'";
-      BaseException::buildMessage();
-    }
+        virtual void buildMessage() override
+        {
+            m_Error = "Cannot open '" + m_File + "'";
+            BaseException::buildMessage();
+        }
 
-  public:
+    public:
 
-    FileLoadingException(const std::string& method, const std::string& file)
-      : BaseException(method), m_File(file)
-    {
-      buildMessage();
-    }
+        FileLoadingException(const std::string& method, const std::string& file)
+            : BaseException(method), m_File(file)
+        {
+            buildMessage();
+        }
 
-    virtual ~FileLoadingException() throw()
-    {
+        virtual ~FileLoadingException() throw()
+        {
 
-    }
+        }
 };
 
 

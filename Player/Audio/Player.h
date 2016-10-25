@@ -77,53 +77,53 @@ class Player : public QObject
          * @brief Génère un nouvel identifiant pour une musique.
          * @return Identifiant généré
          */
-        virtual SongId getNewSongId();
+        SongId getNewSongId();
 
         /**
          * @brief Récupère la musique du fichier passé en paramètre si elle est dans la liste.
          * @param filePath Chemin du fichier à chercher
          * @return Musique si elle existe, nullptr sinon
          */
-        virtual std::shared_ptr<Song> getLocalSong(const QString& filePath) const;
+        std::shared_ptr<Song> getLocalSong(const QString& filePath) const;
 
         /**
          * @brief Récupère la musique distante d'identifiant passé en paramètre si elle est dans la liste.
          * @param id Identifiant de la musique distante
          * @return Musique si elle existe, nullptr sinon
          */
-        virtual std::shared_ptr<network::RemoteSong> getRemoteSong(const SongId id) const;
+        std::shared_ptr<network::RemoteSong> getRemoteSong(const SongId id) const;
 
         /**
          * @brief Recherche une musique à partir de son identifiant.
          * @param songId Identifiant de la musique
          * @return Itérateur sur le son correspondant à l'identifiant passé en paramètre (end si pas trouvé)
          */
-        virtual SongIt findSong(SongId songId) const;
+        SongIt findSong(SongId songId) const;
 
         /**
          * @brief Retourne la première musique de la liste.
          * @return Position de la première musique
          */
-        virtual SongIt first() const;
+        SongIt first() const;
 
         /**
          * @brief Retourne la musique précédente (la dernière si boucle).
          * @return Position de la musique précédente
          */
-        virtual SongIt prev() const;
+        SongIt prev() const;
 
         /**
          * @brief Retourne la musique suivante (la première si boucle).
          * @return Position de la musique suivante
          */
-        virtual SongIt next() const;
+        SongIt next() const;
 
         /**
          * @brief Lance la musique passée en paramètre.
          * @param song Itérateur sur la musique
          * @return true si la musique a bien été modifiée
          */
-        virtual bool changeSong(SongIt song);
+        bool changeSong(SongIt song);
 
     signals:
 
@@ -158,95 +158,95 @@ class Player : public QObject
     public:
 
         Player();
-        virtual ~Player();
+        ~Player();
 
         /**
          * @brief getCurrentSong
          * @return Pointeur vers le son actuel.
          */
-        virtual std::shared_ptr<Song> getCurrentSong();
+        std::shared_ptr<Song> getCurrentSong();
 
         /**
          * @brief Compte le nombre de musiques de la liste passée en paramètre.
          * @param list Liste dont on veut le nombre d'éléments
          * @return Nombre de musiques enregistrées.
          */
-        virtual int songsCount(SongList_t list = SongList_t::ALL_SONGS) const;
+        int songsCount(SongList_t list = SongList_t::ALL_SONGS) const;
 
         /**
          * @brief Active la lecture.
          */
-        virtual void play();
+        void play();
 
         /**
          * @brief Stoppe le player.
          */
-        virtual void stop();
+        void stop();
 
         /**
          * @brief Met en pause le player.
          */
-        virtual void pause();
+        void pause();
 
         /**
          * @brief Change l'état mute du player (mute/unmute).
          * @param mute Etat mute à appliquer
          */
-        virtual void mute(bool mute);
+        void mute(bool mute);
 
         /**
          * @brief isPlaying
          * @return true si ni pause, ni stop.
          */
-        virtual bool isPlaying() const;
+        bool isPlaying() const;
 
         /**
          * @brief isStopped
          * @return true si le player est stoppé.
          */
-        virtual bool isStopped() const;
+        bool isStopped() const;
 
         /**
          * @brief isPaused
          * @return true si le player est en pause.
          */
-        virtual bool isPaused() const;
+        bool isPaused() const;
 
         /**
          * @brief isMuted
          * @return true si le player est mute.
          */
-        virtual bool isMuted() const;
+        bool isMuted() const;
 
         /**
          * @brief isLoop
          * @return true si la boucle est activée.
          */
-        virtual bool isLoop() const;
+        bool isLoop() const;
 
         /**
          * @brief Applique ou retire l'état loop au player.
          * @param loop Valeur à affecter à l'attribut Loop.
          */
-        virtual void setLoop(bool loop);
+        void setLoop(bool loop);
 
         /**
          * @brief getVolumeState
          * @return Etat du volume.
          */
-        virtual int getVolumeState() const;
+        int getVolumeState() const;
 
         /**
          * @brief Modifie le volume du player.
          * @param volumeState Etat du volume
          */
-        virtual void setVolume(int volumeState);
+        void setVolume(int volumeState);
 
         /**
          * @brief Vide la liste des musiques du player à partir de l'indice de la listte passé en paramètre.
          * @param list Liste dont on veut supprimer les éléments
          */
-        virtual void clearSongs(SongList_t list = SongList_t::ALL_SONGS);
+        void clearSongs(SongList_t list = SongList_t::ALL_SONGS);
 
         /**
          * @brief Créé un nouveau son local s'il n'existe pas encore à partir du chemin passé en paramètre.
@@ -254,7 +254,7 @@ class Player : public QObject
          * @param inFolder Présence du son dans le dossier ou non
          * @return Objet son créé, nullptr sinon
          */
-        virtual std::shared_ptr<Song> createLocalSong(const QString& filePath, bool inFolder);
+        std::shared_ptr<Song> createLocalSong(const QString& filePath, bool inFolder);
 
         /**
          * @brief Créé un nouveau son distant s'il n'existe pas encore à partir des infos passées en paramètre.
@@ -265,7 +265,7 @@ class Player : public QObject
          * @param settings Paramètres de lecture du son distant
          * @return Objet son créé, nullptr sinon
          */
-        virtual std::shared_ptr<network::RemoteSong> createRemoteSong(const QString& file, SongId remoteId, SoundPos_t length, const QString& artist, SoundSettings *settings);
+        std::shared_ptr<network::RemoteSong> createRemoteSong(const QString& file, SongId remoteId, SoundPos_t length, const QString& artist, SoundSettings *settings);
 
         /**
          * @brief Ajoute une nouvelle musique dans la liste du player.
@@ -274,7 +274,7 @@ class Player : public QObject
          * @param parentDir Parent dans l'arborescence
          * @return Elément de l'arborescence contenant la nouvelle musique
          */
-        virtual gui::SongListItem* addNewSong(SongList_t list, const QString& filePath, gui::SongListItem *parentDir = nullptr);
+        gui::SongListItem* addNewSong(SongList_t list, const QString& filePath, gui::SongListItem *parentDir = nullptr);
 
         /**
          * @brief Remplit le vecteur Musiques à partir des fichiers
@@ -283,63 +283,63 @@ class Player : public QObject
          * @param parentDir Parent dans l'arborescence
          * @return Arborescence des fichiers lus
          */
-        virtual gui::SongTreeRoot* loadSongs(const QString& dirPath, gui::SongTreeRoot *parentDir = nullptr);
+        gui::SongTreeRoot* loadSongs(const QString& dirPath, gui::SongTreeRoot *parentDir = nullptr);
 
         /**
          * @brief Recharge la liste des musiques locales avec le répertoire passé en paramètre.
          * @param dirPath Répertoire à parcourir
          * @return Arborescence des fichiers lus
          */
-        virtual gui::SongTreeRoot* reloadSongs(const QString& dirPath);
+        gui::SongTreeRoot* reloadSongs(const QString& dirPath);
 
         /**
          * @brief Lance la première musique du player.
          */
-        virtual void firstSong();
+        void firstSong();
 
         /**
          * @brief Lance la musique précédente du player.
          */
-        virtual void previousSong();
+        void previousSong();
 
         /**
          * @brief Lance la musique suivante du player.
          */
-        virtual void nextSong();
+        void nextSong();
 
         /**
          * @brief Met à jour Fmod et la lecture de musique en changeant si besoin.
          */
-        virtual void update();
+        void update();
 
         /**
          * @brief Vérifie si le lecteur prévisualise une musique.
          * @return true si une prévisualisation a lieu
          */
-        virtual bool isPreviewing() const;
+        bool isPreviewing() const;
 
         /**
          * @brief Retourne la position de la chanson prévisualisée.
          * @return Position courante de la prévisualisation
          */
-        virtual SoundPos_t getPreviewPosition() const;
+        SoundPos_t getPreviewPosition() const;
 
         /**
          * @brief Retourne la longueur de la chanson prévisualisée.
          * @return Longueur de la chanson prévisualisée
          */
-        virtual SoundPos_t getPreviewLength() const;
+        SoundPos_t getPreviewLength() const;
 
         /**
          * @brief Démarre la preview de la chanson passée en paramètre.
          * @param filePath Chemin de la chanson à lancer
          */
-        virtual void startPreview(const QString& filePath);
+        void startPreview(const QString& filePath);
 
         /**
          * @brief Arrête la preview et poursuit la lecture mise en pause.
          */
-        virtual void stopPreview();
+        void stopPreview();
 
     public slots:
 
@@ -348,19 +348,19 @@ class Player : public QObject
          * @param songId Indice de la musique
          * @return true si la musique a bien été modifiée
          */
-        virtual bool changeSong(SongId songId);
+        bool changeSong(SongId songId);
 
         /**
          * @brief Supprime la musique d'indice songId.
          * @param songId Indice de la musique
          */
-        virtual void removeSong(SongId songId);
+        void removeSong(SongId songId);
 
         /**
          * @brief Traite la commande passée en paramètre et émet la réponse une fois terminée.
          * @param command Commande à traiter
          */
-        virtual void executeNetworkCommand(std::shared_ptr<network::commands::CommandRequest> command);
+        void executeNetworkCommand(std::shared_ptr<network::commands::CommandRequest> command);
 };
 
 

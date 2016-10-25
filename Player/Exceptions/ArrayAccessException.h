@@ -21,35 +21,35 @@ namespace exceptions {
 
 class ArrayAccessException : public BaseException
 {
-  private:
+    private:
 
-    unsigned int m_ArraySize;
+        unsigned int m_ArraySize;
 
-    int m_Pos;
+        int m_Pos;
 
-  protected:
+    protected:
 
-    virtual void buildMessage() override
-    {
-      std::ostringstream error;
-      error << "Warning ! Out of range : Try to access to pos " << m_Pos << " of an array [0-" << m_ArraySize << "[";
+        virtual void buildMessage() override
+        {
+            std::ostringstream error;
+            error << "Warning ! Out of range : Try to access to pos " << m_Pos << " of an array [0-" << m_ArraySize << "[";
 
-      m_Error = error.str();
-      BaseException::buildMessage();
-    }
+            m_Error = error.str();
+            BaseException::buildMessage();
+        }
 
   public:
 
-    ArrayAccessException(const std::string& method, unsigned int arraySize, int pos)
-      : BaseException(method), m_ArraySize(arraySize), m_Pos(pos)
-    {
-      buildMessage();
-    }
+        ArrayAccessException(const std::string& method, unsigned int arraySize, int pos)
+            : BaseException(method), m_ArraySize(arraySize), m_Pos(pos)
+        {
+            buildMessage();
+        }
 
-    virtual ~ArrayAccessException() throw()
-    {
+        virtual ~ArrayAccessException() throw()
+        {
 
-    }
+        }
 };
 
 
