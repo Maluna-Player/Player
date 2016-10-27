@@ -57,6 +57,7 @@ class PlayerWindow : public QMainWindow
         PlayerLabel *mp_SongTitle;
         PlayerLabel *mp_SongArtist;
         QLabel *mp_SongPicture;
+        QPixmap m_DefaultSongPicture;
 
         Spectrum *mp_Spectrum;
         SongList *mp_SongList;

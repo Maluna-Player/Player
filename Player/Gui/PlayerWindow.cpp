@@ -155,6 +155,7 @@ void PlayerWindow::createTopWindowPart()
 
     mp_Spectrum = new Spectrum(SPECTRUM_WIDTH);
     mp_SongPicture = new QLabel;
+    m_DefaultSongPicture = util::Tools::loadImage(QString(IMAGES_SUBDIR) + "default-picture.png");
 
     auto optionsBar = createOptionsBar();
 
@@ -295,6 +296,11 @@ void PlayerWindow::setState(PlayerState state)
 
 void PlayerWindow::updateCurrentSong()
 {
+    mp_SongPicture->clear();
+    mp_ProgressBar->setValue(0);
+    mp_NetworkLoadBar->setValue(0);
+    mp_NetworkLoadBar->setStartPos(0);
+
     if (m_Player.getCurrentSong())
     {
         mp_SongTitle->setText(m_Player.getCurrentSong()->getTitle());
@@ -307,8 +313,9 @@ void PlayerWindow::updateCurrentSong()
             if (!mp_SongPicture->pixmap()->isNull() && mp_SongPicture->pixmap()->width() > 400)
                 mp_SongPicture->setPixmap(mp_SongPicture->pixmap()->scaledToWidth(400));
         }
-        else
-            mp_SongPicture->clear();
+
+        if (!mp_SongPicture->pixmap() || mp_SongPicture->pixmap()->isNull())
+            mp_SongPicture->setPixmap(m_DefaultSongPicture);
 
         mp_SongLength->setText(util::Tools::msToString(m_Player.getCurrentSong()->getLength()));
         mp_ProgressBar->setMaximum(m_Player.getCurrentSong()->getLength());
@@ -322,14 +329,9 @@ void PlayerWindow::updateCurrentSong()
     {
         mp_SongTitle->clear();
         mp_SongArtist->clear();
-        mp_SongPicture->clear();
         mp_SongPos->setText(util::Tools::msToString(0));
         mp_SongLength->setText(util::Tools::msToString(0));
     }
-
-    mp_ProgressBar->setValue(0);
-    mp_NetworkLoadBar->setValue(0);
-    mp_NetworkLoadBar->setStartPos(0);
 
     if (m_Player.isPaused())
         setState(PlayerState::STOP);
