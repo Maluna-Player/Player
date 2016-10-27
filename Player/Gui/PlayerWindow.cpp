@@ -120,11 +120,22 @@ QVBoxLayout* PlayerWindow::createOptionsBar()
 {
     PlayerToggleButton *spectrumButton = new PlayerToggleButton("spectrum.png", true);
     spectrumButton->setToolTip("Afficher/Masquer le spectre");
-    connect(spectrumButton, &QPushButton::clicked, mp_Spectrum, &Spectrum::setVisible);
+    connect(spectrumButton, &QPushButton::clicked, [this](bool enabled) {
+        mp_Spectrum->setVisible(enabled);
+        mp_Spectrum->lower();
+    });
+
+    PlayerToggleButton *pictureButton = new PlayerToggleButton("picture.png", true);
+    pictureButton->setToolTip("Afficher/Masquer la pochette");
+    connect(pictureButton, &QPushButton::clicked, [this](bool enabled) {
+        mp_SongPicture->setVisible(enabled);
+        mp_SongPicture->lower();
+    });
 
     QVBoxLayout *optionsBar = new QVBoxLayout;
     optionsBar->setAlignment(Qt::AlignTop);
     optionsBar->addWidget(spectrumButton);
+    optionsBar->addWidget(pictureButton);
 
     return optionsBar;
 }
@@ -160,11 +171,10 @@ void PlayerWindow::createTopWindowPart()
     topLayout->addLayout(optionsBar, 0, 2, 10, 1, Qt::AlignTop);
     topLayout->addWidget(mp_SongList, 0, 3, 10, 1);
 
+    mp_TopPart->setLayout(topLayout);
 
     mp_SongTitle->raise();
     mp_SongArtist->raise();
-
-    mp_TopPart->setLayout(topLayout);
 }
 
 // ==============================
