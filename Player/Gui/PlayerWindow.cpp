@@ -23,6 +23,7 @@
 #include <QMimeData>
 #include <QStackedLayout>
 #include <QPropertyAnimation>
+#include "PlayerToggleButton.h"
 
 
 namespace gui {
@@ -97,7 +98,7 @@ void PlayerWindow::createMenuBar()
     MenuBar *menuBar = new MenuBar;
 
     QToolBar *toolbar = addToolBar("toolbar");
-    toolbar->setStyleSheet("background-color: grey;");
+    toolbar->setStyleSheet("QToolBar { background-color: grey; }");
 
     toolbar->addAction(menuBar->getAddingSongAction());
     toolbar->addAction(menuBar->getOpenAction());
@@ -110,6 +111,22 @@ void PlayerWindow::createMenuBar()
     connect(menuBar->getQuitAction(), &QAction::triggered, qApp, &QApplication::quit);
 
     setMenuBar(menuBar);
+}
+
+// ==============================
+// ==============================
+
+QVBoxLayout* PlayerWindow::createOptionsBar()
+{
+    PlayerToggleButton *spectrumButton = new PlayerToggleButton("spectrum.png", true);
+    spectrumButton->setToolTip("Afficher/Masquer le spectre");
+    connect(spectrumButton, &QPushButton::clicked, mp_Spectrum, &Spectrum::setVisible);
+
+    QVBoxLayout *optionsBar = new QVBoxLayout;
+    optionsBar->setAlignment(Qt::AlignTop);
+    optionsBar->addWidget(spectrumButton);
+
+    return optionsBar;
 }
 
 // ==============================
@@ -128,6 +145,8 @@ void PlayerWindow::createTopWindowPart()
     mp_Spectrum = new Spectrum(SPECTRUM_WIDTH);
     mp_SongPicture = new QLabel;
 
+    auto optionsBar = createOptionsBar();
+
     mp_SongList = new SongList;
     connect(mp_SongList, &SongList::songPressed, &m_Player, qOverload<audio::Player::SongId>(&audio::Player::changeSong));
     connect(mp_SongList, &SongList::songRemoved, &m_Player, &audio::Player::removeSong);
@@ -136,9 +155,11 @@ void PlayerWindow::createTopWindowPart()
     topLayout->setColumnStretch(0, 1);
     topLayout->addWidget(mp_SongTitle, 0, 0, 1, 2, Qt::AlignTop);
     topLayout->addWidget(mp_SongArtist, 1, 0, 1, 2, Qt::AlignTop);
-    topLayout->addWidget(mp_SongPicture, 0, 1, 10, 1, Qt::AlignHCenter);
+    topLayout->addWidget(mp_SongPicture, 0, 1, 10, 1, Qt::AlignRight);
     topLayout->addWidget(mp_Spectrum, 0, 1, 10, 1);
-    topLayout->addWidget(mp_SongList, 0, 2, 10, 1);
+    topLayout->addLayout(optionsBar, 0, 2, 10, 1, Qt::AlignTop);
+    topLayout->addWidget(mp_SongList, 0, 3, 10, 1);
+
 
     mp_SongTitle->raise();
     mp_SongArtist->raise();
@@ -540,9 +561,10 @@ void PlayerWindow::timerEvent(QTimerEvent *event)
 
         if (m_Player.isPlaying())
         {
-            mp_Spectrum->updateValues(m_Player.getCurrentSong()->getSoundID());
-            mp_ProgressBar->setValue(m_Player.getCurrentSong()->getPosition());
+            if (mp_Spectrum->isVisible())
+                mp_Spectrum->updateValues(m_Player.getCurrentSong()->getSoundID());
 
+            mp_ProgressBar->setValue(m_Player.getCurrentSong()->getPosition());
             mp_SongPos->setText(util::Tools::msToString(m_Player.getCurrentSong()->getPosition()));
 
             if (m_Player.getCurrentSong()->isRemote())

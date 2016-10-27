@@ -30,6 +30,7 @@
 #include <QDropEvent>
 #include <QVector>
 #include <QTimer>
+#include <QVBoxLayout>
 #include "./Network/PlayerSocket.h"
 #include "ConnectionBox.h"
 
@@ -85,6 +86,11 @@ class PlayerWindow : public QMainWindow
          * @brief Créé le menu de la fenêtre.
          */
         void createMenuBar();
+
+        /**
+         * @brief Créé la barre des options.
+         */
+        QVBoxLayout* createOptionsBar();
 
         /**
          * @brief Créé la partie haute de la fenêtre.
