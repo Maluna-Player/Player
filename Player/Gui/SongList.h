@@ -73,6 +73,8 @@ class SongList : public QTreeWidget
 
         virtual void mouseMoveEvent(QMouseEvent *event) override;
 
+        virtual void leaveEvent(QEvent *event) override;
+
     signals:
 
         /**
