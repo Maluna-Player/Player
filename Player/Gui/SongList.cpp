@@ -259,7 +259,10 @@ void SongList::mouseMoveEvent(QMouseEvent *event)
     QTreeWidgetItem *flewItem = itemAt(event->x(), event->y());
 
     if (mp_PreviousHilightedItem != nullptr)
+    {
         mp_PreviousHilightedItem->setIcon(2, QIcon());
+        mp_PreviousHilightedItem = nullptr;
+    }
 
     if (flewItem)
     {
@@ -270,11 +273,7 @@ void SongList::mouseMoveEvent(QMouseEvent *event)
             item->setIcon(2, m_DeleteIcon);
             mp_PreviousHilightedItem = item;
         }
-        else
-            mp_PreviousHilightedItem = nullptr;
     }
-    else
-        mp_PreviousHilightedItem = nullptr;
 
     QTreeWidget::mouseMoveEvent(event);
 }

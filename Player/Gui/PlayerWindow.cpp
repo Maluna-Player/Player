@@ -132,10 +132,15 @@ QVBoxLayout* PlayerWindow::createOptionsBar()
         mp_SongPicture->lower();
     });
 
+    PlayerToggleButton *listButton = new PlayerToggleButton("list.png", true);
+    listButton->setToolTip("Afficher/Masquer la liste des musiques");
+    connect(listButton, &QPushButton::clicked, mp_SongList, &SongList::setVisible);
+
     QVBoxLayout *optionsBar = new QVBoxLayout;
     optionsBar->setAlignment(Qt::AlignTop);
     optionsBar->addWidget(spectrumButton);
     optionsBar->addWidget(pictureButton);
+    optionsBar->addWidget(listButton);
 
     return optionsBar;
 }
@@ -157,12 +162,12 @@ void PlayerWindow::createTopWindowPart()
     mp_SongPicture = new QLabel;
     m_DefaultSongPicture = util::Tools::loadImage(QString(IMAGES_SUBDIR) + "default-picture.png");
 
-    auto optionsBar = createOptionsBar();
-
     mp_SongList = new SongList;
     connect(mp_SongList, &SongList::songPressed, &m_Player, qOverload<audio::Player::SongId>(&audio::Player::changeSong));
     connect(mp_SongList, &SongList::songRemoved, &m_Player, &audio::Player::removeSong);
     connect(&m_Player, &audio::Player::streamError, mp_SongList, &SongList::disableSong);
+
+    auto optionsBar = createOptionsBar();
 
     topLayout->setColumnStretch(0, 1);
     topLayout->addWidget(mp_SongTitle, 0, 0, 1, 2, Qt::AlignTop);
