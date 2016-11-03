@@ -82,6 +82,10 @@ class PlayerWindow : public QMainWindow
 
         ConnectionDialog m_ConnectionDialog;
 
+        QPixmap m_ConnectedIcon;
+        QPixmap m_DisconnectedIcon;
+        QLabel *mp_ConnectionState;
+
 
         /**
          * @brief Créé le menu de la fenêtre.

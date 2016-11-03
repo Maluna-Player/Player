@@ -112,6 +112,18 @@ void PlayerWindow::createMenuBar()
     toolbar->addAction(menuBar->getQuitAction());
     toolbar->addAction(menuBar->getAboutAction());
 
+    QWidget *spacer = new QWidget;
+    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    toolbar->addWidget(spacer);
+
+    m_ConnectedIcon = util::Tools::loadImage(QString(IMAGES_SUBDIR) + "connected_state.png");
+    m_DisconnectedIcon = util::Tools::loadImage(QString(IMAGES_SUBDIR) + "disconnected_state.png");
+
+    mp_ConnectionState = new QLabel;
+    mp_ConnectionState->setPixmap(m_DisconnectedIcon);
+    mp_ConnectionState->setToolTip("Déconnecté");
+    toolbar->addWidget(mp_ConnectionState);
+
     connect(menuBar->getAddingSongAction(), &QAction::triggered, this, &PlayerWindow::importSong);
     connect(menuBar->getOpenAction(), &QAction::triggered, this, &PlayerWindow::openSongsDir);
     connect(menuBar->getOpenConnectionAction(), &QAction::triggered, this, &PlayerWindow::openConnection);
@@ -540,6 +552,8 @@ void PlayerWindow::startConnection()
     mp_SongList->addTree(SongList_t::REMOTE_SONGS, remoteSongList);
 
     m_ConnectionDialog.connected();
+    mp_ConnectionState->setPixmap(m_ConnectedIcon);
+    mp_ConnectionState->setToolTip("Connecté");
 
     connect(mp_Socket.get(), &network::PlayerSocket::commandReceived, &m_Player, &audio::Player::executeNetworkCommand);
     connect(&m_Player, &audio::Player::commandExecuted, mp_Socket.get(), &network::PlayerSocket::sendCommandReply);
@@ -570,7 +584,10 @@ void PlayerWindow::closeConnection()
             mp_SongList->clearList(SongList_t::REMOTE_SONGS);
 
             mp_Socket.reset(nullptr);
+
             m_ConnectionDialog.disconnect();
+            mp_ConnectionState->setPixmap(m_DisconnectedIcon);
+            mp_ConnectionState->setToolTip("Déconnecté");
         }
     }
 }
