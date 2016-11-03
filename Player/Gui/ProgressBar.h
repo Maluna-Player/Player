@@ -56,6 +56,12 @@ class ProgressBar : public QProgressBar
 
         ProgressBar(QWidget *parent = nullptr);
         virtual ~ProgressBar() = default;
+
+        /**
+         * @brief Modifie la position et met à jour l'affichage.
+         * @param position Nouvelle position
+         */
+        void setPosition(int position);
 };
 
 

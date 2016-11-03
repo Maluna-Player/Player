@@ -589,7 +589,7 @@ void PlayerWindow::timerEvent(QTimerEvent *event)
             if (mp_Spectrum->isVisible())
                 mp_Spectrum->updateValues(m_Player.getCurrentSong()->getSoundID());
 
-            mp_ProgressBar->setValue(m_Player.getCurrentSong()->getPosition());
+            mp_ProgressBar->setPosition(m_Player.getCurrentSong()->getPosition());
             mp_SongPos->setText(util::Tools::msToString(m_Player.getCurrentSong()->getPosition()));
 
             if (m_Player.getCurrentSong()->isRemote())

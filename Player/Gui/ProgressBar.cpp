@@ -26,6 +26,15 @@ ProgressBar::ProgressBar(QWidget *parent) : QProgressBar(parent), m_Press(false)
 // ==============================
 // ==============================
 
+void ProgressBar::setPosition(int position)
+{
+    setValue(position);
+    update();
+}
+
+// ==============================
+// ==============================
+
 void ProgressBar::paintEvent(QPaintEvent * /*event*/)
 {
     QPainter painter(this);
