@@ -23,14 +23,6 @@ PlayerMessage::PlayerMessage(QTcpSocket *socket) : mp_Socket(socket), m_MessageS
 // ==============================
 // ==============================
 
-PlayerMessage::~PlayerMessage()
-{
-
-}
-
-// ==============================
-// ==============================
-
 QByteArray PlayerMessage::getNextMessage()
 {
     QByteArray message;

@@ -22,7 +22,7 @@ class CommandRequest : public Command
     public:
 
         CommandRequest(audio::Player::SongId songId);
-        virtual ~CommandRequest() {}
+        virtual ~CommandRequest() = default;
 
         virtual bool isRequest() const override;
 
@@ -34,7 +34,7 @@ class OpenCommandRequest : public CommandRequest
     public:
 
         OpenCommandRequest(audio::Player::SongId songId);
-        virtual ~OpenCommandRequest() {}
+        virtual ~OpenCommandRequest() = default;
 
         virtual char getCommandType() const override;
 };
@@ -44,7 +44,7 @@ class CloseCommandRequest : public CommandRequest
     public:
 
         CloseCommandRequest(audio::Player::SongId songId);
-        virtual ~CloseCommandRequest() {}
+        virtual ~CloseCommandRequest() = default;
 
         virtual char getCommandType() const override;
 };
@@ -58,7 +58,7 @@ class ReadCommandRequest : public CommandRequest
     public:
 
         ReadCommandRequest(audio::Player::SongId songId, unsigned int bytes);
-        virtual ~ReadCommandRequest() {}
+        virtual ~ReadCommandRequest() = default;
 
         virtual char getCommandType() const override;
 
@@ -76,7 +76,7 @@ class SeekCommandRequest : public CommandRequest
     public:
 
         SeekCommandRequest(audio::Player::SongId songId, unsigned int pos);
-        virtual ~SeekCommandRequest() {}
+        virtual ~SeekCommandRequest() = default;
 
         virtual char getCommandType() const override;
 

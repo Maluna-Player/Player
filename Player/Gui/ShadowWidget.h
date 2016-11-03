@@ -40,7 +40,7 @@ class ShadowWidget : public QWidget
 
         ShadowWidget(const QColor& color, QWidget *parent = nullptr);
 
-        virtual ~ShadowWidget();
+        virtual ~ShadowWidget() = default;
 
         int getOpacity() const;
 

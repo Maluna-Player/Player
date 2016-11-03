@@ -32,7 +32,7 @@ class NetworkLoadBar : public QProgressBar
     public:
 
         NetworkLoadBar(QWidget *parent = nullptr);
-        virtual ~NetworkLoadBar();
+        virtual ~NetworkLoadBar() = default;
 
         /**
          * @brief Modifie la valeur de position de départ de la barre.

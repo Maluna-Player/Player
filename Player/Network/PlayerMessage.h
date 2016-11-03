@@ -67,7 +67,7 @@ class PlayerMessage : public QObject
     public:
 
         PlayerMessage(QTcpSocket *socket);
-        virtual ~PlayerMessage();
+        virtual ~PlayerMessage() = default;
 
         /**
          * @brief Retourne le prochain message de la liste.

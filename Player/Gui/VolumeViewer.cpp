@@ -27,14 +27,6 @@ VolumeViewer::VolumeViewer(QWidget *parent) : QLabel(parent)
 // ==============================
 // ==============================
 
-VolumeViewer::~VolumeViewer()
-{
-
-}
-
-// ==============================
-// ==============================
-
 void VolumeViewer::setImage(int volumeState)
 {
     if (volumeState == MUTE_STATE)

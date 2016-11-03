@@ -26,7 +26,7 @@ class PlayerLabel : public QLabel
         PlayerLabel(const QColor& color, int size = -1, QWidget *parent = nullptr);
         PlayerLabel(const QColor& color, const QFont& font, QWidget *parent = nullptr);
 
-        virtual ~PlayerLabel();
+        virtual ~PlayerLabel() = default;
 
 
         /**

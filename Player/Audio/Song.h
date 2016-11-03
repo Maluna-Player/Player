@@ -55,7 +55,7 @@ class Song
 
     public:
 
-        virtual ~Song();
+        virtual ~Song() = default;
 
         SoundID_t getSoundID() const;
         Player::SongId getId() const;

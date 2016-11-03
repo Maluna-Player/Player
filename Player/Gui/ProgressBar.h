@@ -55,7 +55,7 @@ class ProgressBar : public QProgressBar
     public:
 
         ProgressBar(QWidget *parent = nullptr);
-        virtual ~ProgressBar();
+        virtual ~ProgressBar() = default;
 };
 
 

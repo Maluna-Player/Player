@@ -35,7 +35,7 @@ class MenuBar : public QMenuBar
     public:
 
         MenuBar(QWidget *parent = nullptr);
-        virtual ~MenuBar();
+        virtual ~MenuBar() = default;
 
         /**
          * @brief getAddingSongAction

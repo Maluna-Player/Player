@@ -25,14 +25,6 @@ ProgressBackground::ProgressBackground(QWidget *parent) : QWidget(parent)
 // ==============================
 // ==============================
 
-ProgressBackground::~ProgressBackground()
-{
-
-}
-
-// ==============================
-// ==============================
-
 void ProgressBackground::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);

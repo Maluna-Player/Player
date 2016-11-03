@@ -37,7 +37,7 @@ class SongListIterator : public QTreeWidgetItemIterator
 
         SongListIterator(QTreeWidget *widget, IteratorFlags flags = All);
         SongListIterator(QTreeWidgetItem *item);
-        virtual ~SongListIterator();
+        virtual ~SongListIterator() = default;
 
         /**
          * @brief Détermine s'il existe un prochain élément, et si le parcours effectué est terminé ou non.

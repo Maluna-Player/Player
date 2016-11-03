@@ -48,14 +48,6 @@ SongListItem::SongListItem(ElementType type, const QString& name, SongListItem *
 // ==============================
 // ==============================
 
-SongListItem::~SongListItem()
-{
-
-}
-
-// ==============================
-// ==============================
-
 bool SongListItem::isRoot() const
 {
     return (m_Type == ElementType::ROOT);

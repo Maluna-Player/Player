@@ -45,7 +45,7 @@ class Spectrum : public QWidget
     public:
 
         Spectrum(int width, QWidget *parent = nullptr);
-        virtual ~Spectrum();
+        virtual ~Spectrum() = default;
 
         /**
          * @brief Remet à 0 les valeurs du spectre.

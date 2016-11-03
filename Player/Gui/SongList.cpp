@@ -52,14 +52,6 @@ SongList::SongList(QWidget *parent)
 // ==============================
 // ==============================
 
-SongList::~SongList()
-{
-
-}
-
-// ==============================
-// ==============================
-
 SongListItem* SongList::getRootNode(SongList_t list) const
 {
     if (list & SongList_t::LOCAL_SONGS)

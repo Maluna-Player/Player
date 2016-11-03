@@ -33,14 +33,6 @@ Spectrum::Spectrum(int width, QWidget *parent)
 // ==============================
 // ==============================
 
-Spectrum::~Spectrum()
-{
-
-}
-
-// ==============================
-// ==============================
-
 void Spectrum::draw(QPainter *painter) const
 {
     int i;

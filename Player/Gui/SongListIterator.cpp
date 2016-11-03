@@ -32,14 +32,6 @@ SongListIterator::SongListIterator(QTreeWidgetItem *item)
 // ==============================
 // ==============================
 
-SongListIterator::~SongListIterator()
-{
-
-}
-
-// ==============================
-// ==============================
-
 bool SongListIterator::isVisitingNodesTree() const
 {
     return m_NodesCount;

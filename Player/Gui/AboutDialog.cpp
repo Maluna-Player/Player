@@ -61,13 +61,5 @@ AboutDialog::AboutDialog(QWidget *parent) : QDialog(parent)
     setLayout(layout);
 }
 
-// ==============================
-// ==============================
-
-AboutDialog::~AboutDialog()
-{
-
-}
-
 
 } // gui

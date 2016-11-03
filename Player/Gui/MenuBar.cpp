@@ -38,14 +38,6 @@ MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent)
 // ==============================
 // ==============================
 
-MenuBar::~MenuBar()
-{
-
-}
-
-// ==============================
-// ==============================
-
 QAction* MenuBar::getAddingSongAction() const
 {
     return mp_AddingSongAction;

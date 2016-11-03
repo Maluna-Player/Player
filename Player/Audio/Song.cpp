@@ -45,14 +45,6 @@ Song::Song(Player::SongId id, const QString& file, bool inFolder, bool openable)
 // ==============================
 // ==============================
 
-Song::~Song()
-{
-
-}
-
-// ==============================
-// ==============================
-
 SoundID_t Song::getSoundID() const
 {
     return m_SoundID;

@@ -27,14 +27,6 @@ PlayerButton::PlayerButton(const QString& name, QWidget *parent)
 // ==============================
 // ==============================
 
-PlayerButton::~PlayerButton()
-{
-
-}
-
-// ==============================
-// ==============================
-
 void PlayerButton::loadImage(const QPixmap& image)
 {
     setPixmap(image.scaled(70, 70, Qt::KeepAspectRatio));

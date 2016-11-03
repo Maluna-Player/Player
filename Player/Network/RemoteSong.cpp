@@ -25,14 +25,6 @@ RemoteSong::RemoteSong(audio::Player::SongId id, const QString& file, audio::Pla
 // ==============================
 // ==============================
 
-RemoteSong::~RemoteSong()
-{
-
-}
-
-// ==============================
-// ==============================
-
 bool RemoteSong::isRemote() const
 {
     return true;

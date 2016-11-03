@@ -33,7 +33,7 @@ class ProgressBackground : public QWidget
     public:
 
         ProgressBackground(QWidget *parent = nullptr);
-        virtual ~ProgressBackground();
+        virtual ~ProgressBackground() = default;
 };
 
 

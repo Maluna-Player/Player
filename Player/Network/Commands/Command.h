@@ -27,7 +27,7 @@ class Command : public Sendable
     public:
 
         Command(audio::Player::SongId songId);
-        virtual ~Command() {}
+        virtual ~Command() = default;
 
         audio::Player::SongId getSongId() const;
 

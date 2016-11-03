@@ -92,7 +92,7 @@ class SongList : public QTreeWidget
     public:
 
         SongList(QWidget *parent = nullptr);
-        virtual ~SongList();
+        virtual ~SongList() = default;
 
         /**
          * @brief Vide la liste du noeud passé en paramètre.

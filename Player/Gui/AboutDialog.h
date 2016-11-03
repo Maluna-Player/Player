@@ -22,7 +22,7 @@ class AboutDialog : public QDialog
     public:
 
         AboutDialog(QWidget *parent = nullptr);
-        virtual ~AboutDialog();
+        virtual ~AboutDialog() = default;
 };
 
 

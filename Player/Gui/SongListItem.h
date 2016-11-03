@@ -63,7 +63,7 @@ class SongListItem : public QTreeWidgetItem, public network::Sendable
     public:
 
         SongListItem(ElementType type, const QString& name = "", SongListItem *parent = nullptr);
-        virtual ~SongListItem();
+        virtual ~SongListItem() = default;
 
         /**
          * @brief isRoot

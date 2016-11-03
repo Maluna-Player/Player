@@ -54,14 +54,6 @@ PlayerLabel::PlayerLabel(const QColor& color, const QFont& font, QWidget *parent
 // ==============================
 // ==============================
 
-PlayerLabel::~PlayerLabel()
-{
-
-}
-
-// ==============================
-// ==============================
-
 void PlayerLabel::setColor(const QColor& color)
 {
     QPalette pal(palette());

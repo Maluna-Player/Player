@@ -66,7 +66,7 @@ class ComposedMap : public std::map<Key, Value>
                 ElementIterator m_It;
 
 
-                base_iterator() {}
+                base_iterator() = default;
 
                 base_iterator(MapType m, const typename std::map<Key, Value>::const_iterator& it) : m_Begin(m.begin()), m_End(m.end()), m_CurrentContainer(it)
                 {
@@ -254,7 +254,7 @@ class ComposedMap : public std::map<Key, Value>
                    this->m_It = it.m_It;
                 }
 
-                virtual ~const_iterator() {}
+                virtual ~const_iterator() = default;
 
                 virtual bool operator==(const const_iterator& other) const
                 {
@@ -330,7 +330,7 @@ class ComposedMap : public std::map<Key, Value>
                 iterator(std::map<Key, Value>& m) : base_iterator<>(m)
                 {}
 
-                virtual ~iterator() {}
+                virtual ~iterator() = default;
 
                 virtual iterator& operator=(const iterator& it)
                 {
@@ -364,7 +364,7 @@ class ComposedMap : public std::map<Key, Value>
         ComposedMap() : std::map<Key, Value>() {}
         ComposedMap(const std::vector<Key>& flags) : std::map<Key, Value>(), m_flags(flags) {}
         ComposedMap(const std::initializer_list<Key>& flags) : std::map<Key, Value>(), m_flags(flags) {}
-        virtual ~ComposedMap() {}
+        virtual ~ComposedMap() = default;
 
         virtual iterator begin();
         virtual const_iterator begin() const;

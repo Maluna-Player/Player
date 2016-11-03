@@ -27,7 +27,7 @@ class CommandReply : public Command
     public:
 
         CommandReply(audio::Player::SongId songId, FMOD_RESULT result);
-        virtual ~CommandReply() {}
+        virtual ~CommandReply() = default;
 
         FMOD_RESULT getResult() const;
 
@@ -47,7 +47,7 @@ class OpenCommandReply : public CommandReply
     public:
 
         OpenCommandReply(audio::Player::SongId songId, FMOD_RESULT result, unsigned int fileSize);
-        virtual ~OpenCommandReply() {}
+        virtual ~OpenCommandReply() = default;
 
         virtual char getCommandType() const override;
 
@@ -61,7 +61,7 @@ class CloseCommandReply : public CommandReply
     public:
 
         CloseCommandReply(audio::Player::SongId songId, FMOD_RESULT result);
-        virtual ~CloseCommandReply() {}
+        virtual ~CloseCommandReply() = default;
 
         virtual char getCommandType() const override;
 };
@@ -93,7 +93,7 @@ class SeekCommandReply : public CommandReply
     public:
 
         SeekCommandReply(audio::Player::SongId songId, FMOD_RESULT result);
-        virtual ~SeekCommandReply() {}
+        virtual ~SeekCommandReply() = default;
 
         virtual char getCommandType() const override;
 };

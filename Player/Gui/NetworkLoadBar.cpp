@@ -25,14 +25,6 @@ NetworkLoadBar::NetworkLoadBar(QWidget *parent)
 // ==============================
 // ==============================
 
-NetworkLoadBar::~NetworkLoadBar()
-{
-
-}
-
-// ==============================
-// ==============================
-
 void NetworkLoadBar::setStartPos(unsigned int pos)
 {
     m_StartPos = pos;

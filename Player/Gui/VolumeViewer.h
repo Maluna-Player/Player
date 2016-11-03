@@ -49,7 +49,7 @@ class VolumeViewer : public QLabel
     public:
 
         VolumeViewer(QWidget *parent = nullptr);
-        virtual ~VolumeViewer();
+        virtual ~VolumeViewer() = default;
 
         /**
          * @brief Change l'image du viewer de son

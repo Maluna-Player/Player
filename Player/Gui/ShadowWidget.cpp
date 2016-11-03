@@ -41,14 +41,6 @@ ShadowWidget::ShadowWidget(const QColor& color, QWidget *parent)
 // ==============================
 // ==============================
 
-ShadowWidget::~ShadowWidget()
-{
-
-}
-
-// ==============================
-// ==============================
-
 int ShadowWidget::getOpacity() const
 {
     return m_Color.alpha();

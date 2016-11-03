@@ -33,7 +33,7 @@ class RemoteSong : public audio::Song
 
     public:
 
-        virtual ~RemoteSong();
+        virtual ~RemoteSong() = default;
 
         virtual bool isRemote() const override;
 
