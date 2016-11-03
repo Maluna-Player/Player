@@ -22,6 +22,15 @@ PlayerLabel::PlayerLabel(QWidget *parent)
 // ==============================
 // ==============================
 
+PlayerLabel::PlayerLabel(const QString& text, QWidget *parent)
+    : QLabel(text, parent)
+{
+
+}
+
+// ==============================
+// ==============================
+
 PlayerLabel::PlayerLabel(const QColor& color, int size, QWidget *parent)
     : QLabel(parent)
 {

@@ -30,6 +30,8 @@ class MenuBar : public QMenuBar
 
         QAction *mp_AboutAction;
 
+        QAction *mp_OpenConnectionAction;
+
     public:
 
         MenuBar(QWidget *parent = nullptr);
@@ -52,6 +54,12 @@ class MenuBar : public QMenuBar
          * @return Retourne le bouton de fermeture de l'application.
          */
         QAction* getQuitAction() const;
+
+        /**
+         * @brief getOpenConnectionAction
+         * @return Retourne le bouton d'ouverture de la fenêtre de connexion.
+         */
+        QAction* getOpenConnectionAction() const;
 
         /**
          * @brief getAboutAction

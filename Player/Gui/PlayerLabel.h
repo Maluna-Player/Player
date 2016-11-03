@@ -22,6 +22,7 @@ class PlayerLabel : public QLabel
     public:
 
         PlayerLabel(QWidget *parent = nullptr);
+        PlayerLabel(const QString& text, QWidget *parent = nullptr);
         PlayerLabel(const QColor& color, int size = -1, QWidget *parent = nullptr);
         PlayerLabel(const QColor& color, const QFont& font, QWidget *parent = nullptr);
 

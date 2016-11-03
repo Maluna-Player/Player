@@ -49,7 +49,6 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     connect(&m_Player, &audio::Player::stateChanged, this, &PlayerWindow::setState);
     connect(&m_Player, &audio::Player::previewFinished, this, &PlayerWindow::stopPreview);
 
-    createMenuBar();
     createTopWindowPart();
 
     mp_ProgressBackground = new ProgressBackground;
@@ -61,6 +60,13 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     connect(mp_ProgressBar, &ProgressBar::posChanged, this, &PlayerWindow::setSongPosition);
 
     createBottomWindowPart();
+
+    connect(&m_ConnectionDialog, &ConnectionDialog::listened, this, &PlayerWindow::listen);
+    connect(&m_ConnectionDialog, &ConnectionDialog::connectedToHost, this, &PlayerWindow::connectToHost);
+    connect(&m_ConnectionDialog, &ConnectionDialog::canceled, this, &PlayerWindow::closeConnection);
+    connect(&m_ConnectionDialog, &ConnectionDialog::disconnected, this, &PlayerWindow::closeConnection);
+
+    createMenuBar();
 
     playerLayout->addWidget(mp_TopPart);
     playerLayout->addWidget(mp_ProgressBackground);
@@ -102,11 +108,13 @@ void PlayerWindow::createMenuBar()
 
     toolbar->addAction(menuBar->getAddingSongAction());
     toolbar->addAction(menuBar->getOpenAction());
+    toolbar->addAction(menuBar->getOpenConnectionAction());
     toolbar->addAction(menuBar->getQuitAction());
     toolbar->addAction(menuBar->getAboutAction());
 
     connect(menuBar->getAddingSongAction(), &QAction::triggered, this, &PlayerWindow::importSong);
     connect(menuBar->getOpenAction(), &QAction::triggered, this, &PlayerWindow::openSongsDir);
+    connect(menuBar->getOpenConnectionAction(), &QAction::triggered, this, &PlayerWindow::openConnection);
     connect(menuBar->getAboutAction(), &QAction::triggered, this, &PlayerWindow::openInformation);
     connect(menuBar->getQuitAction(), &QAction::triggered, qApp, &QApplication::quit);
 
@@ -215,13 +223,6 @@ void PlayerWindow::createBottomWindowPart()
     mp_SoundVolume->setImage(m_Player.getVolumeState());
     connect(mp_SoundVolume, &VolumeViewer::stateChanged, this, &PlayerWindow::setMute);
 
-    mp_ConnectionBox = new ConnectionBox;
-    connect(mp_ConnectionBox, &ConnectionBox::listened, this, &PlayerWindow::listen);
-    connect(mp_ConnectionBox, &ConnectionBox::connectedToHost, this, &PlayerWindow::connectToHost);
-    connect(mp_ConnectionBox, &ConnectionBox::canceled, this, &PlayerWindow::closeConnection);
-    connect(mp_ConnectionBox, &ConnectionBox::disconnected, this, &PlayerWindow::closeConnection);
-
-
     bottomLayout->setColumnStretch(3, 1);
     bottomLayout->addWidget(mp_SongPos, 0, 0);
     bottomLayout->addWidget(mp_SongLength, 0, 9, Qt::AlignRight);
@@ -236,7 +237,6 @@ void PlayerWindow::createBottomWindowPart()
     bottomLayout->addWidget(getButton(ButtonId::REFRESH), 1, 9, 2, 1);
 
     bottomLayout->addWidget(mp_SoundVolume, 1, 1, 2, 2);
-    bottomLayout->addWidget(mp_ConnectionBox, 3, 8, 1, 2);
 
     bottomLayout->setColumnStretch(8, 1);
     mp_BottomPart->setLayout(bottomLayout);
@@ -502,6 +502,14 @@ void PlayerWindow::openInformation()
 // ==============================
 // ==============================
 
+void PlayerWindow::openConnection()
+{
+    m_ConnectionDialog.exec();
+}
+
+// ==============================
+// ==============================
+
 void PlayerWindow::listen()
 {
     mp_Socket = std::make_unique<network::PlayerSocket>(&m_Player);
@@ -531,7 +539,7 @@ void PlayerWindow::startConnection()
     SongTreeRoot *remoteSongList = mp_Socket->exchangeSongList(mp_SongList->getSongHierarchy());
     mp_SongList->addTree(SongList_t::REMOTE_SONGS, remoteSongList);
 
-    mp_ConnectionBox->connected();
+    m_ConnectionDialog.connected();
 
     connect(mp_Socket.get(), &network::PlayerSocket::commandReceived, &m_Player, &audio::Player::executeNetworkCommand);
     connect(&m_Player, &audio::Player::commandExecuted, mp_Socket.get(), &network::PlayerSocket::sendCommandReply);
@@ -562,7 +570,7 @@ void PlayerWindow::closeConnection()
             mp_SongList->clearList(SongList_t::REMOTE_SONGS);
 
             mp_Socket.reset(nullptr);
-            mp_ConnectionBox->disconnect();
+            m_ConnectionDialog.disconnect();
         }
     }
 }

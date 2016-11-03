@@ -34,13 +34,13 @@ SOURCES += main.cpp \
     Network/Commands/Command.cpp \
     Network/Commands/CommandReply.cpp \
     Network/Commands/CommandRequest.cpp \
-    Gui/ConnectionBox.cpp \
     Gui/NetworkLoadBar.cpp \
     Gui/MenuBar.cpp \
     Gui/SongListItem.cpp \
     Gui/SongListIterator.cpp \
     Gui/ShadowWidget.cpp \
-    Gui/PlayerToggleButton.cpp
+    Gui/PlayerToggleButton.cpp \
+    Gui/ConnectionDialog.cpp
 
 HEADERS  += Constants.h \
     Util/Tools.h \
@@ -68,14 +68,14 @@ HEADERS  += Constants.h \
     Network/Commands/Command.h \
     Network/Commands/CommandReply.h \
     Network/Commands/CommandRequest.h \
-    Gui/ConnectionBox.h \
     Gui/NetworkLoadBar.h \
     Gui/MenuBar.h \
     Gui/SongListItem.h \
     Gui/SongListIterator.h \
     Util/composedmap.h \
     Gui/ShadowWidget.h \
-    Gui/PlayerToggleButton.h
+    Gui/PlayerToggleButton.h \
+    Gui/ConnectionDialog.h
 
 RC_FILE = Player.rc
 

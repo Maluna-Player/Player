@@ -1,30 +1,38 @@
 /*************************************
- * @file    ConnectionBox.h
+ * @file    ConnectionDialog.h
  * @date    12/08/15
  * @author  Manuel
  *
- * Déclarations de la classe ConnectionBox
+ * Déclarations de la classe ConnectionDialog
  * contenant les widgets de
  * connexion/déconnexion avec un pair.
  *************************************
 */
 
-#ifndef __CONNECTIONBOX_H__
-#define __CONNECTIONBOX_H__
+#ifndef __CONNECTIONDIALOG_H__
+#define __CONNECTIONDIALOG_H__
 
-#include <QWidget>
+#include <QDialog>
 #include <QLineEdit>
 #include <QPushButton>
+#include "PlayerLabel.h"
 
 
 namespace gui {
 
 
-class ConnectionBox : public QWidget
+class ConnectionDialog : public QDialog
 {
     Q_OBJECT
 
     private:
+
+        QPixmap m_ConnectedIcon;
+        QPixmap m_DisconnectedIcon;
+
+        QLabel *mp_StateIcon;
+        PlayerLabel *mp_ConnectionState;
+        PlayerLabel *mp_ActionState;
 
         QLineEdit *mp_HostLine;
 
@@ -53,8 +61,8 @@ class ConnectionBox : public QWidget
 
     public:
 
-        ConnectionBox(QWidget *parent = nullptr);
-        virtual ~ConnectionBox();
+        ConnectionDialog(QWidget *parent = nullptr);
+        virtual ~ConnectionDialog() = default;
 
         void connected();
 
@@ -66,5 +74,5 @@ class ConnectionBox : public QWidget
 
 } // gui
 
-#endif  // __CONNECTIONBOX_H__
+#endif  // __CONNECTIONDIALOG_H__
 

@@ -32,7 +32,7 @@
 #include <QTimer>
 #include <QVBoxLayout>
 #include "./Network/PlayerSocket.h"
-#include "ConnectionBox.h"
+#include "ConnectionDialog.h"
 
 
 namespace gui {
@@ -80,7 +80,7 @@ class PlayerWindow : public QMainWindow
 
         std::unique_ptr<network::PlayerSocket> mp_Socket;
 
-        ConnectionBox *mp_ConnectionBox;
+        ConnectionDialog m_ConnectionDialog;
 
 
         /**
@@ -200,6 +200,11 @@ class PlayerWindow : public QMainWindow
          * @brief Ouvre la fenêtre contenant les informations sur l'application.
          */
         void openInformation();
+
+        /**
+         * @brief Ouvre la fenêtre de connexion.
+         */
+        void openConnection();
 
         /**
          * @brief Met l'application en écoute de clients.
