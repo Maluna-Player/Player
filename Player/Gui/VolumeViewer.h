@@ -26,6 +26,10 @@ class VolumeViewer : public QLabel
 
     private:
 
+        QPixmap m_VolumeTexture;
+        QPixmap m_MuteTexture;
+        QPixmap m_VolumeValueTexture;
+
         QPixmap m_VolumeImage;
         QPixmap m_VolumeValueImage;
 

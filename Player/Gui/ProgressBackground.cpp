@@ -19,7 +19,7 @@ ProgressBackground::ProgressBackground(QWidget *parent) : QWidget(parent)
 {
     setFixedHeight(PROGRESS_BACKGROUND_HEIGHT);
 
-    m_BackgroundTexture = util::Tools::loadImage(QString(IMAGES_SUBDIR) + "progressBackground.png");
+    m_BackgroundTexture = util::Tools::loadImage(QString(IMAGES_SUBDIR) + "progress_background.png");
 }
 
 // ==============================

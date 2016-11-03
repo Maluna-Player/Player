@@ -23,7 +23,7 @@ namespace gui {
 SongList::SongList(QWidget *parent)
     : QTreeWidget(parent),
       m_DeleteIcon(util::Tools::loadImage(QString(IMAGES_SUBDIR) + "delete.png").scaledToWidth(14)),
-      m_BrokenIcon(util::Tools::loadImage(QString(IMAGES_SUBDIR) + "brokenFile.png")),
+      m_BrokenIcon(util::Tools::loadImage(QString(IMAGES_SUBDIR) + "broken_file.png")),
       mp_CurrentSong(nullptr), mp_PreviousHilightedItem(nullptr)
 {
     QPalette p(palette());

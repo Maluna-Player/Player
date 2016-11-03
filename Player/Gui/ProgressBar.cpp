@@ -19,7 +19,7 @@ ProgressBar::ProgressBar(QWidget *parent) : QProgressBar(parent), m_Press(false)
 {
     setFixedHeight(PROGRESSBAR_HEIGHT);
 
-    m_BarTexture = util::Tools::loadImage(QString(IMAGES_SUBDIR) + "progressBar.png");
+    m_BarTexture = util::Tools::loadImage(QString(IMAGES_SUBDIR) + "progress_bar.png");
     m_MarkerTexture = util::Tools::loadImage(QString(IMAGES_SUBDIR) + "marker.png");
 }
 

@@ -18,6 +18,10 @@ namespace gui {
 VolumeViewer::VolumeViewer(QWidget *parent) : QLabel(parent)
 {
     setFixedSize(VOLUME_VIEWER_W, VOLUME_VIEWER_H);
+
+    m_VolumeTexture = util::Tools::loadImage(QString(IMAGES_SUBDIR) + "volume.png");
+    m_MuteTexture = util::Tools::loadImage(QString(IMAGES_SUBDIR) + "volume_mute.png");
+    m_VolumeValueTexture = util::Tools::loadImage(QString(IMAGES_SUBDIR) + "volume_value.png");
 }
 
 // ==============================
@@ -35,16 +39,15 @@ void VolumeViewer::setImage(int volumeState)
 {
     if (volumeState == MUTE_STATE)
     {
-        m_VolumeImage = util::Tools::loadImage(QString(IMAGES_SUBDIR) + "volumeMute.png");
+        m_VolumeImage = m_MuteTexture;
         m_VolumeValueImage = QPixmap();
     }
     else
     {
-        m_VolumeImage = util::Tools::loadImage(QString(IMAGES_SUBDIR) + "volume.png");
-        QPixmap volumeValueImage = util::Tools::loadImage(QString(IMAGES_SUBDIR) + "volumeValue.png");
+        m_VolumeImage = m_VolumeTexture;
 
         QRect rect(volumeState * VOLUME_VALUE_W, 0, VOLUME_VALUE_W, VOLUME_VALUE_H);
-        m_VolumeValueImage = volumeValueImage.copy(rect).scaledToHeight(VOLUME_VIEWER_H);
+        m_VolumeValueImage = m_VolumeValueTexture.copy(rect).scaledToHeight(VOLUME_VIEWER_H);
     }
 
     update();
