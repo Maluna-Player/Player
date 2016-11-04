@@ -603,7 +603,8 @@ void Player::stopPreview()
         FmodManager::getInstance().stopSound(*mp_PreviewId);
         mp_PreviewId.reset(nullptr);
 
-        play();
+        if (isPaused())
+            play();
     }
 }
 

@@ -98,8 +98,10 @@ SoundID_t FmodManager::getSoundID(bool mainCanal) const
     if (mainCanal)
         return id;
 
-    while (id < mp_Sounds.size() && isPlaying(id))
-        id++;
+    do
+    {
+        ++id;
+    } while (id < mp_Sounds.size() && isPlaying(id));
 
     return (id < mp_Sounds.size()) ? id : 0;
 }
