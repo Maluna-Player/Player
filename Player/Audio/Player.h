@@ -119,6 +119,20 @@ class Player : public QObject
         SongIt next() const;
 
         /**
+         * @brief Cherche la musique précédente avec la disponibilité indiquée.
+         * @param available Disponibilité minimale de la musique cherchée
+         * @return Position de la musique précédente
+         */
+        SongIt findPrevSong(bool available);
+
+        /**
+         * @brief Cherche la musique suivante avec la disponibilité indiquée.
+         * @param available Disponibilité minimale de la musique cherchée
+         * @return Position de la musique suivante
+         */
+        SongIt findNextSong(bool available);
+
+        /**
          * @brief Lance la musique passée en paramètre.
          * @param song Itérateur sur la musique
          * @return true si la musique a bien été modifiée

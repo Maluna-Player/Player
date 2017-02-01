@@ -235,6 +235,54 @@ Player::SongIt Player::next() const
 // ==============================
 // ==============================
 
+Player::SongIt Player::findPrevSong(bool available)
+{
+    SongIt initialSong = m_CurrentSong;
+    SongIt prevSong = UNDEFINED_SONG;
+
+    do
+    {
+        prevSong = prev();
+
+        if (prevSong != UNDEFINED_SONG)
+            changeSong(prevSong);
+    }
+    while (prevSong != UNDEFINED_SONG && (isLoop() || m_CurrentSong != FIRST_SONG)
+           && (available && !getCurrentSong()->isAvailable()) && (!isLoop() || m_CurrentSong != initialSong));
+
+    if (prevSong == UNDEFINED_SONG || (available && !getCurrentSong()->isAvailable()))
+        changeSong(initialSong);
+
+    return prevSong;
+}
+
+// ==============================
+// ==============================
+
+Player::SongIt Player::findNextSong(bool available)
+{
+    SongIt initialSong = m_CurrentSong;
+    SongIt nextSong = UNDEFINED_SONG;
+
+    do
+    {
+        nextSong = next();
+
+        if (nextSong != UNDEFINED_SONG)
+            changeSong(nextSong);
+    }
+    while (nextSong != UNDEFINED_SONG && (available && !getCurrentSong()->isAvailable())
+           && (!isLoop() || m_CurrentSong != initialSong));
+
+    if (nextSong == UNDEFINED_SONG || (available && !getCurrentSong()->isAvailable()))
+        changeSong(initialSong);
+
+    return nextSong;
+}
+
+// ==============================
+// ==============================
+
 int Player::getVolumeState() const
 {
     return m_VolumeState;
@@ -431,11 +479,10 @@ void Player::firstSong()
 
 void Player::previousSong()
 {
-    do
-    {
-        changeSong(prev());
-    }
-    while (isPlaying() && !getCurrentSong()->isAvailable());
+    if (m_CurrentSong != UNDEFINED_SONG)
+        findPrevSong(getCurrentSong()->isAvailable());
+    else
+        findPrevSong(false);
 }
 
 // ==============================
@@ -443,11 +490,15 @@ void Player::previousSong()
 
 void Player::nextSong()
 {
-    do
-    {
-        changeSong(next());
-    }
-    while (isPlaying() && !getCurrentSong()->isAvailable());
+    SongIt nextSong = UNDEFINED_SONG;
+
+    if (m_CurrentSong != UNDEFINED_SONG)
+        nextSong = findNextSong(getCurrentSong()->isAvailable());
+    else
+        nextSong = findNextSong(false);
+
+    if (nextSong == UNDEFINED_SONG)
+        stop();
 }
 
 // ==============================
@@ -462,7 +513,7 @@ bool Player::changeSong(SongIt song)
         if (!getCurrentSong()->isAvailable())
         {
             emit songChanged();
-            return false;
+            return true;
         }
 
         try
@@ -481,8 +532,6 @@ bool Player::changeSong(SongIt song)
             getCurrentSong()->setAvailable(false);
             emit streamError(getCurrentSong()->getId());
             emit songChanged();
-
-            return false;
         }
     }
     else
@@ -498,15 +547,12 @@ bool Player::changeSong(SongIt song)
 
 bool Player::changeSong(SongId songId)
 {
-    if (!changeSong(findSong(songId)))
-    {
-        if (m_CurrentSong != UNDEFINED_SONG && !getCurrentSong()->isAvailable())
-            stop();
+    bool res = changeSong(findSong(songId));
 
-        return false;
-    }
+    if (m_CurrentSong != UNDEFINED_SONG && !getCurrentSong()->isAvailable())
+        stop();
 
-    return true;
+    return res;
 }
 
 // ==============================
@@ -515,17 +561,45 @@ bool Player::changeSong(SongId songId)
 void Player::removeSong(SongId songId)
 {
     SongIt song = findSong(songId);
+
     if (song != UNDEFINED_SONG)
     {
-        if (song == m_CurrentSong)
+        if (song != m_CurrentSong)
         {
-            getCurrentSong()->stop();
-            nextSong();
-            if (m_CurrentSong == song)
+            mp_Songs.erase(song);
+            return;
+        }
+
+        findNextSong((*song)->isAvailable());
+        if (song != m_CurrentSong)
+        {
+            mp_Songs.erase(song);
+            return;
+        }
+
+        if (!isLoop())
+        {
+            findPrevSong((*song)->isAvailable());
+            if (song != m_CurrentSong)
             {
-                m_CurrentSong = UNDEFINED_SONG;
-                emit songChanged();
+                mp_Songs.erase(song);
+                return;
             }
+        }
+
+        stop();
+
+        if ((*song)->isAvailable())
+        {
+            findNextSong(false);
+            if (!isLoop() && m_CurrentSong == song)
+                findPrevSong(false);
+        }
+
+        if (m_CurrentSong == song)
+        {
+            m_CurrentSong = UNDEFINED_SONG;
+            emit songChanged();
         }
 
         mp_Songs.erase(song);
