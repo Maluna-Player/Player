@@ -359,10 +359,10 @@ void PlayerWindow::updateCurrentSong()
 
 void PlayerWindow::refreshSongsList()
 {
-    mp_SongList->clearList(DIRECTORY_SONGS);
+    mp_SongList->clearList(SongList_t::DIRECTORY_SONGS);
 
     SongTreeRoot *songTree = m_Player.reloadSongs(SONGS_SUBDIR);
-    mp_SongList->addTree(LOCAL_SONGS, songTree);
+    mp_SongList->addTree(SongList_t::DIRECTORY_SONGS, songTree);
 
     m_Player.firstSong();
 

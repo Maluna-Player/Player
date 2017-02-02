@@ -58,8 +58,9 @@ class SongList : public QTreeWidget
          * @brief Ajoute l'élément passé en paramètre comme fils du parent.
          * @param item Elément à ajouter
          * @param parent Parent du nouvel élément
+         * @param pos Position à laquelle ajouter l'élément
          */
-        void addChildSong(SongListItem *item, SongListItem *parent) const;
+        void addChildSong(SongListItem *item, SongListItem *parent, int pos = -1) const;
 
         /**
          * @brief Supprime de la liste l'élément passé en paramètre (avec ses parents récursivement s'il s'agit du seul fils).

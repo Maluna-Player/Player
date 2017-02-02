@@ -51,7 +51,7 @@ class Player : public QObject
 
     private:
 
-        using SongList = util::ComposedMap<SongList_t, std::map<SongId, std::shared_ptr<Song>>>;
+        using SongList = util::ComposedMap<SongList_t, std::list<std::shared_ptr<Song>>>;
         using SongIt = SongList::const_iterator;
 
         unsigned int m_Cpt;
@@ -92,6 +92,25 @@ class Player : public QObject
          * @return Musique si elle existe, nullptr sinon
          */
         std::shared_ptr<network::RemoteSong> getRemoteSong(const SongId id) const;
+
+        /**
+         * @brief Créé un nouveau son local s'il n'existe pas encore à partir du chemin passé en paramètre.
+         * @param pos Position à laquelle le nouveau son est ajouté
+         * @param filePath Chemin du son à créer
+         * @param inFolder Présence du son dans le dossier ou non
+         * @return Objet son créé, nullptr sinon
+         */
+        std::shared_ptr<Song> createLocalSong(SongList::mapped_type::const_iterator& pos, const QString& filePath, bool inFolder);
+
+        /**
+         * @brief Ajoute une nouvelle musique dans la liste du player.
+         * @param list Liste à laquelle on veut ajouter la musique
+         * @param pos Position à laquelle on veut ajouter la musique
+         * @param filePath Chemin du fichier à ajouter
+         * @param parentDir Parent dans l'arborescence
+         * @return Elément de l'arborescence contenant la nouvelle musique
+         */
+        gui::SongListItem* addNewSong(SongList_t list, SongList::mapped_type::const_iterator& pos, const QString& filePath, gui::SongListItem *parentDir = nullptr);
 
         /**
          * @brief Recherche une musique à partir de son identifiant.
@@ -263,14 +282,6 @@ class Player : public QObject
         void clearSongs(SongList_t list = SongList_t::ALL_SONGS);
 
         /**
-         * @brief Créé un nouveau son local s'il n'existe pas encore à partir du chemin passé en paramètre.
-         * @param filePath Chemin du son à créer
-         * @param inFolder Présence du son dans le dossier ou non
-         * @return Objet son créé, nullptr sinon
-         */
-        std::shared_ptr<Song> createLocalSong(const QString& filePath, bool inFolder);
-
-        /**
          * @brief Créé un nouveau son distant s'il n'existe pas encore à partir des infos passées en paramètre.
          * @param file Chemin du fichier
          * @param remoteId Identifiant distant du son
@@ -293,11 +304,12 @@ class Player : public QObject
         /**
          * @brief Remplit le vecteur Musiques à partir des fichiers
          *        contenus dans le répertoire donné en paramètre.
+         * @param pos Position à laquelle les musiques du répertoire sont ajoutées
          * @param dirPath Répertoire à parcourir
          * @param parentDir Parent dans l'arborescence
          * @return Arborescence des fichiers lus
          */
-        gui::SongTreeRoot* loadSongs(const QString& dirPath, gui::SongTreeRoot *parentDir = nullptr);
+        gui::SongTreeRoot* loadSongs(SongList::mapped_type::const_iterator& pos, const QString& dirPath, gui::SongTreeRoot *parentDir = nullptr);
 
         /**
          * @brief Recharge la liste des musiques locales avec le répertoire passé en paramètre.

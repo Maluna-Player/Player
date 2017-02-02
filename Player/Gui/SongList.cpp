@@ -96,9 +96,12 @@ unsigned int SongList::setSongDetails(SongListItem *item) const
 // ==============================
 // ==============================
 
-void SongList::addChildSong(SongListItem *item, SongListItem *parent) const
+void SongList::addChildSong(SongListItem *item, SongListItem *parent, int pos) const
 {
-    parent->addChild(item);
+    if (pos < 0)
+        parent->addChild(item);
+    else
+        parent->insertChild(pos, item);
 
     const auto itemLength = setSongDetails(item);
     parent->setLength(parent->getLength() + itemLength);
@@ -310,8 +313,17 @@ void SongList::addTree(SongList_t list, SongTreeRoot *songs)
     if (root)
     {
         QList<QTreeWidgetItem*> items = songs->takeChildren();
+        int pos = 0;
+
         for (auto item : items)
-            addChildSong(static_cast<SongListItem*>(item), root);
+        {
+            if (list == SongList_t::DIRECTORY_SONGS)
+                addChildSong(static_cast<SongListItem*>(item), root, pos);
+            else
+                addChildSong(static_cast<SongListItem*>(item), root);
+
+            ++pos;
+        }
 
         root->setExpanded(true);
     }

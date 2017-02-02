@@ -90,7 +90,7 @@ int Player::songsCount(SongList_t list) const
 
 void Player::play()
 {
-    if (m_CurrentSong != UNDEFINED_SONG && getCurrentSong()->isAvailable())
+    if (getCurrentSong() && getCurrentSong()->isAvailable())
     {
         if (m_Stop)
         {
@@ -119,7 +119,7 @@ void Player::stop()
         m_Pause = false;
         m_Stop = true;
 
-        if (m_CurrentSong != UNDEFINED_SONG)
+        if (getCurrentSong())
             getCurrentSong()->stop();
 
         emit stateChanged(PlayerState::STOP);
@@ -135,7 +135,7 @@ void Player::pause()
     {
         m_Pause = true;
 
-        if (m_CurrentSong != UNDEFINED_SONG)
+        if (getCurrentSong())
             getCurrentSong()->pause(true);
 
         emit stateChanged(PlayerState::PAUSE);
@@ -343,10 +343,11 @@ std::shared_ptr<network::RemoteSong> Player::getRemoteSong(const SongId id) cons
 // ==============================
 // ==============================
 
-std::shared_ptr<Song> Player::createLocalSong(const QString& filePath, bool inFolder)
+std::shared_ptr<Song> Player::createLocalSong(SongList::mapped_type::const_iterator& pos, const QString& filePath, bool inFolder)
 {
     QFileInfo fileInfo(filePath);
     QString absoluteFilePath = fileInfo.canonicalFilePath();
+    SongList_t list = inFolder ? SongList_t::DIRECTORY_SONGS : SongList_t::IMPORTED_SONGS;
 
     std::shared_ptr<Song> song = getLocalSong(absoluteFilePath);
     if (!song)
@@ -355,9 +356,8 @@ std::shared_ptr<Song> Player::createLocalSong(const QString& filePath, bool inFo
         {
             SongId id = getNewSongId();
             song.reset(new Song(id, absoluteFilePath, inFolder));
-            SongList_t list = inFolder ? SongList_t::DIRECTORY_SONGS : SongList_t::IMPORTED_SONGS;
 
-            mp_Songs[list][id] = song;
+            pos = mp_Songs[list].insert(pos, song);
         }
         catch (FmodManager::StreamError error)
         {
@@ -366,6 +366,10 @@ std::shared_ptr<Song> Player::createLocalSong(const QString& filePath, bool inFo
             else if (error == FmodManager::StreamError::FORMAT_ERROR)
                 qWarning() << "Unsupported format for" << absoluteFilePath;
         }
+    }
+    else
+    {
+        pos = std::find(pos, mp_Songs[list].cend(), song);
     }
 
     song->setAvailable(true);
@@ -385,7 +389,7 @@ std::shared_ptr<network::RemoteSong> Player::createRemoteSong(const QString& fil
         SongId id = getNewSongId();
         remoteSong.reset(new network::RemoteSong(id, file, remoteId, length, artist, settings));
 
-        mp_Songs[SongList_t::REMOTE_SONGS][id] = remoteSong;
+        mp_Songs[SongList_t::REMOTE_SONGS].insert(mp_Songs[SongList_t::REMOTE_SONGS].cend(), remoteSong);
     }
 
     return remoteSong;
@@ -394,12 +398,12 @@ std::shared_ptr<network::RemoteSong> Player::createRemoteSong(const QString& fil
 // ==============================
 // ==============================
 
-gui::SongListItem* Player::addNewSong(SongList_t list, const QString& filePath, gui::SongListItem *parentDir)
+gui::SongListItem* Player::addNewSong(SongList_t list, SongList::mapped_type::const_iterator& pos, const QString& filePath, gui::SongListItem *parentDir)
 {
     gui::SongListItem *item = nullptr;
 
     bool inFolder = (list == SongList_t::DIRECTORY_SONGS);
-    std::shared_ptr<Song> song = createLocalSong(filePath, inFolder);
+    std::shared_ptr<Song> song = createLocalSong(pos, filePath, inFolder);
 
     if (song)
     {
@@ -414,7 +418,17 @@ gui::SongListItem* Player::addNewSong(SongList_t list, const QString& filePath, 
 // ==============================
 // ==============================
 
-gui::SongTreeRoot* Player::loadSongs(const QString& dirPath, gui::SongTreeRoot *parentDir)
+gui::SongListItem* Player::addNewSong(SongList_t list, const QString& filePath, gui::SongListItem *parentDir)
+{
+    auto pos = mp_Songs[list].cend();
+
+    return addNewSong(list, pos, filePath, parentDir);
+}
+
+// ==============================
+// ==============================
+
+gui::SongTreeRoot* Player::loadSongs(SongList::mapped_type::const_iterator& pos, const QString& dirPath, gui::SongTreeRoot *parentDir)
 {
     if (!parentDir)
         parentDir = new gui::SongTreeRoot(gui::SongListItem::ElementType::ROOT);
@@ -432,13 +446,16 @@ gui::SongTreeRoot* Player::loadSongs(const QString& dirPath, gui::SongTreeRoot *
         if (fileInfo.isDir())
         {
             gui::SongListItem *item = new gui::SongListItem(gui::SongListItem::ElementType::DIRECTORY, fileInfo.completeBaseName());
-            loadSongs(filePath, item);
+            loadSongs(pos, filePath, item);
 
             if (item->childCount() > 0)
                 item->setParent(parentDir);
         }
         else
-            addNewSong(SongList_t::DIRECTORY_SONGS, filePath, parentDir);
+        {
+            addNewSong(SongList_t::DIRECTORY_SONGS, pos, filePath, parentDir);
+            ++pos;
+        }
     }
 
     return parentDir;
@@ -450,9 +467,10 @@ gui::SongTreeRoot* Player::loadSongs(const QString& dirPath, gui::SongTreeRoot *
 gui::SongTreeRoot* Player::reloadSongs(const QString& dirPath)
 {
     for (auto song : mp_Songs[SongList_t::DIRECTORY_SONGS])
-        song.second->setAvailable(false);
+        song->setAvailable(false);
 
-    auto songTree = loadSongs(dirPath);
+    SongList::mapped_type::const_iterator pos = mp_Songs[SongList_t::DIRECTORY_SONGS].cbegin();
+    auto songTree = loadSongs(pos, dirPath);
 
     auto it = mp_Songs.begin();
     while (it != mp_Songs.end())
@@ -479,7 +497,7 @@ void Player::firstSong()
 
 void Player::previousSong()
 {
-    if (m_CurrentSong != UNDEFINED_SONG)
+    if (getCurrentSong())
         findPrevSong(getCurrentSong()->isAvailable());
     else
         findPrevSong(false);
@@ -492,7 +510,7 @@ void Player::nextSong()
 {
     SongIt nextSong = UNDEFINED_SONG;
 
-    if (m_CurrentSong != UNDEFINED_SONG)
+    if (getCurrentSong())
         nextSong = findNextSong(getCurrentSong()->isAvailable());
     else
         nextSong = findNextSong(false);
@@ -549,7 +567,7 @@ bool Player::changeSong(SongId songId)
 {
     bool res = changeSong(findSong(songId));
 
-    if (m_CurrentSong != UNDEFINED_SONG && !getCurrentSong()->isAvailable())
+    if (getCurrentSong() && !getCurrentSong()->isAvailable())
         stop();
 
     return res;
