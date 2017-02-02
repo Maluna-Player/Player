@@ -369,10 +369,11 @@ std::shared_ptr<Song> Player::createLocalSong(SongList::mapped_type::const_itera
     }
     else
     {
+        song->setAvailable(true);
         pos = std::find(pos, mp_Songs[list].cend(), song);
-    }
 
-    song->setAvailable(true);
+        return nullptr;
+    }
 
     return song;
 }
@@ -398,18 +399,19 @@ std::shared_ptr<network::RemoteSong> Player::createRemoteSong(const QString& fil
 // ==============================
 // ==============================
 
-gui::SongListItem* Player::addNewSong(SongList_t list, SongList::mapped_type::const_iterator& pos, const QString& filePath, gui::SongListItem *parentDir)
+gui::SongListItem* Player::addNewSong(SongList_t list, SongList::mapped_type::const_iterator& pos, const QString& filePath,
+                                      gui::SongListItem *parentDir, bool forceItemCreation)
 {
     gui::SongListItem *item = nullptr;
 
     bool inFolder = (list == SongList_t::DIRECTORY_SONGS);
     std::shared_ptr<Song> song = createLocalSong(pos, filePath, inFolder);
 
-    if (song)
+    if (song || forceItemCreation)
     {
         QFileInfo fileInfo(filePath);
         item = new gui::SongListItem(gui::SongListItem::ElementType::SONG, fileInfo.completeBaseName(), parentDir);
-        item->setAttachedSong(song);
+        item->setAttachedSong(*pos);
     }
 
     return item;
@@ -453,7 +455,7 @@ gui::SongTreeRoot* Player::loadSongs(SongList::mapped_type::const_iterator& pos,
         }
         else
         {
-            addNewSong(SongList_t::DIRECTORY_SONGS, pos, filePath, parentDir);
+            addNewSong(SongList_t::DIRECTORY_SONGS, pos, filePath, parentDir, true);
             ++pos;
         }
     }

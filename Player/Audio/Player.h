@@ -108,9 +108,11 @@ class Player : public QObject
          * @param pos Position à laquelle on veut ajouter la musique
          * @param filePath Chemin du fichier à ajouter
          * @param parentDir Parent dans l'arborescence
+         * @param forceItemCreation true si la création de l'item est forcée
          * @return Elément de l'arborescence contenant la nouvelle musique
          */
-        gui::SongListItem* addNewSong(SongList_t list, SongList::mapped_type::const_iterator& pos, const QString& filePath, gui::SongListItem *parentDir = nullptr);
+        gui::SongListItem* addNewSong(SongList_t list, SongList::mapped_type::const_iterator& pos, const QString& filePath,
+                                      gui::SongListItem *parentDir = nullptr, bool forceItemCreation = false);
 
         /**
          * @brief Recherche une musique à partir de son identifiant.
