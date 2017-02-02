@@ -236,18 +236,18 @@ void PlayerWindow::createBottomWindowPart()
     mp_SoundVolume->setImage(m_Player.getVolumeState());
     connect(mp_SoundVolume, &VolumeViewer::stateChanged, this, &PlayerWindow::setMute);
 
-    bottomLayout->setColumnStretch(3, 1);
+    bottomLayout->setColumnStretch(4, 1);
     bottomLayout->addWidget(mp_SongPos, 0, 0);
-    bottomLayout->addWidget(mp_SongLength, 0, 9, Qt::AlignRight);
+    bottomLayout->addWidget(mp_SongLength, 0, 10, Qt::AlignRight);
 
-    bottomLayout->addWidget(getButton(ButtonId::PLAY), 0, 5, 2, 1);
-    bottomLayout->addWidget(getButton(ButtonId::PAUSE), 0, 5, 2, 1);
-    bottomLayout->addWidget(getButton(ButtonId::STOP), 2, 5, 2, 1);
-    bottomLayout->addWidget(getButton(ButtonId::PREV), 1, 4, 2, 1);
-    bottomLayout->addWidget(getButton(ButtonId::NEXT), 1, 6, 2, 1);
+    bottomLayout->addWidget(getButton(ButtonId::PLAY), 0, 6, 2, 1);
+    bottomLayout->addWidget(getButton(ButtonId::PAUSE), 0, 6, 2, 1);
+    bottomLayout->addWidget(getButton(ButtonId::STOP), 2, 6, 2, 1);
+    bottomLayout->addWidget(getButton(ButtonId::PREV), 1, 5, 2, 1);
+    bottomLayout->addWidget(getButton(ButtonId::NEXT), 1, 7, 2, 1);
     bottomLayout->addWidget(getButton(ButtonId::VOLUME_MORE), 0, 3, 2, 1);
     bottomLayout->addWidget(getButton(ButtonId::VOLUME_LESS), 2, 3, 2, 1);
-    bottomLayout->addWidget(getButton(ButtonId::REFRESH), 1, 9, 2, 1);
+    bottomLayout->addWidget(getButton(ButtonId::REFRESH), 1, 10, 2, 1);
 
     bottomLayout->addWidget(mp_SoundVolume, 1, 1, 2, 2);
 
