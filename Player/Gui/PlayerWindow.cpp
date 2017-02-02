@@ -180,6 +180,7 @@ void PlayerWindow::createTopWindowPart()
 
     mp_Spectrum = new Spectrum(SPECTRUM_WIDTH);
     mp_SongPicture = new QLabel;
+    mp_SongPicture->setMinimumHeight(SPECTRUM_HEIGHT);
     m_DefaultSongPicture = util::Tools::loadImage(QString(IMAGES_SUBDIR) + "default_picture.png");
 
     mp_SongList = new SongList;
