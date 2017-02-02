@@ -125,6 +125,12 @@ class PlayerWindow : public QMainWindow
          */
         void setVolume(int volume);
 
+        /**
+         * @brief Déplace la position du son selon le décalage passé en paramètre.
+         * @param offset Décalage dans le son
+         */
+        void moveSongPosition(int offset);
+
     private slots:
 
         /**
@@ -182,7 +188,7 @@ class PlayerWindow : public QMainWindow
          * @brief Modifie la position du son et met à jour la barre de progression.
          * @param value Nouvelle position de la barre
          */
-        void setSongPosition(int value);
+        void setSongPosition(double value);
 
         /**
          * @brief Applique ou retire l'état mute à l'application.

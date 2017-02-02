@@ -353,6 +353,9 @@ void PlayerWindow::updateCurrentSong()
 
     if (m_Player.isPaused())
         setState(PlayerState::STOP);
+
+    getButton(ButtonId::PREV)->release();
+    getButton(ButtonId::NEXT)->release();
 }
 
 // ==============================
@@ -447,7 +450,7 @@ void PlayerWindow::decreaseVolume()
 // ==============================
 // ==============================
 
-void PlayerWindow::setSongPosition(int value)
+void PlayerWindow::setSongPosition(double value)
 {
     if (!m_Player.isStopped() && m_Player.getCurrentSong())
     {
@@ -463,6 +466,19 @@ void PlayerWindow::setSongPosition(int value)
             mp_NetworkLoadBar->setStartPos(value);
         }
     }
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::moveSongPosition(int offset)
+{
+    int newAudioPos = m_Player.getCurrentSong()->getPosition() + offset;
+
+    double newPos = newAudioPos * 100.0 / m_Player.getCurrentSong()->getLength();
+    newPos = std::max(0.0, std::min(newPos, 100.0));
+
+    setSongPosition(newPos);
 }
 
 // ==============================
@@ -612,6 +628,11 @@ void PlayerWindow::timerEvent(QTimerEvent *event)
 
             if (m_Player.getCurrentSong()->isRemote())
                 mp_NetworkLoadBar->setValue(mp_Socket->getSongDataReceived());
+
+            if (getButton(ButtonId::PREV)->isPressed())
+                moveSongPosition(-MOVE_INTERVAL);
+            else if (getButton(ButtonId::NEXT)->isPressed())
+                moveSongPosition(MOVE_INTERVAL);
         }
 
         if (mp_Socket && mp_Socket->isConnected())

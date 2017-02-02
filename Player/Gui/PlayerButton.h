@@ -14,6 +14,7 @@
 #include "ClickableLabel.h"
 #include <QString>
 #include <QPixmap>
+#include <QTimer>
 
 
 namespace gui {
@@ -21,6 +22,8 @@ namespace gui {
 
 class PlayerButton : public ClickableLabel
 {
+    Q_OBJECT
+
     private:
 
         QString m_Name;
@@ -28,6 +31,12 @@ class PlayerButton : public ClickableLabel
         QPixmap m_ButtonTexture;
 
         QPixmap m_PressedButtonTexture;
+
+        QTimer m_PressTimer;
+
+        bool m_Pressed;
+
+        bool m_Released;
 
 
         /**
@@ -42,10 +51,33 @@ class PlayerButton : public ClickableLabel
 
         virtual void mouseReleaseEvent(QMouseEvent *event) override;
 
+        virtual void mouseMoveEvent(QMouseEvent *event) override;
+
+        virtual void mouseLeaveEvent();
+
+    private slots:
+
+        void press();
+
+    signals:
+
+        void released();
+
     public:
 
         PlayerButton(const QString& name, QWidget *parent = nullptr);
         virtual ~PlayerButton() = default;
+
+        /**
+         * @brief Détermine si le bouton est pressé ou non.
+         * @return true si le bouton est pressé
+         */
+        bool isPressed() const;
+
+        /**
+         * @brief Relâche le bouton.
+         */
+        void release();
 };
 
 

@@ -83,6 +83,10 @@ constexpr unsigned int PREVIEW_DELAY                = 2000;
 constexpr unsigned int PREVIEW_LENGTH               = 30000;
 constexpr unsigned int PREVIEW_ANIMATION_LENGTH     = 1000;
 
+// Boutons prev/next
+constexpr unsigned int BUTTON_DELAY                 = 500;
+constexpr unsigned int MOVE_INTERVAL                = 1000;
+
 
 // Etats du player
 enum class PlayerState { PLAY, PAUSE, STOP };

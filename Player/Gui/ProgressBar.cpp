@@ -66,7 +66,7 @@ void ProgressBar::mousePressEvent(QMouseEvent *event)
     if (event->x() >= xBarValue - 2 && event->x() <= xBarValue + 3)
         m_Press = true;
     else
-        emit posChanged(event->x() * 100 / width());
+        emit posChanged(event->x() * 100.0 / width());
 }
 
 // ==============================
@@ -75,7 +75,7 @@ void ProgressBar::mousePressEvent(QMouseEvent *event)
 void ProgressBar::mouseMoveEvent(QMouseEvent *event)
 {
     if (m_Press)
-        emit posChanged(event->x() * 100 / width());
+        emit posChanged(event->x() * 100.0 / width());
 }
 
 // ==============================

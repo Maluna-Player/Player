@@ -50,7 +50,7 @@ class ProgressBar : public QProgressBar
          * @brief Signal émis lors d'un déplacement de la barre de progression
          * @param Nouvelle position en pourcentage
          */
-        void posChanged(int);
+        void posChanged(double);
 
     public:
 
