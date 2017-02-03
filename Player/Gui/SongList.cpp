@@ -40,7 +40,7 @@ SongList::SongList(QWidget *parent)
     setColumnWidth(1, 90);
     setColumnWidth(2, 15);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setFixedWidth(290);
+    setFixedWidth(LIST_WIDTH);
 
     SongListItem *localSongsItem = new SongListItem(SongListItem::ElementType::ROOT, "Mes musiques");
     SongListItem *remoteSongsItem = new SongListItem(SongListItem::ElementType::ROOT, "Musiques distantes");

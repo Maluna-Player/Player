@@ -154,7 +154,7 @@ QVBoxLayout* PlayerWindow::createOptionsBar()
 
     PlayerToggleButton *listButton = new PlayerToggleButton("list.png", true);
     listButton->setToolTip("Afficher/Masquer la liste des musiques");
-    connect(listButton, &QPushButton::clicked, mp_SongList, &SongList::setVisible);
+    connect(listButton, &QPushButton::clicked, this, &PlayerWindow::setListVisible);
 
     QVBoxLayout *optionsBar = new QVBoxLayout;
     optionsBar->setAlignment(Qt::AlignTop);
@@ -284,6 +284,22 @@ void PlayerWindow::createPreviewWidget()
 PlayerButton* PlayerWindow::getButton(ButtonId id) const
 {
     return mp_Buttons.at(static_cast<int>(id));
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::setListVisible(bool visible)
+{
+    int w = (visible ? LIST_WIDTH : HIDDEN_LIST_WIDTH);
+    int ms = std::abs(w - mp_SongList->width()) / TAB_ANIMATION_SPEED;      // t = d/v
+
+    QPropertyAnimation *moveAnimation = new QPropertyAnimation(mp_SongList, "width");
+    moveAnimation->setDuration(ms);
+    moveAnimation->setStartValue(mp_SongList->width());
+    moveAnimation->setEndValue(w);
+
+    moveAnimation->start();
 }
 
 // ==============================

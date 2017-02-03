@@ -87,6 +87,12 @@ constexpr unsigned int PREVIEW_ANIMATION_LENGTH     = 1000;
 constexpr unsigned int BUTTON_DELAY                 = 500;
 constexpr unsigned int MOVE_INTERVAL                = 1000;
 
+// SongList/Tab
+constexpr unsigned int LIST_WIDTH                   = 290;
+constexpr unsigned int HIDDEN_LIST_WIDTH            = 10;
+constexpr unsigned int TAB_ANIMATION_LENGTH         = 2000;
+constexpr double TAB_ANIMATION_SPEED                = static_cast<double>(LIST_WIDTH - HIDDEN_LIST_WIDTH) / TAB_ANIMATION_LENGTH;
+
 
 // Etats du player
 enum class PlayerState { PLAY, PAUSE, STOP };

@@ -134,6 +134,12 @@ class PlayerWindow : public QMainWindow
     private slots:
 
         /**
+         * @brief Change la visibilité de la liste de musiques (animation).
+         * @param visible Nouvelle visibilité de la liste
+         */
+        void setListVisible(bool visible);
+
+        /**
          * @brief Actualise l'interface graphique (titre, durée...) à partir du son courant.
          */
         void updateCurrentSong();

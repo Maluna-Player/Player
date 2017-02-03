@@ -28,6 +28,7 @@ namespace gui {
 class SongList : public QTreeWidget
 {
     Q_OBJECT
+    Q_PROPERTY(int width READ width WRITE setFixedWidth)
 
     private:
 
