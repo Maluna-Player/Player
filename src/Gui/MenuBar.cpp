@@ -23,10 +23,16 @@ MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent)
     QMenu *optionsMenu = addMenu("Options");
     QMenu *helpMenu = addMenu("Aide");
 
+    // Menu "Fichier"
     mp_AddingSongAction = fileMenu->addAction(QIcon(util::Tools::loadImage(QString(MENU_SUBDIR) + "adding.png")), "Ajouter un son");
     mp_OpenAction = fileMenu->addAction(QIcon(util::Tools::loadImage(QString(MENU_SUBDIR) + "open.png")), "Ouvrir");
     mp_QuitAction = fileMenu->addAction(QIcon(util::Tools::loadImage(QString(MENU_SUBDIR) + "quit.png")), "Quitter");
+
+    // Menu "Options"
     mp_OpenConnectionAction = optionsMenu->addAction(QIcon(util::Tools::loadImage(QString(MENU_SUBDIR) + "connection.png")), "Fenêtre de connexion");
+    mp_ChangeSpectrumColorAction = optionsMenu->addAction(QIcon(util::Tools::loadImage(QString(MENU_SUBDIR) + "color.png")), "Couleurs du spectre");
+
+    // Menu "Aide"
     mp_AboutAction = helpMenu->addAction(QIcon(util::Tools::loadImage(QString(MENU_SUBDIR) + "about.png")), "A propos");
 
     mp_AddingSongAction->setShortcut(QKeySequence("Ctrl+N"));
@@ -65,6 +71,14 @@ QAction* MenuBar::getQuitAction() const
 QAction* MenuBar::getOpenConnectionAction() const
 {
     return mp_OpenConnectionAction;
+}
+
+// ==============================
+// ==============================
+
+QAction* MenuBar::getChangeSpectrumColorAction() const
+{
+    return mp_ChangeSpectrumColorAction;
 }
 
 // ==============================

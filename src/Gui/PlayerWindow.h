@@ -60,6 +60,9 @@ class PlayerWindow : public QMainWindow
         QPixmap m_DefaultSongPicture;
 
         Spectrum *mp_Spectrum;
+        int m_CurrentSpectrumColor;
+        QList<SpectrumColor> m_SpectrumColors;
+
         SongList *mp_SongList;
 
         PlayerLabel *mp_SongPos;
@@ -221,6 +224,11 @@ class PlayerWindow : public QMainWindow
          * @brief Ouvre la fenêtre de connexion.
          */
         void openConnection();
+
+        /**
+         * @brief Ouvre la fenêtre de personnalisation des couleurs du spectre.
+         */
+        void openSpectrumColorDialog();
 
         /**
          * @brief Met l'application en écoute de clients.

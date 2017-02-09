@@ -24,6 +24,7 @@
 #include <QStackedLayout>
 #include <QPropertyAnimation>
 #include "PlayerToggleButton.h"
+#include "SpectrumColorDialog.h"
 
 
 namespace gui {
@@ -127,6 +128,8 @@ void PlayerWindow::createMenuBar()
     connect(menuBar->getAddingSongAction(), &QAction::triggered, this, &PlayerWindow::importSong);
     connect(menuBar->getOpenAction(), &QAction::triggered, this, &PlayerWindow::openSongsDir);
     connect(menuBar->getOpenConnectionAction(), &QAction::triggered, this, &PlayerWindow::openConnection);
+    connect(menuBar->getChangeSpectrumColorAction(), &QAction::triggered, this, &PlayerWindow::openSpectrumColorDialog);
+
     connect(menuBar->getAboutAction(), &QAction::triggered, this, &PlayerWindow::openInformation);
     connect(menuBar->getQuitAction(), &QAction::triggered, qApp, &QApplication::quit);
 
@@ -178,7 +181,12 @@ void PlayerWindow::createTopWindowPart()
     mp_SongTitle->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
     mp_SongArtist->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
 
+    SpectrumColor baseColor { Qt::red, Qt::yellow };
     mp_Spectrum = new Spectrum(SPECTRUM_WIDTH);
+    mp_Spectrum->setColor(baseColor);
+    m_SpectrumColors.append(baseColor);
+    m_CurrentSpectrumColor = 0;
+
     mp_SongPicture = new QLabel;
     mp_SongPicture->setMinimumHeight(SPECTRUM_HEIGHT);
     m_DefaultSongPicture = util::Tools::loadImage(QString(IMAGES_SUBDIR) + "default_picture.png");
@@ -550,6 +558,45 @@ void PlayerWindow::openInformation()
 void PlayerWindow::openConnection()
 {
     m_ConnectionDialog.exec();
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::openSpectrumColorDialog()
+{
+    SpectrumColorDialog colorDialog(m_SpectrumColors);
+    colorDialog.setCurrentColor(m_CurrentSpectrumColor);
+
+    connect(&colorDialog, &SpectrumColorDialog::colorSelected, [this](int index) {
+        m_CurrentSpectrumColor = index;
+        mp_Spectrum->setColor(m_SpectrumColors.at(index));
+    });
+
+    connect(&colorDialog, &SpectrumColorDialog::colorAdded, [this](const SpectrumColor& color) {
+        m_SpectrumColors.append(color);
+    });
+
+    connect(&colorDialog, &SpectrumColorDialog::colorChanged, [this](int index, const SpectrumColor& color) {
+        m_SpectrumColors[index] = color;
+        if (m_CurrentSpectrumColor == index)
+            mp_Spectrum->setColor(m_SpectrumColors.at(index));
+    });
+
+    connect(&colorDialog, &SpectrumColorDialog::colorRemoved, [this](int index) {
+        m_SpectrumColors.removeAt(index);
+
+        if (m_CurrentSpectrumColor == index)
+        {
+            m_CurrentSpectrumColor = 0;
+            mp_Spectrum->setColor(m_SpectrumColors.at(m_CurrentSpectrumColor));
+        }
+        else if (m_CurrentSpectrumColor > index)
+            m_CurrentSpectrumColor--;
+    });
+
+    colorDialog.exec();
+    mp_Spectrum->update();
 }
 
 // ==============================

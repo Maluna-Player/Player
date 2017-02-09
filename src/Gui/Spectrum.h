@@ -23,6 +23,12 @@
 namespace gui {
 
 
+struct SpectrumColor
+{
+    QColor topColor;
+    QColor bottomColor;
+};
+
 class Spectrum : public QWidget
 {
     private:
@@ -30,6 +36,8 @@ class Spectrum : public QWidget
         int m_Width;
 
         QVector<QRect> m_Lines;
+
+        SpectrumColor m_Color;
 
 
         /**
@@ -46,6 +54,12 @@ class Spectrum : public QWidget
 
         Spectrum(int width, QWidget *parent = nullptr);
         virtual ~Spectrum() = default;
+
+        /**
+         * @brief Change la couleur du spectre.
+         * @param color Nouvelle couleur du spectre
+         */
+        void setColor(const SpectrumColor& color);
 
         /**
          * @brief Remet à 0 les valeurs du spectre.

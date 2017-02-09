@@ -40,7 +40,9 @@ SOURCES += main.cpp \
     Gui/SongListIterator.cpp \
     Gui/ShadowWidget.cpp \
     Gui/PlayerToggleButton.cpp \
-    Gui/ConnectionDialog.cpp
+    Gui/ConnectionDialog.cpp \
+    Gui/SpectrumColorDialog.cpp \
+    Gui/SpectrumColorWidget.cpp
 
 HEADERS  += Constants.h \
     Util/Tools.h \
@@ -75,7 +77,9 @@ HEADERS  += Constants.h \
     Util/composedmap.h \
     Gui/ShadowWidget.h \
     Gui/PlayerToggleButton.h \
-    Gui/ConnectionDialog.h
+    Gui/ConnectionDialog.h \
+    Gui/SpectrumColorDialog.h \
+    Gui/SpectrumColorWidget.h
 
 RC_FILE = Player.rc
 

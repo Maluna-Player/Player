@@ -38,8 +38,8 @@ void Spectrum::draw(QPainter *painter) const
     int i;
 
     QLinearGradient gradient(0, 0, 0, height());
-    gradient.setColorAt(0.0, Qt::red);
-    gradient.setColorAt(1.0, Qt::yellow);
+    gradient.setColorAt(0.0, m_Color.topColor);
+    gradient.setColorAt(1.0, m_Color.bottomColor);
 
     for (i = 0; i < m_Width; i++)
     {
@@ -64,6 +64,14 @@ void Spectrum::paintEvent(QPaintEvent * /*event*/)
 
     QPainter widgetPainter(this);
     widgetPainter.drawImage(0, 0, image);
+}
+
+// ==============================
+// ==============================
+
+void Spectrum::setColor(const SpectrumColor& color)
+{
+    m_Color = color;
 }
 
 // ==============================

@@ -32,6 +32,8 @@ class MenuBar : public QMenuBar
 
         QAction *mp_OpenConnectionAction;
 
+        QAction *mp_ChangeSpectrumColorAction;
+
     public:
 
         MenuBar(QWidget *parent = nullptr);
@@ -60,6 +62,12 @@ class MenuBar : public QMenuBar
          * @return Retourne le bouton d'ouverture de la fenêtre de connexion.
          */
         QAction* getOpenConnectionAction() const;
+
+        /**
+         * @brief getChangeSpectrumColorAction
+         * @return Retourne le bouton de changement de couleur du spectre.
+         */
+        QAction* getChangeSpectrumColorAction() const;
 
         /**
          * @brief getAboutAction
