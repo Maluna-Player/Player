@@ -34,6 +34,7 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     : QMainWindow(parent), m_TimerId(0), mp_Socket(nullptr)
 {
     setWindowTitle(tr(WINDOW_TITLE));
+    qApp->setWindowIcon(util::Tools::loadImage(QString(IMAGES_SUBDIR) + "icon.ico"));
     resize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
     setAcceptDrops(true);
