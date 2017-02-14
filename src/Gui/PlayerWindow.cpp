@@ -106,7 +106,9 @@ void PlayerWindow::createMenuBar()
     MenuBar *menuBar = new MenuBar;
 
     QToolBar *toolbar = addToolBar("toolbar");
-    toolbar->setStyleSheet("QToolBar { background-color: grey; }");
+    toolbar->setStyleSheet("QToolBar { background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
+                                        "stop: 0 rgb(150, 150, 150), stop: 0.5 rgb(155, 155, 155),"
+                                        "stop: 0.6 rgb(130, 130, 130), stop: 1.0 rgb(85, 85, 85)); border: 0px; }");
 
     toolbar->addAction(menuBar->getAddingSongAction());
     toolbar->addAction(menuBar->getOpenAction());

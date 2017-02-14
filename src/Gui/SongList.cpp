@@ -30,8 +30,7 @@ SongList::SongList(QWidget *parent)
     p.setColor(QPalette::Base, QColor(24, 0, 96));
     setPalette(p);
 
-    setStyleSheet("color: rgb(212, 255, 250); border: 3px solid rgb(25, 25, 25);");
-    verticalScrollBar()->setStyleSheet("background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop: 0  rgb(200, 150, 130), stop: 0.5 rgb(150, 47, 130),  stop:1 rgb(200, 30, 150));");
+    setStyleSheet("QTreeWidget { color: rgb(212, 255, 250); border: 3px solid rgb(25, 25, 25); }");
 
     setColumnCount(3);
     setHeaderHidden(true);

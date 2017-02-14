@@ -20,7 +20,8 @@ PlayerToggleButton::PlayerToggleButton(const QString& filename, bool enabled, QW
 {
     setCheckable(true);
     setChecked(enabled);
-    setStyleSheet("QPushButton { background-color: rgba(75,75,75,255) }");
+    setStyleSheet("QPushButton { background-color: rgb(90, 90, 90); }"
+                  "QPushButton::checked { background-color: rgb(75, 75, 75); }");
 }
 
 

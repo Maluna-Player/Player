@@ -17,7 +17,7 @@ namespace gui {
 
 MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent)
 {
-    setStyleSheet("background-color: grey;");
+    setStyleSheet("background-color: rgb(195, 195, 195);");
 
     QMenu *fileMenu = addMenu("Fichier");
     QMenu *optionsMenu = addMenu("Options");
