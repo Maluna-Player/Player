@@ -99,7 +99,7 @@ class SpectrumColorDialog : public QDialog
 
         SpectrumColorDialog(QWidget *parent = nullptr);
         SpectrumColorDialog(const QList<SpectrumColor>& colors, QWidget *parent = nullptr);
-        virtual ~SpectrumColorDialog() = default;
+        virtual ~SpectrumColorDialog();
 
         /**
          * @brief Change la couleur courante dans la liste.

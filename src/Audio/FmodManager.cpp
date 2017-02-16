@@ -61,6 +61,12 @@ FmodManager::~FmodManager()
 
     FMOD_RESULT res;
 
+    if ((res = FMOD_ChannelGroup_RemoveDSP(mp_ChannelGroup, mp_Dsp)) != FMOD_OK)
+        throw exceptions::LibException("FmodManager::~FmodManager", "FMOD_ChannelGroup_RemoveDSP", FMOD_ErrorString(res));
+
+    if ((res = FMOD_DSP_Release(mp_Dsp)) != FMOD_OK)
+        throw exceptions::LibException("FmodManager::~FmodManager", "FMOD_DSP_Release", FMOD_ErrorString(res));
+
     if ((res = FMOD_System_Release(mp_System)) != FMOD_OK)
         throw exceptions::LibException("FmodManager::~FmodManager", "FMOD_System_Release", FMOD_ErrorString(res));
 }

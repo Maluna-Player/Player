@@ -159,30 +159,22 @@ void SongList::removeSong(const SongListIterator& it)
 void SongList::clearList(SongList_t list)
 {
     SongListItem *root = getRootNode(list);
+    SongListIterator it(root);
 
-    if (list == SongList_t::LOCAL_SONGS || list == SongList_t::REMOTE_SONGS)
+    while (!it.isNull())
     {
-        root->takeChildren();
-        root->setLength(0);
-    }
-    else if (list == SongList_t::DIRECTORY_SONGS || list == SongList_t::IMPORTED_SONGS)
-    {
-        SongListIterator it(root);
-
-        while (!it.isNull())
+        if ((*it)->isSong())
         {
-            if ((*it)->isSong())
-            {
-                std::shared_ptr<audio::Song> song = (*it)->getAttachedSong();
-                if (song && ((list == SongList_t::DIRECTORY_SONGS && song->isInFolder())
-                              || (list == SongList_t::IMPORTED_SONGS && !song->isInFolder())))
-                    removeSong(it);
-                else
-                    ++it;
-            }
+            std::shared_ptr<audio::Song> song = (*it)->getAttachedSong();
+            if (song && (list == SongList_t::LOCAL_SONGS || list == SongList_t::REMOTE_SONGS
+                         || (list == SongList_t::DIRECTORY_SONGS && song->isInFolder())
+                         || (list == SongList_t::IMPORTED_SONGS && !song->isInFolder())))
+                removeSong(it);
             else
                 ++it;
         }
+        else
+            ++it;
     }
 }
 

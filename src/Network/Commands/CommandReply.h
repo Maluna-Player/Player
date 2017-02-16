@@ -70,18 +70,18 @@ class ReadCommandReply : public CommandReply
 {
     private:
 
-        void *m_Buffer;
+        char *m_Buffer;
 
         unsigned int m_ReadBytes;
 
     public:
 
-        ReadCommandReply(audio::Player::SongId songId, FMOD_RESULT result, void *buffer, unsigned int bytes);
+        ReadCommandReply(audio::Player::SongId songId, FMOD_RESULT result, char *buffer, unsigned int bytes);
         virtual ~ReadCommandReply();
 
         virtual char getCommandType() const override;
 
-        void* getBuffer() const;
+        char* getBuffer() const;
 
         unsigned int getReadBytes() const;
 

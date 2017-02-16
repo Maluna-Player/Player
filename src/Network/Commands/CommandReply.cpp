@@ -90,7 +90,7 @@ char CloseCommandReply::getCommandType() const
 // ==============================
 // ==============================
 
-ReadCommandReply::ReadCommandReply(audio::Player::SongId songId, FMOD_RESULT result, void *buffer, unsigned int bytes)
+ReadCommandReply::ReadCommandReply(audio::Player::SongId songId, FMOD_RESULT result, char *buffer, unsigned int bytes)
     : CommandReply(songId, result), m_Buffer(buffer), m_ReadBytes(bytes)
 {
 
@@ -98,7 +98,7 @@ ReadCommandReply::ReadCommandReply(audio::Player::SongId songId, FMOD_RESULT res
 
 ReadCommandReply::~ReadCommandReply()
 {
-    delete m_Buffer;
+    delete[] m_Buffer;
 }
 
 char ReadCommandReply::getCommandType() const
@@ -106,7 +106,7 @@ char ReadCommandReply::getCommandType() const
     return 'r';
 }
 
-void* ReadCommandReply::getBuffer() const
+char* ReadCommandReply::getBuffer() const
 {
     return m_Buffer;
 }

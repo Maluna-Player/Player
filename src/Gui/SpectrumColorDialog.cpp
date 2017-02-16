@@ -87,6 +87,14 @@ SpectrumColorDialog::SpectrumColorDialog(const QList<SpectrumColor>& colors, QWi
 // ==============================
 // ==============================
 
+SpectrumColorDialog::~SpectrumColorDialog()
+{
+    delete mp_ColorButtonsGroup;
+}
+
+// ==============================
+// ==============================
+
 SpectrumColorWidget* SpectrumColorDialog::getCurrentColorWidget() const
 {
     int checkedId = mp_ColorButtonsGroup->checkedId();
