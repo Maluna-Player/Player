@@ -221,7 +221,7 @@ void PlayerWindow::createBottomWindowPart()
     connect(getButton(ButtonId::REFRESH), &PlayerButton::clicked, this, &PlayerWindow::refreshSongsList);
 
     mp_SoundVolume = new VolumeViewer;
-    mp_SoundVolume->setImage(m_Player.getVolumeState());
+    mp_SoundVolume->setState(m_Player.getVolumeState());
     connect(mp_SoundVolume, &VolumeViewer::stateChanged, this, &PlayerWindow::setMute);
 
     bottomLayout->setColumnStretch(4, 1);
@@ -544,7 +544,7 @@ void PlayerWindow::setVolume(int volume)
     m_Player.setVolume(volume);
 
     if (!m_Player.isMuted())
-        mp_SoundVolume->setImage(volume);
+        mp_SoundVolume->setState(volume);
 }
 
 // ==============================
@@ -615,9 +615,9 @@ void PlayerWindow::setMute()
     m_Player.mute(!m_Player.isMuted());
 
     if (m_Player.isMuted())
-        mp_SoundVolume->setImage(MUTE_STATE);
+        mp_SoundVolume->setState(MUTE_STATE);
     else
-        mp_SoundVolume->setImage(m_Player.getVolumeState());
+        mp_SoundVolume->setState(m_Player.getVolumeState());
 }
 
 // ==============================

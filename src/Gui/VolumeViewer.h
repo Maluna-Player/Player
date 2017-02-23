@@ -28,10 +28,9 @@ class VolumeViewer : public QLabel
 
         QPixmap m_VolumeTexture;
         QPixmap m_MuteTexture;
-        QPixmap m_VolumeValueTexture;
 
         QPixmap m_VolumeImage;
-        QPixmap m_VolumeValueImage;
+        double m_Pos;
 
     protected:
 
@@ -55,7 +54,7 @@ class VolumeViewer : public QLabel
          * @brief Change l'image du viewer de son
          * @param volumeState Volume du player
          */
-        void setImage(int volumeState);
+        void setState(int volumeState);
 };
 
 

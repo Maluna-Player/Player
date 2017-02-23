@@ -70,10 +70,11 @@ constexpr unsigned int LOADBAR_HEIGHT               = 17;
 // Volume
 constexpr unsigned int VOLUME_SPRITE_W              = 50;
 constexpr unsigned int VOLUME_SPRITE_H              = 70;
-constexpr unsigned int VOLUME_VALUE_W               = 82;
-constexpr unsigned int VOLUME_VALUE_H               = 287;
-constexpr unsigned int VOLUME_VIEWER_W              = (VOLUME_SPRITE_W + (VOLUME_SPRITE_H * VOLUME_VALUE_W / VOLUME_VALUE_H) + 10);
-constexpr unsigned int VOLUME_VIEWER_H              = VOLUME_SPRITE_H;
+constexpr unsigned int VOLUME_VALUE_X               = (VOLUME_SPRITE_W + 5);
+constexpr unsigned int VOLUME_VALUE_W               = 23;
+constexpr unsigned int VOLUME_VALUE_H               = VOLUME_SPRITE_H;
+constexpr unsigned int VOLUME_VIEWER_W              = (VOLUME_VALUE_X + VOLUME_VALUE_W + 5);
+constexpr unsigned int VOLUME_VIEWER_H              = (VOLUME_SPRITE_H + 2);
 
 
 // Preview (ms)
