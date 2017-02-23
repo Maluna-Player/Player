@@ -37,52 +37,35 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     qApp->setWindowIcon(util::Tools::loadImage(QString(IMAGES_SUBDIR) + "icon.ico"));
     resize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    setAcceptDrops(true);
-
-    QWidget *centralArea = new QWidget;
-    QStackedLayout *mainStackedLayout = new QStackedLayout;
-
-    QWidget *playerWidget = new QWidget;
-    QVBoxLayout *playerLayout = new QVBoxLayout;
-    playerLayout->setSpacing(0);
-    playerLayout->setContentsMargins(0, 0, 0, 0);
-
     connect(&m_Player, &audio::Player::songChanged, this, &PlayerWindow::updateCurrentSong);
     connect(&m_Player, &audio::Player::stateChanged, this, &PlayerWindow::setState);
     connect(&m_Player, &audio::Player::previewFinished, this, &PlayerWindow::stopPreview);
 
-    createTopWindowPart();
+    SpectrumColor baseColor { Qt::red, Qt::yellow };
+    m_SpectrumColors.append(baseColor);
+    m_CurrentSpectrumColor = 0;
 
-    mp_ProgressBackground = new ProgressBackground;
-    mp_NetworkLoadBar = new NetworkLoadBar(mp_ProgressBackground);
-    mp_NetworkLoadBar->setGeometry(0, (PROGRESS_BACKGROUND_HEIGHT - LOADBAR_HEIGHT) / 2, mp_ProgressBackground->width(), 0);
-    mp_ProgressBar = new ProgressBar(mp_ProgressBackground);
-    mp_ProgressBar->setGeometry(0, (PROGRESS_BACKGROUND_HEIGHT - PROGRESSBAR_HEIGHT) / 2, mp_ProgressBackground->width(), 0);
+    mp_SongTitle = new PlayerLabel(Qt::white, 20);
+    mp_SongArtist = new PlayerLabel(Qt::white, 14);
+    mp_SongTitle->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
+    mp_SongArtist->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
 
-    connect(mp_ProgressBar, &ProgressBar::posChanged, this, &PlayerWindow::setSongPosition);
+    mp_SongList = new SongList;
+    connect(mp_SongList, &SongList::songPressed, &m_Player, qOverload<audio::Player::SongId>(&audio::Player::changeSong));
+    connect(mp_SongList, &SongList::songRemoved, &m_Player, &audio::Player::removeSong);
+    connect(&m_Player, &audio::Player::streamError, mp_SongList, &SongList::disableSong);
 
+    createMenuBar();
+    createOptionsBar();
     createBottomWindowPart();
+
+    setDesktopWindow();
 
     connect(&m_ConnectionDialog, &ConnectionDialog::listened, this, &PlayerWindow::listen);
     connect(&m_ConnectionDialog, &ConnectionDialog::connectedToHost, this, &PlayerWindow::connectToHost);
     connect(&m_ConnectionDialog, &ConnectionDialog::canceled, this, &PlayerWindow::closeConnection);
     connect(&m_ConnectionDialog, &ConnectionDialog::disconnected, this, &PlayerWindow::closeConnection);
 
-    createMenuBar();
-
-    playerLayout->addWidget(mp_TopPart);
-    playerLayout->addWidget(mp_ProgressBackground);
-    playerLayout->addWidget(mp_BottomPart);
-
-    playerWidget->setLayout(playerLayout);
-
-    createPreviewWidget();
-
-    mainStackedLayout->addWidget(playerWidget);
-    mainStackedLayout->addWidget(mp_ShadowWidget);
-
-    centralArea->setLayout(mainStackedLayout);
-    setCentralWidget(centralArea);
 
     /** Démarrage du player **/
 
@@ -96,6 +79,9 @@ PlayerWindow::PlayerWindow(QWidget *parent)
 PlayerWindow::~PlayerWindow()
 {
     audio::FmodManager::deleteInstance();
+
+    if (!mp_SongList->parent())
+        delete mp_SongList;
 }
 
 // ==============================
@@ -142,33 +128,20 @@ void PlayerWindow::createMenuBar()
 // ==============================
 // ==============================
 
-QVBoxLayout* PlayerWindow::createOptionsBar()
+void PlayerWindow::createOptionsBar()
 {
-    PlayerToggleButton *spectrumButton = new PlayerToggleButton("spectrum.png", true);
-    spectrumButton->setToolTip("Afficher/Masquer le spectre");
-    connect(spectrumButton, &QPushButton::clicked, [this](bool enabled) {
-        mp_Spectrum->setVisible(enabled);
-        mp_Spectrum->lower();
-    });
+    mp_OptionsBar = new OptionBar;
 
-    PlayerToggleButton *pictureButton = new PlayerToggleButton("picture.png", true);
-    pictureButton->setToolTip("Afficher/Masquer la pochette");
-    connect(pictureButton, &QPushButton::clicked, [this](bool enabled) {
-        mp_SongPicture->setVisible(enabled);
-        mp_SongPicture->lower();
-    });
+    PlayerToggleButton *resizeButton = new PlayerToggleButton;
 
-    PlayerToggleButton *listButton = new PlayerToggleButton("list.png", true);
-    listButton->setToolTip("Afficher/Masquer la liste des musiques");
-    connect(listButton, &QPushButton::clicked, this, &PlayerWindow::setListVisible);
+    resizeButton->setToolTip(true, "Agrandir la fenêtre");
+    resizeButton->setToolTip(false, "Réduire la fenêtre");
+    resizeButton->setIcon(true, util::Tools::loadImage(QString(IMAGES_SUBDIR) + "extend.png"));
+    resizeButton->setIcon(false, util::Tools::loadImage(QString(IMAGES_SUBDIR) + "reduce.png"));
+    resizeButton->setAction(true, std::bind(&PlayerWindow::setMiniatureWindow, this));
+    resizeButton->setAction(false, std::bind(&PlayerWindow::setDesktopWindow, this));
 
-    QVBoxLayout *optionsBar = new QVBoxLayout;
-    optionsBar->setAlignment(Qt::AlignTop);
-    optionsBar->addWidget(spectrumButton);
-    optionsBar->addWidget(pictureButton);
-    optionsBar->addWidget(listButton);
-
-    return optionsBar;
+    mp_OptionsBar->addButton(0, resizeButton);
 }
 
 // ==============================
@@ -179,40 +152,39 @@ void PlayerWindow::createTopWindowPart()
     mp_TopPart = new QWidget;
     QGridLayout *topLayout = new QGridLayout;
 
-    mp_SongTitle = new PlayerLabel(Qt::white, 20);
-    mp_SongArtist = new PlayerLabel(Qt::white, 14);
-    mp_SongTitle->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
-    mp_SongArtist->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
-
-    SpectrumColor baseColor { Qt::red, Qt::yellow };
     mp_Spectrum = new Spectrum(SPECTRUM_WIDTH);
-    mp_Spectrum->setColor(baseColor);
-    m_SpectrumColors.append(baseColor);
-    m_CurrentSpectrumColor = 0;
+    mp_Spectrum->setColor(m_SpectrumColors.at(m_CurrentSpectrumColor));
 
     mp_SongPicture = new QLabel;
     mp_SongPicture->setMinimumHeight(SPECTRUM_HEIGHT);
     m_DefaultSongPicture = util::Tools::loadImage(QString(IMAGES_SUBDIR) + "default_picture.png");
-
-    mp_SongList = new SongList;
-    connect(mp_SongList, &SongList::songPressed, &m_Player, qOverload<audio::Player::SongId>(&audio::Player::changeSong));
-    connect(mp_SongList, &SongList::songRemoved, &m_Player, &audio::Player::removeSong);
-    connect(&m_Player, &audio::Player::streamError, mp_SongList, &SongList::disableSong);
-
-    auto optionsBar = createOptionsBar();
 
     topLayout->setColumnStretch(0, 1);
     topLayout->addWidget(mp_SongTitle, 0, 0, 1, 2, Qt::AlignTop);
     topLayout->addWidget(mp_SongArtist, 1, 0, 1, 2, Qt::AlignTop);
     topLayout->addWidget(mp_SongPicture, 0, 1, 10, 1, Qt::AlignRight);
     topLayout->addWidget(mp_Spectrum, 0, 1, 10, 1);
-    topLayout->addLayout(optionsBar, 0, 2, 10, 1, Qt::AlignTop);
+    topLayout->addWidget(mp_OptionsBar, 0, 2, 10, 1);
     topLayout->addWidget(mp_SongList, 0, 3, 10, 1);
 
     mp_TopPart->setLayout(topLayout);
 
     mp_SongTitle->raise();
     mp_SongArtist->raise();
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::createProgressBar()
+{
+    mp_ProgressBackground = new ProgressBackground;
+    mp_NetworkLoadBar = new NetworkLoadBar(mp_ProgressBackground);
+    mp_NetworkLoadBar->setGeometry(0, (PROGRESS_BACKGROUND_HEIGHT - LOADBAR_HEIGHT) / 2, mp_ProgressBackground->width(), 0);
+    mp_ProgressBar = new ProgressBar(mp_ProgressBackground);
+    mp_ProgressBar->setGeometry(0, (PROGRESS_BACKGROUND_HEIGHT - PROGRESSBAR_HEIGHT) / 2, mp_ProgressBackground->width(), 0);
+
+    connect(mp_ProgressBar, &ProgressBar::posChanged, this, &PlayerWindow::setSongPosition);
 }
 
 // ==============================
@@ -228,9 +200,14 @@ void PlayerWindow::createBottomWindowPart()
     mp_SongPos = new PlayerLabel(QColor(21, 191, 221), 15);
     mp_SongLength = new PlayerLabel(QColor(21, 191, 221), 15);
 
-    mp_Buttons << new PlayerButton("play") << new PlayerButton("pause") << new PlayerButton("stop")
-                << new PlayerButton("prev") << new PlayerButton("next") << new PlayerButton("volumem")
-                << new PlayerButton("volumel") << new PlayerButton("refresh");
+    mp_Buttons.insert(ButtonId::PLAY, new PlayerButton("play"));
+    mp_Buttons.insert(ButtonId::PAUSE, new PlayerButton("pause"));
+    mp_Buttons.insert(ButtonId::STOP, new PlayerButton("stop"));
+    mp_Buttons.insert(ButtonId::PREV, new PlayerButton("prev"));
+    mp_Buttons.insert(ButtonId::NEXT, new PlayerButton("next"));
+    mp_Buttons.insert(ButtonId::VOLUME_MORE, new PlayerButton("volumem"));
+    mp_Buttons.insert(ButtonId::VOLUME_LESS, new PlayerButton("volumel"));
+    mp_Buttons.insert(ButtonId::REFRESH, new PlayerButton("refresh"));
 
     getButton(ButtonId::PAUSE)->hide();
 
@@ -248,22 +225,56 @@ void PlayerWindow::createBottomWindowPart()
     connect(mp_SoundVolume, &VolumeViewer::stateChanged, this, &PlayerWindow::setMute);
 
     bottomLayout->setColumnStretch(4, 1);
-    bottomLayout->addWidget(mp_SongPos, 0, 0);
-    bottomLayout->addWidget(mp_SongLength, 0, 10, Qt::AlignRight);
+    bottomLayout->addWidget(mp_SongPos, 3, 0);
+    bottomLayout->addWidget(mp_SongLength, 3, 10, Qt::AlignRight);
 
-    bottomLayout->addWidget(getButton(ButtonId::PLAY), 0, 6, 2, 1);
-    bottomLayout->addWidget(getButton(ButtonId::PAUSE), 0, 6, 2, 1);
-    bottomLayout->addWidget(getButton(ButtonId::STOP), 2, 6, 2, 1);
-    bottomLayout->addWidget(getButton(ButtonId::PREV), 1, 5, 2, 1);
-    bottomLayout->addWidget(getButton(ButtonId::NEXT), 1, 7, 2, 1);
-    bottomLayout->addWidget(getButton(ButtonId::VOLUME_MORE), 0, 3, 2, 1);
-    bottomLayout->addWidget(getButton(ButtonId::VOLUME_LESS), 2, 3, 2, 1);
-    bottomLayout->addWidget(getButton(ButtonId::REFRESH), 1, 10, 2, 1);
+    bottomLayout->addWidget(getButton(ButtonId::PLAY), 3, 6, 2, 1);
+    bottomLayout->addWidget(getButton(ButtonId::PAUSE), 3, 6, 2, 1);
+    bottomLayout->addWidget(getButton(ButtonId::STOP), 5, 6, 2, 1);
+    bottomLayout->addWidget(getButton(ButtonId::PREV), 4, 5, 2, 1);
+    bottomLayout->addWidget(getButton(ButtonId::NEXT), 4, 7, 2, 1);
+    bottomLayout->addWidget(getButton(ButtonId::VOLUME_MORE), 3, 3, 2, 1);
+    bottomLayout->addWidget(getButton(ButtonId::VOLUME_LESS), 5, 3, 2, 1);
+    bottomLayout->addWidget(getButton(ButtonId::REFRESH), 4, 10, 2, 1);
 
-    bottomLayout->addWidget(mp_SoundVolume, 1, 1, 2, 2);
+    bottomLayout->addWidget(mp_SoundVolume, 4, 1, 2, 2);
 
     bottomLayout->setColumnStretch(8, 1);
     mp_BottomPart->setLayout(bottomLayout);
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::createDesktopOptions()
+{
+    using namespace std::placeholders;
+
+    PlayerToggleButton *spectrumButton = new PlayerToggleButton("spectrum.png", true);
+    spectrumButton->setToolTip(true, "Masquer le spectre");
+    spectrumButton->setToolTip(false, "Afficher le spectre");
+    spectrumButton->setAction([this](bool enabled) {
+        mp_Spectrum->setVisible(enabled);
+        mp_Spectrum->lower();
+    });
+
+    PlayerToggleButton *pictureButton = new PlayerToggleButton("picture.png", true);
+    pictureButton->setToolTip(true, "Masquer la pochette");
+    pictureButton->setToolTip(false, "Afficher la pochette");
+    pictureButton->setAction([this](bool enabled) {
+        mp_SongPicture->setVisible(enabled);
+        mp_SongPicture->lower();
+    });
+
+    PlayerToggleButton *listButton = new PlayerToggleButton("list.png", true);
+    listButton->setToolTip(true, "Masquer la liste");
+    listButton->setToolTip(false, "Afficher la liste");
+    listButton->setAction(std::bind(&PlayerWindow::setListVisible, this, _1));
+
+
+    mp_OptionsBar->addButton(0, spectrumButton);
+    mp_OptionsBar->addButton(1, pictureButton);
+    mp_OptionsBar->addButton(2, listButton);
 }
 
 // ==============================
@@ -292,9 +303,82 @@ void PlayerWindow::createPreviewWidget()
 // ==============================
 // ==============================
 
+void PlayerWindow::createDesktopWindow()
+{
+    QWidget *centralArea = new QWidget;
+    QStackedLayout *mainStackedLayout = new QStackedLayout;
+
+    QWidget *playerWidget = new QWidget;
+    QVBoxLayout *playerLayout = new QVBoxLayout;
+    playerLayout->setSpacing(0);
+    playerLayout->setContentsMargins(0, 0, 0, 0);
+
+    playerLayout->addWidget(mp_TopPart);
+    playerLayout->addWidget(mp_ProgressBackground);
+    playerLayout->addWidget(mp_BottomPart);
+
+    playerWidget->setLayout(playerLayout);
+
+    mainStackedLayout->addWidget(playerWidget);
+    mainStackedLayout->addWidget(mp_ShadowWidget);
+
+    centralArea->setLayout(mainStackedLayout);
+    setCentralWidget(centralArea);
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::setDesktopLayout()
+{
+    createTopWindowPart();
+    createProgressBar();
+    createPreviewWidget();
+    createDesktopWindow();
+    createDesktopOptions();
+
+    getButton(ButtonId::REFRESH)->show();
+
+    mp_SongList->setFixedWidth(LIST_WIDTH);
+
+    mp_BottomPart->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+
+    setWindowFlags(windowFlags() | Qt::WindowMaximizeButtonHint);
+    setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+    show();
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::setMiniatureLayout()
+{
+    QGridLayout *bottomLayout = static_cast<QGridLayout*>(mp_BottomPart->layout());
+
+    for (int i = 0; i < 3; ++i)
+        mp_OptionsBar->removeButton(0);
+
+    bottomLayout->addWidget(mp_SongTitle, 0, 0, 1, bottomLayout->columnCount());
+    bottomLayout->addWidget(mp_SongArtist, 1, 0, 1, bottomLayout->columnCount());
+    bottomLayout->addWidget(mp_OptionsBar, 0, bottomLayout->columnCount(), bottomLayout->rowCount(), 1);
+
+    getButton(ButtonId::REFRESH)->hide();
+
+    setCentralWidget(mp_BottomPart);
+    mp_BottomPart->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+
+    adjustSize();
+    setWindowFlags(windowFlags() & ~Qt::WindowMaximizeButtonHint);
+    setFixedSize(minimumSize());
+    show();
+}
+
+// ==============================
+// ==============================
+
 PlayerButton* PlayerWindow::getButton(ButtonId id) const
 {
-    return mp_Buttons.at(static_cast<int>(id));
+    return mp_Buttons[id];
 }
 
 // ==============================
@@ -325,11 +409,15 @@ void PlayerWindow::setState(PlayerState state)
     else if (state == PlayerState::STOP)
     {
         m_Player.stop();
-        mp_Spectrum->clear();
-        mp_NetworkLoadBar->setValue(0);
-        mp_NetworkLoadBar->setStartPos(0);
-        mp_ProgressBar->setValue(0);
         mp_SongPos->setText(util::Tools::msToString(0));
+
+        if (m_CurrentMode != PlayerMode::MINIATURE)
+        {
+            mp_Spectrum->clear();
+            mp_NetworkLoadBar->setValue(0);
+            mp_NetworkLoadBar->setStartPos(0);
+            mp_ProgressBar->setValue(0);
+        }
     }
 
     getButton(ButtonId::PLAY)->setHidden(m_Player.isPlaying());
@@ -341,34 +429,41 @@ void PlayerWindow::setState(PlayerState state)
 
 void PlayerWindow::updateCurrentSong()
 {
-    mp_SongPicture->clear();
-    mp_ProgressBar->setValue(0);
-    mp_NetworkLoadBar->setValue(0);
-    mp_NetworkLoadBar->setStartPos(0);
+    if (m_CurrentMode != PlayerMode::MINIATURE)
+    {
+        mp_SongPicture->clear();
+        mp_ProgressBar->setValue(0);
+        mp_NetworkLoadBar->setValue(0);
+        mp_NetworkLoadBar->setStartPos(0);
+    }
 
     if (m_Player.getCurrentSong())
     {
         mp_SongTitle->setText(m_Player.getCurrentSong()->getTitle());
         mp_SongArtist->setText(m_Player.getCurrentSong()->getArtist());
 
-        if (m_Player.getCurrentSong()->isAvailable())
+        if (m_CurrentMode != PlayerMode::MINIATURE)
         {
-            mp_SongPicture->setPixmap(m_Player.getCurrentSong()->buildPicture());
+            if (m_Player.getCurrentSong()->isAvailable())
+            {
+                mp_SongPicture->setPixmap(m_Player.getCurrentSong()->buildPicture());
 
-            if (!mp_SongPicture->pixmap()->isNull() && mp_SongPicture->pixmap()->width() > 400)
-                mp_SongPicture->setPixmap(mp_SongPicture->pixmap()->scaledToWidth(400));
+                if (!mp_SongPicture->pixmap()->isNull() && mp_SongPicture->pixmap()->width() > 400)
+                    mp_SongPicture->setPixmap(mp_SongPicture->pixmap()->scaledToWidth(400));
+            }
+
+            if (!mp_SongPicture->pixmap() || mp_SongPicture->pixmap()->isNull())
+                mp_SongPicture->setPixmap(m_DefaultSongPicture);
+
+            mp_ProgressBar->setMaximum(m_Player.getCurrentSong()->getLength());
+
+            if (m_Player.getCurrentSong()->isRemote())
+                mp_NetworkLoadBar->setMaximum(mp_Socket->getTotalCurrentSongData());
+
+            mp_SongList->setCurrentSong(m_Player.getCurrentSong()->getId());
         }
 
-        if (!mp_SongPicture->pixmap() || mp_SongPicture->pixmap()->isNull())
-            mp_SongPicture->setPixmap(m_DefaultSongPicture);
-
         mp_SongLength->setText(util::Tools::msToString(m_Player.getCurrentSong()->getLength()));
-        mp_ProgressBar->setMaximum(m_Player.getCurrentSong()->getLength());
-
-        if (m_Player.getCurrentSong()->isRemote())
-            mp_NetworkLoadBar->setMaximum(mp_Socket->getTotalCurrentSongData());
-
-        mp_SongList->setCurrentSong(m_Player.getCurrentSong()->getId());
     }
     else
     {
@@ -484,13 +579,17 @@ void PlayerWindow::setSongPosition(double value)
         audio::SoundPos_t pos = value * m_Player.getCurrentSong()->getLength() / 100;
 
         m_Player.getCurrentSong()->setPosition(pos);
-        mp_ProgressBar->setValue(pos);
         mp_SongPos->setText(util::Tools::msToString(pos));
 
-        if (m_Player.getCurrentSong()->isRemote())
+        if (m_CurrentMode != PlayerMode::MINIATURE)
         {
-            mp_NetworkLoadBar->setValue(0);
-            mp_NetworkLoadBar->setStartPos(value);
+            mp_ProgressBar->setValue(pos);
+
+            if (m_Player.getCurrentSong()->isRemote())
+            {
+                mp_NetworkLoadBar->setValue(0);
+                mp_NetworkLoadBar->setStartPos(value);
+            }
         }
     }
 }
@@ -686,14 +785,18 @@ void PlayerWindow::timerEvent(QTimerEvent *event)
 
         if (m_Player.isPlaying())
         {
-            if (mp_Spectrum->isVisible())
-                mp_Spectrum->updateValues(m_Player.getCurrentSong()->getSoundID());
+            if (m_CurrentMode != PlayerMode::MINIATURE)
+            {
+                if (mp_Spectrum->isVisible())
+                    mp_Spectrum->updateValues(m_Player.getCurrentSong()->getSoundID());
 
-            mp_ProgressBar->setPosition(m_Player.getCurrentSong()->getPosition());
+                mp_ProgressBar->setPosition(m_Player.getCurrentSong()->getPosition());
+
+                if (m_Player.getCurrentSong()->isRemote())
+                    mp_NetworkLoadBar->setValue(mp_Socket->getSongDataReceived());
+            }
+
             mp_SongPos->setText(util::Tools::msToString(m_Player.getCurrentSong()->getPosition()));
-
-            if (m_Player.getCurrentSong()->isRemote())
-                mp_NetworkLoadBar->setValue(mp_Socket->getSongDataReceived());
 
             if (getButton(ButtonId::PREV)->isPressed())
                 moveSongPosition(-MOVE_INTERVAL);
@@ -739,8 +842,42 @@ void PlayerWindow::hideEvent(QHideEvent* /*event*/)
 
 void PlayerWindow::resizeEvent(QResizeEvent* event)
 {
-    mp_NetworkLoadBar->resize(event->size().width(), mp_NetworkLoadBar->height());
-    mp_ProgressBar->resize(event->size().width(), mp_ProgressBar->height());
+    QMainWindow::resizeEvent(event);
+
+    if (m_CurrentMode != PlayerMode::MINIATURE)
+    {
+        mp_NetworkLoadBar->resize(event->size().width(), mp_NetworkLoadBar->height());
+        mp_ProgressBar->resize(event->size().width(), mp_ProgressBar->height());
+    }
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::setDesktopWindow()
+{
+    m_CurrentMode = PlayerMode::DESKTOP;
+
+    setDesktopLayout();
+    menuBar()->show();
+
+    updateCurrentSong();
+    setAcceptDrops(true);
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::setMiniatureWindow()
+{
+    m_CurrentMode = PlayerMode::MINIATURE;
+    mp_SongList->setParent(0);
+    m_DefaultSongPicture = QPixmap();
+
+    setMiniatureLayout();
+    menuBar()->hide();
+
+    setAcceptDrops(false);
 }
 
 // ==============================

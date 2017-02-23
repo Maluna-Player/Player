@@ -42,7 +42,8 @@ SOURCES += main.cpp \
     Gui/PlayerToggleButton.cpp \
     Gui/ConnectionDialog.cpp \
     Gui/SpectrumColorDialog.cpp \
-    Gui/SpectrumColorWidget.cpp
+    Gui/SpectrumColorWidget.cpp \
+    Gui/OptionBar.cpp
 
 HEADERS  += Constants.h \
     Util/Tools.h \
@@ -79,7 +80,8 @@ HEADERS  += Constants.h \
     Gui/PlayerToggleButton.h \
     Gui/ConnectionDialog.h \
     Gui/SpectrumColorDialog.h \
-    Gui/SpectrumColorWidget.h
+    Gui/SpectrumColorWidget.h \
+    Gui/OptionBar.h
 
 RC_FILE = Player.rc
 

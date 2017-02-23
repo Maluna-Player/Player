@@ -11,8 +11,6 @@
 #ifndef __CONSTANTS_H__
 #define __CONSTANTS_H__
 
-#include <QString>
-
 
 constexpr unsigned int REFRESH_TIME_MS = 50;
 

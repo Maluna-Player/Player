@@ -28,11 +28,11 @@
 #include <QHideEvent>
 #include <QDragEnterEvent>
 #include <QDropEvent>
-#include <QVector>
+#include <QMap>
 #include <QTimer>
-#include <QVBoxLayout>
 #include "./Network/PlayerSocket.h"
 #include "ConnectionDialog.h"
+#include "OptionBar.h"
 
 
 namespace gui {
@@ -44,7 +44,11 @@ class PlayerWindow : public QMainWindow
 
     private:
 
+        enum class PlayerMode { DESKTOP, MINIATURE };
+
         int m_TimerId;
+
+        PlayerMode m_CurrentMode;
 
         QString m_PreviewPath;
         QTimer m_PreviewTimer;
@@ -79,7 +83,7 @@ class PlayerWindow : public QMainWindow
 
         enum class ButtonId { PLAY, PAUSE, STOP, PREV, NEXT, VOLUME_MORE, VOLUME_LESS, REFRESH };
 
-        QVector<PlayerButton*> mp_Buttons;
+        QMap<ButtonId, PlayerButton*> mp_Buttons;
 
         std::unique_ptr<network::PlayerSocket> mp_Socket;
 
@@ -88,6 +92,8 @@ class PlayerWindow : public QMainWindow
         QPixmap m_ConnectedIcon;
         QPixmap m_DisconnectedIcon;
         QLabel *mp_ConnectionState;
+
+        OptionBar *mp_OptionsBar;
 
 
         /**
@@ -98,7 +104,7 @@ class PlayerWindow : public QMainWindow
         /**
          * @brief Créé la barre des options.
          */
-        QVBoxLayout* createOptionsBar();
+        void createOptionsBar();
 
         /**
          * @brief Créé la partie haute de la fenêtre.
@@ -106,14 +112,39 @@ class PlayerWindow : public QMainWindow
         void createTopWindowPart();
 
         /**
+         * @brief Créé les barres de progression.
+         */
+        void createProgressBar();
+
+        /**
          * @brief Créé la partie basse de la fenêtre.
          */
         void createBottomWindowPart();
 
         /**
+         * @brief Créé les options du mode Desktop.
+         */
+        void createDesktopOptions();
+
+        /**
          * @brief Créé le widget de previsualisation.
          */
         void createPreviewWidget();
+
+        /**
+         * @brief Créé la fenêtre en mode Desktop.
+         */
+        void createDesktopWindow();
+
+        /**
+         * @brief Change l'agencement de la fenêtre pour passer au mode Desktop.
+         */
+        void setDesktopLayout();
+
+        /**
+         * @brief Change l'agencement de la fenêtre pour passer au mode miniature.
+         */
+        void setMiniatureLayout();
 
         /**
          * @brief Récupère le boutton associé à la valeur de l'énumération passée en paramètre.
@@ -260,6 +291,16 @@ class PlayerWindow : public QMainWindow
          * @brief Arrête la preview.
          */
         void stopPreview();
+
+        /**
+         * @brief Passe l'application en mode Desktop.
+         */
+        void setDesktopWindow();
+
+        /**
+         * @brief Passe l'application en mode miniature.
+         */
+        void setMiniatureWindow();
 
     protected:
 
