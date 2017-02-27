@@ -70,7 +70,7 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     /** Démarrage du player **/
 
     refreshSongsList();
-    setState(PlayerState::PLAY);
+    m_Player.play();
 }
 
 // ==============================
@@ -270,7 +270,6 @@ void PlayerWindow::createDesktopOptions()
     listButton->setToolTip(true, "Masquer la liste");
     listButton->setToolTip(false, "Afficher la liste");
     listButton->setAction(std::bind(&PlayerWindow::setListVisible, this, _1));
-
 
     mp_OptionsBar->addButton(0, spectrumButton);
     mp_OptionsBar->addButton(1, pictureButton);
@@ -474,7 +473,7 @@ void PlayerWindow::updateCurrentSong()
     }
 
     if (m_Player.isPaused())
-        setState(PlayerState::STOP);
+        m_Player.stop();
 
     getButton(ButtonId::PREV)->release();
     getButton(ButtonId::NEXT)->release();
@@ -493,7 +492,7 @@ void PlayerWindow::refreshSongsList()
     m_Player.firstSong();
 
     if (!m_Player.isStopped())
-      setState(PlayerState::STOP);
+        m_Player.stop();
 }
 
 // ==============================
@@ -501,7 +500,7 @@ void PlayerWindow::refreshSongsList()
 
 void PlayerWindow::play()
 {
-    setState(PlayerState::PLAY);
+    m_Player.play();
 }
 
 // ==============================
@@ -509,7 +508,7 @@ void PlayerWindow::play()
 
 void PlayerWindow::pause()
 {
-    setState(PlayerState::PAUSE);
+    m_Player.pause();
 }
 
 // ==============================
@@ -517,7 +516,7 @@ void PlayerWindow::pause()
 
 void PlayerWindow::stop()
 {
-    setState(PlayerState::STOP);
+    m_Player.stop();
 }
 
 // ==============================
@@ -755,7 +754,7 @@ void PlayerWindow::closeConnection()
             if (!m_Player.getCurrentSong())
             {
                 if (!m_Player.isStopped())
-                    setState(PlayerState::STOP);
+                    m_Player.stop();
             }
             else if (m_Player.getCurrentSong()->isRemote())
                 m_Player.firstSong();

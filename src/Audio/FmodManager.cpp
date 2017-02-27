@@ -44,9 +44,6 @@ FmodManager::FmodManager(int maxChannels)
 
     if ((res = FMOD_DSP_SetParameterInt(mp_Dsp, FMOD_DSP_FFT_WINDOWSIZE, SPECTRUM_WIDTH)) != FMOD_OK)
         throw exceptions::LibException("FmodManager::FmodManager", "FMOD_DSP_SetParameterInt", FMOD_ErrorString(res));
-
-    if ((res = FMOD_ChannelGroup_AddDSP(mp_ChannelGroup, 0, mp_Dsp)) != FMOD_OK)
-        throw exceptions::LibException("FmodManager::FmodManager", "FMOD_ChannelGroup_AddDSP", FMOD_ErrorString(res));
 }
 
 // ==============================
@@ -60,9 +57,6 @@ FmodManager::~FmodManager()
         releaseSound(i);
 
     FMOD_RESULT res;
-
-    if ((res = FMOD_ChannelGroup_RemoveDSP(mp_ChannelGroup, mp_Dsp)) != FMOD_OK)
-        throw exceptions::LibException("FmodManager::~FmodManager", "FMOD_ChannelGroup_RemoveDSP", FMOD_ErrorString(res));
 
     if ((res = FMOD_DSP_Release(mp_Dsp)) != FMOD_OK)
         throw exceptions::LibException("FmodManager::~FmodManager", "FMOD_DSP_Release", FMOD_ErrorString(res));
@@ -186,6 +180,9 @@ void FmodManager::playSound(SoundID_t id)
 
     if ((res = FMOD_System_PlaySound(mp_System, mp_Sounds.at(id), 0, false, &mp_Channels.at(id))) != FMOD_OK)
         throw exceptions::LibException("FmodManager::playSound", "FMOD_System_PlaySound", FMOD_ErrorString(res));
+
+    if ((res = FMOD_Channel_AddDSP(mp_Channels.at(id), 0, mp_Dsp)) != FMOD_OK)
+        throw exceptions::LibException("FmodManager::playSound", "FMOD_ChannelGroup_AddDSP", FMOD_ErrorString(res));
 }
 
 // ==============================
@@ -204,6 +201,9 @@ void FmodManager::stopSound(SoundID_t id)
     if (isChannelUsed(id))
     {
         FMOD_RESULT res;
+
+        if ((res = FMOD_Channel_RemoveDSP(mp_Channels.at(id), mp_Dsp)) != FMOD_OK)
+            throw exceptions::LibException("FmodManager::stopSound", "FMOD_ChannelGroup_RemoveDSP", FMOD_ErrorString(res));
 
         if ((res = FMOD_Channel_Stop(mp_Channels.at(id))) != FMOD_OK)
             throw exceptions::LibException("FmodManager::stopSound", "FMOD_Channel_Stop", FMOD_ErrorString(res));
