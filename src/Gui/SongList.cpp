@@ -46,6 +46,8 @@ SongList::SongList(QWidget *parent)
 
     addTopLevelItem(localSongsItem);
     addTopLevelItem(remoteSongsItem);
+
+    connect(this, &QTreeWidget::itemClicked, this, &SongList::onItemClicked);
 }
 
 // ==============================
@@ -210,31 +212,24 @@ void SongList::setCurrentSong(audio::Player::SongId songId)
 // ==============================
 // ==============================
 
-void SongList::mousePressEvent(QMouseEvent *event)
+void SongList::onItemClicked(QTreeWidgetItem *item, int column)
 {
-    QTreeWidgetItem *selectedItem = itemAt(event->x(), event->y());
+    SongListItem *songItem = static_cast<SongListItem*>(item);
 
-    if (selectedItem)
+    if (songItem->isSong())
     {
-        SongListItem *item = static_cast<SongListItem*>(selectedItem);
+        std::shared_ptr<audio::Song> song = songItem->getAttachedSong();
 
-        if (item->isSong())
+        if (column == 2)
         {
-            std::shared_ptr<audio::Song> song = item->getAttachedSong();
+            removeSong(songItem);
 
-            if (columnAt(event->x()) == 2)
-            {
-                removeSong(item);
-
-                if (song)
-                    emit songRemoved(song->getId());
-            }
-            else if (song)
-                emit songPressed(song->getId());
+            if (song)
+                emit songRemoved(song->getId());
         }
+        else if (song)
+            emit songPressed(song->getId());
     }
-
-    QTreeWidget::mousePressEvent(event);
 }
 
 // ==============================

@@ -69,9 +69,11 @@ class SongList : public QTreeWidget
          */
         void removeSong(const SongListIterator& it);
 
-    protected:
+    private slots:
 
-        virtual void mousePressEvent(QMouseEvent *event) override;
+        void onItemClicked(QTreeWidgetItem *item, int column);
+
+    protected:
 
         virtual void mouseMoveEvent(QMouseEvent *event) override;
 
