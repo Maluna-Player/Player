@@ -11,7 +11,6 @@
 #include "../Audio/FmodManager.h"
 #include "../Audio/Song.h"
 #include "../Util/Tools.h"
-#include "AboutDialog.h"
 
 #include <QGridLayout>
 #include <QPalette>
@@ -23,9 +22,11 @@
 #include <QMimeData>
 #include <QStackedLayout>
 #include <QPropertyAnimation>
-#include "PlayerToggleButton.h"
-#include "SpectrumColorDialog.h"
 #include <QMessageBox>
+#include "PlayerToggleButton.h"
+#include "AboutDialog.h"
+#include "SpectrumColorDialog.h"
+#include "ProfileDialog.h"
 
 
 namespace gui {
@@ -122,6 +123,7 @@ void PlayerWindow::createMenuBar()
     connect(menuBar->getOpenAction(), &QAction::triggered, this, &PlayerWindow::openSongsDir);
     connect(menuBar->getOpenConnectionAction(), &QAction::triggered, this, &PlayerWindow::openConnection);
     connect(menuBar->getChangeSpectrumColorAction(), &QAction::triggered, this, &PlayerWindow::openSpectrumColorDialog);
+    connect(menuBar->getProfileAction(), &QAction::triggered, this, &PlayerWindow::openProfileDialog);
 
     connect(menuBar->getAboutAction(), &QAction::triggered, this, &PlayerWindow::openInformation);
     connect(menuBar->getQuitAction(), &QAction::triggered, qApp, &QApplication::quit);
@@ -715,6 +717,16 @@ void PlayerWindow::openSpectrumColorDialog()
 
     colorDialog.exec();
     mp_Spectrum->update();
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::openProfileDialog()
+{
+    ProfileDialog profileDialog(m_ProfileManager, this);
+    profileDialog.setWindowTitle("Profil");
+    profileDialog.exec();
 }
 
 // ==============================

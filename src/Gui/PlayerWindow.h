@@ -272,6 +272,11 @@ class PlayerWindow : public QMainWindow
         void openSpectrumColorDialog();
 
         /**
+         * @brief Ouvre la fenêtre de profil.
+         */
+        void openProfileDialog();
+
+        /**
          * @brief Met l'application en écoute de clients.
          */
         void listen();

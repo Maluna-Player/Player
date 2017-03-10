@@ -31,6 +31,7 @@ MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent)
     // Menu "Options"
     mp_OpenConnectionAction = optionsMenu->addAction(QIcon(util::Tools::loadImage(QString(MENU_SUBDIR) + "connection.png")), "Fenêtre de connexion");
     mp_ChangeSpectrumColorAction = optionsMenu->addAction(QIcon(util::Tools::loadImage(QString(MENU_SUBDIR) + "color.png")), "Couleurs du spectre");
+    mp_ProfileAction = optionsMenu->addAction(QIcon(util::Tools::loadImage(QString(MENU_SUBDIR) + "profile.png")), "Profil");
 
     // Menu "Aide"
     mp_AboutAction = helpMenu->addAction(QIcon(util::Tools::loadImage(QString(MENU_SUBDIR) + "about.png")), "A propos");
@@ -79,6 +80,14 @@ QAction* MenuBar::getOpenConnectionAction() const
 QAction* MenuBar::getChangeSpectrumColorAction() const
 {
     return mp_ChangeSpectrumColorAction;
+}
+
+// ==============================
+// ==============================
+
+QAction* MenuBar::getProfileAction() const
+{
+    return mp_ProfileAction;
 }
 
 // ==============================

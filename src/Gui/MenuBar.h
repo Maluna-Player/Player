@@ -34,6 +34,8 @@ class MenuBar : public QMenuBar
 
         QAction *mp_ChangeSpectrumColorAction;
 
+        QAction *mp_ProfileAction;
+
     public:
 
         MenuBar(QWidget *parent = nullptr);
@@ -68,6 +70,12 @@ class MenuBar : public QMenuBar
          * @return Retourne le bouton de changement de couleur du spectre.
          */
         QAction* getChangeSpectrumColorAction() const;
+
+        /**
+         * @brief getProfileAction
+         * @return Retourne le bouton de visualisation du profil.
+         */
+        QAction* getProfileAction() const;
 
         /**
          * @brief getAboutAction

@@ -16,18 +16,21 @@
 namespace util {
 
 
-QString Tools::msToString(int ms)
+QString Tools::msToString(int ms, const QString& format)
 {
     QTime baseTime(0, 0, 0);
     QTime labelTime = baseTime.addMSecs(ms);
 
-    QString format;
-    if (labelTime.hour() >= 1)
-        format = "hh:mm:ss";
-    else
-        format = "mm:ss";
+    QString timeFormat = format;
+    if (timeFormat.isEmpty())
+    {
+        if (labelTime.hour() >= 1)
+            timeFormat = "hh:mm:ss";
+        else
+            timeFormat = "mm:ss";
+    }
 
-    return labelTime.toString(format);
+    return labelTime.toString(timeFormat);
 }
 
 // ==============================
