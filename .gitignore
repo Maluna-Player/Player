@@ -46,3 +46,7 @@ stderr.txt
 *.ogg
 *.wma
 *.wmv
+
+# Data files
+*.json
+

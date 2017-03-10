@@ -43,7 +43,8 @@ SOURCES += main.cpp \
     Gui/ConnectionDialog.cpp \
     Gui/SpectrumColorDialog.cpp \
     Gui/SpectrumColorWidget.cpp \
-    Gui/OptionBar.cpp
+    Gui/OptionBar.cpp \
+    ProfileManager.cpp
 
 HEADERS  += Constants.h \
     Util/Tools.h \
@@ -81,7 +82,8 @@ HEADERS  += Constants.h \
     Gui/ConnectionDialog.h \
     Gui/SpectrumColorDialog.h \
     Gui/SpectrumColorWidget.h \
-    Gui/OptionBar.h
+    Gui/OptionBar.h \
+    ProfileManager.h
 
 RC_FILE = Player.rc
 

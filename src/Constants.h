@@ -23,6 +23,7 @@ constexpr unsigned int REFRESH_TIME_MS = 50;
 #define IMAGES_SUBDIR                   "../resources/Images/"
 constexpr const char* BUTTONS_SUBDIR    = IMAGES_SUBDIR "Buttons/";
 constexpr const char* MENU_SUBDIR       = IMAGES_SUBDIR "Menu/";
+constexpr const char* PROFILE_FILEPATH  = "../profile.json";
 
 
 /*******************************

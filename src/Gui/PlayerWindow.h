@@ -30,9 +30,11 @@
 #include <QDropEvent>
 #include <QMap>
 #include <QTimer>
+#include <QElapsedTimer>
 #include "./Network/PlayerSocket.h"
 #include "ConnectionDialog.h"
 #include "OptionBar.h"
+#include "ProfileManager.h"
 
 
 namespace gui {
@@ -94,6 +96,9 @@ class PlayerWindow : public QMainWindow
         QLabel *mp_ConnectionState;
 
         OptionBar *mp_OptionsBar;
+
+        ProfileManager m_ProfileManager;
+        QElapsedTimer m_PlayerTimer;
 
 
         /**
@@ -164,6 +169,11 @@ class PlayerWindow : public QMainWindow
          * @param offset Décalage dans le son
          */
         void moveSongPosition(int offset);
+
+        /**
+         * @brief Met à jour le temps de lecture dans le fichier profil.
+         */
+        void saveListeningTime();
 
     private slots:
 

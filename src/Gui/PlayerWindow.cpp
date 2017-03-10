@@ -25,13 +25,14 @@
 #include <QPropertyAnimation>
 #include "PlayerToggleButton.h"
 #include "SpectrumColorDialog.h"
+#include <QMessageBox>
 
 
 namespace gui {
 
 
 PlayerWindow::PlayerWindow(QWidget *parent)
-    : QMainWindow(parent), m_TimerId(0), mp_Socket(nullptr)
+    : QMainWindow(parent), m_TimerId(-1), mp_Socket(nullptr)
 {
     setWindowTitle(tr(WINDOW_TITLE));
     qApp->setWindowIcon(util::Tools::loadImage(QString(IMAGES_SUBDIR) + "icon.ico"));
@@ -66,6 +67,8 @@ PlayerWindow::PlayerWindow(QWidget *parent)
     connect(&m_ConnectionDialog, &ConnectionDialog::canceled, this, &PlayerWindow::closeConnection);
     connect(&m_ConnectionDialog, &ConnectionDialog::disconnected, this, &PlayerWindow::closeConnection);
 
+    if (!m_ProfileManager.load())
+        QMessageBox::warning(this, "Erreur de chargement", "Le profil n'a pas pu être chargé.");
 
     /** Démarrage du player **/
 
@@ -78,6 +81,7 @@ PlayerWindow::PlayerWindow(QWidget *parent)
 
 PlayerWindow::~PlayerWindow()
 {
+    m_Player.stop();
     audio::FmodManager::deleteInstance();
 
     if (!mp_SongList->parent())
@@ -402,22 +406,35 @@ void PlayerWindow::setListVisible(bool visible)
 void PlayerWindow::setState(PlayerState state)
 {
     if (state == PlayerState::PLAY)
-        m_Player.play();
-    else if (state == PlayerState::PAUSE)
-        m_Player.pause();
-    else if (state == PlayerState::STOP)
     {
-        m_Player.stop();
-        mp_SongPos->setText(util::Tools::msToString(0));
-
-        if (m_CurrentMode != PlayerMode::MINIATURE)
+        m_Player.play();
+        m_PlayerTimer.start();
+    }
+    else
+    {
+        if (m_PlayerTimer.isValid())
         {
-            mp_Spectrum->clear();
-            mp_NetworkLoadBar->setValue(0);
-            mp_NetworkLoadBar->setStartPos(0);
-            mp_ProgressBar->setValue(0);
+            saveListeningTime();
+            m_PlayerTimer.invalidate();
+        }
+
+        if (state == PlayerState::PAUSE)
+            m_Player.pause();
+        else if (state == PlayerState::STOP)
+        {
+            m_Player.stop();
+            mp_SongPos->setText(util::Tools::msToString(0));
+
+            if (m_CurrentMode != PlayerMode::MINIATURE)
+            {
+                mp_Spectrum->clear();
+                mp_NetworkLoadBar->setValue(0);
+                mp_NetworkLoadBar->setStartPos(0);
+                mp_ProgressBar->setValue(0);
+            }
         }
     }
+
 
     getButton(ButtonId::PLAY)->setHidden(m_Player.isPlaying());
     getButton(ButtonId::PAUSE)->setHidden(!m_Player.isPlaying());
@@ -778,45 +795,50 @@ void PlayerWindow::closeConnection()
 
 void PlayerWindow::timerEvent(QTimerEvent *event)
 {
-    if (event->timerId() == m_TimerId)
+    if (event->timerId() != m_TimerId)
     {
-        m_Player.update();
-
-        if (m_Player.isPlaying())
-        {
-            if (m_CurrentMode != PlayerMode::MINIATURE)
-            {
-                if (mp_Spectrum->isVisible())
-                    mp_Spectrum->updateValues(m_Player.getCurrentSong()->getSoundID());
-
-                mp_ProgressBar->setPosition(m_Player.getCurrentSong()->getPosition());
-
-                if (m_Player.getCurrentSong()->isRemote())
-                    mp_NetworkLoadBar->setValue(mp_Socket->getSongDataReceived());
-            }
-
-            mp_SongPos->setText(util::Tools::msToString(m_Player.getCurrentSong()->getPosition()));
-
-            if (getButton(ButtonId::PREV)->isPressed())
-                moveSongPosition(-MOVE_INTERVAL);
-            else if (getButton(ButtonId::NEXT)->isPressed())
-                moveSongPosition(MOVE_INTERVAL);
-        }
-
-        if (mp_Socket && mp_Socket->isConnected())
-            mp_Socket->processCommands();
-
-        if (m_Player.isPreviewing())
-        {
-            if (m_Player.getPreviewPosition() < PREVIEW_LENGTH)
-                mp_PreviewBar->setValue(m_Player.getPreviewPosition());
-            else
-                stopPreview();
-        }
+        QMainWindow::timerEvent(event);
+        return;
     }
-    else
+
+    m_Player.update();
+
+    if (m_Player.isPlaying())
     {
-        QWidget::timerEvent(event);
+        if (m_CurrentMode != PlayerMode::MINIATURE)
+        {
+            if (mp_Spectrum->isVisible())
+                mp_Spectrum->updateValues(m_Player.getCurrentSong()->getSoundID());
+
+            mp_ProgressBar->setPosition(m_Player.getCurrentSong()->getPosition());
+
+            if (m_Player.getCurrentSong()->isRemote())
+                mp_NetworkLoadBar->setValue(mp_Socket->getSongDataReceived());
+        }
+
+        mp_SongPos->setText(util::Tools::msToString(m_Player.getCurrentSong()->getPosition()));
+
+        if (getButton(ButtonId::PREV)->isPressed())
+            moveSongPosition(-MOVE_INTERVAL);
+        else if (getButton(ButtonId::NEXT)->isPressed())
+            moveSongPosition(MOVE_INTERVAL);
+    }
+
+    if (mp_Socket && mp_Socket->isConnected())
+        mp_Socket->processCommands();
+
+    if (m_Player.isPreviewing())
+    {
+        if (m_Player.getPreviewPosition() < PREVIEW_LENGTH)
+            mp_PreviewBar->setValue(m_Player.getPreviewPosition());
+        else
+            stopPreview();
+    }
+
+    if (m_PlayerTimer.isValid() && m_PlayerTimer.elapsed() > 60000)
+    {
+        saveListeningTime();
+        m_PlayerTimer.restart();
     }
 }
 
@@ -834,6 +856,7 @@ void PlayerWindow::showEvent(QShowEvent* /*event*/)
 void PlayerWindow::hideEvent(QHideEvent* /*event*/)
 {
     killTimer(m_TimerId);
+    m_TimerId = -1;
 }
 
 // ==============================
@@ -977,6 +1000,18 @@ void PlayerWindow::dropEvent(QDropEvent *event)
 
     event->acceptProposedAction();
     stopPreview();
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::saveListeningTime()
+{
+    unsigned int elapsedSeconds = m_PlayerTimer.elapsed() / 1000;
+    m_ProfileManager.setListeningTime(m_ProfileManager.getListeningTime() + elapsedSeconds);
+
+    if (!m_ProfileManager.save())
+        QMessageBox::warning(this, "Erreur de sauvegarde", "Le profil n'a pas pu être sauvegardé.");
 }
 
 
