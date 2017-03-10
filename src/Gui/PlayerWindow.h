@@ -191,6 +191,12 @@ class PlayerWindow : public QMainWindow
         void setListVisible(bool visible);
 
         /**
+         * @brief Change la visibilité des bordures de la fenêtre.
+         * @param visible Nouvelle visibilité des bordures
+         */
+        void setWindowFrameVisible(bool visible);
+
+        /**
          * @brief Actualise l'interface graphique (titre, durée...) à partir du son courant.
          */
         void updateCurrentSong();

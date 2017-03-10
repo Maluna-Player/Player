@@ -286,6 +286,8 @@ void PlayerWindow::createDesktopOptions()
 
 void PlayerWindow::createMiniatureOptions()
 {
+    using namespace std::placeholders;
+
     PlayerToggleButton *toolbarButton = new PlayerToggleButton("toolbar.png", true);
     toolbarButton->setToolTip(true, "Masquer la barre d'outils");
     toolbarButton->setToolTip(false, "Afficher la barre d'outils");
@@ -294,7 +296,13 @@ void PlayerWindow::createMiniatureOptions()
         adjustSize();
     });
 
+    PlayerToggleButton *frameButton = new PlayerToggleButton("border.png", true);
+    frameButton->setToolTip(true, "Masquer les bordures de la fenêtre");
+    frameButton->setToolTip(false, "Afficher les bordures de la fenêtre");
+    frameButton->setAction(std::bind(&PlayerWindow::setWindowFrameVisible, this, _1));
+
     mp_OptionsBar->addButton(1, toolbarButton);
+    mp_OptionsBar->addButton(2, frameButton);
 }
 
 // ==============================
@@ -356,7 +364,9 @@ void PlayerWindow::setDesktopLayout()
     createPreviewWidget();
     createDesktopWindow();
 
-    mp_OptionsBar->removeButton(1);
+    for (int i = 0; i < 2; ++i)
+        mp_OptionsBar->removeButton(1);
+
     createDesktopOptions();
 
     mp_Toolbar->setVisible(true);
@@ -367,6 +377,7 @@ void PlayerWindow::setDesktopLayout()
 
     mp_BottomPart->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
+    setWindowFrameVisible(true);
     setWindowFlags(windowFlags() | Qt::WindowMaximizeButtonHint);
     setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     show();
@@ -422,6 +433,19 @@ void PlayerWindow::setListVisible(bool visible)
     moveAnimation->setEndValue(w);
 
     moveAnimation->start();
+}
+
+// ==============================
+// ==============================
+
+void PlayerWindow::setWindowFrameVisible(bool visible)
+{
+    if (visible)
+        setWindowFlags(windowFlags() & ~Qt::FramelessWindowHint);
+    else
+        setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
+
+    show();
 }
 
 // ==============================
