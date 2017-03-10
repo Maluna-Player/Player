@@ -15,7 +15,6 @@
 #include <QGridLayout>
 #include <QPalette>
 #include "MenuBar.h"
-#include <QToolBar>
 #include <QApplication>
 #include <QFileDialog>
 #include <QDesktopServices>
@@ -96,20 +95,20 @@ void PlayerWindow::createMenuBar()
 {
     MenuBar *menuBar = new MenuBar;
 
-    QToolBar *toolbar = addToolBar("toolbar");
-    toolbar->setStyleSheet("QToolBar { background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
+    mp_Toolbar = addToolBar("toolbar");
+    mp_Toolbar->setStyleSheet("QToolBar { background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
                                         "stop: 0 rgb(150, 150, 150), stop: 0.5 rgb(155, 155, 155),"
                                         "stop: 0.6 rgb(130, 130, 130), stop: 1.0 rgb(85, 85, 85)); border: 0px; }");
 
-    toolbar->addAction(menuBar->getAddingSongAction());
-    toolbar->addAction(menuBar->getOpenAction());
-    toolbar->addAction(menuBar->getOpenConnectionAction());
-    toolbar->addAction(menuBar->getQuitAction());
-    toolbar->addAction(menuBar->getAboutAction());
+    mp_Toolbar->addAction(menuBar->getAddingSongAction());
+    mp_Toolbar->addAction(menuBar->getOpenAction());
+    mp_Toolbar->addAction(menuBar->getOpenConnectionAction());
+    mp_Toolbar->addAction(menuBar->getQuitAction());
+    mp_Toolbar->addAction(menuBar->getAboutAction());
 
     QWidget *spacer = new QWidget;
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    toolbar->addWidget(spacer);
+    mp_Toolbar->addWidget(spacer);
 
     m_ConnectedIcon = util::Tools::loadImage(QString(IMAGES_SUBDIR) + "connected_state.png");
     m_DisconnectedIcon = util::Tools::loadImage(QString(IMAGES_SUBDIR) + "disconnected_state.png");
@@ -117,7 +116,7 @@ void PlayerWindow::createMenuBar()
     mp_ConnectionState = new QLabel;
     mp_ConnectionState->setPixmap(m_DisconnectedIcon);
     mp_ConnectionState->setToolTip("Déconnecté");
-    toolbar->addWidget(mp_ConnectionState);
+    mp_Toolbar->addWidget(mp_ConnectionState);
 
     connect(menuBar->getAddingSongAction(), &QAction::triggered, this, &PlayerWindow::importSong);
     connect(menuBar->getOpenAction(), &QAction::triggered, this, &PlayerWindow::openSongsDir);
@@ -285,6 +284,22 @@ void PlayerWindow::createDesktopOptions()
 // ==============================
 // ==============================
 
+void PlayerWindow::createMiniatureOptions()
+{
+    PlayerToggleButton *toolbarButton = new PlayerToggleButton("toolbar.png", true);
+    toolbarButton->setToolTip(true, "Masquer la barre d'outils");
+    toolbarButton->setToolTip(false, "Afficher la barre d'outils");
+    toolbarButton->setAction([this](bool enabled) {
+        mp_Toolbar->setVisible(enabled);
+        adjustSize();
+    });
+
+    mp_OptionsBar->addButton(1, toolbarButton);
+}
+
+// ==============================
+// ==============================
+
 void PlayerWindow::createPreviewWidget()
 {
     mp_ShadowWidget = new ShadowWidget;
@@ -340,10 +355,14 @@ void PlayerWindow::setDesktopLayout()
     createProgressBar();
     createPreviewWidget();
     createDesktopWindow();
+
+    mp_OptionsBar->removeButton(1);
     createDesktopOptions();
 
-    getButton(ButtonId::REFRESH)->show();
+    mp_Toolbar->setVisible(true);
+    mp_Toolbar->setMovable(true);
 
+    getButton(ButtonId::REFRESH)->show();
     mp_SongList->setFixedWidth(LIST_WIDTH);
 
     mp_BottomPart->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -363,10 +382,13 @@ void PlayerWindow::setMiniatureLayout()
     for (int i = 0; i < 3; ++i)
         mp_OptionsBar->removeButton(0);
 
+    createMiniatureOptions();
+
     bottomLayout->addWidget(mp_SongTitle, 0, 0, 1, bottomLayout->columnCount());
     bottomLayout->addWidget(mp_SongArtist, 1, 0, 1, bottomLayout->columnCount());
     bottomLayout->addWidget(mp_OptionsBar, 0, bottomLayout->columnCount(), bottomLayout->rowCount(), 1);
 
+    mp_Toolbar->setMovable(false);
     getButton(ButtonId::REFRESH)->hide();
 
     setCentralWidget(mp_BottomPart);

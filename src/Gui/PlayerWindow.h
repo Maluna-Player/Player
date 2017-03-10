@@ -31,6 +31,7 @@
 #include <QMap>
 #include <QTimer>
 #include <QElapsedTimer>
+#include <QToolBar>
 #include "./Network/PlayerSocket.h"
 #include "ConnectionDialog.h"
 #include "OptionBar.h"
@@ -95,6 +96,7 @@ class PlayerWindow : public QMainWindow
         QPixmap m_DisconnectedIcon;
         QLabel *mp_ConnectionState;
 
+        QToolBar *mp_Toolbar;
         OptionBar *mp_OptionsBar;
 
         ProfileManager m_ProfileManager;
@@ -130,6 +132,11 @@ class PlayerWindow : public QMainWindow
          * @brief Créé les options du mode Desktop.
          */
         void createDesktopOptions();
+
+        /**
+         * @brief Créé les options du mode miniature.
+         */
+        void createMiniatureOptions();
 
         /**
          * @brief Créé le widget de previsualisation.
