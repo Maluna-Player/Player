@@ -16,16 +16,17 @@ namespace gui {
 
 
 PlayerButton::PlayerButton(const QString& name, QWidget *parent)
-    : ClickableLabel(parent), m_Name(name), m_Pressed(false), m_Released(true)
+    : ClickableLabel(parent), m_Name(name), m_Pressable(false), m_Pressed(false), m_ActivePressure(false)
 {
     m_ButtonTexture = util::Tools::loadImage(BUTTONS_SUBDIR + m_Name + ".png");
     m_PressedButtonTexture = util::Tools::loadImage(BUTTONS_SUBDIR + m_Name + "p.png");
+    m_HoverButtonTexture = util::Tools::loadImage(BUTTONS_SUBDIR + m_Name + "h.png");
 
     loadImage(m_ButtonTexture);
 
     m_PressTimer.setSingleShot(true);
     m_PressTimer.setInterval(BUTTON_DELAY);
-    connect(&m_PressTimer, &QTimer::timeout, this, &PlayerButton::press);
+    connect(&m_PressTimer, &QTimer::timeout, this, &PlayerButton::activatePressure);
 }
 
 // ==============================
@@ -41,24 +42,32 @@ void PlayerButton::loadImage(const QPixmap& image)
 
 bool PlayerButton::isPressed() const
 {
-    return m_Pressed;
+    return m_ActivePressure;
 }
 
 // ==============================
 // ==============================
 
-void PlayerButton::press()
+void PlayerButton::setPressable(bool value)
+{
+    m_Pressable = value;
+}
+
+// ==============================
+// ==============================
+
+void PlayerButton::activatePressure()
 {
     m_Pressed = true;
-    m_Released = false;
+    m_ActivePressure = true;
 }
 
 // ==============================
 // ==============================
 
-void PlayerButton::release()
+void PlayerButton::unpress()
 {
-    m_Pressed = false;
+    m_ActivePressure = false;
 }
 
 // ==============================
@@ -68,7 +77,8 @@ void PlayerButton::mousePressEvent(QMouseEvent *event)
 {
     loadImage(m_PressedButtonTexture);
 
-    m_PressTimer.start();
+    if (m_Pressable)
+        m_PressTimer.start();
 
     ClickableLabel::mousePressEvent(event);
 }
@@ -78,16 +88,19 @@ void PlayerButton::mousePressEvent(QMouseEvent *event)
 
 void PlayerButton::mouseReleaseEvent(QMouseEvent *event)
 {
-    loadImage(m_ButtonTexture);
+    if (event->x() < 0 || event->x() > width() || event->y() < 0 || event->y() > height())
+        loadImage(m_ButtonTexture);
+    else
+        loadImage(m_HoverButtonTexture);
 
-    if (m_Released)
+    if (!m_Pressable || !m_Pressed)
         ClickableLabel::mouseReleaseEvent(event);
 
-    m_Released = true;
-    emit released();
-
     m_PressTimer.stop();
-    release();
+    unpress();
+    m_Pressed = false;
+
+    emit released();
 }
 
 // ==============================
@@ -95,11 +108,24 @@ void PlayerButton::mouseReleaseEvent(QMouseEvent *event)
 
 void PlayerButton::mouseMoveEvent(QMouseEvent *event)
 {
-    if (isPressed())
-    {
-        if (event->x() < 0 || event->x() > width() || event->y() < 0 || event->y() > height())
-            mouseLeaveEvent();
-    }
+    if (event->x() < 0 || event->x() > width() || event->y() < 0 || event->y() > height())
+        mouseLeaveEvent();
+}
+
+// ==============================
+// ==============================
+
+void PlayerButton::enterEvent(QEvent * /*event*/)
+{
+    loadImage(m_HoverButtonTexture);
+}
+
+// ==============================
+// ==============================
+
+void PlayerButton::leaveEvent(QEvent * /*event*/)
+{
+    loadImage(m_ButtonTexture);
 }
 
 // ==============================
@@ -108,7 +134,7 @@ void PlayerButton::mouseMoveEvent(QMouseEvent *event)
 void PlayerButton::mouseLeaveEvent()
 {
     m_PressTimer.stop();
-    release();
+    unpress();
 }
 
 

@@ -32,11 +32,15 @@ class PlayerButton : public ClickableLabel
 
         QPixmap m_PressedButtonTexture;
 
+        QPixmap m_HoverButtonTexture;
+
         QTimer m_PressTimer;
+
+        bool m_Pressable;
 
         bool m_Pressed;
 
-        bool m_Released;
+        bool m_ActivePressure;
 
 
         /**
@@ -53,11 +57,15 @@ class PlayerButton : public ClickableLabel
 
         virtual void mouseMoveEvent(QMouseEvent *event) override;
 
+        virtual void enterEvent(QEvent *event) override;
+
+        virtual void leaveEvent(QEvent *event) override;
+
         virtual void mouseLeaveEvent();
 
     private slots:
 
-        void press();
+        void activatePressure();
 
     signals:
 
@@ -75,9 +83,15 @@ class PlayerButton : public ClickableLabel
         bool isPressed() const;
 
         /**
+         * @brief Change l'état pressable du bouton si une action est associée lorsqu'il est enfoncé.
+         * @param value Nouvelle état
+         */
+        void setPressable(bool value);
+
+        /**
          * @brief Relâche le bouton.
          */
-        void release();
+        void unpress();
 };
 
 

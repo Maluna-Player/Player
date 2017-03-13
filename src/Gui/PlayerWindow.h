@@ -131,12 +131,12 @@ class PlayerWindow : public QMainWindow
         /**
          * @brief Créé les options du mode Desktop.
          */
-        void createDesktopOptions();
+        void setDesktopOptions();
 
         /**
          * @brief Créé les options du mode miniature.
          */
-        void createMiniatureOptions();
+        void setMiniatureOptions();
 
         /**
          * @brief Créé le widget de previsualisation.

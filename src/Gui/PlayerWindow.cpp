@@ -215,6 +215,8 @@ void PlayerWindow::createBottomWindowPart()
     mp_Buttons.insert(ButtonId::REFRESH, new PlayerButton("refresh"));
 
     getButton(ButtonId::PAUSE)->hide();
+    getButton(ButtonId::PREV)->setPressable(true);
+    getButton(ButtonId::NEXT)->setPressable(true);
 
     connect(getButton(ButtonId::PLAY), &PlayerButton::clicked, this, &PlayerWindow::play);
     connect(getButton(ButtonId::PAUSE), &PlayerButton::clicked, this, &PlayerWindow::pause);
@@ -251,7 +253,7 @@ void PlayerWindow::createBottomWindowPart()
 // ==============================
 // ==============================
 
-void PlayerWindow::createDesktopOptions()
+void PlayerWindow::setDesktopOptions()
 {
     using namespace std::placeholders;
 
@@ -276,6 +278,9 @@ void PlayerWindow::createDesktopOptions()
     listButton->setToolTip(false, "Afficher la liste");
     listButton->setAction(std::bind(&PlayerWindow::setListVisible, this, _1));
 
+    for (int i = 0; i < 2; ++i)
+        mp_OptionsBar->removeButton(1);
+
     mp_OptionsBar->addButton(0, spectrumButton);
     mp_OptionsBar->addButton(1, pictureButton);
     mp_OptionsBar->addButton(2, listButton);
@@ -284,7 +289,7 @@ void PlayerWindow::createDesktopOptions()
 // ==============================
 // ==============================
 
-void PlayerWindow::createMiniatureOptions()
+void PlayerWindow::setMiniatureOptions()
 {
     using namespace std::placeholders;
 
@@ -300,6 +305,9 @@ void PlayerWindow::createMiniatureOptions()
     frameButton->setToolTip(true, "Masquer les bordures de la fenêtre");
     frameButton->setToolTip(false, "Afficher les bordures de la fenêtre");
     frameButton->setAction(std::bind(&PlayerWindow::setWindowFrameVisible, this, _1));
+
+    for (int i = 0; i < 3; ++i)
+        mp_OptionsBar->removeButton(0);
 
     mp_OptionsBar->addButton(1, toolbarButton);
     mp_OptionsBar->addButton(2, frameButton);
@@ -363,11 +371,7 @@ void PlayerWindow::setDesktopLayout()
     createProgressBar();
     createPreviewWidget();
     createDesktopWindow();
-
-    for (int i = 0; i < 2; ++i)
-        mp_OptionsBar->removeButton(1);
-
-    createDesktopOptions();
+    setDesktopOptions();
 
     mp_Toolbar->setVisible(true);
     mp_Toolbar->setMovable(true);
@@ -390,10 +394,7 @@ void PlayerWindow::setMiniatureLayout()
 {
     QGridLayout *bottomLayout = static_cast<QGridLayout*>(mp_BottomPart->layout());
 
-    for (int i = 0; i < 3; ++i)
-        mp_OptionsBar->removeButton(0);
-
-    createMiniatureOptions();
+    setMiniatureOptions();
 
     bottomLayout->addWidget(mp_SongTitle, 0, 0, 1, bottomLayout->columnCount());
     bottomLayout->addWidget(mp_SongArtist, 1, 0, 1, bottomLayout->columnCount());
@@ -483,7 +484,6 @@ void PlayerWindow::setState(PlayerState state)
         }
     }
 
-
     getButton(ButtonId::PLAY)->setHidden(m_Player.isPlaying());
     getButton(ButtonId::PAUSE)->setHidden(!m_Player.isPlaying());
 }
@@ -540,8 +540,8 @@ void PlayerWindow::updateCurrentSong()
     if (m_Player.isPaused())
         m_Player.stop();
 
-    getButton(ButtonId::PREV)->release();
-    getButton(ButtonId::NEXT)->release();
+    getButton(ButtonId::PREV)->unpress();
+    getButton(ButtonId::NEXT)->unpress();
 }
 
 // ==============================
