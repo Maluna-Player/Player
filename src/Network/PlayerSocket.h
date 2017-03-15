@@ -17,7 +17,7 @@
 #include <QHostAddress>
 #include <QThread>
 #include "../Gui/SongListItem.h"
-#include "PlayerMessage.h"
+#include "PlayerMessageBox.h"
 #include "Commands/Command.h"
 #include "Commands/CommandRequest.h"
 #include "Commands/CommandReply.h"
@@ -44,8 +44,7 @@ class PlayerSocket : public QObject
         int m_NbSentListItems;
         int m_NbReceivedSongs;
 
-        std::unique_ptr<PlayerMessage> mp_SendMessage;
-        std::unique_ptr<PlayerMessage> mp_ReceiveMessage;
+        std::unique_ptr<PlayerMessageBox> mp_MessageBox;
 
         QThread *mp_SocketThread;
 

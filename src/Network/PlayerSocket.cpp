@@ -18,7 +18,7 @@ namespace network {
 
 PlayerSocket::PlayerSocket(audio::Player *player)
     : mp_Player(player), m_Connected(false), mp_Server(nullptr), mp_Socket(nullptr), m_NbSentListItems(0), m_NbReceivedSongs(0),
-      mp_SendMessage(nullptr), mp_ReceiveMessage(nullptr), mp_SocketThread(nullptr)
+      mp_MessageBox(nullptr), mp_SocketThread(nullptr)
 {
     m_CallbackSettings.openCallback = openCallback;
     m_CallbackSettings.closeCallback = closeCallback;
@@ -113,13 +113,8 @@ void PlayerSocket::startConnection()
     mp_Socket->setParent(nullptr);
     mp_Socket->moveToThread(mp_SocketThread);
 
-    mp_SendMessage = std::make_unique<PlayerMessage>(mp_Socket);
-    mp_ReceiveMessage = std::make_unique<PlayerMessage>(mp_Socket);
-
-    connect(mp_Socket, &QTcpSocket::readyRead, mp_ReceiveMessage.get(), &PlayerMessage::receive);
-
-    mp_SendMessage->moveToThread(mp_SocketThread);
-    mp_ReceiveMessage->moveToThread(mp_SocketThread);
+    mp_MessageBox = std::make_unique<PlayerMessageBox>(mp_Socket);
+    mp_MessageBox->moveToThread(mp_SocketThread);
 
     emit connected();
 }
@@ -173,7 +168,7 @@ void PlayerSocket::error()
 void PlayerSocket::sendSongs(gui::SongTreeRoot *item)
 {
     if (!item->isRoot())
-        mp_SendMessage->add(item);
+        mp_MessageBox->add(item);
 
     for (int i = 0; i < item->childCount(); i++)
         sendSongs(static_cast<gui::SongListItem*>(item->child(i)));
@@ -208,7 +203,7 @@ gui::SongListItem* PlayerSocket::getItem(int num, gui::SongTreeRoot *parent) con
 gui::SongTreeRoot* PlayerSocket::readRemoteSongList()
 {
     gui::SongListItem *receivedSongs = new gui::SongListItem(gui::SongListItem::ElementType::ROOT);
-    QByteArray message = mp_ReceiveMessage->waitNextMessage();
+    QByteArray message = mp_MessageBox->waitNextMessage();
 
     QDataStream in(&message, QIODevice::ReadOnly);
     quint8 nbSongs;
@@ -217,7 +212,7 @@ gui::SongTreeRoot* PlayerSocket::readRemoteSongList()
 
     while (m_NbReceivedSongs < nbSongs)
     {
-        message = mp_ReceiveMessage->waitNextMessage();
+        message = mp_MessageBox->waitNextMessage();
         in.device()->seek(0);
 
         quint16 num;
@@ -266,7 +261,7 @@ gui::SongTreeRoot* PlayerSocket::exchangeSongList(gui::SongTreeRoot *songs)
     // Envoi du nombre de musiques
     out << static_cast<quint8>(mp_Player->songsCount());
 
-    mp_SendMessage->add(packet);
+    mp_MessageBox->add(packet);
 
     sendSongs(songs);
 
@@ -378,7 +373,7 @@ std::shared_ptr<commands::CommandRequest> PlayerSocket::getCommandRequest()
 
         do
         {
-            QByteArray message = mp_ReceiveMessage->getNextMessage();
+            QByteArray message = mp_MessageBox->getNextMessage();
             if (message.isEmpty())
                 return nullptr;
 
@@ -405,7 +400,7 @@ std::shared_ptr<commands::CommandReply> PlayerSocket::getCommandReply()
 
         do
         {
-            command = buildCommand(mp_ReceiveMessage->waitNextMessage());
+            command = buildCommand(mp_MessageBox->waitNextMessage());
             if (command && command->isRequest())
                 mp_ReceivedRequests.append(std::static_pointer_cast<commands::CommandRequest>(command));
 
@@ -425,7 +420,7 @@ FMOD_RESULT PlayerSocket::openRemoteFile(const char *fileName, unsigned int *fil
         int *songId = new int(atoi(fileName));
 
         commands::OpenCommandRequest request(*songId);
-        mp_SendMessage->add(&request);
+        mp_MessageBox->add(&request);
 
         std::shared_ptr<commands::OpenCommandReply> reply = std::static_pointer_cast<commands::OpenCommandReply>(getCommandReply());
 
@@ -457,7 +452,7 @@ FMOD_RESULT PlayerSocket::closeRemoteFile(void *handle)
     int *songId = static_cast<int*>(handle);
 
     commands::CloseCommandRequest request(*songId);
-    mp_SendMessage->add(&request);
+    mp_MessageBox->add(&request);
 
     std::shared_ptr<commands::CloseCommandReply> reply = std::static_pointer_cast<commands::CloseCommandReply>(getCommandReply());
     FMOD_RESULT result = FMOD_OK;
@@ -483,7 +478,7 @@ FMOD_RESULT PlayerSocket::readRemoteFile(void *handle, void *buffer, unsigned in
         int *songId = static_cast<int*>(handle);
 
         commands::ReadCommandRequest request(*songId, sizebytes);
-        mp_SendMessage->add(&request);
+        mp_MessageBox->add(&request);
 
         std::shared_ptr<commands::ReadCommandReply> reply = std::static_pointer_cast<commands::ReadCommandReply>(getCommandReply());
         if (reply)
@@ -516,7 +511,7 @@ FMOD_RESULT PlayerSocket::seekRemoteFile(void *handle, unsigned int pos)
     int *songId = static_cast<int*>(handle);
 
     commands::SeekCommandRequest request(*songId, pos);
-    mp_SendMessage->add(&request);
+    mp_MessageBox->add(&request);
 
     std::shared_ptr<commands::SeekCommandReply> reply = std::static_pointer_cast<commands::SeekCommandReply>(getCommandReply());
     FMOD_RESULT result = FMOD_OK;
@@ -546,7 +541,7 @@ void PlayerSocket::processCommands()
 
 void PlayerSocket::sendCommandReply(std::shared_ptr<commands::CommandReply> reply)
 {
-    mp_SendMessage->add(reply.get());
+    mp_MessageBox->add(reply.get());
 }
 
 // ==============================

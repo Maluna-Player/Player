@@ -30,7 +30,6 @@ SOURCES += main.cpp \
     Audio/FmodManager.cpp \
     Audio/Player.cpp \
     Audio/Song.cpp \
-    Network/PlayerMessage.cpp \
     Network/Commands/Command.cpp \
     Network/Commands/CommandReply.cpp \
     Network/Commands/CommandRequest.cpp \
@@ -45,7 +44,8 @@ SOURCES += main.cpp \
     Gui/SpectrumColorWidget.cpp \
     Gui/OptionBar.cpp \
     ProfileManager.cpp \
-    Gui/ProfileDialog.cpp
+    Gui/ProfileDialog.cpp \
+    Network/PlayerMessageBox.cpp
 
 HEADERS  += Constants.h \
     Util/Tools.h \
@@ -68,7 +68,6 @@ HEADERS  += Constants.h \
     Audio/FmodManager.h \
     Audio/Player.h \
     Audio/Song.h \
-    Network/PlayerMessage.h \
     Network/Sendable.h \
     Network/Commands/Command.h \
     Network/Commands/CommandReply.h \
@@ -85,7 +84,8 @@ HEADERS  += Constants.h \
     Gui/SpectrumColorWidget.h \
     Gui/OptionBar.h \
     ProfileManager.h \
-    Gui/ProfileDialog.h
+    Gui/ProfileDialog.h \
+    Network/PlayerMessageBox.h
 
 RC_FILE = Player.rc
 
