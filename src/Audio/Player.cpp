@@ -244,14 +244,17 @@ Player::SongIt Player::findPrevSong(bool available)
     {
         prevSong = prev();
 
-        if (prevSong != UNDEFINED_SONG)
+        if (prevSong != UNDEFINED_SONG && prevSong != m_CurrentSong)
             changeSong(prevSong);
     }
     while (prevSong != UNDEFINED_SONG && (isLoop() || m_CurrentSong != FIRST_SONG)
            && (available && !getCurrentSong()->isAvailable()) && (!isLoop() || m_CurrentSong != initialSong));
 
-    if (prevSong == UNDEFINED_SONG || (available && !getCurrentSong()->isAvailable()))
+    if ((prevSong == UNDEFINED_SONG || (available && !getCurrentSong()->isAvailable()))
+            && m_CurrentSong != initialSong)
+    {
         changeSong(initialSong);
+    }
 
     return prevSong;
 }
@@ -268,14 +271,17 @@ Player::SongIt Player::findNextSong(bool available)
     {
         nextSong = next();
 
-        if (nextSong != UNDEFINED_SONG)
+        if (nextSong != UNDEFINED_SONG && nextSong != m_CurrentSong)
             changeSong(nextSong);
     }
     while (nextSong != UNDEFINED_SONG && (available && !getCurrentSong()->isAvailable())
            && (!isLoop() || m_CurrentSong != initialSong));
 
-    if (nextSong == UNDEFINED_SONG || (available && !getCurrentSong()->isAvailable()))
+    if ((nextSong == UNDEFINED_SONG || (available && !getCurrentSong()->isAvailable()))
+            && m_CurrentSong != initialSong)
+    {
         changeSong(initialSong);
+    }
 
     return nextSong;
 }

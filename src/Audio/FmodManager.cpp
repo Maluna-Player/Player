@@ -367,27 +367,6 @@ void FmodManager::setMute(bool mute) const
 // ==============================
 // ==============================
 
-std::string FmodManager::getSongTag(SoundID_t id, const std::string& tagName) const
-{
-    FMOD_RESULT res;
-    FMOD_TAG tag;
-
-    res = FMOD_Sound_GetTag(mp_Sounds.at(id), tagName.c_str(), 0, &tag);
-
-    if (res == FMOD_ERR_TAGNOTFOUND)
-        return "";
-    else if (res != FMOD_OK)
-        throw exceptions::LibException("FmodManager::getSongTag", "FMOD_Sound_GetTag", FMOD_ErrorString(res));
-    else
-    {
-        std::string tagData = static_cast<char*>(tag.data);
-        return tagData;
-    }
-}
-
-// ==============================
-// ==============================
-
 char* FmodManager::getSongPictureData(SoundID_t id, unsigned int *dataLength) const
 {
     FMOD_RESULT res;

@@ -191,13 +191,6 @@ class FmodManager
         void setMute(bool mute) const;
 
         /**
-         * @param id Identifiant du canal dont on veut le tag
-         * @param tagName Tag que l'on cherche
-         * @return Tag du son, "" si pas de tag.
-         */
-        std::string getSongTag(SoundID_t id, const std::string& tagName) const;
-
-        /**
          * @brief Récupère les données de la pochette du mp3 dans les tags.
          * @param id Identifiant du canal dont on veut le tag
          * @param dataLength Pointeur vers la longueur du tag

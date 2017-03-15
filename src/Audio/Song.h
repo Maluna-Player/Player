@@ -39,6 +39,11 @@ class Song
          */
         void setAvailable(bool value);
 
+        /**
+         * @brief Remplit les champs de la musique à partir des tags.
+         */
+        void readTags();
+
     protected:
 
         friend class Player;

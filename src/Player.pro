@@ -94,7 +94,7 @@ QMAKE_CXXFLAGS_WARN_ON += -Wno-comment
 QMAKE_CXXFLAGS_WARN_ON += -Wno-ignored-qualifiers
 
 
-# Add of fmod library
+# Add of libraries
 
 win32 {             # Window's paths
     INCLUDEPATH += "C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc"
@@ -102,5 +102,5 @@ win32 {             # Window's paths
     LIBS += -lfmod
 } else {            # Linux
     INCLUDEPATH += /usr/local/include/fmod
-    LIBS += -L/usr/local/lib/fmod -lfmod
+    LIBS += -L/usr/local/lib/fmod -lfmod -ltag -lz
 }

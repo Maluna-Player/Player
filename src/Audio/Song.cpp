@@ -9,6 +9,7 @@
 
 #include "Song.h"
 #include <QFileInfo>
+#include <taglib/fileref.h>
 
 
 namespace audio {
@@ -22,19 +23,7 @@ Song::Song(Player::SongId id, const QString& file, bool inFolder, bool openable)
         SoundID_t fmodId = FmodManager::getInstance().openFromFile(m_File.toStdString(), false);
         m_Length = FmodManager::getInstance().getSoundLength(fmodId);
 
-        QString title = QString::fromStdString(FmodManager::getInstance().getSongTag(fmodId, "TITLE"));
-
-        if (title.isEmpty())
-        {
-            QFileInfo fileInfo(getFile());
-            m_Title = fileInfo.completeBaseName();
-        }
-        else
-            m_Title = title;
-
-        m_Artist = QString::fromStdString(FmodManager::getInstance().getSongTag(fmodId, "ARTIST"));
-        if (m_Artist.isEmpty())
-            m_Artist = "Artiste inconnu";
+        readTags();
 
         FmodManager::getInstance().releaseSound(fmodId);
     }
@@ -120,6 +109,31 @@ const QString& Song::getTitle() const
 const QString& Song::getArtist() const
 {
     return m_Artist;
+}
+
+// ==============================
+// ==============================
+
+void Song::readTags()
+{
+    TagLib::FileRef file(m_File.toStdString().c_str());
+
+    if (!file.isNull() && file.tag())
+    {
+        TagLib::Tag *tag = file.tag();
+
+        m_Title = QString::fromStdWString(tag->title().toWString());
+        m_Artist = QString::fromStdWString(tag->artist().toWString());
+    }
+
+    if (m_Title.isEmpty())
+    {
+        QFileInfo fileInfo(getFile());
+        m_Title = fileInfo.completeBaseName();
+    }
+
+    if (m_Artist.isEmpty())
+        m_Artist = "Artiste inconnu";
 }
 
 // ==============================
