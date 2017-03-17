@@ -130,7 +130,14 @@ void PlayerSocket::disconnection()
     if (mp_SocketThread)
     {
         mp_SocketThread->quit();
-        mp_SocketThread->wait();
+        if (!mp_SocketThread->wait(3000))
+        {
+            mp_SocketThread->terminate();
+            mp_SocketThread->wait();
+        }
+
+        mp_SocketThread->deleteLater();
+        mp_SocketThread = nullptr;
     }
 
     m_Connected = false;
@@ -415,6 +422,9 @@ std::shared_ptr<commands::CommandReply> PlayerSocket::getCommandReply()
 
 FMOD_RESULT PlayerSocket::openRemoteFile(const char *fileName, unsigned int *filesize, void **handle)
 {
+    if (!isConnected())
+        return FMOD_ERR_NET_CONNECT;
+
     if (fileName)
     {
         int *songId = new int(atoi(fileName));
@@ -451,6 +461,12 @@ FMOD_RESULT PlayerSocket::closeRemoteFile(void *handle)
 
     int *songId = static_cast<int*>(handle);
 
+    if (!isConnected())
+    {
+        delete songId;
+        return FMOD_ERR_NET_CONNECT;
+    }
+
     commands::CloseCommandRequest request(*songId);
     mp_MessageBox->add(&request);
 
@@ -472,6 +488,9 @@ FMOD_RESULT PlayerSocket::readRemoteFile(void *handle, void *buffer, unsigned in
 {
     if (!handle)
         return FMOD_ERR_INVALID_PARAM;
+
+    if (!isConnected())
+        return FMOD_ERR_NET_CONNECT;
 
     if (bytesread)
     {
@@ -507,6 +526,9 @@ FMOD_RESULT PlayerSocket::seekRemoteFile(void *handle, unsigned int pos)
 {
     if (!handle)
         return FMOD_ERR_INVALID_PARAM;
+
+    if (!isConnected())
+        return FMOD_ERR_NET_CONNECT;
 
     int *songId = static_cast<int*>(handle);
 

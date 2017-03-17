@@ -202,9 +202,14 @@ void Player::setLoop(bool loop)
 // ==============================
 // ==============================
 
-Player::SongIt Player::first() const
+Player::SongIt Player::first(SongList_t list) const
 {
-    return FIRST_SONG;
+    auto songs = mp_Songs.getSubSets(list);
+
+    if (!songs.empty())
+        return findSong((*songs.begin())->getId());
+    else
+        return UNDEFINED_SONG;
 }
 
 // ==============================
@@ -495,9 +500,18 @@ gui::SongTreeRoot* Player::reloadSongs(const QString& dirPath)
 // ==============================
 // ==============================
 
-void Player::firstSong()
+void Player::firstSong(SongList_t list)
 {
-    changeSong(first());
+    SongIt song = first(list);
+
+    if (song != UNDEFINED_SONG)
+        changeSong(song);
+    else
+    {
+        stop();
+        m_CurrentSong = UNDEFINED_SONG;
+        emit songChanged();
+    }
 }
 
 // ==============================
@@ -711,6 +725,15 @@ void Player::stopPreview()
 // ==============================
 // ==============================
 
+void Player::closeClientFile()
+{
+    if (clientFile.isOpen())
+        clientFile.close();
+}
+
+// ==============================
+// ==============================
+
 void Player::executeNetworkCommand(std::shared_ptr<network::commands::CommandRequest> command)
 {
     SongId songId = command->getSongId();
@@ -720,8 +743,7 @@ void Player::executeNetworkCommand(std::shared_ptr<network::commands::CommandReq
     {
         case 'o':
         {
-            if (clientFile.isOpen())
-                clientFile.close();
+            closeClientFile();
 
             SongIt song = findSong(songId);
             if (song != UNDEFINED_SONG)

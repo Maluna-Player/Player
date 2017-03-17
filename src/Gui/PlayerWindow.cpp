@@ -81,6 +81,9 @@ PlayerWindow::PlayerWindow(QWidget *parent)
 
 PlayerWindow::~PlayerWindow()
 {
+    if (mp_Socket)
+        closeConnection();
+
     m_Player.stop();
     audio::FmodManager::deleteInstance();
 
@@ -826,15 +829,10 @@ void PlayerWindow::closeConnection()
             mp_Socket->disconnection();
         else
         {
-            if (!m_Player.getCurrentSong())
-            {
-                if (!m_Player.isStopped())
-                    m_Player.stop();
-            }
-            else if (m_Player.getCurrentSong()->isRemote())
-                m_Player.firstSong();
+            if (m_Player.getCurrentSong() && m_Player.getCurrentSong()->isRemote())
+                m_Player.firstSong(SongList_t::LOCAL_SONGS);
 
-            // close clientFile (if current song is remote only ? do we close file after remote song playing ?)
+            m_Player.closeClientFile();
 
             m_Player.clearSongs(SongList_t::REMOTE_SONGS);
             mp_SongList->clearList(SongList_t::REMOTE_SONGS);

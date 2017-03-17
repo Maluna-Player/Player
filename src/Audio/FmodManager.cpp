@@ -164,7 +164,8 @@ void FmodManager::releaseSound(SoundID_t id)
         if (isChannelUsed(id))
             stopSound(id);
 
-        if ((res = FMOD_Sound_Release(mp_Sounds.at(id))) != FMOD_OK)
+        res = FMOD_Sound_Release(mp_Sounds.at(id));
+        if (res != FMOD_OK && res != FMOD_ERR_NET_CONNECT)
             throw exceptions::LibException("FmodManager::releaseSound", "FMOD_Sound_Release", FMOD_ErrorString(res));
 
         mp_Sounds.at(id) = nullptr;

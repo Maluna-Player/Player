@@ -122,10 +122,11 @@ class Player : public QObject
         SongIt findSong(SongId songId) const;
 
         /**
-         * @brief Retourne la première musique de la liste.
+         * @brief Retourne la première musique de la liste passée en paramètre.
+         * @param list Liste dont on veut la première musique
          * @return Position de la première musique
          */
-        SongIt first() const;
+        SongIt first(SongList_t list = SongList_t::ALL_SONGS) const;
 
         /**
          * @brief Retourne la musique précédente (la dernière si boucle).
@@ -321,9 +322,10 @@ class Player : public QObject
         gui::SongTreeRoot* reloadSongs(const QString& dirPath);
 
         /**
-         * @brief Lance la première musique du player.
+         * @brief Lance la première musique du player dans la liste fournie.
+         * @param list Liste dont on veut la première musique
          */
-        void firstSong();
+        void firstSong(SongList_t list = SongList_t::ALL_SONGS);
 
         /**
          * @brief Lance la musique précédente du player.
@@ -368,6 +370,11 @@ class Player : public QObject
          * @brief Arrête la preview et poursuit la lecture mise en pause.
          */
         void stopPreview();
+
+        /**
+         * @brief Ferme le fichier de lecture du client connecté.
+         */
+        void closeClientFile();
 
     public slots:
 
