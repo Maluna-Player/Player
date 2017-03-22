@@ -109,6 +109,12 @@ class Song
         virtual void open();
 
         /**
+         * @brief Ajoute un DSP sur le son.
+         * @param size Taille des données spectrales à récupérer
+         */
+        void addDSP(unsigned int size) const;
+
+        /**
          * @brief Joue le son ouvert avec FMOD.
          */
         void play() const;

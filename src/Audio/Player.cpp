@@ -560,6 +560,7 @@ bool Player::changeSong(SongIt song)
         {
             // Ouverture du fichier
             getCurrentSong()->open();
+            getCurrentSong()->addDSP(SPECTRUM_WIDTH);
 
             // Si le player n'est pas stoppé, on le joue
             if (!isStopped())

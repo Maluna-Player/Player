@@ -163,6 +163,14 @@ void Song::open()
 // ==============================
 // ==============================
 
+void Song::addDSP(unsigned int size) const
+{
+    FmodManager::getInstance().addDSP(m_SoundID, size);
+}
+
+// ==============================
+// ==============================
+
 void Song::play() const
 {
     FmodManager::getInstance().playSound(m_SoundID);

@@ -49,9 +49,9 @@ class FmodManager
 
         std::vector<FMOD_SOUND*> mp_Sounds;
 
-        FMOD_CHANNELGROUP *mp_ChannelGroup;
+        std::vector<FMOD_DSP*> mp_Dsps;
 
-        FMOD_DSP *mp_Dsp;
+        FMOD_CHANNELGROUP *mp_ChannelGroup;
 
 
         /* Instance du singleton */
@@ -62,16 +62,16 @@ class FmodManager
         ~FmodManager();
 
         /**
-         * Attribue un SoundID libre.
+         * @brief Attribue un identifiant libre.
          * @param mainCanal true si la musique est ouverte sur le canal principal
-         * @return id attribué
+         * @return Id attribué
         */
         SoundID_t getSoundID(bool mainCanal) const;
 
         /**
-         * Vérifie si le canal associé à l'id est utilisé ou non.
+         * @brief Vérifie si le canal associé à l'identifiant id est utilisé ou non.
          * @param id Identifiant du canal à vérifier
-         * @return true si le canal est utilisé, false sinon.
+         * @return true si le canal est utilisé, false sinon
          */
         bool isChannelUsed(SoundID_t id) const;
 
@@ -80,112 +80,122 @@ class FmodManager
         enum class StreamError { FILE_ERROR, FORMAT_ERROR };
 
         /**
-         * Créé le singleton s'il n'existe pas
-         * et retourne l'instance correspondante.
-         * @return instance du singleton
+         * @brief Créé le singleton s'il n'existe pas
+         *        et retourne l'instance correspondante.
+         * @return Instance du singleton
         */
         static FmodManager& getInstance();
 
         /**
-         * Détruit le singleton alloué dynamiquement.
+         * @brief Détruit le singleton alloué dynamiquement.
         */
         static void deleteInstance();
 
         /**
-         * Met à jour FMOD.
+         * @brief Met à jour FMOD.
          */
         void update() const;
 
         /**
-         * Ouvre le fichier son passé en paramètre.
+         * @brief Ouvre le fichier son passé en paramètre.
          * @param soundFile Fichier à ouvrir
          * @param mainCanal true si la musique est ouverte sur le canal principal
          * @param settings Options de chargement de la musique (callbacks utilisés)
-         * @return identifiant du canal associé
+         * @return Identifiant du canal associé
         */
         SoundID_t openFromFile(const std::string& soundFile, bool mainCanal = true, SoundSettings *settings = nullptr) throw (StreamError);
 
         /**
-         * Libère la mémoire du son chargé.
-         * @param id Identifiant du son à libérer.
+         * @brief Libère la mémoire du son chargé.
+         * @param id Identifiant du son à libérer
         */
         void releaseSound(SoundID_t id);
 
         /**
-         * Joue le son chargé.
+         * @brief Ajoute un DSP au son d'identifiant id.
+         * @param id Identifiant du son à traiter
+         * @param size Taille des données de spectre à récupérer
+         */
+        void addDSP(SoundID_t id, unsigned int size);
+
+        /**
+         * @brief Joue le son chargé.
          * @param id Identifiant du son à jouer
         */
         void playSound(SoundID_t id);
 
         /**
-         * Arrête le son joué sur le canal id.
+         * @brief Arrête le son joué sur le canal id.
          * @param id Identifiant du canal à stopper
         */
         void stopSound(SoundID_t id);
 
         /**
-         * Met ou retire la pause du canal id.
+         * @brief Met ou retire la pause du canal id.
          * @param id Identifiant du canal à modifier.
-         * @param paused Etat pause à mettre.
+         * @param paused Etat pause à appliquer
         */
         void pauseSound(SoundID_t id, bool paused) const;
 
         /**
+         * @brief Récupère la durée de la musique id.
          * @param id Identifiant du son à mesurer
-         * @return durée de la musique (ms).
+         * @return Durée de la musique (ms)
         */
         SoundPos_t getSoundLength(SoundID_t id) const;
 
         /**
+         * @brief Récupère la position courante de la musique jouée.
          * @param id Identifiant du canal à tester
-         * @return position courante de la musique jouée (ms).
+         * @return Position de la musique (ms)
         */
         SoundPos_t getSoundPosition(SoundID_t id) const;
 
         /**
-         * Change la position de la musique.
+         * @brief Change la position de la musique.
          * @param id Identifiant du canal à modifier
          * @param pos Position à appliquer
         */
         void setSoundPosition(SoundID_t id, SoundPos_t pos);
 
         /**
+         * @brief Détermine si le canal du son passé en paramètre est en lecture.
          * @param id Identifiant du canal à tester
-         * @return true si le canal id est en train de jouer.
+         * @return true si le canal est en train de jouer
         */
         bool isPlaying(SoundID_t id) const;
 
         /**
-         * Récupère le spectre du son joué dans le canal.
+         * @brief Récupère le spectre du son joué dans le canal.
          * @param id Identifiant du canal à tester
          * @param values Vecteur dans lequel sont stockées
-         *               les valeurs.
-         * @return Vecteur dans lequel sont stockées les valeurs.
+         *               les valeurs
+         * @return Vecteur dans lequel sont stockées les valeurs
         */
         std::vector<float>& getChannelSpectrum(SoundID_t id, std::vector<float>& values) const;
 
         /**
-         * Récupère le volume du canal.
+         * @brief Récupère le volume du canal.
          * @param id Identifiant du canal
          * @return Volume du canal
         */
         float getVolume(SoundID_t id) const;
 
         /**
-         * Modifie le volume du canal.
+         * @brief Modifie le volume du canal.
          * @param id Identifiant du canal à modifier
          * @param volume Volume à appliquer
         */
         void setVolume(SoundID_t id, float volume) const;
 
         /**
-         * Modifie le volume de l'ensemble des canaux.
+         * @brief Modifie le volume de l'ensemble des canaux.
          * @param volume Volume à appliquer
         */
         void setVolume(float volume) const;
 
         /**
-         * Change l'état mute de l'ensemble des canaux.
+         * @brief Change l'état mute de l'ensemble des canaux.
          * @param mute Etat à appliquer
         */
         void setMute(bool mute) const;

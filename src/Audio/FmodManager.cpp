@@ -22,7 +22,7 @@ FmodManager* FmodManager::mp_Instance = nullptr;
 // ==============================
 
 FmodManager::FmodManager(int maxChannels)
-    : mp_System(nullptr), mp_Channels(maxChannels), mp_Sounds(maxChannels), mp_ChannelGroup(nullptr), mp_Dsp(nullptr)
+    : mp_System(nullptr), mp_Channels(maxChannels), mp_Sounds(maxChannels), mp_Dsps(maxChannels), mp_ChannelGroup(nullptr)
 {
     FMOD_RESULT res;
 
@@ -37,13 +37,6 @@ FmodManager::FmodManager(int maxChannels)
     /* Récupération du groupe de canaux */
     if ((res = FMOD_System_GetMasterChannelGroup(mp_System, &mp_ChannelGroup)) != FMOD_OK)
         throw exceptions::LibException("FmodManager::FmodManager", "FMOD_System_GetMasterChannelGroup", FMOD_ErrorString(res));
-
-    /* Création du DSP */
-    if ((res = FMOD_System_CreateDSPByType(mp_System, FMOD_DSP_TYPE_FFT, &mp_Dsp)) != FMOD_OK)
-        throw exceptions::LibException("FmodManager::FmodManager", "FMOD_System_CreateDSPByType", FMOD_ErrorString(res));
-
-    if ((res = FMOD_DSP_SetParameterInt(mp_Dsp, FMOD_DSP_FFT_WINDOWSIZE, SPECTRUM_WIDTH)) != FMOD_OK)
-        throw exceptions::LibException("FmodManager::FmodManager", "FMOD_DSP_SetParameterInt", FMOD_ErrorString(res));
 }
 
 // ==============================
@@ -57,9 +50,6 @@ FmodManager::~FmodManager()
         releaseSound(i);
 
     FMOD_RESULT res;
-
-    if ((res = FMOD_DSP_Release(mp_Dsp)) != FMOD_OK)
-        throw exceptions::LibException("FmodManager::~FmodManager", "FMOD_DSP_Release", FMOD_ErrorString(res));
 
     if ((res = FMOD_System_Release(mp_System)) != FMOD_OK)
         throw exceptions::LibException("FmodManager::~FmodManager", "FMOD_System_Release", FMOD_ErrorString(res));
@@ -164,12 +154,34 @@ void FmodManager::releaseSound(SoundID_t id)
         if (isChannelUsed(id))
             stopSound(id);
 
+        if (mp_Dsps.at(id))
+        {
+            if ((res = FMOD_DSP_Release(mp_Dsps.at(id))) != FMOD_OK)
+                throw exceptions::LibException("FmodManager::releaseSound", "FMOD_DSP_Release", FMOD_ErrorString(res));
+
+            mp_Dsps.at(id) = nullptr;
+        }
+
         res = FMOD_Sound_Release(mp_Sounds.at(id));
         if (res != FMOD_OK && res != FMOD_ERR_NET_CONNECT)
             throw exceptions::LibException("FmodManager::releaseSound", "FMOD_Sound_Release", FMOD_ErrorString(res));
 
         mp_Sounds.at(id) = nullptr;
     }
+}
+
+// ==============================
+// ==============================
+
+void FmodManager::addDSP(SoundID_t id, unsigned int size)
+{
+    FMOD_RESULT res;
+
+    if ((res = FMOD_System_CreateDSPByType(mp_System, FMOD_DSP_TYPE_FFT, &mp_Dsps.at(id))) != FMOD_OK)
+        throw exceptions::LibException("FmodManager::addDSP", "FMOD_System_CreateDSPByType", FMOD_ErrorString(res));
+
+    if ((res = FMOD_DSP_SetParameterInt(mp_Dsps.at(id), FMOD_DSP_FFT_WINDOWSIZE, size)) != FMOD_OK)
+        throw exceptions::LibException("FmodManager::addDSP", "FMOD_DSP_SetParameterInt", FMOD_ErrorString(res));
 }
 
 // ==============================
@@ -182,8 +194,11 @@ void FmodManager::playSound(SoundID_t id)
     if ((res = FMOD_System_PlaySound(mp_System, mp_Sounds.at(id), 0, false, &mp_Channels.at(id))) != FMOD_OK)
         throw exceptions::LibException("FmodManager::playSound", "FMOD_System_PlaySound", FMOD_ErrorString(res));
 
-    if ((res = FMOD_Channel_AddDSP(mp_Channels.at(id), 0, mp_Dsp)) != FMOD_OK)
-        throw exceptions::LibException("FmodManager::playSound", "FMOD_ChannelGroup_AddDSP", FMOD_ErrorString(res));
+    if (mp_Dsps.at(id))
+    {
+        if ((res = FMOD_Channel_AddDSP(mp_Channels.at(id), 0, mp_Dsps.at(id))) != FMOD_OK)
+            throw exceptions::LibException("FmodManager::playSound", "FMOD_ChannelGroup_AddDSP", FMOD_ErrorString(res));
+    }
 }
 
 // ==============================
@@ -203,8 +218,11 @@ void FmodManager::stopSound(SoundID_t id)
     {
         FMOD_RESULT res;
 
-        if ((res = FMOD_Channel_RemoveDSP(mp_Channels.at(id), mp_Dsp)) != FMOD_OK)
-            throw exceptions::LibException("FmodManager::stopSound", "FMOD_ChannelGroup_RemoveDSP", FMOD_ErrorString(res));
+        if (mp_Dsps.at(id))
+        {
+            if ((res = FMOD_Channel_RemoveDSP(mp_Channels.at(id), mp_Dsps.at(id))) != FMOD_OK)
+                throw exceptions::LibException("FmodManager::stopSound", "FMOD_ChannelGroup_RemoveDSP", FMOD_ErrorString(res));
+        }
 
         if ((res = FMOD_Channel_Stop(mp_Channels.at(id))) != FMOD_OK)
             throw exceptions::LibException("FmodManager::stopSound", "FMOD_Channel_Stop", FMOD_ErrorString(res));
@@ -296,12 +314,12 @@ bool FmodManager::isPlaying(SoundID_t id) const
 
 std::vector<float>& FmodManager::getChannelSpectrum(SoundID_t id, std::vector<float>& values) const
 {
-    if (isChannelUsed(id))
+    if (isChannelUsed(id) && mp_Dsps.at(id))
     {
         FMOD_RESULT res;
         FMOD_DSP_PARAMETER_FFT *fft;
 
-        if ((res = FMOD_DSP_GetParameterData(mp_Dsp, FMOD_DSP_FFT_SPECTRUMDATA, (void**)&fft, 0, 0, 0)) != FMOD_OK)
+        if ((res = FMOD_DSP_GetParameterData(mp_Dsps.at(id), FMOD_DSP_FFT_SPECTRUMDATA, (void**)&fft, 0, 0, 0)) != FMOD_OK)
             throw exceptions::LibException("FmodManager::getChannelSpectrum", "FMOD_DSP_GetParameterData", FMOD_ErrorString(res));
 
         for (int bin = 0; bin < fft->length; bin++)
